@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 资源跟踪类型对应表  qizhongtao 2012-4-17 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryZiygzlx" resultClass="com.athena.ckx.entity.xuqjs.Ziygzlx" parameterClass="com.athena.ckx.entity.xuqjs.Ziygzlx">
+			select  jislxbh,jslxmc,xuqly,dinghlx,gonghms,jisff,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_ziygzlx
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="jislxbh"><![CDATA[jislxbh=#jislxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xuqly"><![CDATA[xuqly=#xuqly#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="dinghlx"><![CDATA[dinghlx=#dinghlx#]]></isNotEmpty>
+			</dynamic>
+			order by jislxbh
+		</select>
+		
+		<!--查询计算类型名称	 -->
+		<select id="getJslxmcByjislxbh" parameterClass="java.lang.String" resultClass="java.lang.String">
+			select distinct jslxmc
+			from ${dbSchemal3}ckx_ziygzlx
+			where jislxbh=#jislxbh# 
+		</select>
+		
+		<!--更新同一计算同一编号的计算类型名称	 -->
+		<update id="updateJslxmcByjislxbh" parameterClass="com.athena.ckx.entity.xuqjs.Ziygzlx">
+			update ${dbSchemal3}ckx_ziygzlx 
+			set jslxmc = #jslxmc#
+			where jislxbh = #jislxbh#
+		</update>
+		
+		<!--单数据查询	 -->
+		<select id="getZiygzlx" resultClass="com.athena.ckx.entity.xuqjs.Ziygzlx" parameterClass="com.athena.ckx.entity.xuqjs.Ziygzlx">
+			select  jislxbh,jslxmc,xuqly,dinghlx,gonghms,jisff
+			from ${dbSchemal3}ckx_ziygzlx
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="jislxbh"><![CDATA[jislxbh=#jislxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xuqly"><![CDATA[xuqly=#xuqly#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="dinghlx"><![CDATA[dinghlx=#dinghlx#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertZiygzlx" parameterClass="com.athena.ckx.entity.xuqjs.Ziygzlx" >
+			insert into ${dbSchemal3}ckx_ziygzlx(jislxbh,jslxmc,xuqly,dinghlx,gonghms,jisff,creator,create_time,editor,edit_time)
+			values(<![CDATA[#jislxbh#,#jslxmc#,#xuqly#,#dinghlx#,#gonghms#,#jisff#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="updateZiygzlx" parameterClass="com.athena.ckx.entity.xuqjs.Ziygzlx">
+			update ${dbSchemal3}ckx_ziygzlx
+			set jslxmc = #jslxmc#,
+				gonghms = #gonghms#,
+				jisff = #jisff#,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[jislxbh = #jislxbh# and xuqly = #xuqly# and dinghlx = #dinghlx#]]>
+		</update>
+		
+		<!-- 删除数据 -->
+		<delete id="deleteZiygzlx" parameterClass="com.athena.ckx.entity.xuqjs.Ziygzlx">
+			delete from ${dbSchemal3}ckx_ziygzlx where
+			<dynamic prepend=" ">
+				<isNotEmpty property="jislxbh" prepend=" and "><![CDATA[jislxbh = #jislxbh#]]></isNotEmpty>
+				<isNotEmpty property="xuqly" prepend=" and "><![CDATA[xuqly = #xuqly#]]></isNotEmpty>
+				<isNotEmpty property="dinghlx" prepend=" and "><![CDATA[dinghlx = #dinghlx#]]></isNotEmpty>
+			</dynamic>
+		</delete>
+	
+</sqlMap>

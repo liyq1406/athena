@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+		<!-- gswang-->
+	<delete id="deleteLowerMenu" parameterClass="java.util.Map">
+		delete from ${dbSchemal0}SYS_R_POST_AUTH where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="treeId">auth_tree_id like '$treeId$%'</isNotEmpty>
+			<isNotEmpty prepend="  and " property="postGroupId">post_group_id = #postGroupId# </isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<select id="queryPGMenuAuthNum" resultClass="java.lang.String" parameterClass="java.util.Map">
+		<![CDATA[select count(*) as sxCount from ${dbSchemal0}SYS_R_POST_AUTH menu_ where 1=1]]>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="treeId">auth_tree_id like '$treeId$%' </isNotEmpty>
+			<isNotEmpty prepend="  and " property="postGroupId">post_group_id = #postGroupId# </isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="queryAddPGMenuAuthNum" resultClass="java.lang.String" parameterClass="java.util.Map">
+		<![CDATA[select count(*) as sxCount from ${dbSchemal0}SYS_R_POST_AUTH menu_ where 1=1]]>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="treeId">auth_tree_id = #treeId# </isNotEmpty>
+			<isNotEmpty prepend="  and " property="postGroupId">post_group_id = #postGroupId# </isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<insert id="insertMenuAuth" parameterClass="java.util.Map">
+		insert into
+		${dbSchemal0}SYS_R_POST_AUTH (POST_GROUP_ID,FUNC_ID,USERCENTER,AUTH_TREE_ID)
+		values(
+			#postGroupId#,
+			#id#,
+			'',
+			#treeId#)
+	</insert>	
+	
+	<resultMap class="java.util.HashMap" id="SysRPostAuthMap">
+		<result column="POST_GROUP_ID" property="postGroupId" />
+		<result column="FUNC_ID" property="id" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="AUTH_TREE_ID" property="treeId" />
+	</resultMap>
+	<select id="queryUpdateMenuAuth" resultMap="SysRPostAuthMap" parameterClass="java.util.Map">
+		<![CDATA[
+		select au_.post_group_id,au_.func_id,au_.usercenter,menu_.auth_tree_id from (select * from ${dbSchemal0}sys_r_post_auth auth_ where auth_.auth_tree_id is null) 
+		au_ inner join ${dbSchemal0}sys_menu_directory menu_ on au_.func_id = menu_.id]]>
+	</select>
+
+	<select id="queryUpdateButtonAuth" resultMap="SysRPostAuthMap" parameterClass="java.util.Map">
+		<![CDATA[
+		select au_.post_group_id,au_.func_id,au_.usercenter,button_.auth_tree_id from (select * from ${dbSchemal0}sys_r_post_auth auth_ where auth_.auth_tree_id is null ) 
+		au_ inner join (select 'button_'||bu_.button_code as id,bu_.auth_tree_id from ${dbSchemal0}SYS_PAGE_BUTTON bu_) button_ on au_.func_id =button_.id]]>
+	</select>
+	
+	<select id="queryUpdateTopMenuAuth" resultMap="SysRPostAuthMap" parameterClass="java.util.Map">
+		<![CDATA[
+ 			select auth_.post_group_id,auth_.func_id,auth_.usercenter,'tree_root_menu' as auth_tree_id from sys_r_post_auth auth_ where auth_.func_id = 'tree_root_menu']]>
+	</select>
+	
+	<update id="updateSysRPostGroupAuthTree" parameterClass="java.util.Map">
+		UPDATE ${dbSchemal0}sys_r_post_auth SET AUTH_TREE_ID = #treeId# WHERE FUNC_ID = #id# 
+	</update>	
+</sqlMap>

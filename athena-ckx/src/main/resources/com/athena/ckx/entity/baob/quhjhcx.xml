@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="ts_ckx">
+
+	<!-- lvchan -->
+	<!-- 取货计划查询 -->
+	<select id="queryqhjhcx" resultClass="com.athena.ckx.entity.baob.Quhjhcx" parameterClass="com.athena.ckx.entity.baob.Quhjhcx">
+	    select t.usercenter, t.yunsjhh, substr(t.yaohlh,11,12) yaohlh, t.lingjbh, t.lingjsl,
+	           t.gongysdm, t.chengysdm, t.chanx, t.mudd, t.cangkbh,
+               to_char(t.yujddsj,'yyyy-mm-dd HH24:mi:ss') as yujddsj,
+               to_char(t.shijddsj,'yyyy-mm-dd HH24:mi:ss') as shijddsj,
+               to_char(t.yujdhsj,'yyyy-mm-dd HH24:mi:ss') as yujdhsj, t.cheph, t.wullj,
+               decode(t.flag,'1','正常','2','数量异常','3','时间异常','4','没取到货异常') as flag, t.yicjhh 
+          from ${dbSchemal3}ck_quhjh t 
+         where 1 = 1
+        <dynamic>
+       		<isNotEmpty prepend=" and " property="usercenter"><![CDATA[t.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="yunsjhh"><![CDATA[t.yunsjhh = #yunsjhh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohlh"><![CDATA[substr(t.yaohlh,11,12) = #yaohlh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[t.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[t.gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[t.chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx"><![CDATA[t.chanx = #chanx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[t.cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cheph"><![CDATA[t.cheph = #cheph#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startdhsj"><![CDATA[to_date(to_char(t.yujdhsj,'yyyy-MM-dd'),'yyyy-MM-dd') >= to_date(#startdhsj#,'yyyy-MM-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="enddhsj"><![CDATA[to_date(to_char(t.yujdhsj,'yyyy-MM-dd'),'yyyy-MM-dd') <= to_date(#enddhsj#,'yyyy-MM-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="flag"><![CDATA[t.flag = #flag#]]></isNotEmpty>			
+	    </dynamic>
+        order by t.usercenter,t.yunsjhh,t.yaohlh
+	</select>
+	
+	<!-- 查询数据条数  -->
+    <select id="queryqhjhcxCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from ${dbSchemal3}ck_quhjh t where 1 = 1
+        <dynamic>
+       		<isNotEmpty prepend=" and " property="usercenter"><![CDATA[t.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="yunsjhh"><![CDATA[t.yunsjhh = #yunsjhh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohlh"><![CDATA[substr(t.yaohlh,11,12) = #yaohlh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[t.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[t.gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[t.chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx"><![CDATA[t.chanx = #chanx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[t.cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cheph"><![CDATA[t.cheph = #cheph#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startdhsj"><![CDATA[to_date(to_char(t.yujdhsj,'yyyy-MM-dd'),'yyyy-MM-dd') >= to_date(#startdhsj#,'yyyy-MM-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="enddhsj"><![CDATA[to_date(to_char(t.yujdhsj,'yyyy-MM-dd'),'yyyy-MM-dd') <= to_date(#enddhsj#,'yyyy-MM-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="flag"><![CDATA[t.flag = #flag#]]></isNotEmpty>			
+	    </dynamic>
+	</select>
+	
+	<!-- 在途跟踪查询 -->
+	<select id="queryztgzcx" resultClass="com.athena.ckx.entity.baob.Quhjhcx" parameterClass="com.athena.ckx.entity.baob.Quhjhcx">
+	    select t.usercenter,
+               t.yunsjhh,
+               t.kach,
+               t.wulddm,
+               to_char(t.daodwldsj, 'yyyy-mm-dd HH24:mi:ss') as daodwldsj,
+               t.shangcwld,
+               to_char(t.daodscwldsj, 'yyyy-mm-dd HH24:mi:ss') as daodscwldsj,
+               decode(t.yunszt, '0', '正常', '1', '提前', '2', '延误', '3', '交付') as yunszt
+          from ${dbSchemal3}ck_quhjhgz t
+         where 1 = 1
+        <dynamic>
+       		<isNotEmpty prepend=" and " property="usercenter"><![CDATA[t.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="yunsjhh"><![CDATA[t.yunsjhh = #yunsjhh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="yunszt"><![CDATA[t.yunszt = #yunszt#]]></isNotEmpty>			
+	    </dynamic>
+         order by t.usercenter, t.yunsjhh
+	</select>
+	
+	<!-- 在途跟踪查询导出数据 -->
+	<select id="queryztgzcx_download" resultClass="com.athena.ckx.entity.baob.Quhjhcx" parameterClass="com.athena.ckx.entity.baob.Quhjhcx">
+	    select t.usercenter, t.yunsjhh, substr(a.yaohlh, 11, 12) yaohlh, a.lingjbh, 
+	           a.lingjsl, a.gongysdm, a.chengysdm, a.chanx, a.mudd, a.cangkbh,
+               to_char(a.yujddsj, 'yyyy-mm-dd HH24:mi:ss') as yujddsj,
+               to_char(a.shijddsj, 'yyyy-mm-dd HH24:mi:ss') as shijddsj,
+               to_char(a.yujdhsj, 'yyyy-mm-dd HH24:mi:ss') as yujdhsj, a.cheph, a.wullj,
+               decode(a.flag, '1', '正常', '2', '数量异常', '3', '时间异常', '4', '没取到货异常') as flag,
+               a.yicjhh, t.kach, t.wulddm, to_char(t.daodwldsj, 'yyyy-mm-dd HH24:mi:ss') as daodwldsj,
+               t.shangcwld, to_char(t.daodscwldsj, 'yyyy-mm-dd HH24:mi:ss') as daodscwldsj,
+               decode(t.yunszt, '0', '正常', '1', '提前', '2', '延误', '3', '交付') as yunszt
+          from ${dbSchemal3}ck_quhjhgz t left join ${dbSchemal3}ck_quhjh a 
+            on t.usercenter = a.usercenter and t.yunsjhh = a.yunsjhh
+         where 1=1
+        <dynamic>
+       		<isNotEmpty prepend=" and " property="usercenter"><![CDATA[t.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="yunsjhh"><![CDATA[t.yunsjhh = #yunsjhh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="yunszt"><![CDATA[t.yunszt = #yunszt#]]></isNotEmpty>			
+	    </dynamic>
+         order by t.usercenter, t.yunsjhh, a.yaohlh
+	</select>
+	
+	<!-- 供应商取货计划完成率计算 -->
+	<select id="querygysqhjhwcl" resultClass="com.athena.ckx.entity.baob.Quhjhcx" parameterClass="com.athena.ckx.entity.baob.Quhjhcx">
+	    select tt.gongysdm, tt.chengysdm, 
+	           decode(#startmonth#||#endmonth#, '0101', '1月', '0202', '2月', '0303', '3月', '0404', '4月',
+	           '0505', '5月', '0606', '6月', '0707', '7月', '0808', '8月', '0909', '9月', '1010', '10月', '1111', '11月', 
+	           '1212', '12月', '0103', '第一季度', '0406', '第二季度', '0709', '第三季度', '1012', '第四季度') as month,
+	           tt.lingjsl, tt.zhengcsl, tt.yicsl, to_char(tt.zhengcsl/tt.lingjsl*100, '999999999.99') as wancl
+          from (select t.gongysdm, t.chengysdm, sum(nvl(t.lingjsl, 0)) as lingjsl,
+                       sum(decode(t.flag, '1', nvl(t.lingjsl, 0), '2', 0, '3', 0, '4', 0)) as zhengcsl,
+                       sum(decode(t.flag, '1', 0, '2', nvl(t.lingjsl, 0), '3', nvl(t.lingjsl, 0), '4', nvl(t.lingjsl, 0))) as yicsl
+                  from ${dbSchemal3}ck_quhjh t
+                 where 1 = 1
+                <dynamic>
+       		        <isNotEmpty prepend=" and " property="year"><![CDATA[to_char(t.yujdhsj, 'yyyy') = #year#]]></isNotEmpty>
+			        <isNotEmpty prepend=" and " property="startmonth"><![CDATA[to_char(t.yujdhsj, 'mm') >= #startmonth#]]></isNotEmpty>
+			        <isNotEmpty prepend=" and " property="endmonth"><![CDATA[to_char(t.yujdhsj, 'mm') <= #endmonth#]]></isNotEmpty>
+			        <isNotEmpty prepend=" and " property="gongysdm"><![CDATA[t.gongysdm = #gongysdm#]]></isNotEmpty>
+			        <isNotEmpty prepend=" and " property="chengysdm"><![CDATA[t.chengysdm = #chengysdm#]]></isNotEmpty>			
+	            </dynamic>
+                 group by t.gongysdm, t.chengysdm) tt
+         where tt.lingjsl != 0
+         order by tt.gongysdm, tt.chengysdm
+	</select>
+		
+</sqlMap>

@@ -1,0 +1,919 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="kanbyhl">
+
+	<!-- 查询参考系生产线 -->
+	<select id="selectChanx" resultClass="com.athena.xqjs.entity.common.Shengcx"
+		parameterClass="java.util.Map">
+		select shengcxbh from ${dbSchemal3}ckx_shengcx where usercenter=#usercenter#
+	</select>
+	<!-- 查询看板规模循环 -->
+	<select id="selectAll" resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		select xunhbm,
+		lingjbh,
+		zuidyhl
+		from ${dbSchemal1}xqjs_kanbxhgm
+		where 1=1
+	</select>
+	<!--查询看板循环规模 -->
+	<select id="selectKbxhgm" resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm"
+		parameterClass="java.util.Map">
+		select
+		dinghck,
+		lujdm,
+		gongysbh,
+		shifyjsyhl,
+		xianbyhlx,
+		yancsxbz,
+		jianglms,
+		dongjclbs,
+		editor,
+		to_char(edit_time, 'yyyy-mm-dd HH24:MI:SS:ff3') as edit_time,
+		xunhbm,
+		usercenter,
+		lingjbh,
+		chanx,
+		gonghms,
+		cangkdm,
+		jihydm,
+		xiaohd,
+		umlx,
+		uclx,
+		umljsl,
+		umzucgs,
+		ucrl,
+		cmj,
+		cjmax,
+		dangqxhgm,
+		jisxhgm,
+		xiafxhgm,
+		shifzdfs,
+		zuidyhl,
+		shengxzt,
+		dongjjdzt,
+		jisxhgm-dangqxhgm as jiscy,
+		decode(dangqxhgm, 0, null, ceil((jisxhgm-dangqxhgm) / dangqxhgm * 100)) as bianhfd,
+		kehd,
+		leix,
+		xiafxhgm  as tiaozxhgm,
+		creator,
+		create_time,
+		to_char(jissj, 'yyyy-mm-dd') as jissj ,
+		weihr,
+		to_char(weihsj, 'yyyy-mm-dd HH24:MI:SS:ff3') as weihsj
+	 from  ${dbSchemal1}xqjs_kanbxhgm
+	 where shengxzt!='2' and usercenter=#usercenter#
+	 <dynamic>
+	 <isNotEmpty prepend=" and " property="shengxzt">shengxzt=#shengxzt#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="jianglms">jianglms=#jianglms#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="gonghms">gonghms=#gonghms#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="ghms">$ghms$</isNotEmpty>
+	 <isEmpty    prepend=" and " property="shengxzt">shengxzt !=-1</isEmpty>
+	 <isNotEmpty prepend=" and " property="lingjbh"> lingjbh=#lingjbh#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="xunhbm"> xunhbm=#xunhbm#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="shifzdfs"> shifzdfs=#shifzdfs#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="dongjjdzt"> dongjjdzt=#dongjjdzt#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="chanx"> chanx=#chanx#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="kehd"> $kehd$</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="jihydm"> jihydm=#jihydm#</isNotEmpty>
+	 <isNotEmpty property="gmbh" prepend=" and "> $gmbh$</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="choosexunhbm"> $choosexunhbm$ </isNotEmpty>
+	 </dynamic>
+     ORDER BY LINGJBH ASC,KEHD ASC
+	</select>
+	<!--查询看板循环规模 已交付总量 -->
+	<select id="selectKbxhgmYjfzl" resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm"
+		parameterClass="java.util.Map">
+		select
+		dinghck,
+		lujdm,
+		gongysbh,
+		shifyjsyhl,
+		xianbyhlx,
+		yancsxbz,
+		jianglms,
+		dongjclbs,
+		editor,
+		to_char(edit_time, 'yyyy-mm-dd HH24:MI:SS:ff3') as edit_time,
+		xunhbm,
+		usercenter,
+		lingjbh,
+		chanx,
+		gonghms,
+		cangkdm,
+		jihydm,
+		xiaohd,
+		umlx,
+		uclx,
+		umljsl,
+		umzucgs,
+		ucrl,
+		cmj,
+		cjmax,
+		dangqxhgm,
+		jisxhgm,
+		xiafxhgm,
+		shifzdfs,
+		zuidyhl,
+		shengxzt,
+		dongjjdzt,
+		jisxhgm-dangqxhgm as jiscy,
+		decode(dangqxhgm, 0, null, ceil((jisxhgm-dangqxhgm) / dangqxhgm * 100)) as bianhfd,
+		kehd,
+		leix,
+		xiafxhgm  as tiaozxhgm,
+		(select nvl(sum(g.jiaofzl),0)
+          from ${dbSchemal1}ck_gongysjfzl g
+         where g.xunhbm = m.xunhbm
+           and g.usercenter = m.usercenter) as yjfzl
+	 from  ${dbSchemal1}xqjs_kanbxhgm m
+	 where shengxzt!='2' and usercenter=#usercenter#
+	 <dynamic>
+	 <isNotEmpty prepend=" and " property="shengxzt">shengxzt=#shengxzt#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="gonghms">gonghms=#gonghms#</isNotEmpty>
+	 <isEmpty    prepend=" and " property="shengxzt">shengxzt !=-1</isEmpty>
+	 <isNotEmpty prepend=" and " property="lingjbh"> lingjbh=#lingjbh#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="xunhbm"> xunhbm=#xunhbm#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="chanx"> chanx=#chanx#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="kehd"> $kehd$</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="jihydm"> jihydm=#jihydm#</isNotEmpty>
+	and gonghms in ('R1','R2')
+	 </dynamic>
+     ORDER BY LINGJBH ASC,KEHD,xunhbm ASC
+	</select>
+
+	<!-- 修改看板循环规模 -->
+	<update id="updateKandxhgm" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		update
+		${dbSchemal1}xqjs_kanbxhgm
+		<dynamic prepend="set">
+			<isNotEmpty property="shengxzt" prepend=",">
+				shengxzt=#shengxzt#
+    </isNotEmpty>
+			<isEqual  compareValue="1" property="shengxzt" prepend=",">JIANGLMS='0'</isEqual>
+			<isEqual  compareValue="YN" property="shifgxxfgm" prepend=",">
+			        xiafxhgm = decode(xiafxhgm,null,2,xiafxhgm) </isEqual>
+			<isNotEmpty property="dongjjdzt" prepend=",">
+				dongjjdzt=#dongjjdzt#
+    </isNotEmpty>
+			<isNotEmpty property="xiafxhgm" prepend=",">
+				xiafxhgm=#xiafxhgm#
+    </isNotEmpty>
+			<isNotEmpty property="dangqxhgm" prepend=",">
+				dangqxhgm=#dangqxhgm#
+    </isNotEmpty>
+		<isNotEqual  compareValue="-1" prepend="," property="zuidyhl">
+			zuidyhl=#zuidyhl#
+		</isNotEqual>	
+		
+   
+    		<isNotEmpty property="leix" prepend=",">
+				leix=#leix#
+    </isNotEmpty>
+			<isNotEmpty property="weihr" prepend=",">
+				weihr=#editor#
+    </isNotEmpty>
+			<isNotEmpty property="weihsj" prepend=",">
+				weihsj=to_timestamp(#edit_time#,'YYYY-MM-DD HH24:MI:SS:ff3')
+			</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				editor=#editor#
+    </isNotEmpty>
+			<isNotEmpty property="edit_time" prepend=",">
+				edit_time=to_timestamp(#edit_time#,'YYYY-MM-DD HH24:MI:SS:ff3')
+			</isNotEmpty>
+		</dynamic>
+		where 1=1
+		<dynamic>
+		       <isNotEmpty property="xunhbm" prepend=" and ">
+				          xunhbm= #xunhbm# 
+			   </isNotEmpty>
+			   <isNotEmpty property="usercenter" prepend=" and ">
+				          usercenter= #usercenter# 
+			   </isNotEmpty>
+			   <isNotEmpty property="lingjbh" prepend=" and ">
+				          lingjbh= #lingjbh# 
+			   </isNotEmpty>
+			   <isNotEmpty property="weihr" prepend=" and ">
+				          weihr= #weihr# 
+			   </isNotEmpty>
+			   <isNotEmpty property="weihsj" prepend=" and ">
+				          to_char(weihsj,'YYYY-MM-DD HH24:MI:SS:ff3')=#weihsj# 
+			   </isNotEmpty>
+		</dynamic>
+	</update>
+	<!--修改看板循环规模 的最大要货量 -->
+	<update id="updateZuidyhl" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		update
+		${dbSchemal1}xqjs_kanbxhgm
+		set
+		zuidyhl=#zuidyhl#,
+		weihr=#weihr#,
+		weihsj=to_timestamp(#weihsj#,'YYYY-MM-DD HH24:MI:SS:ff3')
+		where xunhbm=#xunhbm# and lingjbh=#lingjbh#
+	 </update>
+
+	<!--查询物流路径 零件供应商 零件消耗点 外部供货模式R1 -->
+	<select id="selectR1" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		select 
+		distinct
+		A.usercenter,
+		A.lingjbh,
+		A.xiaohd,
+		A.xiaohd kehd,
+		A.lujdm,
+		A.gonghms,
+		A.lingjmc,
+		A.shengcxbh as chanx,
+		A.jihydm
+		from (select w.usercenter usercenter,
+		w.lingjbh lingjbh,
+		w.gongysbh gongysbh,
+		x.xiaohdbh xiaohd,
+		x.shengcxbh shengcxbh,
+		w.lujbh  as lujdm,
+		l.jihy jihydm,
+		l.zhongwmc  lingjmc,
+		'R1' gonghms
+		from ${dbSchemal3}ckx_wullj w,
+		${dbSchemal3}ckx_lingjxhd x,
+		${dbSchemal3}ckx_lingj l
+		where w.usercenter = x.usercenter
+		and w.lingjbh = x.lingjbh
+		and w.fenpqh = x.fenpqbh
+		and w.shengcxbh = x.shengcxbh
+		and w.usercenter = l.usercenter
+		and w.lingjbh = l.lingjbh
+		and w.waibms = 'R1'
+		and w.usercenter=#usercenter#
+		and l.biaos = '1'
+		and x.biaos = '1'
+		and x.xiaohdbh is not null
+		<dynamic>
+			<isNotEmpty prepend="and" property="jihydm"> l.jihy=#jihydm#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="chanx"> w.shengcxbh=#chanx#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="lingjbh"> l.lingjbh=#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="kehd"> x.xiaohdbh=#kehd#
+			</isNotEmpty>
+		</dynamic>
+		) A
+		where not exists (
+		select kb.usercenter usercenter,
+		kb.lingjbh lingjbh,
+		kb.xiaohd  xiaohd
+		from ${dbSchemal1}xqjs_kanbxhgm kb
+		where kb.gonghms = 'R1'
+		and A.lingjbh = kb.lingjbh
+		and A.usercenter = kb.usercenter
+		and A.xiaohd = kb.xiaohd
+
+		)
+
+
+	</select>
+	<!-- 查询物流路径 零件供应商 零件仓库设置 R2   wyc2014-5-8  -->
+	<select id="selectR2" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		select 
+		A.usercenter,
+		A.lingjbh,
+		A.cangkbh cangkdm,
+		A.cangkbh kehd,
+	    max(A.lujdm) as lujdm,
+		A.gonghms,
+		A.lingjmc,
+		A.jihydm
+		from (select w.usercenter usercenter,
+		w.lingjbh lingjbh,
+		w.mudd    cangkbh,
+		w.shengcxbh shengcxbh,
+		w.lujbh  as lujdm,
+		l.zhongwmc lingjmc,
+		l.jihy jihydm,
+		'R2' gonghms
+		from ${dbSchemal3}ckx_wullj w,
+		${dbSchemal3}ckx_lingj l
+		where 
+		l.usercenter=w.usercenter
+		and l.lingjbh=w.lingjbh
+		and w.waibms = 'R2'
+		and w.usercenter=#usercenter#
+		and l.biaos = '1'
+		and w.mudd is not null
+		<dynamic>
+			<isNotEmpty prepend="and" property="jihydm"> l.jihy=#jihydm#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="lingjbh"> l.lingjbh=#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="kehd"> w.mudd=#kehd#
+			</isNotEmpty>
+		</dynamic>
+		) A
+		where not exists ( select kb.usercenter usercenter,
+		kb.lingjbh lingjbh,
+		kb.cangkdm     cangkdm
+		from ${dbSchemal1}xqjs_kanbxhgm kb
+		where kb.gonghms = 'R2'
+		and A.lingjbh = kb.lingjbh
+		and A.usercenter = kb.usercenter
+		and A.cangkbh= kb.cangkdm)
+ 	group by 
+   		 A.usercenter, 
+     	 A.lingjbh,
+  		 A.cangkbh ,
+   		 A.gonghms,
+   		 A.lingjmc,
+   		 A.jihydm
+	</select>
+	<!-- 查询物流路径 零件消耗点 零件仓库设置 RD  wyc 2014-5-9 -->
+	<select id="selectRD" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		select 
+		A.usercenter,
+		A.lingjbh,
+		A.xiaohd  kehd,
+		A.xiaohd ,
+	    max(A.lujdm) as lujdm,
+		A.xianbck,
+		A.gonghms,
+		A.lingjmc,
+		A.shengcxbh as chanx,
+		A.jihydm
+		from (select w.usercenter usercenter,
+		w.lingjbh lingjbh,
+		w.shengcxbh shengcxbh,
+		w.xianbck   xianbck,
+		x.xiaohdbh xiaohd,
+		w.lujbh  as lujdm,
+		l.zhongwmc lingjmc,
+		l.jihy jihydm,
+		'RD' gonghms
+		from ${dbSchemal3}ckx_wullj w,
+		${dbSchemal3}ckx_lingjxhd x,
+		${dbSchemal3}ckx_lingj l
+		where w.usercenter = x.usercenter
+		and w.lingjbh = x.lingjbh
+		and w.fenpqh = x.fenpqbh
+		and w.shengcxbh = x.shengcxbh
+		and l.usercenter=w.usercenter
+		and l.lingjbh=w.lingjbh
+		and w.mos = 'RD'
+		and w.usercenter=#usercenter#
+		and l.biaos = '1'
+		and x.biaos = '1'
+		and w.xianbck is not null
+		and x.xiaohdbh is not null
+		<dynamic>
+			<isNotEmpty prepend="and" property="chanx"> w.shengcxbh=#chanx#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="lingjbh"> w.lingjbh=#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="kehd"> $kehd$
+			</isNotEmpty>
+		</dynamic>
+		) A
+		where not exists ( select kb.usercenter usercenter,
+		kb.lingjbh lingjbh,
+		kb.xiaohd xiaohd
+		from ${dbSchemal1}xqjs_kanbxhgm kb
+		where kb.gonghms = 'RD'
+		and A.lingjbh = kb.lingjbh
+		and A.usercenter = kb.usercenter
+		and A.xiaohd = kb.xiaohd
+		)
+		group by 
+   		 A.usercenter, 
+     	 A.lingjbh,
+  		 A.xiaohd ,
+       A.xianbck,
+       A.shengcxbh,
+   		 A.gonghms,
+   		 A.lingjmc,
+   		 A.jihydm	
+	</select>
+	<!-- 查询物流路径 零件消耗点 零件仓库设置 RM -->
+	<select id="selectRM" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		select 
+		distinct
+		A.usercenter,
+		A.lingjbh,
+		A.cangkdm kehd,
+		A.lujdm,
+		A.cangkdm,
+		A.gonghms,
+		A.lingjmc,
+		A.jihydm
+		from (select w.usercenter usercenter,
+		w.lingjbh lingjbh,
+		w.gongysbh gongysbh,
+		w.shengcxbh shengcxbh,
+		w.lujbh  as lujdm,
+		w.xianbck cangkdm,
+		l.zhongwmc lingjmc,
+		l.jihy jihydm,
+		'RM' gonghms
+		from ${dbSchemal3}ckx_wullj w,
+		${dbSchemal3}ckx_lingj l
+		where l.usercenter=w.usercenter
+		and l.lingjbh=w.lingjbh
+		and w.mos2 = 'RM'
+		and w.usercenter=#usercenter#
+		and l.biaos = '1'
+		and w.dinghck is not null
+		and w.xianbck is not null
+		<dynamic>
+			<isNotEmpty prepend="and" property="lingjbh"> l.lingjbh=#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="kehd"> $kehd$
+			</isNotEmpty>
+		</dynamic>
+		) A
+		where not exists ( select kb.usercenter usercenter,
+		kb.lingjbh lingjbh,
+		kb.cangkdm cangkdm
+		from ${dbSchemal1}xqjs_kanbxhgm kb
+		where kb.gonghms = 'RM'
+		and A.lingjbh = kb.lingjbh
+		and A.usercenter = kb.usercenter
+		and A.cangkdm= kb.cangkdm )
+	</select>
+	<!-- 向看板循环规模中插入数据 -->
+	<insert id="insertKanbxhgm" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		insert into ${dbSchemal1}xqjs_kanbxhgm( xunhbm,
+		usercenter,
+		lingjbh,
+		gonghms,
+		lujdm,
+				<dynamic >
+		    <isNotEmpty property="cangkdm">
+				cangkdm,
+		    </isNotEmpty>
+		    <isNotEmpty property="xiaohd">
+				xiaohd,
+		    </isNotEmpty>
+		    <isNotEmpty property="umlx">
+				umlx,
+		    </isNotEmpty>
+		    <isNotEmpty property="uclx">
+				uclx,
+		    </isNotEmpty>
+		    <isNotEmpty property="umljsl">
+				umljsl,
+		    </isNotEmpty>
+		    <isNotEmpty property="umzucgs">
+				umzucgs,
+		    </isNotEmpty>
+		    <isNotEmpty property="ucrl">
+				ucrl,
+		    </isNotEmpty>
+		    <isNotEmpty property="cmj">
+				cmj,
+		    </isNotEmpty>
+		    <isNotEmpty property="cjmax">
+				cjmax,
+		    </isNotEmpty>
+		      <isNotEmpty property="jisxhgm">
+				jisxhgm,
+		    </isNotEmpty>
+		     <isNotEmpty property="xiafxhgm">
+				xiafxhgm,
+		    </isNotEmpty>
+		</dynamic>
+		creator,
+		create_time,
+		jihydm,
+		kehd,
+		chanx,
+		weihr,
+		weihsj,
+		dangqxhgm,
+		shifzdfs,
+		shengxzt,
+		dongjjdzt,
+		leix,
+		editor,
+		edit_time
+		
+		)
+		values(
+		#xunhbm#,
+		#usercenter#,
+		#lingjbh#,
+		#gonghms#,
+		#lujdm#,
+		<dynamic >
+		    <isNotEmpty property="cangkdm">
+				#cangkdm#,
+		    </isNotEmpty>
+		    <isNotEmpty property="xiaohd">
+				#xiaohd#,
+		    </isNotEmpty>
+		    <isNotEmpty property="umlx">
+				#umlx#,
+		    </isNotEmpty>
+		    <isNotEmpty property="uclx">
+				#uclx#,
+		    </isNotEmpty>
+		    <isNotEmpty property="umljsl">
+				#umljsl#,
+		    </isNotEmpty>
+		    <isNotEmpty property="umzucgs">
+				#umzucgs#,
+		    </isNotEmpty>
+		    <isNotEmpty property="ucrl">
+				#ucrl#,
+		    </isNotEmpty>
+		    <isNotEmpty property="cmj">
+				#cmj#,
+		    </isNotEmpty>
+		    <isNotEmpty property="cjmax">
+				#cjmax#,
+		    </isNotEmpty>
+		      <isNotEmpty property="jisxhgm">
+				#jisxhgm#,
+		    </isNotEmpty>
+		     <isNotEmpty property="xiafxhgm">
+				#xiafxhgm#,
+		    </isNotEmpty>
+		</dynamic>
+		#creator#,
+		to_timestamp(#create_time#,'YYYY-MM-DD HH24:MI:SS:ff3'),
+		#jihydm#,
+		#kehd#,
+		#chanx#,
+		#weihr#,
+		to_timestamp(#weihsj#,'YYYY-MM-DD HH24:MI:SS:ff3'),
+		#dangqxhgm#,
+		#shifzdfs#,
+		#shengxzt#,
+		#dongjjdzt#,
+		#leix#,
+		#weihr#,
+		to_timestamp(#weihsj#,'YYYY-MM-DD HH24:MI:SS:ff3')
+		)
+
+         </insert>
+
+	<update id="updateYjfzl" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+	
+	  update ${dbSchemal1}ck_gongysjfzl g 
+	  set g.jiaofzl = 0 
+	  where 1=1
+	  <dynamic >
+		    <isNotEmpty prepend=" and " property="usercenter">
+		     g.usercenter = #usercenter#
+		    </isNotEmpty>
+		    <isNotEmpty prepend=" and " property="lingjbh">
+		     g.lingjbh = #lingjbh#
+		    </isNotEmpty>
+		</dynamic>
+	  and g.xunhbm = #xunhbm# 
+	   <![CDATA[  and  to_number(nvl(#zuidyhl#,0)) <> (
+	          select  to_number(nvl(k.zuidyhl,0)) from ${dbSchemal1}xqjs_kanbxhgm k 
+	          where k.usercenter =g.usercenter and k.xunhbm =g.xunhbm  
+	           )
+ 
+	  ]]>
+	</update>
+	<!-- xh 10825 冻结修改仓库供应商交付总量   -->
+  <update id="updateYjfzldj" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+	  update ${dbSchemal1}ck_gongysjfzl g 
+	  set g.jiaofzl = 0 
+	  where 1=1
+	  <dynamic >
+		    <isNotEmpty prepend=" and " property="usercenter">
+		     g.usercenter = #usercenter#
+		    </isNotEmpty>
+		    <isNotEmpty prepend=" and " property="lingjbh">
+		     g.lingjbh = #lingjbh#
+		    </isNotEmpty>
+		</dynamic>
+	  and g.xunhbm = #xunhbm# 
+	</update>
+   <!-- 查询看板循环规模消耗点仓库 -->
+   <select id="queryXiaohdck" resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		select 
+		A.usercenter,
+		A.lingjbh,
+		A.xiaohd, 
+		A.cangkdm ,
+		A.gonghms,
+		A.xunhbm
+		from ${dbSchemal1}xqjs_kanbxhgm A
+		where (A.gonghms='R1' or A.gonghms='R2')
+		and   A.shengxzt='1'  and A.dongjjdzt='1'
+	</select>
+	
+   <!-- hanwu 查询所有看板看板循环规模 -->
+   <select id="queryAllKbxhgm" resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		select 
+		kb.usercenter,kb.lingjbh,kb.xunhbm,kb.gonghms,kb.shengxzt
+		from ${dbSchemal1}xqjs_kanbxhgm kb
+	</select>
+	
+	<!-- hanwu 插入零件截止循环 -->
+   <insert id="insertLingjjzxh" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+   insert into ${dbSchemal3}ckx_lingjjzxh( 
+		usercenter,
+		lingjbh,
+		creator,
+		create_time
+		)
+		values(
+		#usercenter#,
+		#lingjbh#,
+		#creator#,
+		to_timestamp(#create_time#,'YYYY-MM-DD HH24:MI:SS:ff3')
+		)
+	</insert>
+	
+	<!-- hanwu 查询批量零件截止循环导入的看板循环规模 -->
+	<select id="selectLingjjzxh" resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm"
+		parameterClass="java.util.Map">
+		select
+		kb.dinghck,
+		kb.lujdm,
+		kb.gongysbh,
+		kb.shifyjsyhl,
+		kb.xianbyhlx,
+		kb.yancsxbz,
+		kb.jianglms,
+		kb.dongjclbs,
+		kb.editor,
+		to_char(kb.edit_time, 'yyyy-mm-dd HH24:MI:SS:ff3') as edit_time,
+		kb.xunhbm,
+		kb.usercenter,
+		kb.lingjbh,
+		kb.chanx,
+		kb.gonghms,
+		kb.cangkdm,
+		kb.jihydm,
+		kb.xiaohd,
+		kb.umlx,
+		kb.uclx,
+		kb.umljsl,
+		kb.umzucgs,
+		kb.ucrl,
+		kb.cmj,
+		kb.cjmax,
+		kb.dangqxhgm,
+		kb.jisxhgm,
+		kb.xiafxhgm,
+		kb.shifzdfs,
+		kb.zuidyhl,
+		kb.shengxzt,
+		kb.dongjjdzt,
+		kb.jisxhgm-kb.dangqxhgm as jiscy,
+		decode(kb.dangqxhgm, 0, null, ceil((kb.jisxhgm-kb.dangqxhgm) / kb.dangqxhgm * 100)) as bianhfd,
+		kb.kehd,
+		kb.leix,
+		kb.xiafxhgm  as tiaozxhgm,
+		kb.creator,
+		kb.create_time,
+		to_char(kb.jissj, 'yyyy-mm-dd') as jissj ,
+		kb.weihr,
+		to_char(kb.weihsj, 'yyyy-mm-dd HH24:MI:SS:ff3') as weihsj
+	 from  ${dbSchemal1}xqjs_kanbxhgm kb
+	 inner join ${dbSchemal3}ckx_lingjjzxh l on kb.usercenter = l.usercenter and kb.lingjbh = l.lingjbh
+	 where kb.shengxzt!='2' and kb.usercenter=#usercenter#
+	 <dynamic>
+	 <isNotEmpty prepend=" and " property="shengxzt">kb.shengxzt=#shengxzt#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="jianglms">kb.jianglms=#jianglms#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="gonghms">kb.gonghms=#gonghms#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="ghms">$ghms$</isNotEmpty>
+	 <isEmpty    prepend=" and " property="shengxzt">kb.shengxzt !=-1</isEmpty>
+	 <isNotEmpty prepend=" and " property="lingjbh"> kb.lingjbh=#lingjbh#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="xunhbm"> kb.xunhbm=#xunhbm#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="shifzdfs"> kb.shifzdfs=#shifzdfs#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="dongjjdzt"> kb.dongjjdzt=#dongjjdzt#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="chanx"> kb.chanx=#chanx#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="kehd"> $kehd$</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="jihydm"> kb.jihydm=#jihydm#</isNotEmpty>
+	 <isNotEmpty property="gmbh" prepend=" and "> $gmbh$</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="choosexunhbm"> $choosexunhbm$ </isNotEmpty>
+	 </dynamic>
+     ORDER BY kb.shengxzt desc,kb.usercenter asc,kb.lingjbh asc
+	</select>
+	
+	<!-- 插入零件截止循环之前清空这张表 -->
+	<delete id="clear_lingjjzxh">
+		truncate table ${dbSchemal3}ckx_lingjjzxh
+    </delete>
+    
+    <!--查询零件截止循环 已交付总量 -->
+	<select id="selectLingjjzxhYjfzl" resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm"
+		parameterClass="java.util.Map">
+		select
+		m.dinghck,
+		m.lujdm,
+		m.gongysbh,
+		m.shifyjsyhl,
+		m.xianbyhlx,
+		m.yancsxbz,
+		m.jianglms,
+		m.dongjclbs,
+		m.editor,
+		to_char(m.edit_time, 'yyyy-mm-dd HH24:MI:SS:ff3') as edit_time,
+		m.xunhbm,
+		m.usercenter,
+		m.lingjbh,
+		m.chanx,
+		m.gonghms,
+		m.cangkdm,
+		m.jihydm,
+		m.xiaohd,
+		m.umlx,
+		m.uclx,
+		m.umljsl,
+		m.umzucgs,
+		m.ucrl,
+		m.cmj,
+		m.cjmax,
+		m.dangqxhgm,
+		m.jisxhgm,
+		m.xiafxhgm,
+		m.shifzdfs,
+		m.zuidyhl,
+		m.shengxzt,
+		m.dongjjdzt,
+		m.jisxhgm-m.dangqxhgm as jiscy,
+		decode(m.dangqxhgm, 0, null, ceil((m.jisxhgm-m.dangqxhgm) / m.dangqxhgm * 100)) as bianhfd,
+		m.kehd,
+		m.leix,
+		m.xiafxhgm  as tiaozxhgm,
+		(select nvl(sum(g.jiaofzl),0)
+          from ${dbSchemal1}ck_gongysjfzl g
+         where g.xunhbm = m.xunhbm
+           and g.usercenter = m.usercenter) as yjfzl
+	 from  ${dbSchemal1}xqjs_kanbxhgm m
+	 inner join ${dbSchemal3}ckx_lingjjzxh l on m.usercenter = l.usercenter and m.lingjbh = l.lingjbh
+	 where m.shengxzt!='2' and m.usercenter=#usercenter#
+	 <dynamic>
+	 <isNotEmpty prepend=" and " property="shengxzt">m.shengxzt=#shengxzt#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="gonghms">m.gonghms=#gonghms#</isNotEmpty>
+	 <isEmpty    prepend=" and " property="shengxzt">m.shengxzt !=-1</isEmpty>
+	 <isNotEmpty prepend=" and " property="lingjbh"> m.lingjbh=#lingjbh#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="xunhbm"> m.xunhbm=#xunhbm#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="chanx"> m.chanx=#chanx#</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="kehd"> $kehd$</isNotEmpty>
+	 <isNotEmpty prepend=" and " property="jihydm"> m.jihydm=#jihydm#</isNotEmpty>
+	and m.gonghms in ('R1','R2')
+	 </dynamic>
+     ORDER BY m.LINGJBH ASC,m.KEHD,m.xunhbm ASC
+	</select>
+	
+	<!--修改调整循环规模 by CSY 20161026 -->
+	<update id="updateTiaozxhgm" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		UPDATE ${dbSchemal1}xqjs_kanbxhgm
+		<dynamic prepend="set">
+			<isNotEmpty property="shengxzt" prepend=",">
+				shengxzt=#shengxzt#
+    		</isNotEmpty>
+			<isEqual  compareValue="1" property="shengxzt" prepend=",">JIANGLMS='0'</isEqual>
+			<isNotEmpty property="xiafxhgm" prepend=",">
+				xiafxhgm=#xiafxhgm#
+    		</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				weihr=#editor#
+    		</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				weihsj=sysdate
+			</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				editor=#editor#
+    		</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				edit_time=sysdate
+			</isNotEmpty>
+		</dynamic>
+		 WHERE usercenter = #usercenter#
+		   AND lingjbh = #lingjbh#
+		   AND gonghms = #gonghms#
+		   AND kehd = #kehd#
+		   AND shengxzt in ('0','1')
+	</update>
+	
+	<!--更新要货令 外部  by CSY 20161028 -->
+	<update id="updateCkYaohl" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		UPDATE ${dbSchemal1}CK_YAOHL Y
+		   SET Y.YAOHLZT = '00'
+		 WHERE Y.USERCENTER = #usercenter#
+		   AND Y.XUNHBM = #xunhbm#
+		   AND Y.YAOHLZT = '08'
+		   AND Y.SHIFLSK = '0'
+	</update>
+	
+	<!--更新要货令 内部  by CSY 20161125 -->
+	<update id="updateCkYaohln" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		UPDATE ${dbSchemal1}CK_YAONBHL Y
+	       SET Y.YAOHLZT = '00'
+	     WHERE Y.USERCENTER = #usercenter#
+	       AND Y.XUNHBM = #xunhbm#
+	       AND Y.YAOHLZT = '08'
+	       AND Y.SHIFLSK = '0'
+	</update>
+	
+	<!--冻结  by CSY 20161026 -->
+	<update id="updateDongj" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		UPDATE ${dbSchemal1}xqjs_kanbxhgm
+		<dynamic prepend="set">
+			<isNotEmpty property="shengxzt" prepend=",">
+				shengxzt=#shengxzt#
+    		</isNotEmpty>
+			<isEqual  compareValue="1" property="shengxzt" prepend=",">JIANGLMS='0'</isEqual>
+			<isEqual  compareValue="YN" property="shifgxxfgm" prepend=",">
+			        xiafxhgm = decode(xiafxhgm,null,2,xiafxhgm) </isEqual>
+			<isNotEmpty property="dongjjdzt" prepend=",">
+				dongjjdzt=#dongjjdzt#
+    		</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				weihr=#editor#
+    		</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				weihsj=sysdate
+			</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				editor=#editor#
+    		</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				edit_time=sysdate
+			</isNotEmpty>
+		</dynamic>
+		 WHERE usercenter = #usercenter#
+		   AND lingjbh = #lingjbh#
+		   AND gonghms = #gonghms#
+		   AND kehd = #kehd#
+		   AND shengxzt in ('0', '1')
+		   AND dongjjdzt = '1'
+	</update>
+	
+	<!--解冻 by CSY 20161026 -->
+	<update id="updateJied" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		UPDATE ${dbSchemal1}xqjs_kanbxhgm
+		<dynamic prepend="set">
+			<isNotEmpty property="dongjjdzt" prepend=",">
+				dongjjdzt=#dongjjdzt#
+    		</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				weihr=#editor#
+    		</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				weihsj=sysdate
+			</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				editor=#editor#
+    		</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				edit_time=sysdate
+			</isNotEmpty>
+		</dynamic>
+		 WHERE usercenter = #usercenter#
+		   AND lingjbh = #lingjbh#
+		   AND gonghms = #gonghms#
+		   AND kehd = #kehd#
+		   AND shengxzt in ('0', '1')
+		   AND dongjjdzt = '0'
+	</update>
+	 
+	<!--根据条件查询出看板循环规模，条件为用户中心、零件编号、供货模式、客户编号 by CSY 20161026 -->
+	<select id="getKBXHByParam" resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm"
+		parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		SELECT K.XUNHBM, K.USERCENTER, K.DONGJJDZT, K.SHENGXZT
+		  FROM ${dbSchemal1}xqjs_kanbxhgm K
+		 WHERE K.USERCENTER = #usercenter#
+		   AND K.LINGJBH = #lingjbh#
+		   AND K.GONGHMS = #gonghms#
+		   AND K.KEHD = #kehd#
+		   AND K.SHENGXZT IN ('0', '1')
+	</select>
+	
+	<!--查询出所有看板循环规模 by CSY 20161026 -->
+	<select id="getAllKBXH" resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		SELECT K.XUNHBM,
+		       K.USERCENTER,
+		       K.DONGJJDZT,
+		       K.SHENGXZT,
+		       K.LINGJBH,
+		       K.GONGHMS,
+		       K.KEHD
+		  FROM ${dbSchemal1}xqjs_kanbxhgm K
+		 WHERE K.SHENGXZT IN ('0', '1')
+	</select>
+	
+	<!--查询出所有看板循环规模内部模式 by CSY 20161101 -->
+	<select id="getAllNGHMS" resultClass="java.lang.String">
+		 SELECT X.ZIDBM FROM ${dbSchemal1}CKX_XITCSDY X WHERE X.ZIDLX = 'KBNBMS'
+	</select>
+	
+	<!--查询出所有看板循环规模外部模式 by CSY 20161101 -->
+	<select id="getAllWGHMS" resultClass="java.lang.String">
+		 SELECT X.ZIDBM FROM ${dbSchemal1}CKX_XITCSDY X WHERE X.ZIDLX = 'KBWBMS'
+	</select>
+	
+</sqlMap>

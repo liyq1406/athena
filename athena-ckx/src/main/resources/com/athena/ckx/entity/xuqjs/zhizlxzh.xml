@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 制造路线转换  qizhongtao 2012-4-17 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryZhizlxzh" resultClass="com.athena.ckx.entity.xuqjs.Zhizlxzh">
+			select  usercenter,zhizlxy,zhizlxx,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_zhizlxzh
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="zhizlxy"><![CDATA[zhizlxy=#zhizlxy#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="zhizlxx"><![CDATA[zhizlxx=#zhizlxx#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,zhizlxy,zhizlxx
+		</select>
+		
+		 <!--单数据查询	 -->
+		<select id="getZhizlxzh" resultClass="com.athena.ckx.entity.xuqjs.Zhizlxzh">
+			select  usercenter,zhizlxy,zhizlxx
+			from ${dbSchemal3}ckx_zhizlxzh
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="zhizlxy"><![CDATA[zhizlxy=#zhizlxy#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertZhizlxzh" parameterClass="com.athena.ckx.entity.xuqjs.Zhizlxzh" >
+			insert into ${dbSchemal3}ckx_zhizlxzh(usercenter,zhizlxy,zhizlxx,creator,create_time,editor,edit_time)
+			values(<![CDATA[#usercenter#,#zhizlxy#,#zhizlxx#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="updateZhizlxzh" parameterClass="com.athena.ckx.entity.xuqjs.Zhizlxzh">
+			update ${dbSchemal3}ckx_zhizlxzh
+			set zhizlxx = #zhizlxx#,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and zhizlxy = #zhizlxy#]]>
+		</update>
+		
+		<!-- 删除数据 -->
+		<delete id="deleteZhizlxzh" parameterClass="com.athena.ckx.entity.xuqjs.Zhizlxzh">
+			delete from ${dbSchemal3}ckx_zhizlxzh where
+			<dynamic prepend=" ">
+				<isNotEmpty property="usercenter" prepend=" and ">
+					<![CDATA[usercenter = #usercenter#]]>
+				</isNotEmpty>
+				<isNotEmpty property="zhizlxy" prepend=" and ">
+					<![CDATA[zhizlxy = #zhizlxy#]]>
+				</isNotEmpty>
+			</dynamic>
+		</delete>
+	
+</sqlMap>

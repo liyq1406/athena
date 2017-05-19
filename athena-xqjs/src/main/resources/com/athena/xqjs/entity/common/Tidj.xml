@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="common">
+
+
+	<!-- 查询替代件 -->
+	<select id="queryTidj" resultClass="com.athena.xqjs.entity.common.Tidj">
+		select t.usercenter,t.LINGJBH,t.TIDLJH from ${dbSchemal3}ckx_tidj t where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				USERCENTER =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				LINGJBH = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询未来几日剔除休息时间 -->
+	<select id="queryTicxxsj" resultClass="com.athena.xqjs.entity.anxorder.Ticxxsj">
+		select 
+			usercenter,chanxck,gongzr,shunxh,riq,shijdkssj,shijdjssj,shijcd,creator,create_time,editor,edit_time
+		from 
+			${dbSchemal3}ckx_ticxxsj
+		where 
+			1 = 1
+			<isNotNull prepend=" and " property="gongzr">
+				gongzr =  #gongzr# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+				usercenter = #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="shengcxbh">
+				chanxck = #shengcxbh# 
+			</isNotNull>
+		order by gongzr,shunxh
+	</select>
+	
+	<!-- 查询后一个工作日开班时间 -->
+	<select id="queryTicxxsjGzrNum" resultClass="com.athena.xqjs.entity.anxorder.Ticxxsj">
+		select 
+			gongzr
+		from
+			(select
+				gongzr  
+			from
+				${dbSchemal3}ckx_ticxxsj   
+			where
+				1 = 1  
+			<isNotNull prepend=" and " property="gongzr">
+				gongzr <![CDATA[ > ]]> #gongzr# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+				usercenter <![CDATA[ = ]]> #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="shengcxbh">
+				chanxck <![CDATA[ = ]]> #shengcxbh# 
+			</isNotNull>
+			group by gongzr order by gongzr
+			) where <![CDATA[rownum < ]]> $num$
+	</select>
+	
+	<!-- 查询后一个工作日开班时间 -->
+	<select id="queryTicxxsjGzr" resultClass="com.athena.xqjs.entity.anxorder.Ticxxsj">
+		select 
+			usercenter,chanxck,gongzr,shunxh,riq,shijdkssj,shijdjssj,shijcd,creator,create_time,editor,edit_time 
+		from
+			(select
+				usercenter,chanxck,gongzr,shunxh,riq,shijdkssj,shijdjssj,shijcd,creator,create_time,editor,edit_time   
+			from
+				${dbSchemal3}ckx_ticxxsj   
+			where
+				1 = 1  
+			<isNotNull prepend=" and " property="gongzr">
+				gongzr <![CDATA[ > ]]> #gongzr# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+				usercenter <![CDATA[ = ]]> #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="shengcxbh">
+				chanxck <![CDATA[ = ]]> #shengcxbh# 
+			</isNotNull>
+			order by gongzr,shunxh
+			) where <![CDATA[rownum < ]]> 2
+	</select>
+	
+	<!-- 查询后一个工作日开班时间 -->
+	<select id="queryTicxxsjNum" resultClass="com.athena.xqjs.entity.anxorder.Ticxxsj">
+		select 
+			usercenter,chanxck,gongzr,shunxh,riq,shijdkssj,shijdjssj,shijcd,creator,create_time,editor,edit_time 
+		from
+			(select
+				usercenter,chanxck,gongzr,shunxh,riq,shijdkssj,shijdjssj,shijcd,creator,create_time,editor,edit_time   
+			from
+				${dbSchemal3}ckx_ticxxsj   
+			where
+				1 = 1  
+			<isNotNull prepend=" and " property="gongzr">
+				gongzr <![CDATA[ > ]]> #gongzr# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+				usercenter <![CDATA[ = ]]> #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="shengcxbh">
+				chanxck <![CDATA[ = ]]> #shengcxbh# 
+			</isNotNull>
+			order by gongzr,shunxh
+			) where <![CDATA[rownum < ]]> $num$
+	</select>
+</sqlMap>

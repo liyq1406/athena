@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ts_ckx">
+	
+	<!-- 多记录查询 -->
+	<select id="queryYunslx" resultClass="com.athena.ckx.entity.paicfj.Yunslx">select 
+		yunslxmc,
+		yunslxbh,
+		zuidtqfysj,
+		usercenter,
+		biaos
+		from ${dbSchemal3}ckx_yunslx where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yunslxbh">yunslxbh = #yunslxbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos = #biaos#</isNotEmpty>
+		</dynamic>
+		order by usercenter,yunslxbh
+	</select>
+	
+	<select id="getCountYunslx" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_yunslx where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yunslxbh">yunslxbh = #yunslxbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos = #biaos#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 插入记录 -->
+	<insert id="insertYunslx" parameterClass="com.athena.ckx.entity.paicfj.Yunslx">insert into
+		${dbSchemal3}ckx_yunslx (edit_time,yunslxmc,yunslxbh,usercenter,zuidtqfysj,biaos,editor,creator,create_time)
+		values(
+			#edit_time#,
+			#yunslxmc#,
+			#yunslxbh#,
+			#usercenter#,
+			#zuidtqfysj#,
+			'1',
+			#editor#,
+			#creator#,
+			#create_time#)
+	</insert>
+	<!-- 修改记录 -->
+	<update id="updateYunslx" parameterClass="com.athena.ckx.entity.paicfj.Yunslx">
+		update ${dbSchemal3}ckx_yunslx 
+		set
+			yunslxmc = #yunslxmc#,
+			zuidtqfysj = #zuidtqfysj#,
+			biaos = #biaos#,
+			editor = #editor#,
+			edit_time = #edit_time#
+		
+		where	1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yunslxbh">yunslxbh = #yunslxbh#</isNotEmpty>
+		</dynamic>
+	</update>
+	<!-- 删除记录 (逻辑删除)-->
+	<delete id="deleteYunslx" parameterClass="com.athena.ckx.entity.paicfj.Yunslx">
+		update  ${dbSchemal3}ckx_yunslx 
+		set biaos='0'
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yunslxbh">yunslxbh = #yunslxbh#</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

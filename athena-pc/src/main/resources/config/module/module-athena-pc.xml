@@ -1,0 +1,19 @@
+<components namespace="pc">
+
+	<component class="com.toft.core3.biz.module.ModuleConfig">
+		<property name="name" value="pc" />
+		<property name="path" value="com/athena/pc" />
+		<property name="actions">
+			<list>
+				<value>config/action-pc.xml</value>
+			</list>
+		</property>
+		<property name="sqlMaps">
+			<list>
+				<value>sqlmap-config-pc.xml</value>
+			</list>
+		</property>
+	</component>
+	
+</components>
+

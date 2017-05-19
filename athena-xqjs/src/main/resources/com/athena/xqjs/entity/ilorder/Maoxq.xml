@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ilorder">
+
+	<resultMap class="com.athena.xqjs.entity.ilorder.Maoxq" id="Maoxq">
+		<result column="BEIZ" property="beiz" />
+		<result column="XUQCFSJ" property="xuqcfsj" />
+		<result column="SHENGXBZ" property="shengxbz" />
+		<result column="XUQBC" property="xuqbc" />
+		<result column="XUQLY" property="xuqly" />
+	</resultMap>
+
+	<select id="queryMaoxq" resultMap="Maoxq">
+		select
+		xuqbc,
+		beiz,
+		to_char(xuqcfsj,'yyyy-MM-dd HH24:mi:ss') XUQCFSJ,
+		shengxbz,
+		xuqly
+		from
+		${dbSchemal1}xqjs_maoxq
+		where
+		active='1'
+		ORDER BY XUQCFSJ DESC,XUQBC DESC
+	</select>
+	
+	<select id="queryMaoxqXqly" resultClass="com.athena.xqjs.entity.ilorder.Maoxq">
+	select
+	    distinct
+		xuqly 
+	from 
+		${dbSchemal1}xqjs_maoxq 
+	where 
+		active='1'
+	</select>
+	
+	<select id="queryOneMaoxq" resultClass="com.athena.xqjs.entity.ilorder.Maoxq">
+	select
+	    t.XUQBC,
+	    t.XUQCFSJ,
+	    t.XUQLY,
+	    t.BEIZ,
+	    t1.ZIDMC as xuqlymc
+	from 
+		${dbSchemal1}xqjs_maoxq t
+		left join ${dbSchemal3}CKX_XITCSDY t1 on t.XUQLY = t1.ZIDBM AND  t1.zidlx=#zidlx#
+	where 
+		XUQBC=#xuqbc#
+
+	</select>
+	<select id="queryMaoxqList" resultClass="com.athena.xqjs.entity.ilorder.Maoxq">
+	select
+	    t.XUQBC,
+	    t.XUQCFSJ,
+	    t.XUQLY,
+	    t.BEIZ,
+	    t1.ZIDMC as xuqlymc
+	from 
+		${dbSchemal1}xqjs_maoxq t
+		left join ${dbSchemal3}CKX_XITCSDY t1 on t.XUQLY = t1.ZIDBM AND  t1.zidlx=#zidlx#  
+	where 1=1
+	<dynamic>
+			<isNotEmpty prepend="  and " property="xuqly">xuqly = #xuqly#
+			</isNotEmpty>
+	</dynamic>
+    order by t.XUQBC desc
+	</select>
+	
+	<delete id="deleteMaoxqById" parameterClass="com.athena.xqjs.entity.ilorder.Maoxq">
+		delete from ${dbSchemal1}XQJS_maoxq where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="banc">BANC = #banc#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+
+	<delete id="deleteMaoxq" parameterClass="com.athena.xqjs.entity.ilorder.Maoxq">
+		delete from
+		${dbSchemal1}XQJS_maoxq where 1=1
+	</delete>
+	<update id="updateMaoxq" parameterClass="java.util.Map">
+	update ${dbSchemal1}XQJS_maoxq xq set xq.shengxbz = '1' where xq.xuqbc = #xuqbc#
+	</update>
+</sqlMap>

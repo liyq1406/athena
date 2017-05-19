@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+<select id="queryCkx_chanxz_jhy" resultClass="com.athena.ckx.entity.paicfj.Ckx_chanxz_jhy">
+   select usercenter , chanxzbh, jihybh, jihyxm,beiz
+   from ${dbSchemal3}ckx_chanxz_jhy 
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihybh"><![CDATA[jihybh = #jihybh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanxzbh"><![CDATA[chanxzbh = #chanxzbh#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,jihybh,chanxzbh
+</select>
+<insert id="insertCkx_chanxz_jhy" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chanxz_jhy">
+	insert into ${dbSchemal3}ckx_chanxz_jhy
+	(usercenter,chanxzbh,jihybh,jihyxm,beiz,creator,create_time,editor,edit_time)
+	values(<![CDATA[
+	 #usercenter#,#chanxzbh#,#jihybh#,#jihyxm#,#beiz#,#creator#,#create_time#,#editor#,#edit_time# 
+	   ]]> ) 
+	</insert>
+<update id="updateCkx_chanxz_jhy" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chanxz_jhy">
+	update ${dbSchemal3}ckx_chanxz_jhy
+	set 
+     <![CDATA[jihyxm = #jihyxm#]]> ,    	
+     <![CDATA[beiz = #beiz#]]> ,    	
+    <![CDATA[editor = #editor#]]> ,    
+    <![CDATA[edit_time = #edit_time#]]>     	
+	 where <![CDATA[usercenter = #usercenter# and  chanxzbh = #chanxzbh# and jihybh = #jihybh# ]]> 
+	</update>
+
+	<delete id="deleteCkx_chanxz_jhy" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chanxz_jhy">
+	delete ${dbSchemal3}ckx_chanxz_jhy  
+	where  <![CDATA[usercenter = #usercenter# and  chanxzbh = #chanxzbh# and jihybh=#jihybh#]]> 
+	</delete>
+</sqlMap>

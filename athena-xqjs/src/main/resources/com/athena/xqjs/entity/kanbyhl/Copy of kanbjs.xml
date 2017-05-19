@@ -1,0 +1,1971 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="kanbyhl">
+	<!--查询毛需求 -->
+	<select id="maoxq" resultClass="com.athena.xqjs.entity.ilorder.Maoxq"
+		parameterClass="java.util.Map">
+               <![CDATA[select xuqbc, to_char(xuqcfsj,'yyyy-MM-dd HH24:mi') as xuqcfsj, xuqly, beiz ]]>
+		from ${dbSchemal1}xqjs_maoxq
+		where active='1' $xuqly$
+		ORDER BY XUQCFSJ DESC,XUQBC DESC 
+	</select>
+	<!--查询毛需求 看板计算  6.14-->
+	<select id="maoxqkanbjs" resultClass="com.athena.xqjs.entity.ilorder.Maoxq"
+		parameterClass="com.athena.xqjs.entity.ilorder.Maoxq">
+               <![CDATA[select xuqbc, to_char(xuqcfsj,'yyyy-MM-dd HH24:mi') as xuqcfsj, xuqly, beiz ]]>
+		from ${dbSchemal1}xqjs_maoxq
+		where active='1' and xuqly in ('DIP','CLV','ZCJ','ZCP','CYJ','BJP','WXP','CYP')
+		<dynamic >
+			<isNotEmpty prepend=" and " property="xuqly"><![CDATA[xuqly in $xuqly$]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqbc"><![CDATA[xuqbc in $xuqbc$]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="active"><![CDATA[active = #active#]]></isNotEmpty>
+		</dynamic>
+		ORDER BY XUQCFSJ DESC,XUQBC DESC 
+	</select>
+	<!--查询毛需求  hj 获取最新的日滚动毛需求版次 确保只取一版  rownum=1 2013-06-07-->
+	<select id="maoxqByCLV" resultClass="com.athena.xqjs.entity.ilorder.Maoxq"
+		parameterClass="java.util.Map">
+               <![CDATA[select xuqbc, to_char(xuqcfsj,'yyyy-MM-dd HH24:mi') as xuqcfsj, xuqly, beiz ]]>
+		from ${dbSchemal1}xqjs_maoxq
+		where active='1' $xuqly$
+		and xuqcfsj = (select max(xuqcfsj) from ${dbSchemal1}xqjs_maoxq  where 1=1 $xuqly$)
+		and rownum=1
+		ORDER BY XUQCFSJ DESC,XUQBC DESC 
+	</select>
+	<!-- 计算-查询页面 -->
+	<select id="qrmaoxqmx" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+    <![CDATA[select         t1.id         as   id,
+				            t1.usercenter as usercenter,
+				            t1.lingjbh    as lingjbh,
+				            t1.chanx      as chanx,
+				            t1.xuqsl      as xuqsl,
+				            t1.xuqbc      as xuqbc,
+				            t1.shiycj     as shiycj,
+				            t1.danw       as danw,
+				            t1.zhizlx     as zhizlx,
+				            t1.xuqksrq    as starttime,
+				            t1.xuqjsrq    as endtime,
+				            to_char(m.xuqcfsj,'yyyy.MM.dd' ) as xuqcfsj,
+				            m.xuqly as xuqly
+				         from ${dbSchemal1}xqjs_maoxqmx t1
+				         join ${dbSchemal1}xqjs_maoxq m
+				           on t1.xuqbc = m.xuqbc
+				         join ${dbSchemal3}ckx_lingj  l
+				           on (l.usercenter = t1.usercenter and l.lingjbh = t1.lingjbh )
+				         ]]>
+				       where 
+				            m.active='1'
+				          and 
+				            t1.active='1'     
+		<dynamic >
+			<isNotEmpty prepend=" and " property="xuqbc"><![CDATA[t1.xuqbc = #xuqbc#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[t1.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[t1.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqcfsj"><![CDATA[to_char(xuqcfsj,'yyyy-mm-dd') = #xuqcfsj#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqly"><![CDATA[m.xuqly = #xuqly#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihyz"><![CDATA[l.jihy = #jihyz#]]></isNotEmpty>
+		</dynamic>
+        ORDER BY  XUQCFSJ DESC
+	</select>
+
+	<!--查询日类型的开始时间和结束时间 -->
+	<select id="maoxqsj" parameterClass="com.athena.xqjs.entity.ilorder.Maoxqmx"
+		resultClass="java.util.HashMap">
+		<![CDATA[ select 
+                         to_char(min(xuqrq),'yyyy-MM-dd') as starttime,
+                         to_char(max(xuqrq),'yyyy-MM-dd') as endtime
+                    from ${dbSchemal1}xqjs_maoxqmx]]>
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="xuqbc"><![CDATA[xuqbc = #xuqbc#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+		</dynamic>
+
+	</select>
+
+	<!--将过滤出的基础数据更新中间表 R2/R1 -->
+	<select id="insert_lins" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.kanbyhl.Wullj" remapResults="true">
+	select  w.usercenter as usercenter,
+			w.fenpqh     as fenpqh,
+			w.lingjbh    as lingjbh,
+			w.gongysbh   as gongysbh,
+			w.lujbh      as lujbh,
+			w.lujmc      as lujmc,
+			w.fahd       as fahd,
+			w.waibms     as waibms,
+			w.zhidgys    as zhidgys,
+			w.jiaofm     as jiaofm,
+			w.beihzq     as beihzq,
+			w.yunszq     as yunszq,
+			w.gcbh       as gcbh,
+			w.xiehztbh   as xiehztbh,
+			w.songhpc    as songhpc,
+			w.mudd       as mudd,
+			w.dinghck    as dinghck,
+			w.mos2       as mos2,
+			w.jianglms   as jianglms,
+	        w.shengxsj   as shengxsj,
+	        w.jianglms2  as jianglms2,
+	        w.shengxsj2  as shengxsj2,
+	        w.wjianglms  as wjianglms,
+	        w.wshengxsj  as wshengxsj,
+			w.cangkshpc2 as cangkshpc2,
+			w.cangkshsj2 as cangkshsj2,
+			w.cangkfhsj2 as cangkfhsj2,
+			w.beihsj2    as beihsj2,
+			w.ibeihsj2   as ibeihsj2,
+			w.pbeihsj2   as pbeihsj2,
+			w.xianbck    as xianbck,
+			w.mos        as mos,
+			w.cangkshpc  as cangkshpc,
+			w.cangkshsj  as cangkshsj,
+			w.cangkfhsj  as cangkfhsj,
+			w.beihsj     as beihsj,
+			w.ibeihsj    as ibeihsj,
+			w.pbeihsj    as pbeihsj,
+			w.shengcxbh  as chanx,
+			w.zhizlx     as	zhizlx , 
+			w.gongyslx   as	gongyslx, 
+			w.dinghcklx  as dinghcklx , 
+			w.wulgyyz2   as wulgyyz2, 
+			w.wulgyyz1   as wulgyyz1 , 
+			w.wulgyyz    as wulgyyz ,
+			g.gongyfe as gyfe,
+			w.gongyfe as BEIHSJC,
+			x.xiaohbl as xiaohbl
+	from ${dbSchemal3}ckx_wullj w
+	join (
+	     select
+			      usercenter,
+			      lingjbh,
+			      fenpqh,
+			      mos,
+			      sum(gongyfe) as gongyfe
+			  from 
+			  (select 
+			      distinct   
+			      usercenter,
+                  lingjbh,
+                  fenpqh,
+                  gongysbh,
+			      $mos$  as mos,
+			      gongyfe from ${dbSchemal1}ckx_wullj w
+			  where 1=1 and $MOS$)
+			  group by usercenter,lingjbh,fenpqh,mos
+	
+	)g
+	on(g.usercenter=w.usercenter and g.lingjbh=w.lingjbh and g.mos=$mos$ and g.fenpqh=w.fenpqh)
+    left join (
+			select
+			usercenter,
+			lingjbh,
+			shengcxbh,
+			sum(xiaohbl) as xiaohbl
+	from 
+	${dbSchemal3}ckx_lingjxhd
+	where biaos='1'
+	group by usercenter,lingjbh,shengcxbh
+	) x
+	on(x.usercenter = w.usercenter and x.lingjbh = w.lingjbh and x.shengcxbh = w.shengcxbh ) 
+	where w.usercenter=#usercenter#  
+   </select>
+    
+    
+    
+
+<!--将过滤出的基础数据更新中间表 RD/RM -->
+	<select id="insert_linsRMRD" parameterClass="com.athena.xqjs.entity.ilorder.Maoxqmx" resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+	
+	select  w.usercenter as usercenter,
+			w.fenpqh     as fenpqh,
+			w.lingjbh    as lingjbh,
+			w.gongysbh   as gongysbh,
+			w.lujbh      as lujbh,
+			w.lujmc      as lujmc,
+			w.fahd       as fahd,
+			w.waibms     as waibms,
+			w.zhidgys    as zhidgys,
+			w.jiaofm     as jiaofm,
+			w.beihzq     as beihzq,
+			w.yunszq     as yunszq,
+			w.gcbh       as gcbh,
+			w.xiehztbh   as xiehztbh,
+			w.songhpc    as songhpc,
+			w.mudd       as mudd,
+			w.dinghck    as dinghck,
+			w.mos2       as mos2,
+			w.cangkshpc2 as cangkshpc2,
+			w.cangkshsj2 as cangkshsj2,
+			w.cangkfhsj2 as cangkfhsj2,
+			w.beihsj2    as beihsj2,
+			w.ibeihsj2   as ibeihsj2,
+			w.pbeihsj2   as pbeihsj2,
+			w.xianbck    as xianbck,
+			w.mos        as mos,
+			w.cangkshpc  as cangkshpc,
+			w.cangkshsj  as cangkshsj,
+			w.cangkfhsj  as cangkfhsj,
+			w.beihsj     as beihsj,
+			w.ibeihsj    as ibeihsj,
+			w.pbeihsj    as pbeihsj,
+			w.shengcxbh  as chanx,
+			to_number('1') as gyfe,
+			w.jianglms   as jianglms,
+	        w.shengxsj   as shengxsj,
+	        w.jianglms2  as jianglms2,
+	        w.shengxsj2  as shengxsj2,
+	        w.wjianglms  as wjianglms,
+	        w.wshengxsj  as wshengxsj,
+	        w.zhizlx     as	zhizlx , 
+			w.gongyslx   as	gongyslx, 
+			w.dinghcklx  as dinghcklx , 
+			w.wulgyyz2   as wulgyyz2, 
+			w.wulgyyz1   as wulgyyz1 , 
+			w.wulgyyz    as wulgyyz ,
+			x.xiaohbl    as xiaohbl
+			from
+			 ${dbSchemal3}ckx_wullj w
+			left join (
+				select
+						usercenter,
+						lingjbh,
+						shengcxbh,
+						sum(xiaohbl) as xiaohbl
+				from 
+				    ${dbSchemal3}ckx_lingjxhd
+				where biaos = '1'    
+				group by usercenter,lingjbh,shengcxbh
+			) x
+			on(x.usercenter = w.usercenter and x.lingjbh = w.lingjbh and x.shengcxbh = w.shengcxbh ) 
+			WHERE  w.usercenter=#usercenter#  and  (W.MOS='RD' OR W.MOS2 ='RM' OR  W.WJIANGLMS LIKE 'R%' OR W.JIANGLMS LIKE 'R%' OR W.JIANGLMS2 LIKE 'R%')
+    </select>
+
+
+
+
+	<!-- 计算之前清空中间表 -->
+	<delete id="clear_middle">
+		truncate table ${dbSchemal1}xqjs_lins_wullj
+    </delete>
+
+	<!-- wullj通过毛需求明细根据用户中心、零件、产线过滤 出基础数据 -->
+	<select id="baseDate" parameterClass="com.athena.xqjs.entity.ilorder.Maoxqmx"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+		select  w.usercenter as usercenter,
+				w.fenpqh     as fenpqh,
+				w.lingjbh    as lingjbh,
+				w.gongysbh   as gongysbh,
+				w.lujbh      as lujbh,
+				w.lujmc      as lujmc,
+				w.fahd       as fahd,
+				w.waibms     as waibms,
+				w.zhidgys    as zhidgys,
+				w.jiaofm     as jiaofm,
+				w.beihzq     as beihzq,
+				w.yunszq     as yunszq,
+				w.gcbh       as gcbh,
+				w.xiehztbh   as xiehztbh,
+				w.songhpc    as songhpc,
+				w.mudd       as mudd,
+				w.dinghck    as dinghck,
+				w.mos2       as mos2,
+				w.cangkshpc2 as cangkshpc2,
+				w.cangkshsj2 as cangkshsj2,
+				w.cangkfhsj2 as cangkfhsj2,
+				w.beihsj2    as beihsj2,
+				w.ibeihsj2   as ibeihsj2,
+				w.pbeihsj2   as pbeihsj2,
+				w.xianbck    as xianbck,
+				w.mos        as mos,
+				w.cangkshpc  as cangkshpc,
+				w.cangkshsj  as cangkshsj,
+				w.cangkfhsj  as cangkfhsj,
+				w.beihsj     as beihsj,
+				w.ibeihsj    as ibeihsj,
+				w.pbeihsj    as pbeihsj,
+				w.chanx      as chanx,
+				g.gongyfe    as gongyfe,
+				x.xiaohbl    as xiaohbl
+		from 
+		    ${dbSchemal3}ckx_wullj w
+		left join
+			(select distinct
+					usercenter as usercenter,
+					lingjbh    as lingjbh,
+					chanx      as chanx
+		from
+		    ${dbSchemal1}xqjs_maoxqmx t
+		where xuqbc = #xuqbc#) t
+		on(w.usercenter = t.usercenter and w.lingjbh = t.lingjbh and w.chanx = t.chanx)
+		left join
+			(select
+					usercenter,
+					lingjbh,
+					sum(gongyfe) as gongyfe
+					from ${dbSchemal3}ckx_lingjgys
+			group by usercenter,lingjbh
+			) g
+		on(w.usercenter = g.usercenter and w.lingjbh = g.lingjbh)
+		left join (
+			select
+				usercenter,
+				lingjbh,
+				shengcxbh,
+				fenpqbh,
+				sum(xiaohbl) as xiaohbl
+			from 
+			   ${dbSchemal3}ckx_lingjxhd
+		group by
+		usercenter,lingjbh,shengcxbh,fenpqbh
+		) x
+		on(x.usercenter = w.usercenter and x.lingjbh = w.lingjbh and x.shengcxbh = w.chanx )
+	</select>
+
+
+
+	<!--xx模式xx产线下消耗点比例之和不为百分之百的报警 -->
+	<select id="xiaohbl_bj" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+   <![CDATA[select distinct w.usercenter as usercenter,
+                            w.lingjbh  as  lingjbh,
+                            w.chanx    as  chanx,
+                            w.wulgyyz    as  wulgyyz
+           from ${dbSchemal1}xqjs_lins_wullj  w
+       where 1=1 and (w.xiaohbl<>1  or w.xiaohbl is null)
+      ]]>
+		$MOS$
+	</select>
+
+
+	<!--XX内部模式xx供应商比例之和不为百分之百的报警 -->
+	<select id="gongyfe_bj" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+    <![CDATA[  select distinct w.usercenter as  usercenter,
+                               w.lingjbh    as  lingjbh
+       from ${dbSchemal1}xqjs_lins_wullj  w
+       where 1=1 and (w.gongyfe<>1 or  w.gongyfe is null)
+        ]]>
+		$MOS$
+		
+	</select>
+
+	<!--计算日cmj/cmjmax -->
+	<!--用基础数据过滤出模式为R1的产线下消耗点比例之和为百分百的、供应商份额之和为百分百的 -->
+	<select id="jsRR1" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+      <![CDATA[          
+		    select w.usercenter as usercenter,
+		         w.fenpqh   as fenpqh,
+		         w.lingjbh  as  lingjbh,
+		         w.gongysbh as  gongysbh,
+		         w.lujbh    as  lujbh,
+		         w.lujmc    as  lujmc,
+		         w.fahd     as  fahd,
+		         w.waibms   as  waibms,
+		         w.zhidgys  as  zhidgys,
+		         w.jiaofm   as  jiaofm,
+		         w.beihzq   as  beihzq,
+		         w.yunszq   as  yunszq,
+		         w.gcbh     as  gcbh,
+		         w.xiehztbh as  xiehztbh,
+		         w.songhpc  as  songhpc,
+		         w.mudd     as  mudd,
+		         w.chanx      as chanx,
+		         t1.xiaohdbh  as xiaohdbh,
+		         t1.xiaohbl   as xiaohbl,
+		          w.jianglms2  as jianglms2,
+                  w.shengxsj2  as shengxsj2,
+                  w.jianglms   as jianglms,
+                  w.shengxsj   as shengxsj,
+                  w.wjianglms  as wjianglms,
+                  w.wshengxsj  as wshengxsj,
+				w.gongyslx   as	gongyslx, 
+				w.wulgyyz2   as wulgyyz2, 
+				w.wulgyyz1   as wulgyyz1 , 
+				w.wulgyyz    as wulgyyz ,
+				w.BEIHSJC    as gyfe,
+		         t.xuqsl      as xuqsl
+		    from ${dbSchemal1}xqjs_lins_wullj  w
+		    left join (select  usercenter,
+		                     lingjbh,
+		                     chanx,
+		                     sum(t.xuqsl) as xuqsl
+		             from ${dbSchemal1}xqjs_maoxqmx t
+		             where  usercenter = #usercenter#  and  xuqbc = #xuqbc#  and active = '1'
+		             group by  usercenter, lingjbh,chanx)  t
+		       on (w.usercenter = t.usercenter and  w.lingjbh = t.lingjbh and w.chanx = t.chanx)
+		    join ${dbSchemal3}ckx_lingjxhd t1  
+		       on (t1.usercenter = w.usercenter and t1.lingjbh = w.lingjbh and t1.shengcxbh = w.chanx and w.fenpqh = t1.fenpqbh)
+		       where   w.gongyfe = 1 
+		           and w.xiaohbl = 1
+		           and t1.biaos = '1' 
+        		  ]]>
+        		   <dynamic>
+        		          <isNotEmpty prepend=" and " property="mos">w.waibms = #mos#</isNotEmpty>
+        		          <isNotEmpty prepend=" and " property="jianglmos">(W.WJIANGLMS = #jianglmos# OR W.JIANGLMS = #jianglmos# OR W.JIANGLMS2 = #jianglmos#)</isNotEmpty>
+        		   </dynamic>
+	</select>
+
+	<!--计算日cmj/cmjmax -->
+	<!--用基础数据过滤出模式为R2的供应商份额之和为百分百的 -->
+	<select id="jsRR2" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+      <![CDATA[   select w.usercenter as usercenter,
+				         w.fenpqh   as fenpqh,
+				         w.lingjbh  as  lingjbh,
+				         w.gongysbh as  gongysbh,
+				         w.lujbh    as  lujbh,
+				         w.lujmc    as  lujmc,
+				         w.fahd     as  fahd,
+				         w.waibms   as  waibms,
+				         w.zhidgys  as  zhidgys,
+				         w.jiaofm   as  jiaofm,
+				         w.beihzq   as  beihzq,
+				         w.yunszq   as  yunszq,
+				         w.gcbh     as  gcbh,
+				         w.xiehztbh as  xiehztbh,
+				         w.songhpc  as  songhpc,
+				         w.mudd     as  mudd,
+				         w.chanx    as  chanx,
+				         d.xiaohbl  as  xiaohbl,
+				          w.jianglms2  as jianglms2,
+	                      w.shengxsj2  as shengxsj2,
+	                      w.jianglms   as jianglms,
+	                      w.shengxsj   as shengxsj,
+	                      w.wjianglms  as wjianglms,
+	                      w.wshengxsj  as wshengxsj,
+						w.gongyslx   as	gongyslx,  
+						w.wulgyyz2   as wulgyyz2, 
+						w.wulgyyz1   as wulgyyz1 , 
+						w.wulgyyz    as wulgyyz ,
+						w.BEIHSJC    as gyfe,
+				         t.xuqsl    as xuqsl
+			from ${dbSchemal1}xqjs_lins_wullj  w
+			left join (select  usercenter,
+		                     lingjbh,
+		                     chanx,
+		                     sum(t.xuqsl) as xuqsl
+		             from ${dbSchemal1}xqjs_maoxqmx t
+		             where  usercenter = #usercenter#  and  xuqbc = #xuqbc#  and active = '1'
+		            group by  usercenter, lingjbh,chanx)  t
+		         on (w.usercenter = t.usercenter  and  w.lingjbh = t.lingjbh  and  w.chanx = t.chanx)
+		    join (
+                    select  l.usercenter  as usercenter,
+                            l.lingjbh     as lingjbh,
+                            l.fenpqbh     as fenpqbh,
+                            l.shengcxbh   as chanx,
+                            sum(l.xiaohbl) as xiaohbl 
+                            from  
+                                ${dbSchemal3}ckx_lingjxhd  l
+                            where l.biaos = '1'    
+                            group by l.usercenter,l.lingjbh,l.fenpqbh,l.shengcxbh    
+                 )  d
+              on(w.usercenter = d.usercenter and w.lingjbh = d.lingjbh and w.chanx = d.chanx and w.fenpqh = d.fenpqbh)  
+             where    w.gongyfe = 1  
+                 ]]>
+                   <dynamic>
+        		          <isNotEmpty prepend=" and " property="mos">w.waibms = #mos#</isNotEmpty>
+        		          <isNotEmpty prepend=" and " property="jianglmos">(W.WJIANGLMS = #jianglmos# OR W.JIANGLMS = #jianglmos# OR W.JIANGLMS2 = #jianglmos#)</isNotEmpty>
+        		   </dynamic>
+	</select>
+
+	<!--计算日cmj/cmjmax -->
+	<!--内部模式为RM -->
+	<select id="jsRRM" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+   <![CDATA[ select       distinct
+   						  w.usercenter as  usercenter,
+		                  w.lingjbh    as  lingjbh,
+		                  w.fenpqh     as  fenpqh,
+		                  w.chanx      as  chanx,
+		                  w.dinghck    as  dinghck,
+		                  w.mos2       as  mos2,
+		                  w.cangkshpc2 as  cangkshpc2,
+		                  w.cangkshsj2 as  cangkshsj2,
+		                  w.cangkfhsj2 as  cangkfhsj2,
+		                  w.beihsj2    as  beihsj2,
+		                  w.ibeihsj2   as  ibeihsj2,
+		                  w.pbeihsj2   as  pbeihsj2,
+		                  w.xianbck    as  xianbck,
+		                  d.xiaohbl    as  xiaohbl,
+		                  w.jianglms2  as jianglms2,
+	                      w.shengxsj2  as shengxsj2,
+	                      w.jianglms   as jianglms,
+	                      w.shengxsj   as shengxsj,
+	                      w.wjianglms  as wjianglms,
+	                      w.wshengxsj  as wshengxsj,
+						w.gongyslx   as	gongyslx, 
+						w.wulgyyz2   as wulgyyz2, 
+						w.wulgyyz1   as wulgyyz1 , 
+						w.wulgyyz    as wulgyyz ,
+		                  t.xuqsl      as  xuqsl
+          from  ${dbSchemal1}xqjs_lins_wullj w
+          left join (select  usercenter,
+		                     lingjbh,
+		                     chanx,
+		                     sum(t.xuqsl) as xuqsl
+		             from ${dbSchemal1}xqjs_maoxqmx t
+		             where  usercenter = #usercenter#  and  xuqbc = #xuqbc#  and active = '1'
+		            group by  usercenter, lingjbh,chanx)  t
+		      on (w.usercenter = t.usercenter  and  w.lingjbh = t.lingjbh  and  w.chanx = t.chanx)
+		     join (
+                    select  l.usercenter  as usercenter,
+                            l.lingjbh     as lingjbh,
+                            l.fenpqbh     as fenpqbh,
+                            l.shengcxbh   as chanx,
+                            sum(l.xiaohbl) as xiaohbl 
+                            from  
+                                ${dbSchemal3}ckx_lingjxhd  l
+                            where l.biaos = '1'        
+                            group by l.usercenter,l.lingjbh,l.fenpqbh,l.shengcxbh    
+              )  d
+              on(w.usercenter = d.usercenter and w.lingjbh = d.lingjbh and w.chanx = d.chanx and w.fenpqh = d.fenpqbh)
+              where 1=1
+             ]]>
+             <dynamic>
+   		          <isNotEmpty prepend=" and " property="mos">w.mos2 = #mos#</isNotEmpty>
+   		          <isNotEmpty prepend=" and " property="jianglmos">(W.WJIANGLMS = #jianglmos# OR W.JIANGLMS = #jianglmos# OR W.JIANGLMS2 = #jianglmos#)</isNotEmpty>
+        	</dynamic>
+	</select>
+
+	<!--计算日cmj/cmjmax -->
+	<!--内部模式为RD -->
+	<select id="jsRRD" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+   <![CDATA[select distinct
+   				   w.usercenter as  usercenter,
+		           w.fenpqh     as  fenpqh,
+		           w.lingjbh    as  lingjbh,
+		           w.lujbh      as  lujbh,
+		           w.xianbck    as  xianbck,
+		           w.mos        as  mos,
+		           w.cangkshpc  as  cangkshpc,
+		           w.cangkshsj  as  cangkshsj,
+		           w.cangkfhsj  as  cangkfhsj,
+		           w.beihsj     as  beihsj,
+		           w.ibeihsj    as  ibeihsj,
+		           w.pbeihsj    as  pbeihsj,
+		           w.chanx      as  chanx,
+		           t1.xiaohbl   as  xiaohbl,
+		           t1.xiaohdbh  as  xiaohdbh,
+		            w.jianglms2  as jianglms2,
+                    w.shengxsj2  as shengxsj2,
+                    w.jianglms   as jianglms,
+                    w.shengxsj   as shengxsj,
+                    w.wjianglms  as wjianglms,
+                    w.wshengxsj  as wshengxsj,
+					w.gongyslx   as	gongyslx, 
+					w.wulgyyz2   as wulgyyz2, 
+					w.wulgyyz1   as wulgyyz1 , 
+					w.wulgyyz    as wulgyyz ,
+		           t.xuqsl      as  xuqsl
+		    from ${dbSchemal1}xqjs_lins_wullj  w
+		     left join (select  usercenter,
+		                     lingjbh,
+		                     chanx,
+		                     sum(t.xuqsl) as xuqsl
+		             from ${dbSchemal1}xqjs_maoxqmx t
+		             where  usercenter = #usercenter#  and  xuqbc = #xuqbc#  and active = '1'
+		             group by  usercenter, lingjbh,chanx)  t
+		       on (w.usercenter = t.usercenter and w.lingjbh = t.lingjbh and w.chanx = t.chanx)
+		       join ${dbSchemal3}ckx_lingjxhd t1  
+		       on (t1.usercenter = w.usercenter and t1.lingjbh = w.lingjbh and t1.shengcxbh = w.chanx and w.fenpqh = t1.fenpqbh)
+		       where       w.xiaohbl = 1
+		              and  t1.biaos = '1'
+        		      ]]>
+        	<dynamic>
+   		          <isNotEmpty prepend=" and " property="mos">w.mos = #mos#</isNotEmpty>
+   		          <isNotEmpty prepend=" and " property="jianglmos">(W.WJIANGLMS = #jianglmos# OR W.JIANGLMS = #jianglmos# OR W.JIANGLMS2 = #jianglmos#)</isNotEmpty>
+        	</dynamic>
+	</select>
+
+	<!-- 查询装车系数K -->
+	<select id="zhuangcxsK" parameterClass="com.athena.xqjs.entity.kanbyhl.Wullj"
+		resultClass="com.athena.xqjs.entity.common.Lingj">
+		select zhuangcxs
+		from ${dbSchemal3}ckx_lingj
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+
+	</select>
+
+	<!-- 查询零件-消耗点，取的线边仓库要货类型 -->
+	<select id="xianbck_yaohlx" parameterClass="com.athena.xqjs.entity.kanbyhl.Wullj"
+		resultClass="java.util.HashMap">
+		select  usercenter,
+		        lingjbh,
+		        xiaohdbh,
+				xianbyhlx,
+		        yancsxbz
+		from ${dbSchemal3}ckx_lingjxhd
+		where  1=1 
+		    and
+		       biaos='1' 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+    <!-- 查询零件-消耗点，自动发货标志 -->
+	<select id="xhdfhbz" 
+		resultClass="java.util.HashMap">
+		select  usercenter,
+		        lingjbh,
+		        xiaohdbh,
+				zidfhbz
+		from ${dbSchemal3}ckx_lingjxhd
+		where  1=1 
+		    and
+		       biaos='1' 
+            and 
+				usercenter = #usercenter#
+
+	</select>
+<!--查询零件-仓库  ，发货标示 -->
+	<select id="ckfhbz" 
+		resultClass="java.util.HashMap">
+		select  usercenter,
+				lingjbh,
+				cangkbh,
+				zidfhbz
+		from ${dbSchemal3}ckx_lingjck
+		where  1=1
+			and
+				usercenter = #usercenter#
+	
+	</select>
+
+    <!--查询所有  K/R查询零件-仓库 上线UC容量 /US容量 -->
+	<select id="xianbckAllRl" 
+		resultClass="com.athena.xqjs.entity.kanbyhl.Lingjck">
+		select  usercenter,
+				lingjbh,
+				cangkbh,
+				zickbh,
+				zidfhbz,
+				usbzlx,
+				usbzrl,
+				uclx,
+				ucrl
+		from ${dbSchemal3}ckx_lingjck
+		where  1=1
+			and
+				usercenter = #usercenter#
+	
+	</select>
+
+
+	<!-- K/R查询零件-仓库 上线UC容量 /US容量 -->
+	<select id="xianbck_rl" 
+		resultClass="com.athena.xqjs.entity.kanbyhl.Lingjck">
+		select  usercenter,
+				lingjbh,
+				cangkbh,
+				zidfhbz,
+				usbzlx,
+				usbzrl,
+				uclx,
+				ucrl
+		from ${dbSchemal3}ckx_lingjck
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+		    </isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dinghck">
+				cangkbh = #dinghck#
+			</isNotEmpty>
+			<isEmpty prepend=" and " property="dinghck">
+				cangkbh = #xianbck#
+			</isEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询供应商份额 -->
+	<select id="gongysfe" parameterClass="com.athena.xqjs.entity.kanbyhl.Wullj"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Lingjgys">
+		select
+			g.usercenter,
+			g.gongysbh,
+			g.lingjbh,
+			g.gongyfe,
+			g.ucbzlx,
+			g.ucrl,
+			g.uabzlx,
+			g.uaucgs
+		from ${dbSchemal3}ckx_lingjgys g
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 需求类型为周期 ,跨月 计算， 根据需求所属周期，用户中心+零件+产线汇总需求数量 -->
+	<select id="chanx_xqsl" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+       select  distinct
+               w.usercenter,
+	           w.chanx,
+	           w.lingjbh,
+	           x.xuqsl as xuqsl
+      from (select * from ${dbSchemal1}xqjs_lins_wullj l 
+             where 1=1  
+             <dynamic>
+                    <isEqual prepend=" and " property="mos" compareValue="R1">(WAIBMS = #mos#  OR WJIANGLMS = #mos# OR JIANGLMS = #mos# OR JIANGLMS2 = #mos#)</isEqual>
+                    <isEqual prepend=" and " property="mos" compareValue="R2">(WAIBMS = #mos#  OR WJIANGLMS = #mos# OR JIANGLMS = #mos# OR JIANGLMS2 = #mos#)</isEqual>
+                    <isEqual prepend=" and " property="mos" compareValue="RD">(MOS = #mos#  OR WJIANGLMS = #mos# OR JIANGLMS = #mos# OR JIANGLMS2 = #mos#)</isEqual>
+                    <isEqual prepend=" and " property="mos" compareValue="RM">(MOS2 = #mos#  OR WJIANGLMS = #mos# OR JIANGLMS = #mos# OR JIANGLMS2 = #mos#)</isEqual>
+             </dynamic>) w
+      left join( 
+            select 
+                  usercenter,
+                  chanx,
+                  lingjbh,
+                  sum(xuqsl) as xuqsl
+               from ${dbSchemal1}xqjs_maoxqmx m
+               where m.xuqbc = #xuqbc#  and m.xuqsszq = #xuqsszq# and m.active = '1'      
+               group by usercenter,chanx,lingjbh
+          )  x        
+         on( w.usercenter = x.usercenter and w.lingjbh = x.lingjbh and w.chanx = x.chanx  )
+         
+	</select>
+
+	<!-- 需求类型为周期 ,跨月 计算，过滤出线边仓库 -->
+	<select id="mudd_xuqsl" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+		select  usercenter,
+				lingjbh,
+				chanx,
+				mudd
+		from ${dbSchemal1}xqjs_lins_wullj w
+		where w.waibms = #mos#
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				chanx = #chanx#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 需求类型为周期 ,跨月 计算，过滤出线边仓库 -->
+	<select id="xianbck_xuqsl" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+		select usercenter,
+				lingjbh,
+				chanx,
+				xianbck
+		from
+		${dbSchemal1}xqjs_lins_wullj w
+		where w.mos2 = #mos#
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				chanx = #chanx#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 看板计算周期，RD模式，跨月 -->
+	<select id="jsZRD_kuay" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+       <![CDATA[ select   distinct
+       					  w.usercenter as usercenter,
+				          w.fenpqh     as fenpqh,
+				          w.lingjbh    as lingjbh,
+				          w.lujbh      as lujbh,
+				          w.lujmc      as lujmc,
+				          w.fahd       as fahd,
+				          w.zhidgys    as zhidgys,
+				          w.jiaofm     as jiaofm,
+				          w.xianbck    as xianbck,
+				          w.mos        as mos,
+						  w.cangkshpc  as cangkshpc,
+						  w.cangkshsj  as cangkshsj,
+						  w.cangkfhsj  as cangkfhsj,
+						  w.beihsj     as beihsj,
+						  w.ibeihsj    as ibeihsj,
+						  w.pbeihsj    as pbeihsj,
+						  w.chanx      as chanx,
+				          t1.xiaohdbh  as xiaohdbh,
+				          w.jianglms2  as jianglms2,
+	                      w.shengxsj2  as shengxsj2,
+	                      w.jianglms   as jianglms,
+	                      w.shengxsj   as shengxsj,
+	                      w.wjianglms  as wjianglms,
+	                      w.wshengxsj  as wshengxsj,
+						w.gongyslx   as	gongyslx, 
+						w.wulgyyz2   as wulgyyz2, 
+						w.wulgyyz1   as wulgyyz1 , 
+						w.wulgyyz    as wulgyyz ,
+				         NVL(t1.xiaohbl,0)   as xiaohbl
+				     from ${dbSchemal1}xqjs_lins_wullj w
+				     join ${dbSchemal3}ckx_lingjxhd t1
+				       on (t1.usercenter = w.usercenter and t1.lingjbh = w.lingjbh and t1.shengcxbh = w.chanx  and w.fenpqh = t1.fenpqbh)
+				     where     w.xiaohbl = 1
+				          and  t1.biaos = '1'
+          ]]>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				w.usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				w.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				w.chanx = #chanx#
+			</isNotEmpty>
+   		     <isNotEmpty prepend=" and " property="mos">
+   		        w.mos = #mos#
+   		     </isNotEmpty>
+   		    <isNotEmpty prepend=" and " property="jianglmos">
+   		        (W.WJIANGLMS = #jianglmos# OR W.JIANGLMS = #jianglmos# OR W.JIANGLMS2 = #jianglmos#)
+   		    </isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--看板计算周期，RD模式,未跨月 -->
+	<select id="jsZRD" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+       <![CDATA[ select   distinct
+       					  w.usercenter as usercenter,
+				          w.fenpqh     as fenpqh,
+				          w.lingjbh    as lingjbh,
+				          w.lujbh      as lujbh,
+				          w.lujmc      as lujmc,
+				          w.fahd       as fahd,
+				          w.zhidgys    as zhidgys,
+				          w.jiaofm     as jiaofm,
+				          w.xianbck    as xianbck,
+				          w.mos        as mos,
+						  w.cangkshpc  as cangkshpc,
+						  w.cangkshsj  as cangkshsj,
+						  w.cangkfhsj  as cangkfhsj,
+						  w.beihsj     as beihsj,
+						  w.ibeihsj    as ibeihsj,
+						  w.pbeihsj    as pbeihsj,
+						  w.chanx      as chanx,
+				          t1.xiaohdbh  as xiaohdbh,
+				          t1.xiaohbl   as xiaohbl,
+				          w.jianglms2  as jianglms2,
+	                      w.shengxsj2  as shengxsj2,
+	                      w.jianglms   as jianglms,
+	                      w.shengxsj   as shengxsj,
+	                      w.wjianglms  as wjianglms,
+	                      w.wshengxsj  as wshengxsj,
+						w.gongyslx   as	gongyslx, 
+						w.wulgyyz2   as wulgyyz2, 
+						w.wulgyyz1   as wulgyyz1 , 
+						w.wulgyyz    as wulgyyz ,
+				          t.xuqsl      as xuqsl
+				     from ${dbSchemal1}xqjs_lins_wullj w
+				     left join (
+				           select  usercenter,
+					               chanx,
+					               lingjbh,
+					               sum(xuqsl) as xuqsl
+				       from  ${dbSchemal1}xqjs_maoxqmx
+				       where  usercenter = #usercenter#  and  xuqbc = #xuqbc#  and xuqsszq = #xuqsszq#  and active = '1'
+				       group by usercenter,chanx,lingjbh
+				          ) t
+				       on(w.usercenter = t.usercenter and w.lingjbh = t.lingjbh and w.chanx = t.chanx )
+				     join ${dbSchemal3}ckx_lingjxhd t1
+				       on (t1.usercenter = w.usercenter and t1.lingjbh = w.lingjbh and t1.shengcxbh = w.chanx and w.fenpqh = t1.fenpqbh)
+				     where     w.xiaohbl = 1
+				          and  t1.biaos = '1'
+				         ]]>
+		 <dynamic>
+				<isNotEmpty prepend=" and " property="mos">
+	   		        w.mos = #mos#
+	   		     </isNotEmpty>
+	   		    <isNotEmpty prepend=" and " property="jianglmos">
+	   		        (W.WJIANGLMS = #jianglmos# OR W.JIANGLMS = #jianglmos# OR W.JIANGLMS2 = #jianglmos#)
+	   		    </isNotEmpty>
+		 </dynamic>		          
+	</select>
+	<!--看板计算周期，R1模式,未跨月 -->
+	<select id="jsZR1" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+      <![CDATA[          
+		   select w.usercenter as usercenter,
+		         w.fenpqh   as fenpqh,
+		         w.lingjbh  as  lingjbh,
+		         w.gongysbh as  gongysbh,
+		         w.lujbh    as  lujbh,
+		         w.lujmc    as  lujmc,
+		         w.fahd     as  fahd,
+		         w.waibms   as  waibms,
+		         w.zhidgys  as  zhidgys,
+		         w.jiaofm   as  jiaofm,
+		         w.beihzq   as  beihzq,
+		         w.yunszq   as  yunszq,
+		         w.gcbh     as  gcbh,
+		         w.xiehztbh as  xiehztbh,
+		         w.songhpc  as  songhpc,
+		         w.mudd     as  mudd,
+		         w.chanx      as chanx,
+		         t1.xiaohdbh  as xiaohdbh,
+		         t1.xiaohbl   as xiaohbl,
+		          w.jianglms2  as jianglms2,
+                  w.shengxsj2  as shengxsj2,
+                  w.jianglms   as jianglms,
+                  w.shengxsj   as shengxsj,
+                  w.wjianglms  as wjianglms,
+                  w.wshengxsj  as wshengxsj,
+				w.gongyslx   as	gongyslx, 
+				w.wulgyyz2   as wulgyyz2, 
+				w.wulgyyz1   as wulgyyz1 , 
+				w.wulgyyz    as wulgyyz ,
+				w.BEIHSJC    as gyfe,
+		         t.xuqsl      as xuqsl
+		    from ${dbSchemal1}xqjs_lins_wullj  w
+		      left join(select  usercenter,
+		                     lingjbh,
+		                     chanx,
+		                     sum(t.xuqsl) as xuqsl
+		             from ${dbSchemal1}xqjs_maoxqmx t
+		             where  usercenter = #usercenter#  and  xuqbc = #xuqbc#  and xuqsszq = #xuqsszq#  and active = '1'
+		             group by  usercenter, lingjbh,chanx)  t
+		       on (     w.usercenter = t.usercenter
+		            and 
+		                w.lingjbh = t.lingjbh
+		            and 
+		                w.chanx = t.chanx
+		           )
+		       join ${dbSchemal3}ckx_lingjxhd t1  
+		       on (t1.usercenter = w.usercenter and t1.lingjbh = w.lingjbh and t1.shengcxbh = w.chanx and w.fenpqh = t1.fenpqbh)
+		       where     w.gongyfe = 1 
+		            and  w.xiaohbl = 1
+		            and  t1.biaos = '1'
+        		    ]]>
+         <dynamic>
+				<isNotEmpty prepend=" and " property="mos">
+	   		        w.waibms = #mos#
+	   		     </isNotEmpty>
+	   		    <isNotEmpty prepend=" and " property="jianglmos">
+	   		        (W.WJIANGLMS = #jianglmos# OR W.JIANGLMS = #jianglmos# OR W.JIANGLMS2 = #jianglmos#)
+	   		    </isNotEmpty>
+		 </dynamic>		          
+	</select>
+
+	<!--看板计算周期，R1模式,跨月 -->
+	<select id="jsZR1_kuay" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+      <![CDATA[          
+		    select w.usercenter as usercenter,
+		         w.fenpqh   as fenpqh,
+		         w.lingjbh  as  lingjbh,
+		         w.gongysbh as  gongysbh,
+		         w.lujbh    as  lujbh,
+		         w.lujmc    as  lujmc,
+		         w.fahd     as  fahd,
+		         w.waibms   as  waibms,
+		         w.zhidgys  as  zhidgys,
+		         w.jiaofm   as  jiaofm,
+		         w.beihzq   as  beihzq,
+		         w.yunszq   as  yunszq,
+		         w.gcbh     as  gcbh,
+		         w.xiehztbh as  xiehztbh,
+		         w.songhpc  as  songhpc,
+		         w.mudd     as  mudd,
+		         w.chanx      as chanx,
+		         t1.xiaohdbh  as xiaohdbh,
+		          w.jianglms2  as jianglms2,
+                  w.shengxsj2  as shengxsj2,
+                  w.jianglms   as jianglms,
+                  w.shengxsj   as shengxsj,
+                  w.wjianglms  as wjianglms,
+                  w.wshengxsj  as wshengxsj,
+				w.gongyslx   as	gongyslx, 
+				w.wulgyyz2   as wulgyyz2, 
+				w.wulgyyz1   as wulgyyz1 , 
+				w.wulgyyz    as wulgyyz ,
+				w.BEIHSJC    as gyfe,
+		          NVL(t1.xiaohbl,0)   as xiaohbl
+		    from ${dbSchemal1}xqjs_lins_wullj  w
+		    join ${dbSchemal3}ckx_lingjxhd t1  
+		       on (t1.usercenter = w.usercenter and t1.lingjbh = w.lingjbh and t1.shengcxbh = w.chanx and w.fenpqh = t1.fenpqbh)
+		   where     w.gongyfe = 1 
+		        and  w.xiaohbl = 1
+		        and  t1.biaos = '1'
+        		]]>
+		<dynamic>
+		   <isNotEmpty prepend=" and " property="mos">
+				 w.waibms = #mos#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jianglmos">
+				 (W.WJIANGLMS = #jianglmos# OR W.JIANGLMS = #jianglmos# OR W.JIANGLMS2 = #jianglmos#)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				w.usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				w.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				w.chanx = #chanx#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--看板计算周期，RM模式,未跨月 -->
+	<select id="jsZRM" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+      <![CDATA[ select    distinct
+      					  w.usercenter as  usercenter,
+		                  w.lingjbh    as  lingjbh,
+		                  w.fenpqh     as  fenpqh,
+		                  w.chanx      as  chanx,
+		                  w.dinghck    as  dinghck,
+		                  w.mos2       as  mos2,
+		                  w.cangkshpc2 as  cangkshpc2,
+		                  w.cangkshsj2 as  cangkshsj2,
+		                  w.cangkfhsj2 as  cangkfhsj2,
+		                  w.beihsj2    as  beihsj2,
+		                  w.ibeihsj2   as  ibeihsj2,
+		                  w.pbeihsj2   as  pbeihsj2,
+		                  w.xianbck    as  xianbck,
+		                  d.xiaohbl    as  xiaohbl,
+		                  w.jianglms2  as jianglms2,
+	                      w.shengxsj2  as shengxsj2,
+	                      w.jianglms   as jianglms,
+	                      w.shengxsj   as shengxsj,
+	                      w.wjianglms  as wjianglms,
+	                      w.wshengxsj  as wshengxsj,
+							w.gongyslx   as	gongyslx, 
+							w.wulgyyz2   as wulgyyz2, 
+							w.wulgyyz1   as wulgyyz1 , 
+							w.wulgyyz    as wulgyyz ,
+		                  t.xuqsl      as  xuqsl
+          from  ${dbSchemal1}xqjs_lins_wullj w
+          left join (select  usercenter,
+		                     lingjbh,
+		                     chanx,
+		                     sum(t.xuqsl) as xuqsl
+		             from ${dbSchemal1}xqjs_maoxqmx t
+		             where  usercenter = #usercenter#  and  xuqbc = #xuqbc#  and xuqsszq = #xuqsszq# and active = '1'
+		             group by  usercenter, lingjbh,chanx)  t
+		      on (w.usercenter = t.usercenter  and  w.lingjbh = t.lingjbh  and  w.chanx = t.chanx)
+		      join (
+                    select  l.usercenter  as usercenter,
+                            l.lingjbh     as lingjbh,
+                            l.fenpqbh     as fenpqbh,
+                            l.shengcxbh   as chanx,
+                            sum(l.xiaohbl) as xiaohbl 
+                            from  
+                                ${dbSchemal3}ckx_lingjxhd  l
+                            where l.biaos = '1'    
+                            group by l.usercenter,l.lingjbh,l.fenpqbh,l.shengcxbh    
+              )  d
+              on(w.usercenter = d.usercenter and w.lingjbh = d.lingjbh and w.chanx = d.chanx and w.fenpqh = d.fenpqbh)
+              where 1 = 1]]>
+          <dynamic>
+				<isNotEmpty prepend=" and " property="mos">
+	   		        w.mos2 = #mos#
+	   		     </isNotEmpty>
+	   		    <isNotEmpty prepend=" and " property="jianglmos">
+	   		        (W.WJIANGLMS = #jianglmos# OR W.JIANGLMS = #jianglmos# OR W.JIANGLMS2 = #jianglmos#)
+	   		    </isNotEmpty>
+		 </dynamic>		        
+	</select>
+
+
+
+	<!--看板计算周期，RM模式,跨月 -->
+	<select id="jsZRM_kuay" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+      <![CDATA[ select    distinct
+      				      w.usercenter as  usercenter,
+		                  w.lingjbh    as  lingjbh,
+		                  w.fenpqh     as  fenpqh,
+		                  w.chanx      as  chanx,
+		                  w.dinghck    as  dinghck,
+		                  w.mos2       as  mos2,
+		                  w.cangkshpc2 as  cangkshpc2,
+		                  w.cangkshsj2 as  cangkshsj2,
+		                  w.cangkfhsj2 as  cangkfhsj2,
+		                  w.beihsj2    as  beihsj2,
+		                  w.ibeihsj2   as  ibeihsj2,
+		                  w.pbeihsj2   as  pbeihsj2,
+		                  w.xianbck    as  xianbck,
+		                  w.jianglms2  as jianglms2,
+	                      w.shengxsj2  as shengxsj2,
+	                      w.jianglms   as jianglms,
+	                      w.shengxsj   as shengxsj,
+	                      w.wjianglms  as wjianglms,
+	                      w.wshengxsj  as wshengxsj,
+						w.gongyslx   as	gongyslx,  
+						w.wulgyyz2   as wulgyyz2, 
+						w.wulgyyz1   as wulgyyz1 , 
+						w.wulgyyz    as wulgyyz ,
+	                     NVL(d.xiaohbl,0)   as  xiaohbl      
+                  from  ${dbSchemal1}xqjs_lins_wullj w
+                  join (
+                    select  l.usercenter  as usercenter,
+                            l.lingjbh     as lingjbh,
+                            l.fenpqbh     as fenpqbh,
+                            l.shengcxbh   as chanx,
+                            sum(l.xiaohbl) as xiaohbl 
+                            from  
+                                ${dbSchemal3}ckx_lingjxhd  l
+                            where l.biaos = '1'       
+                            group by l.usercenter,l.lingjbh,l.fenpqbh,l.shengcxbh    
+              )  d
+              on(w.usercenter = d.usercenter and w.lingjbh = d.lingjbh and w.chanx = d.chanx and w.fenpqh = d.fenpqbh)
+                  where 1=1
+               ]]>
+		<dynamic>
+		    <isNotEmpty prepend=" and " property="mos">
+	   		        w.mos2 = #mos#
+	   		</isNotEmpty>
+	   		<isNotEmpty prepend=" and " property="jianglmos">
+	   		        (W.WJIANGLMS = #jianglmos# OR W.JIANGLMS = #jianglmos# OR W.JIANGLMS2 = #jianglmos#)
+	   		</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				w.usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				w.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				w.chanx = #chanx#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 周期R2模式，未跨月 -->
+	<select id="jsZR2" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+      <![CDATA[   select w.usercenter as usercenter,
+				         w.fenpqh   as fenpqh,
+				         w.lingjbh  as  lingjbh,
+				         w.gongysbh as  gongysbh,
+				         w.lujbh    as  lujbh,
+				         w.lujmc    as  lujmc,
+				         w.fahd     as  fahd,
+				         w.waibms   as  waibms,
+				         w.zhidgys  as  zhidgys,
+				         w.jiaofm   as  jiaofm,
+				         w.beihzq   as  beihzq,
+				         w.yunszq   as  yunszq,
+				         w.gcbh     as  gcbh,
+				         w.xiehztbh as  xiehztbh,
+				         w.songhpc  as  songhpc,
+				         w.mudd     as  mudd,
+				         w.chanx    as  chanx,
+				          w.jianglms2  as jianglms2,
+	                      w.shengxsj2  as shengxsj2,
+	                      w.jianglms   as jianglms,
+	                      w.shengxsj   as shengxsj,
+	                      w.wjianglms  as wjianglms,
+	                      w.wshengxsj  as wshengxsj, 
+						w.gongyslx   as	gongyslx, 
+						w.wulgyyz2   as wulgyyz2, 
+						w.wulgyyz1   as wulgyyz1 , 
+						w.wulgyyz    as wulgyyz ,
+						w.BEIHSJC    as gyfe,
+				         t.xuqsl*d.xiaohbl    as xuqsl
+			from ${dbSchemal1}xqjs_lins_wullj  w
+			 left join (select  usercenter,
+		                     lingjbh,
+		                     chanx,
+		                     sum(t.xuqsl) as xuqsl
+		             from ${dbSchemal1}xqjs_maoxqmx t
+		            where  usercenter = #usercenter#  and  xuqbc = #xuqbc#  and xuqsszq = #xuqsszq# and active = '1'
+		            group by  usercenter, lingjbh,chanx)  t
+		      on (w.usercenter = t.usercenter  and  w.lingjbh = t.lingjbh  and  w.chanx = t.chanx)
+		      join (
+                    select  l.usercenter  as usercenter,
+                            l.lingjbh     as lingjbh,
+                            l.fenpqbh     as fenpqbh,
+                            l.shengcxbh   as chanx,
+                            sum(l.xiaohbl) as xiaohbl 
+                            from  
+                                ${dbSchemal3}ckx_lingjxhd  l
+                            where l.biaos = '1'       
+                            group by l.usercenter,l.lingjbh,l.fenpqbh,l.shengcxbh    
+              )  d
+              on(w.usercenter = d.usercenter and w.lingjbh = d.lingjbh and w.chanx = d.chanx and w.fenpqh = d.fenpqbh)
+             where  w.gongyfe = 1  ]]>
+             <dynamic>
+			   <isNotEmpty prepend=" and " property="mos">
+				          w.waibms = #mos#
+			   </isNotEmpty>
+			   <isNotEmpty prepend=" and " property="jianglmos">
+				          (W.WJIANGLMS = #jianglmos# OR W.JIANGLMS = #jianglmos# OR W.JIANGLMS2 = #jianglmos#)
+			   </isNotEmpty>
+		 </dynamic>		        
+	</select>
+
+	<!-- 周期R2模式，跨月 -->
+	<select id="jsZR2_kuay" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+      <![CDATA[   select w.usercenter as usercenter,
+				         w.fenpqh   as fenpqh,
+				         w.lingjbh  as  lingjbh,
+				         w.gongysbh as  gongysbh,
+				         w.lujbh    as  lujbh,
+				         w.lujmc    as  lujmc,
+				         w.fahd     as  fahd,
+				         w.waibms   as  waibms,
+				         w.zhidgys  as  zhidgys,
+				         w.jiaofm   as  jiaofm,
+				         w.beihzq   as  beihzq,
+				         w.yunszq   as  yunszq,
+				         w.gcbh     as  gcbh,
+				         w.xiehztbh   as  xiehztbh,
+				         w.songhpc    as  songhpc,
+				         w.mudd       as  mudd,
+				         w.chanx      as chanx,
+				          w.jianglms2  as jianglms2,
+	                      w.shengxsj2  as shengxsj2,
+	                      w.jianglms   as jianglms,
+	                      w.shengxsj   as shengxsj,
+	                      w.wjianglms  as wjianglms,
+	                      w.wshengxsj  as wshengxsj,
+						w.gongyslx   as	gongyslx,  
+						w.wulgyyz2   as wulgyyz2, 
+						w.wulgyyz1   as wulgyyz1 , 
+						w.wulgyyz    as wulgyyz ,
+						w.BEIHSJC    as gyfe,
+				        NVL(d.xiaohbl,0)    as  xiaohbl     
+			from ${dbSchemal1}xqjs_lins_wullj  w			
+			left join (
+                    select  l.usercenter  as usercenter,
+                            l.lingjbh     as lingjbh,
+                            l.fenpqbh     as fenpqbh,
+                            l.shengcxbh   as chanx,
+                            sum(l.xiaohbl) as xiaohbl 
+                            from  
+                                ${dbSchemal3}ckx_lingjxhd  l
+                            where l.biaos = '1'       
+                            group by l.usercenter,l.lingjbh,l.fenpqbh,l.shengcxbh    
+              )  d
+              on(w.usercenter = d.usercenter and w.lingjbh = d.lingjbh and w.chanx = d.chanx and w.fenpqh = d.fenpqbh)
+             where  w.gongyfe = 1 ]]>
+		<dynamic>
+		     <isNotEmpty prepend=" and " property="mos">
+				          w.waibms = #mos#
+			 </isNotEmpty>
+			 <isNotEmpty prepend=" and " property="jianglmos">
+				         (W.WJIANGLMS = #jianglmos# OR W.JIANGLMS = #jianglmos# OR W.JIANGLMS2 = #jianglmos#)
+			 </isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				w.usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				w.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				w.chanx = #chanx#
+			</isNotEmpty>
+		</dynamic>
+
+	</select>
+
+
+	<!-- 根据用户中心+零件号查询计划员代码 -->
+	<select id="query_jihy" parameterClass="com.athena.xqjs.entity.common.Lingj"
+		resultClass="java.lang.String">
+		select jihy
+		from ${dbSchemal3}ckx_lingj
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询计算用户下所有零件 计划员代码 -->
+	<select id="queryAllLj" 
+		resultClass="java.util.HashMap">
+		select 
+			USERCENTER,
+			LINGJBH,
+			ZHUANGCXS,
+			JIHY
+		from ${dbSchemal3}ckx_lingj
+		where 1=1 and usercenter = #usercenter#
+	</select>
+	
+	<!-- 查询所有看板循环 -->
+	<select id="queryAllKbgm" 
+		resultClass="java.util.HashMap">
+		select
+		    XUNHBM, 
+			USERCENTER,
+			LINGJBH,
+			GONGHMS,
+			CANGKDM,
+			XIAOHD,
+			KEHD
+		from ${dbSchemal1}xqjs_kanbxhgm
+		where 1=1  and usercenter = #usercenter#
+	</select>
+
+	<!-- 查询所有看板循环-->
+	<select id="queryAllKbgmR" 
+		resultClass="java.util.HashMap">
+		select
+		    XUNHBM, 
+			USERCENTER,
+			LINGJBH,
+			KEHD
+		from ${dbSchemal1}xqjs_kanbxhgm
+		where 1=1 and shengxzt&lt;&gt;'2'
+	</select>
+    
+    <!-- 查询所有看板循环 带供货模式-->
+	<select id="queryAllKbgmMs" 
+		resultClass="java.util.HashMap">
+		select
+		    XUNHBM, 
+			USERCENTER,
+			LINGJBH,
+			GONGHMS,
+			KEHD
+		from ${dbSchemal1}xqjs_kanbxhgm
+		where 1=1
+	</select>
+	<!--更新看板规模计算表 -->
+	<update id="update_kanb" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		update ${dbSchemal1}xqjs_kanbxhgm
+		set
+		umlx = #umlx#,
+		uclx = #uclx#,
+		<dynamic>
+		      <isNotEmpty property="umljsl">umljsl = #umljsl#,</isNotEmpty>
+		      <isNotEmpty property="umzucgs">umzucgs = #umzucgs#,</isNotEmpty>
+		      <isNotEmpty property="ucrl">ucrl = #ucrl#,</isNotEmpty>
+		</dynamic>
+		cmj =#cmj#,
+		cjmax =#cjmax#,
+		jisxhgm = #jisxhgm#,
+		jissj =to_date(#jissj#,'yyyy-mm-dd'),
+		jihydm = #jihydm#,
+		chanx = #chanx#,
+		lujdm = #lujdm#,
+		xianbyhlx = #xianbyhlx#,
+		yancsxbz = #yancsxbz#,
+		weihr=#weihr#,
+		weihsj=to_timestamp(#weihsj#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		editor=#editor#,
+		edit_time=to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		leix=decode(shengxzt,'2','1',leix), 
+		shengxzt = decode(shengxzt,'2','0',shengxzt),
+		shifzdfs = #shifzdfs#,
+		jianglms = #jianglms#
+		where 1=1
+		<dynamic>
+		    <isNotEmpty prepend=" and " property="xunhbm">
+				xunhbm = #xunhbm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghms">
+				gonghms = #gonghms#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkdm">
+				cangkdm = #cangkdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohd">
+				xiaohd = #xiaohd#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+    
+    <!--更新看板规模计算表 -->
+	<update id="updateXiafgm" >
+		update ${dbSchemal1}xqjs_kanbxhgm
+		set
+		xiafxhgm = jisxhgm,
+		weihr=#weihr#,
+		weihsj=to_timestamp(#weihsj#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		editor=#editor#,
+		edit_time=to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		shengxzt='1' 
+		where   shifzdfs=1
+		     and
+		         NVL(jianglms,'0')!='1' 
+		     and 
+		        shengxzt='0' 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghms">
+				gonghms = #gonghms#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkdm">
+				cangkdm = #cangkdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohd">
+				xiaohd = #xiaohd#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	<!-- 看板循环失效 -->
+    <update id="updateXiafgmSx" >
+		update ${dbSchemal1}xqjs_kanbxhgm
+		set  weihr=#weihr#,
+			weihsj=to_timestamp(#weihsj#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+			editor=#editor#,
+			edit_time=to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+		<dynamic >
+		      <isNotEmpty property="shengxzt" prepend=",">shengxzt=#shengxzt#</isNotEmpty>
+		      <isNotEmpty property="leix" prepend=",">leix=#leix#</isNotEmpty>
+		      <isNotEmpty property="jianglms" prepend=",">jianglms=#jianglms#</isNotEmpty>
+		      <isNotEmpty property="xiafxhgm" prepend=",">xiafxhgm=#xiafxhgm#</isNotEmpty>
+		</dynamic>
+		where   1=1  and  xunhbm = #xunhbm#
+	</update>	
+    
+	<!--插入看板规模计算表 -->
+	<insert id="ins_kanb" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+		insert
+		into
+		${dbSchemal1}xqjs_kanbxhgm
+		(
+		xunhbm,
+		usercenter,
+		lingjbh,
+		gonghms,
+		<dynamic >
+		  <isNotEmpty property="cangkdm">
+		       cangkdm,
+		  </isNotEmpty>
+		  <isNotEmpty property="xiaohd">
+		       xiaohd,
+		  </isNotEmpty>
+		</dynamic>
+		umlx,
+		uclx,
+		umljsl,
+		umzucgs,
+		ucrl,
+		cmj,
+		cjmax,
+		dangqxhgm,
+		jisxhgm,
+		<dynamic>
+		      <isNotEmpty property="xiafxhgm">xiafxhgm,</isNotEmpty>
+		      <isNotEmpty property="jianglms">jianglms,</isNotEmpty>
+		</dynamic>
+		creator,
+		create_time,
+		weihr,
+		weihsj,
+		jihydm,
+		kehd,
+		chanx,
+		lujdm,
+		xianbyhlx,
+		yancsxbz,
+		shengxzt,
+		dongjjdzt,
+		leix,
+		jissj,
+		shifzdfs,
+		editor,
+		edit_time
+		)
+		values(
+		#xunhbm#,
+		#usercenter#,
+		#lingjbh#,
+		#gonghms#,
+		<dynamic>
+		      <isNotEmpty property="cangkdm">#cangkdm#,</isNotEmpty>
+		      <isNotEmpty property="xiaohd">#xiaohd#,</isNotEmpty>
+		</dynamic>
+		#umlx#,
+		#uclx#,
+		#umljsl#,
+		#umzucgs#,
+		#ucrl#,
+		#cmj#,
+		#cjmax#,
+		#dangqxhgm#,
+		#jisxhgm#,
+		<dynamic>
+		      <isNotEmpty property="xiafxhgm">#xiafxhgm#,</isNotEmpty>
+		      <isNotEmpty property="jianglms">#jianglms#,</isNotEmpty>
+		</dynamic>
+		#creator#,
+		to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		#weihr#,
+		to_timestamp(#weihsj#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		#jihydm#,
+		#kehd#,
+		#chanx#,
+		#lujdm#,
+		#xianbyhlx#,
+		#yancsxbz#,
+		#shengxzt#,
+		#dongjjdzt#,
+		#leix#,
+		to_date(#jissj#,'yyyy-mm-dd'),
+		#shifzdfs#,
+		#editor#,
+		to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+		)
+
+         </insert>
+
+
+
+
+	<!--查询循环规模编号的最大流水号 -->
+	<select id="xhbm" resultClass="java.lang.String">
+		select max(substr(k.xunhbm,4))
+		from ${dbSchemal1}xqjs_kanbxhgm k
+         </select>
+
+	<!-- 更新计算处理参数设置表 42：看板要货令 param1:需求版次 param2:需求来源param3:计算范围param4:创建人param5:创建时间 -->
+	<statement id="ins_jisclcssz" parameterClass="java.util.Map">
+                  <![CDATA[    merge into ${dbSchemal1}xqjs_jisclcssz a
+                         using (select count(*) co from ${dbSchemal1}xqjs_jisclcssz a  where  a.jiscldm = #jiscldm#) b
+                         on(b.co<>0)
+                         when matched then 
+                              update set 
+                                     a.param1 = #param1#,
+                                     a.param2 = #param2#,
+                                     a.param3 = #param3#,
+                                     a.param4 = #param4#,
+                                     a.param5 = #param5#,
+                                     a.param6 = #param6#,
+                                     a.param7 = #param7#
+                                     where  a.jiscldm = #jiscldm#
+                         when  not matched then 
+                         insert (jiscldm,chulzt,param1,param2,param3,param4,param5,param6,param7) values(#jiscldm#,'0',#param1#,#param2#,#param3#,#param4#,#param5#,#param6#,#param7#)]]>
+	</statement>
+
+	<!-- 查询计算处理参数设置表 -->
+	<select id="sel_jszt" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.chulzt as chulzt,
+		t.param1 as param1,
+		t.param2 as param2,
+		t.param3 as param3,
+		t.param4 as param4,
+		t.param5 as param5,
+		t.param6 as param6,
+		t.param7 as param7
+		from ${dbSchemal1}xqjs_jisclcssz t
+		where rownum=1 and t.jiscldm = #jiscldm#
+         </select>
+
+	<!-- 计算完成更改计算处理参数设置表 相应用户中心下模块的处理状态 -->
+	<update id="update_jszt" parameterClass="java.util.Map">
+		update
+		${dbSchemal1}xqjs_jisclcssz
+		set chulzt = #chulzt#
+		where rownum=1 and jiscldm = #jiscldm#
+         </update>
+         
+         
+    <!-- 新循环数据筛选 -->
+    <!--R1/RD-->
+	<select id="selectSxR1RD" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+		select 
+		    DISTINCT
+			a.USERCENTER  , 
+			a.FENPQH      , 
+			a.LINGJBH     , 
+			a.GONGYSBH    , 
+			a.CHANX       , 
+			a.LUJBH       , 
+			a.LUJMC       , 
+			a.FAHD        , 
+			a.WAIBMS      , 
+			a.WJIANGLMS   , 
+			a.WSHENGXSJ   , 
+			a.ZHIDGYS     , 
+			a.JIAOFM      , 
+			a.BEIHZQ      , 
+			a.YUNSZQ      , 
+			a.GCBH        , 
+			a.SONGHPC     , 
+			a.BEIHSJC     , 
+			a.MUDD        , 
+			a.DINGHCK     , 
+			a.MOS2        , 
+			a.JIANGLMS2   , 
+			a.SHENGXSJ2   , 
+			a.CANGKSHPC2  , 
+			a.CANGKSHSJ2  , 
+			a.CANGKFHSJ2  , 
+			a.BEIHSJ2     , 
+			a.IBEIHSJ2    , 
+			a.PBEIHSJ2    , 
+			a.XIANBCK     , 
+			a.MOS         , 
+			a.JIANGLMS    , 
+			a.SHENGXSJ    , 
+			a.CANGKSHPC   , 
+			a.CANGKSHSJ   , 
+			a.CANGKFHSJ   , 
+			a.BEIHSJ      , 
+			a.IBEIHSJ     , 
+			a.PBEIHSJ     , 
+			a.ZHIZLX      , 
+			a.GONGYSLX    , 
+			a.DINGHCKLX   , 
+			a.WULGYYZ2    , 
+			a.WULGYYZ1    , 
+			a.WULGYYZ     ,
+			a.GONGYFE   as gyfe  ,
+		    a.XIAOHBL  
+		from (
+			select 
+					w.USERCENTER  , 
+					w.FENPQH      , 
+					w.LINGJBH     , 
+					w.GONGYSBH    , 
+					w.CHANX       , 
+					w.LUJBH       , 
+					w.LUJMC       , 
+					w.FAHD        , 
+					w.WAIBMS      , 
+					w.WJIANGLMS   , 
+					w.WSHENGXSJ   , 
+					w.ZHIDGYS     , 
+					w.JIAOFM      , 
+					w.BEIHZQ      , 
+					w.YUNSZQ      , 
+					w.GCBH        , 
+					w.SONGHPC     , 
+					w.BEIHSJC     , 
+					w.MUDD        , 
+					w.DINGHCK     , 
+					w.MOS2        , 
+					w.JIANGLMS2   , 
+					w.SHENGXSJ2   , 
+					w.CANGKSHPC2  , 
+					w.CANGKSHSJ2  , 
+					w.CANGKFHSJ2  , 
+					w.BEIHSJ2     , 
+					w.IBEIHSJ2    , 
+					w.PBEIHSJ2    , 
+					w.XIANBCK     , 
+					w.MOS         , 
+					w.JIANGLMS    , 
+					w.SHENGXSJ    , 
+					w.CANGKSHPC   , 
+					w.CANGKSHSJ   , 
+					w.CANGKFHSJ   , 
+					w.BEIHSJ      , 
+					w.IBEIHSJ     , 
+					w.PBEIHSJ     , 
+					w.ZHIZLX      , 
+					w.GONGYSLX    , 
+					w.DINGHCKLX   , 
+					w.WULGYYZ2    , 
+					w.WULGYYZ1    , 
+					w.WULGYYZ     ,
+					w.GONGYFE     ,
+		            w.XIAOHBL     ,
+					x.xiaohdbh as xiaohdbh
+			   from ${dbSchemal1}xqjs_lins_wullj w,
+					${dbSchemal3}ckx_lingjxhd x
+					where w.usercenter = x.usercenter
+					and w.lingjbh = x.lingjbh
+					and w.fenpqh = x.fenpqbh
+					and w.chanx = x.shengcxbh
+					and w.usercenter=#usercenter#
+					<dynamic>
+					       <isEqual  prepend=" and " property="gonghms" compareValue="R1">
+					                  (w.waibms = #gonghms# OR W.WJIANGLMS = #gonghms# OR W.JIANGLMS = #gonghms#  OR W.JIANGLMS2 = #gonghms# )
+					       </isEqual>
+					       <isEqual  prepend=" and " property="gonghms" compareValue="RD">
+					                 ( w.mos = #gonghms# OR W.WJIANGLMS = #gonghms# OR W.JIANGLMS = #gonghms#  OR W.JIANGLMS2 = #gonghms# )
+					       </isEqual>
+			       </dynamic>
+			) a
+	   where not exists (
+			select 
+			kb.usercenter usercenter,
+			kb.lingjbh lingjbh,
+			kb.kehd    kehd
+			from ${dbSchemal1}xqjs_kanbxhgm kb
+			where 
+			    kb.gonghms = #gonghms#
+			and a.lingjbh = kb.lingjbh
+			and a.usercenter = kb.usercenter
+			and kb.kehd = a.xiaohdbh
+			)     
+		</select>
+	<!--R2/RM-->
+	<select id="selectSxR2RM" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+		select 
+		    DISTINCT
+			w.USERCENTER  , 
+			w.FENPQH      , 
+			w.LINGJBH     , 
+			w.GONGYSBH    , 
+			w.CHANX       , 
+			w.LUJBH       , 
+			w.LUJMC       , 
+			w.FAHD        , 
+			w.WAIBMS      , 
+			w.WJIANGLMS   , 
+			w.WSHENGXSJ   , 
+			w.ZHIDGYS     , 
+			w.JIAOFM      , 
+			w.BEIHZQ      , 
+			w.YUNSZQ      , 
+			w.GCBH        , 
+			w.SONGHPC     , 
+			w.BEIHSJC     , 
+			w.MUDD        , 
+			w.DINGHCK     , 
+			w.MOS2        , 
+			w.JIANGLMS2   , 
+			w.SHENGXSJ2   , 
+			w.CANGKSHPC2  , 
+			w.CANGKSHSJ2  , 
+			w.CANGKFHSJ2  , 
+			w.BEIHSJ2     , 
+			w.IBEIHSJ2    , 
+			w.PBEIHSJ2    , 
+			w.XIANBCK     , 
+			w.MOS         , 
+			w.JIANGLMS    , 
+			w.SHENGXSJ    , 
+			w.CANGKSHPC   , 
+			w.CANGKSHSJ   , 
+			w.CANGKFHSJ   , 
+			w.BEIHSJ      , 
+			w.IBEIHSJ     , 
+			w.PBEIHSJ     , 
+			w.ZHIZLX      , 
+			w.GONGYSLX    , 
+			w.DINGHCKLX   , 
+			w.WULGYYZ2    , 
+			w.WULGYYZ1    , 
+			w.WULGYYZ     ,
+			w.GONGYFE    as gyfe  ,
+		    w.XIAOHBL  
+		from ${dbSchemal1}xqjs_lins_wullj w
+	    where not exists (
+			select 
+			kb.usercenter usercenter,
+			kb.lingjbh lingjbh,
+			kb.kehd    kehd
+			from ${dbSchemal1}xqjs_kanbxhgm kb
+			where 
+			      kb.gonghms = #gonghms#
+			and   w.lingjbh = kb.lingjbh
+			and   w.usercenter = kb.usercenter
+			and   w.usercenter=#usercenter#
+			<dynamic>
+			       <isEqual  prepend=" and " property="gonghms" compareValue="R2">
+			                 w.mudd = kb.kehd and ( w.waibms = #gonghms# OR W.WJIANGLMS = #gonghms# OR W.JIANGLMS = #gonghms#  OR W.JIANGLMS2 = #gonghms# )
+
+			       </isEqual>
+			       <isEqual  prepend=" and " property="gonghms" compareValue="RM">
+			                 w.xianbck = kb.kehd  and ( w.mos2 = #gonghms# OR W.WJIANGLMS = #gonghms# OR W.JIANGLMS = #gonghms#  OR W.JIANGLMS2 = #gonghms# )
+			       </isEqual>
+			</dynamic>
+			)     
+		</select>
+		
+		<insert id="xxhInsMiddle" parameterClass="com.athena.xqjs.entity.kanbyhl.Wullj">
+		       insert into ${dbSchemal1}xqjs_lins_wullj
+		       (
+		            USERCENTER  , 
+					FENPQH      , 
+					LINGJBH     , 
+					GONGYSBH    , 
+					chanx       , 
+					LUJBH       , 
+					LUJMC       , 
+					FAHD        , 
+					WAIBMS      , 
+					WJIANGLMS   , 
+					WSHENGXSJ   , 
+					ZHIDGYS     , 
+					JIAOFM      , 
+					BEIHZQ      , 
+					YUNSZQ      , 
+					GCBH        , 
+					SONGHPC     , 
+					BEIHSJC     , 
+					MUDD        , 
+					DINGHCK     , 
+					MOS2        , 
+					JIANGLMS2   , 
+					SHENGXSJ2   , 
+					CANGKSHPC2  , 
+					CANGKSHSJ2  , 
+					CANGKFHSJ2  , 
+					BEIHSJ2     , 
+					IBEIHSJ2    , 
+					PBEIHSJ2    , 
+					XIANBCK     , 
+					MOS         , 
+					JIANGLMS    , 
+					SHENGXSJ    , 
+					CANGKSHPC   , 
+					CANGKSHSJ   , 
+					CANGKFHSJ   , 
+					BEIHSJ      , 
+					IBEIHSJ     , 
+					PBEIHSJ     , 
+					ZHIZLX      , 
+					GONGYSLX    , 
+					DINGHCKLX   , 
+					WULGYYZ2    , 
+					WULGYYZ1    , 
+					WULGYYZ     ,
+					GONGYFE     ,
+				    XIAOHBL  
+           )values(
+                  	#usercenter# , 
+					#fenpqh# , 
+					#lingjbh# , 
+					#gongysbh# , 
+					#chanx# , 
+					#lujbh# , 
+					#lujmc# , 
+					#fahd# , 
+					#waibms# , 
+					#wjianglms# , 
+					#wshengxsj# , 
+					#zhidgys# , 
+					#jiaofm# , 
+					#beihzq# , 
+					#yunszq# , 
+					#gcbh# ,  
+					#songhpc# , 
+					#beihsjc# , 
+					#mudd# , 
+					#dinghck# , 
+					#mos2# , 
+					#jianglms2# , 
+					#shengxsj2# , 
+					#cangkshpc2# , 
+					#cangkshsj2# , 
+					#cangkfhsj2# , 
+					#beihsj2# , 
+					#ibeihsj2# , 
+					#pbeihsj2# , 
+					#xianbck# , 
+					#mos# , 
+					#jianglms# , 
+					#shengxsj# , 
+					#cangkshpc# , 
+					#cangkshsj# , 
+					#cangkfhsj# , 
+					#beihsj# , 
+					#ibeihsj# , 
+					#pbeihsj# , 
+					#zhizlx# , 
+					#gongyslx# , 
+					#dinghcklx# , 
+					#wulgyyz2# , 
+					#wulgyyz1# , 
+					#wulgyyz# ,
+					#gyfe# ,
+				    #xiaohbl#
+           )
+           
+		       
+		
+		</insert>
+		
+		<!-- 查询模式变换中间表 -->
+		<select id="queryMsqhb" resultClass="java.util.HashMap">
+		       select USERCENTER,
+		              XUNHBM,
+		              YUANXHBM,
+		              LINGJBH,
+		              MUDDLX,
+		              CANGKBH,
+		              XIAOHD,
+		              MOS,
+		              YUANMS
+		       from ${dbSchemal3}CKX_MSQHB
+		       where 1=1
+		       <dynamic>
+		              <isNotEmpty prepend=" and " property="shifkbqh">SHIFKBQH=#shifkbqh#</isNotEmpty>
+		              <isNotEmpty prepend=" and " property="zhuangt">ZHUANGT=#zhuangt#</isNotEmpty>
+		       </dynamic>       
+		</select>
+		
+		<!--更新模式变更中间表-->
+		<update id="updateMsbh" parameterClass="java.util.Map">
+		       update ${dbSchemal3}CKX_MSQHB
+		           set xunhbm = #xunhbm#,
+			           editor=#editor#,
+				       edit_time=to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+		           <dynamic>
+		               <isNotEmpty prepend=" , "  property="yuanxhbm">yuanxhbm=#yuanxhbm#</isNotEmpty>
+		           </dynamic>
+		       where 1=1
+		       
+		       <dynamic>
+		               <isNotEmpty prepend=" and "  property="USERCENTER">USERCENTER=#USERCENTER#</isNotEmpty>
+		               <isNotEmpty prepend=" and "  property="LINGJBH">LINGJBH=#LINGJBH#</isNotEmpty>
+		               <isNotEmpty prepend=" and "  property="CANGKBH" >CANGKBH=#CANGKBH#</isNotEmpty>
+		               <isNotEmpty prepend=" and "  property="MUDDLX" >MUDDLX=#MUDDLX#</isNotEmpty>
+		               <isNotEmpty prepend=" and "  property="XIAOHD" >XIAOHD=#XIAOHD#</isNotEmpty>
+		               <isNotEmpty prepend=" and "  property="MOS">MOS=#MOS#</isNotEmpty>
+		               <isNotEmpty prepend=" and "  property="YUANMS">YUANMS=#YUANMS#</isNotEmpty>
+		       </dynamic>
+		</update>
+		
+			<!-- 查询仓库循环时间 -->
+		<select id="queryCangkxhsj" resultClass="java.util.HashMap">
+		       select   USERCENTER,
+						CANGKBH,
+						FENPQHCK,
+						MOS,
+						CANGKSHPCF,
+						CANGKSHSJ,
+						CANGKFHSJ,
+						BEIHSJ,
+						IBEIHSJ,
+						PBEIHSJ
+		       from ${dbSchemal3}CKX_CANGKXHSJ
+		       where 1=1
+		       <dynamic>
+		              <isNotEmpty prepend=" and " property="usercenter">USERCENTER=#usercenter#</isNotEmpty>
+		              <isNotEmpty prepend=" and " property="mos">MOS=#mos#</isNotEmpty>
+		              <isNotEmpty prepend=" and " property="shengxbs">SHENGXBS=#shengxbs#</isNotEmpty>
+		       </dynamic>       
+		</select>
+</sqlMap>

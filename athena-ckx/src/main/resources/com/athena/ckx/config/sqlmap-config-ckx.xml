@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+
+	<properties resource="com/athena/ckx/config/sqlmap.properties" />
+
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="10"
+		maxTransactions="5" useStatementNamespaces="true" />
+		
+		
+		<!-- 邓贵琼 -->
+		
+		<!-- 仓库  denggq -->
+		<sqlMap resource="com/athena/ckx/entity/cangk/cangk.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/zick.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/fahzt.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/xiehzt.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/kuwdj.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/kuwdj_baoz.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/kehczm.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/danjdy.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/rongqc.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/xingzysts.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/yansblsz.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/yansbllj.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/kuw.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/PrintStrogdict.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xitcsdy/select.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/chengpk_jihyz.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/yansxlj.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/rongqcxhd.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/wuldrqgx.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/kuckzzysz.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/cangk/zerzt.xml"/>
+		<!-- 11976 -->
+		<sqlMap resource="com/athena/ckx/entity/cangk/anxzdyhl.xml"/>
+		<!-- xuqjs  denggq -->
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/baoz.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/lingj.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/usercenter.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/xitcsdy.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/shengcx.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/fenpq.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/manager.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/gongys.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/cmj.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/shengcpt.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/jiaofmzd.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/jiaofmsd.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/jiaofrl.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/ticxxsj.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/xiaohc.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/xiaohccx.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/xiaohcmb.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/xiaohcyssk.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/lingjck.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/lingjgyslsbz.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/gongyxhd.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/chexpt.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/lingjxhd.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/biangjlb.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/chej.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/chaftscssz.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/Ckxlingjxhds.xml"/>
+		
+		<!-- 取货运输费用 王朋 -->
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/quhyuns/quhyuns.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/quhyuns/tuopbzdygx.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/quhyuns/jinjjquhyuns.xml"/>
+		<!-- xuqjs  qizhongtao -->
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/tidj.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/lingjgys.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/dinghlxzh.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/zuiddhsl.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/gongysRxbl.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/gonghmsMxq.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/peislb.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/tongbjplj.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/ziyhqrl.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/jdygzq.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/dingdjsyl.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/ziygzlx.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/xuqly.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/zhizlxzh.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/chanxhb.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/danwhs.xml"/>
+
+
+		<!-- hj  产线 -->
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_chanxz.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_shengcx.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_chanxz_jhy.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_kehb.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_shengcx_lingj.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_yongh_chengys.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_lingjkh.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_chengpk.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_lingjxlh_qud.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_gongys.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_keh_chengpk.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_chex.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_peizbz.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/ckx_peizcl.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/paicfj/chexYunss.xml" />
+		<sqlMap resource="com/athena/ckx/entity/paicfj/yunslx.xml" />
+		<sqlMap resource="com/athena/ckx/entity/paicfj/yunslxJiaof.xml" />
+		<!-- 运输时刻 hj 2012-03-20 -->
+		<sqlMap resource="com/athena/ckx/entity/transTime/ckxYunssjmbTemp.xml"/>
+		<sqlMap resource="com/athena/ckx/entity/transTime/ckxTempMon.xml"/>		
+		<sqlMap resource="com/athena/ckx/entity/transTime/ckxYunssk.xml"/>
+		
+		<!-- 批量任务 hj 2012-03-20 -->
+		<sqlMap resource="com/athena/ckx/entity/xitcsdy/utilControlBiaos.xml"/>
+		<!-- 异常报警 hj 2012-03-20 -->
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/yicbj.xml"/>
+		<!-- 事务提醒 hj 2013-03-7 -->
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/ckxshiwtx.xml"/>
+		
+		
+		<!-- 物流路径 -->
+		
+		<sqlMap resource="com/athena/ckx/entity/carry/cangkxhsj.xml" />
+		<sqlMap resource="com/athena/ckx/entity/carry/wullj.xml" />
+		<sqlMap resource="com/athena/ckx/entity/carry/wuld.xml" />
+		<sqlMap resource="com/athena/ckx/entity/carry/innerPath.xml" />
+		<sqlMap resource="com/athena/ckx/entity/carry/waibms.xml" />
+		<sqlMap resource="com/athena/ckx/entity/carry/xianbdingh.xml" />
+		<sqlMap resource="com/athena/ckx/entity/carry/shengcxxianb.xml" />
+		<sqlMap resource="com/athena/ckx/entity/carry/outerPath.xml" />
+		<sqlMap resource="com/athena/ckx/entity/carry/xiehzt.xml" />
+		
+		
+		
+		
+		
+		<!-- 工作日历 -->
+		<sqlMap resource="com/athena/ckx/entity/workCalendar/CkxCalendarCenter.xml" />
+		<sqlMap resource="com/athena/ckx/entity/workCalendar/CkxCalendarTeam.xml" />
+		<sqlMap resource="com/athena/ckx/entity/workCalendar/CkxCalendarVersion.xml" />
+		<sqlMap resource="com/athena/ckx/entity/workCalendar/CkxCalendarGroup.xml" />
+		<sqlMap resource="com/athena/ckx/entity/workCalendar/CkxCalendarGongyzq.xml" />
+		<sqlMap resource="com/athena/ckx/entity/workCalendar/CkxCalendarGongyzx.xml" />
+		<sqlMap resource="com/athena/ckx/entity/workCalendar/CkxXiuxr.xml" />
+		<sqlMap resource="com/athena/ckx/entity/workCalendar/PcCalendarTeam.xml" />
+		<sqlMap resource="com/athena/ckx/entity/workCalendar/PcCalendarVersion.xml" />
+		<sqlMap resource="com/athena/ckx/entity/workCalendar/PcCalendarGroup.xml" />
+		
+		
+		
+	
+	
+	
+	
+		<!-- 运输时刻 -->
+		<sqlMap resource="com/athena/ckx/entity/transTime/CkxTempMaoxq.xml" /> 
+		<sqlMap resource="com/athena/ckx/entity/transTime/CkxTempMaoxqcf.xml" /> 
+	
+		<sqlMap resource="com/athena/ckx/entity/transTime/gongyschengysxiehzt.xml" /> 
+		<sqlMap resource="com/athena/ckx/entity/transTime/CkxXiehztxqgj.xml" /> 
+		
+		<!-- CS初始化 -->
+		<sqlMap resource="com/athena/ckx/entity/transTime/CkxCsChushjs.xml" /> 
+		
+		
+<!-- 		看板 -->
+		<sqlMap resource="com/athena/ckx/entity/xitcsdy/kanbxhgm.xml" /> 
+<!-- 		小火车模板表（执行层用） -->
+		<sqlMap resource="com/athena/ckx/entity/xuqjs/xiaohcmbCk.xml" /> 
+	    <sqlMap resource="com/athena/ckx/entity/xuqjs/xiaohcZxc.xml"/>
+	    
+<!-- 	    工作时间模板 -->
+	    <sqlMap resource="com/athena/ckx/entity/xuqjs/ticxxsj-gzsjmb.xml"/>
+	    
+	    
+<!-- 	    工作时间合并 -->
+	     <sqlMap resource="com/athena/ckx/entity/workCalendar/CkxCalendarHebTime.xml"/>
+	     
+	     <!-- 按件目录卸货点 -->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/anjmlxhd.xml"/>
+	     
+	     <!-- 容器返还记账 0010495-->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/rongqjz.xml"/>
+	     
+	     <!-- 主从供应商 0010495-->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/zhucgys.xml"/>
+	     
+	     <!-- 返还记账商 0010495-->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/fanhjzs.xml"/>    
+	     
+	     <!-- 容器区-仓库 0010495-->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/rongqick.xml"/> 
+	     
+	     <!-- 运输时刻手工计算 xss-0011489 -->
+	     <sqlMap resource="com/athena/ckx/entity/transTime/ckxYunsskTemp.xml"/>
+	     
+	     <!-- 供应商份额 hanwu 0011488-->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/gongysfe.xml"/>
+	     
+	     <!-- 按需平移 xss-0011505 -->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/anxpy.xml"/>
+	     
+
+	     <!--begin 供应商小火车趟次合并 add by zbb -->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/gongysxhc.xml"/>	     
+	     <!-- end 供应商小火车趟次合并 add by zbb -->
+	     
+	      <!--begin 库存置换 add by zbb -->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/kuczh.xml"/>	     
+	     <!-- end 库存置换 add by zbb -->
+	     
+	     <!--begin 上线指导 add by zbb -->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/xiaohcsxzd.xml"/>	     
+	     <!-- end 上线指导  add by zbb -->
+	     
+	     <!--begin 盈余修正 add by zbb -->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/xianbkc.xml"/>	     
+	     <!-- end 盈余修正 add by zbb -->
+
+	     <!-- 焊装大线、分装线、离线点、分装线排产数量		hanwu -->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/dax.xml"/>
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/fenzx.xml"/>
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/lixd.xml"/>
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/fenzxpcsl.xml"/>
+	     
+	     <!-- SAP下线结算 -->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/sapxxjs.xml"/>
+	     
+	     <!-- SAP整车维护 -->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/sapzcwh.xml"/>
+	     
+	      <!-- DFPV流水帐审核 -->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/dfpvlszsh.xml"/>
+	     
+	     <!-- BOM零件切换 -->
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/dfpvlingjqh.xml"/>
+	     <sqlMap resource="com/athena/ckx/entity/xuqjs/dfpvlingjhz.xml"/>
+
+		<!-- V4_041 按需要货令统计报表 -->
+		<sqlMap resource="com/athena/ckx/entity/baob/anxyhlbb.xml"/>
+</sqlMapConfig>

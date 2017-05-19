@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="linsxuq">
+
+	<resultMap class="com.athena.xqjs.entity.laxkaix.LinsXuq" id="LinsXuq">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="JIHYDM" property="jihydm" />
+		<result column="MAOXQBC" property="maoxqbc" />
+		<result column="LINGJH" property="lingjh" />
+		<result column="MUDD" property="mudd" />
+		<result column="CMJ" property="cmj" />
+		<result column="XUQSL" property="xuqsl" />
+		<result column="DUANDSJ" property="duandsj" />
+		<result column="MANZSL" property="manzsl" />
+		<result column="CANGKKC" property="cangkkc" />
+		<result column="ZHONGXQKC" property="zhongxqkc" />
+		<result column="ZHIXTS" property="zhixts" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="EDITOR" property="editor" />
+		<result column="EDIT_TIME" property="editTime" />
+	</resultMap>
+
+	<insert id="insertLinsxuq" parameterClass="com.athena.xqjs.entity.laxkaix.LinsXuq">
+		insert into ${dbSchemal1}XQJS_LINS_XUQ
+		(
+		USERCENTER,
+		JIHYDM,
+		MAOXQBC,
+		LINGJH,
+		CMJ,
+		MANZSL,
+		CREATOR,
+		CREATE_TIME
+		)
+		values
+		(
+		#usercenter#,
+		#jihydm#,
+		#maoxqbc#,
+		#lingjh#,
+		#cmj#,
+		#manzsl#,
+		#creator#,
+		to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss')
+		)
+	</insert>
+	<!-- 更新临时表 临时需求表 -->
+	<update id="updateLinsxuq" parameterClass="com.athena.xqjs.entity.laxkaix.LinsXuq">
+		UPDATE ${dbSchemal1}XQJS_LINS_XUQ SET
+		XUQSL=#xuqsl#,
+		DUANDSJ=to_date(#duandsj#,'yyyy-MM-dd'),
+		CANGKKC=#cangkkc#,
+		ZHONGXQKC=#zhongxqkc#,
+		EDITOR=#editor#,
+		EDIT_TIME=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		WHERE USERCENTER = #usercenter# and JIHYDM=#jihydm# and MAOXQBC=#maoxqbc#
+		and LINGJH=#lingjh#
+   			
+   </update>
+	<update id="updateLinsxuqByManzsl" parameterClass="com.athena.xqjs.entity.laxkaix.LinsXuq">
+		UPDATE ${dbSchemal1}XQJS_LINS_XUQ SET
+		MANZSL=MANZSL+#manzsl#,
+		EDITOR=#editor#,
+		EDIT_TIME=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter"> USERCENTER =
+				#usercenter# </isNotEmpty>
+			<isNotEmpty prepend="and" property="jihydm"> JIHYDM=#jihydm#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="maoxqbc"> MAOXQBC=#maoxqbc#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="lingjh"> LINGJH=#lingjh#
+			</isNotEmpty>
+		</dynamic>
+
+	</update>
+	<update id="updateLinsxuqByXuqsl" parameterClass="com.athena.xqjs.entity.laxkaix.LinsXuq">
+		UPDATE ${dbSchemal1}XQJS_LINS_XUQ SET
+		XUQSL=#xuqsl#,
+		EDITOR=#editor#,
+		EDIT_TIME=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		WHERE USERCENTER = #usercenter# and JIHYDM=#jihydm# and LINGJH=#lingjh#
+
+	</update>
+	<select id="selectLinsXuq" resultMap="LinsXuq">
+		SELECT USERCENTER,
+		JIHYDM,
+		MAOXQBC,
+		LINGJH,
+		MUDD,
+		CMJ,
+		XUQSL,
+		to_date(DUANDSJ,'yyyy-MM-dd') AS DUANDSJ,
+		MANZSL,
+		CANGKKC,
+		ZHONGXQKC,
+		ZHIXTS,
+		CREATOR,
+		CREATE_TIME,
+		EDITOR,
+		EDIT_TIME
+		FROM ${dbSchemal1}XQJS_LINS_XUQ WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter">
+				USERCENTER =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="maoxqbc">
+				MAOXQBC = #maoxqbc#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="queryLingjbj" resultMap="LinsXuq">
+		SELECT USERCENTER,
+		JIHYDM,
+		MAOXQBC,
+		LINGJH,
+		MUDD,
+		CMJ,
+		XUQSL,
+		DUANDSJ,
+		MANZSL,
+		CANGKKC,
+		ZHONGXQKC,
+		ZHIXTS,
+		CREATOR,
+		CREATE_TIME,
+		EDITOR,
+		EDIT_TIME
+		FROM ${dbSchemal1}XQJS_LINS_XUQ WHERE 1=1 AND XUQSL is not null
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter">
+				USERCENTER = #usercenter#
+			</isNotEmpty>
+			<!-- 
+			<isNotEmpty prepend="and" property="maoxqbc">
+				MAOXQBC = #maoxqbc#
+			</isNotEmpty> -->
+			<isNotEmpty prepend="and" property="lingjh">
+				LINGJH = #lingjh#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="jihydm">
+				JIHYDM = #jihydm#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="duandsj">
+				DUANDSJ &gt; to_date(#duandsj#,'yyyy-MM-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="laxjxDuandsj">
+				DUANDSJ &lt;= to_date(#laxjxDuandsj#,'yyyy-MM-dd')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="queryLingjbjLax" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.laxkaix.LinsXuq">
+		SELECT USERCENTER,
+		JIHYDM,
+		MAOXQBC,
+		LINGJH,
+		MUDD,
+		CMJ,
+		XUQSL,
+		DUANDSJ,
+		MANZSL,
+		CANGKKC,
+		ZHONGXQKC,
+		ZHIXTS,
+		CREATOR,
+		CREATE_TIME,
+		EDITOR,
+		EDIT_TIME,
+		#anqkc# as ANQKC,
+		#laxjx# as LAXJX,
+		#laxbs# as LAXBS,
+		#ziyts# as ZIYTS,
+		#kyljdm# as kyljdm
+		FROM ${dbSchemal1}XQJS_LINS_XUQ WHERE 1=1 AND XUQSL is not null
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter">
+				USERCENTER =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="maoxqbc">
+				MAOXQBC = #maoxqbc#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="lingjh">
+				LINGJH = #lingjh#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="jihydm">
+				JIHYDM = #jihydm#
+			</isNotEmpty>
+			
+		</dynamic>
+	</select>
+	
+	<select id="getAllWuldlx" resultClass="java.util.HashMap">
+		SELECT WULDBH,WULDMC,SHUNXH FROM ${dbSchemal0}CKX_YUNSWLD	
+	</select>
+	<select id="getAllWaibwulxx" resultClass="java.util.HashMap">
+		SELECT LUJBH,WULDBH,JIHDHSYSJ,YUNSMS FROM ${dbSchemal0}CKX_WAIBWLXX
+	</select>
+	<select id="getMinDuandsj" resultClass="java.util.HashMap">
+		SELECT MIN(TO_CHAR(DUANDSJ,'yyyy-MM-dd')) AS DUANDSJ FROM ${dbSchemal1}XQJS_LINS_XUQ
+		WHERE DUANDSJ &gt;TO_DATE(#currentDate#,'yyyy-MM-dd')
+	</select>
+	<select id="queryLingjbjKaix" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.laxkaix.LinsXuq">
+		SELECT USERCENTER,
+		JIHYDM,
+		MAOXQBC,
+		LINGJH,
+		MUDD,
+		CMJ,
+		XUQSL,
+		DUANDSJ,
+		MANZSL,
+		CANGKKC,
+		ZHONGXQKC,
+		ZHIXTS,
+		CREATOR,
+		CREATE_TIME,
+		EDITOR,
+		EDIT_TIME,
+		#anqkc# as ANQKC,
+		#kaixjx# as KAIXJX
+		FROM ${dbSchemal1}XQJS_LINS_XUQ WHERE 1=1 AND XUQSL is not null
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter">
+				USERCENTER =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="maoxqbc">
+				MAOXQBC = #maoxqbc#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="lingjh">
+				LINGJH = #lingjh#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="jihydm">
+				JIHYDM = #jihydm#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<insert id="insertLinsxuqInfo" parameterClass="com.athena.xqjs.entity.laxkaix.LinsXuq">
+		INSERT INTO ${dbSchemal1}XQJS_LINS_XUQ(
+		USERCENTER,
+		JIHYDM,
+		LINGJH,
+		MAOXQBC,
+		CMJ,
+		XUQSL,
+		CANGKKC,
+		ZHONGXQKC,
+		DUANDSJ,
+		MANZSL,
+		CREATOR,
+		CREATE_TIME
+		)VALUES(
+		#usercenter#,
+		#jihydm#,
+		#lingjh#,
+		#maoxqbc#,
+		#cmj#,
+		#xuqsl#,
+		#cangkkc#,
+		#zhongxqkc#,
+		to_date(#duandsj#,'yyyy-MM-dd'),
+		#manzsl#,
+		#creator#,
+		to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss')
+		)
+   </insert>
+   <update id="updateLinsxuqInfo" parameterClass="com.athena.xqjs.entity.laxkaix.LinsXuq">
+   		UPDATE ${dbSchemal1}XQJS_LINS_XUQ SET 
+   		CMJ = #cmj#,
+		XUQSL = #xuqsl#,
+		CANGKKC = #cangkkc#,
+		ZHONGXQKC = #zhongxqkc#,
+		EDITOR = #editor#,
+		EDIT_TIME = #editTime# WHERE USERCENTER = #usercenter# AND JIHYDM = #jihydm# AND LINGJH = #lingjh# AND MAOXQBC = #maoxqbc#
+   </update>
+	<delete id="deleteLinsxuq">
+		DELETE FROM ${dbSchemal1}XQJS_LINS_XUQ
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter"> USERCENTER =
+				#usercenter# </isNotEmpty>
+		</dynamic>
+	</delete>
+	<delete id="deleteLinsxuqInfo">
+		DELETE FROM ${dbSchemal1}XQJS_LINS_XUQ
+		WHERE 1=1 
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter"> USERCENTER =
+				#usercenter# </isNotEmpty>
+			<isNotEmpty prepend="and" property="lingjh"> LINGJH =
+				#lingjh# </isNotEmpty>
+			<isNotEmpty prepend="and" property="jihydm"> JIHYDM =
+				#jihydm# </isNotEmpty>
+		</dynamic>
+	</delete>
+	<delete id="deleteLinsxuqBytj">
+		DELETE FROM ${dbSchemal1}XQJS_LINS_XUQ
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter"> USERCENTER =
+				#usercenter# </isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="jihydm"> JIHYDM = #jihydm#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="and" property="lingjh"> LINGJH = #lingjh#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	<select id="getLingjhJijhydm" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT USERCENTER,
+		JIHY,
+		LINGJBH
+		FROM ${dbSchemal3}CKX_LINGJ
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter"> USERCENTER = #usercenter# </isNotEmpty>
+			<isNotEmpty prepend="and" property="lingjbh"> LINGJBH = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getWeimzljInfo" parameterClass="com.athena.xqjs.entity.laxkaix.LinsXuq"
+		resultClass="java.util.HashMap">
+		select
+		USERCENTER,
+		LINGJH,
+		MUDD,
+		to_char(DUANDSJ,'yyyy-MM-dd'),
+		CANGKKC,
+		ZHONGXQKC,
+		(XUQSL-MANZSL) as WEIMZSL
+		from ${dbSchemal1}XQJS_LINS_XUQ t where 1=1 AND (XUQSL-MANZSL)>0
+		AND USERCENTER = #usercenter#
+   </select>
+	<select id="validateLingjh" parameterClass="java.util.HashMap"
+		resultClass="int">
+		SELECT COUNT(*) FROM ${dbSchemal3}CKX_LINGJ WHERE LINGJBH = #lingjh#
+   </select>
+   <select id="validateLinsxuqLingjh" parameterClass="java.util.HashMap"
+		resultClass="int">
+		SELECT COUNT(*) FROM ${dbSchemal1}XQJS_LINS_XUQ WHERE LINGJH = #lingjh# AND USERCENTER = #usercenter# AND JIHYDM=#jihydm#
+   </select>
+   
+</sqlMap>

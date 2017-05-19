@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- ibatis数据库操作配置文件 -->
+<sqlMap namespace="fenpeiyaocjh">
+
+
+	<!-- *****************BY WANGCHONG   date :2012-02-09***************************** -->
+
+	
+	
+	<!-- 要车计划总表 BY 用户中心 -->
+	<select id="queryYaocjhZbByUc" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	SELECT T.USERCENTER, T.YAOCJHXH, T.CHEXMC, to_char(T.ZONGCC) ZONGCC, T.SHIFWC
+	  FROM ${dbSchemal2}FJ_YAOCJHZB T
+	 WHERE T.USERCENTER = #UC#
+	 ]]> 
+	 <dynamic>
+	 	<isNotEmpty property="DATE" prepend="AND"> t.YAOCJHXH = #DATE#</isNotEmpty>
+	 </dynamic>
+	<![CDATA[ 
+	 ORDER BY T.SHIFWC ,t.YAOCJHXH desc 
+	]]> 
+	</select>
+	
+	
+	<!-- 查询车辆明细  by 用户中心 and 要车计划总表主键 -->
+	<select id="queryYaocjhCelMxByZb" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	SELECT T.CHEX, C.CHEXMC, TO_CHAR(T.ZONGCC)  ZONGCC
+	  FROM ${dbSchemal2}FJ_CHELMX T
+	  JOIN (select * from ${dbSchemal3}CKX_CHEX where biaos='1') C
+	    ON C.CHEXBH = T.CHEX
+	 WHERE T.USERCENTER = #UC#
+	   AND T.YAOCJHXH = #YAOCJHXH#
+	]]> 
+	</select>
+	
+	
+	<!-- 根据要车计划序号及用户中心查询所有的要车明细 -->
+	<select id="queryYaoCMXAll" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+			SELECT MX.ID,
+		       MX.YAOCJHXH,
+		       MX.USERCENTER,
+		       MX.YAOCJHH,
+		       MX.YUNSLX,
+		       MX.JIHCX,
+		       CX.CHEXBH ,
+		       TO_CHAR(MX.DAOCSJ, 'YYYY-MM-DD HH24:MI') DAOCSJ,
+		       TO_CHAR(MX.FAYSJ, 'YYYY-MM-DD HH24:MI') FAYSJ,
+		       MX.YAOCZT,
+		       MX.CELBH,
+		       MX.SHIFMZ,
+           	   Y.YUNSSBM
+		  FROM ${dbSchemal2}FJ_YAOCMX MX
+		  JOIN (select * from  ${dbSchemal3}CKX_CHEX where biaos='1') CX
+		    ON CX.CHEXBH = MX.JIHCX
+		  LEFT JOIN ${dbSchemal2}FJ_YAOCJH Y
+            ON MX.YAOCJHH = Y.YAOCJHH
+		 WHERE MX.YAOCJHXH = #YAOCJHXH#
+		   AND MX.USERCENTER = #UC#
+		       ORDER BY MX.FAYSJ
+	
+	]]> 
+	</select>
+	
+		<!-- 根据要车计划序号及用户中心查询所有的要车明细(导出) -->
+	<select id="selectYaoCMXForDownLoad" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+			SELECT MX.ID,
+		       MX.YAOCJHXH,
+		       MX.USERCENTER,
+		       MX.YAOCJHH,
+		       MX.YUNSLX,
+		       MX.JIHCX,
+		       CX.CHEXBH ,
+		       TO_CHAR(MX.DAOCSJ, 'YYYY-MM-DD HH24:MI') DAOCSJ,
+		       TO_CHAR(MX.FAYSJ, 'YYYY-MM-DD HH24:MI') FAYSJ,
+		       MX.YAOCZT,
+		       MX.CELBH,
+		       case MX.SHIFMZ when '1' then '满载' else '未满' end SHIFMZ,
+           	   Y.YUNSSBM
+		  FROM ${dbSchemal2}FJ_YAOCMX MX
+		  JOIN (select * from  ${dbSchemal3}CKX_CHEX where biaos='1') CX
+		    ON CX.CHEXBH = MX.JIHCX
+		  LEFT JOIN ${dbSchemal2}FJ_YAOCJH Y
+            ON MX.YAOCJHH = Y.YAOCJHH
+		 WHERE MX.YAOCJHXH = #YAOCJHXH#
+		   AND MX.USERCENTER = #UC#
+		       ORDER BY MX.FAYSJ
+	
+	]]> 
+	</select>
+	
+	<!-- 根据要车计划序号及用户中心查询尚未分配的要车明细 -->
+	<select id="queryYaoCMXAllNotAssign" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+			SELECT MX.ID,
+		       MX.YAOCJHXH,
+		       MX.USERCENTER,
+		       MX.YAOCJHH,
+		       MX.YUNSLX,
+		       MX.JIHCX,
+		       CX.CHEXMC ,
+		       TO_CHAR(MX.DAOCSJ, 'YYYY-MM-DD HH24:MI') DAOCSJ,
+		       TO_CHAR(MX.FAYSJ, 'YYYY-MM-DD HH24:MI') FAYSJ,
+		       MX.YAOCZT,
+		       MX.CELBH,
+		       '' GCBH,
+		       '' GONGSMC
+		  FROM ${dbSchemal2}FJ_YAOCMX MX
+		  JOIN (select * from ${dbSchemal3}CKX_CHEX where biaos='1') CX
+		    ON CX.CHEXBH = MX.JIHCX
+		 WHERE MX.YAOCJHXH = #YAOCJHXH#
+		   AND MX.USERCENTER = #UC#
+		   AND MX.YAOCZT = '1'
+		   AND YAOCJHH IS NULL
+
+	]]> 
+	</select>
+	
+
+	<!-- 查询车辆申报资源的运输商,车型号,数量 -->
+	<select id="queryYaocjhYySByClSb" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT SB.YUNSSBM,GS.GONGSMC, SB.SHENBSJ, SB.CHEX, CX.CHEXMC, to_char(nvl((SB.SHUL - TT.ZONGCC),0))   SHUL 
+		  FROM ${dbSchemal2}FJ_CHELSB SB
+		  JOIN (select * from ${dbSchemal3}CKX_CHEX where biaos='1') CX
+		    ON CX.CHEXBH = SB.CHEX
+		  JOIN (select * from ${dbSchemal3}CKX_GONGYS where biaos='1') GS
+		    ON GS.GCBH = SB.YUNSSBM AND GS.leix='3'
+		   AND GS.USERCENTER = #UC#
+		   
+		  LEFT JOIN (  SELECT JH.YUNSSBM, SUM(JH.ZONGCC) ZONGCC
+          FROM ${dbSchemal2}FJ_YAOCJH JH
+         WHERE EXISTS ( 
+               SELECT 1
+                 FROM (SELECT MX.YAOCJHH
+                          FROM ${dbSchemal2}FJ_YAOCMX MX
+                         WHERE MX.YAOCJHXH = #YAOCJHXH#
+                           AND MX.USERCENTER = #UC#
+                         GROUP BY MX.YAOCJHH) T
+                WHERE T.YAOCJHH = JH.YAOCJHH)
+        GROUP BY JH.YUNSSBM) TT ON TT.YUNSSBM = SB.YUNSSBM 
+		   
+		 WHERE SB.USERCENTER = #UC#
+		   AND SB.SHENBSJ = TO_DATE(#YAOCJHXH#, 'YYYY-MM-DD')
+	]]> 
+	</select>
+
+	
+	
+	
+	<!-- 查询客户与运输商的关系  by 用户中心 -->
+	<select id="queryYaocjhKehGys" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT KG.KEHBH, KG.CHENGYSBH FROM ${dbSchemal3}CKX_KEH_CHENGPK KG WHERE KG.USERCENTER =  #UC#  
+	]]> 
+	</select>
+	
+	
+	<!-- 查询要车明细 by 用户中心 and 要车计划序号,运营商编号 -->
+	<select id="queryYaocjhCelMxByYyS" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	SELECT MX.ID,
+	       MX.YAOCJHXH,
+	       MX.USERCENTER,
+	       MX.YAOCJHH,
+	       MX.YUNSLX,
+	       MX.JIHCX,
+	       TO_CHAR(MX.DAOCSJ, 'YYYY-MM-DD hh24:mi') DAOCSJ,
+       	   TO_CHAR(MX.FAYSJ, 'YYYY-MM-DD hh24:mi') FAYSJ,
+	       MX.YAOCZT,
+	       MX.CELBH,
+	       CL.CELMC,
+	       MX.SHIFMZ
+	  FROM ${dbSchemal2}FJ_YAOCMX MX
+	  JOIN ${dbSchemal3}CKX_PEIZCL CL
+	    ON CL.CELBH = MX.CELBH
+	  JOIN ${dbSchemal3}CKX_KEH_CHENGPK GS
+	    ON GS.YUNSLXBH = MX.YUNSLX
+	   AND GS.CHENGYSBH = #GCBH#
+	   AND GS.USERCENTER = #UC#
+	 WHERE MX.YAOCZT = '1'
+	   AND MX.USERCENTER = #UC#
+	   AND NOT EXISTS
+	 (SELECT 1 FROM ${dbSchemal2}FJ_YAOCJH H WHERE H.YAOCJHH = MX.YAOCJHH AND H.USERCENTER=#UC#)
+	]]> 
+	</select>
+	
+	<!-- 更新要车计划明细 BY 要车明细主键 -->
+	<update id="updateYaoCMx" parameterClass="java.util.Map" >
+	<![CDATA[
+	 UPDATE ${dbSchemal2}FJ_YAOCMX MX SET MX.YAOCJHH = #YAOCJHH# WHERE MX.ID=#ID#
+	]]> 
+	</update>
+	
+	<select id="selectYaocjhhOfyaocmx" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+			SELECT T.YAOCJHH FROM ${dbSchemal2}FJ_YAOCMX T WHERE USERCENTER=#usercenter# AND ID=#id#
+		]]> 
+	</select>
+	
+	<!-- 新增要车计划 -->
+	<insert id="insertYAOCJH" parameterClass="java.util.Map">
+		<![CDATA[
+		INSERT INTO ${dbSchemal2}FJ_YAOCJH 
+			  (YAOCJHH,
+			   USERCENTER,
+			   SHIFQR,
+			   YUNSSBM,
+			   ZONGCC,
+			   KAISSJ,
+			   JIESSJ,
+			   CREATOR,
+			   CREATE_TIME)
+			VALUES
+			  (#YAOCJHH#,
+			   #USERCENTER#,
+			   #SHIFQR#,
+			   #YUNSSBM#,
+			   #ZONGCC#,
+			   TO_DATE( #KAISSJ#, 'YYYY-MM-DD'),
+			   TO_DATE( #JIESSJ#, 'YYYY-MM-DD'),
+			   #CREATOR#,
+			   #CREATE_TIME#)
+			]]>
+	</insert>
+	
+	<!-- 新增配载计划  -->
+	<insert id="insertPeiZJH" parameterClass="java.util.Map">
+		<![CDATA[
+		INSERT INTO ${dbSchemal2}FJ_PEIZJH
+		  (YAOCMXH,
+		   PEIZDH,
+		   USERCENTER,
+		   DAOCSJ,
+		   YUNSSBM,
+		   JIHCX,
+		   YUNSLX,
+		   CANGKBH,
+		   JIHZT,
+		   FAYSJ,
+		   CREATOR,
+		   CREATE_TIME)
+		  SELECT X.ID,
+		         #PEIZDH# PEIZDH,
+		         X.USERCENTER,
+		         X.DAOCSJ,
+		         #YUNSSBM# YUNSSBM,
+		         X.JIHCX,
+		         YUNSLX,
+		         X.CANGKBH,
+		         #JIHZT# JIHZT,
+		         X.FAYSJ,
+		         #CREATOR# CREATOR,
+		         SYSDATE CREATE_TIME
+		    FROM ${dbSchemal2}FJ_YAOCMX X WHERE X.ID=#ID#
+	]]>
+	</insert>
+	
+	<!-- 新增要贷令明细  -->
+	<insert id="insertYaoHLMX" parameterClass="java.util.Map">
+		<![CDATA[
+	  INSERT INTO ${dbSchemal2}FJ_YAOHLMX
+		  (YAOHLBH,
+		   PEIZDH,
+		   YAOCMXH,
+		   BAOZDM,
+		   LINGJMC,
+		   LINGJSL,
+		   FAYSJ,
+		   KEHBM,
+		   JIAOFSJ,
+		   CREATOR,
+		   CREATE_TIME,
+		   USERCENTER )
+		  SELECT C.YAOHLH,
+		         #PEIZDH# PEIZDH,
+		         #ID# YAOCMXH,
+		         C.BAOZXH,
+		         LJ.ZHONGWMC,
+		         C.YAOHSL,
+		         C.FAYSJ,
+		         C.KEH,
+		         C.JIAOFJ,
+		         #CREATOR# CREATOR ,
+		         SYSDATE CREATE_TIME,
+		         C.USERCENTER
+		    FROM ${dbSchemal4}CK_YAONBHL C
+		    JOIN ${dbSchemal2}FJ_JIHYHLMX MX
+		      ON MX.YAOHLBH = C.YAOHLH
+		     AND MX.ID = #ID#
+		    JOIN (select * from ${dbSchemal3}CKX_LINGJ where biaos='1') LJ
+      		 ON LJ.LINGJBH = C.LINGJBH AND  LJ.USERCENTER= C.USERCENTER  
+      		 WHERE C.USERCENTER=#UC#
+
+		
+			]]>
+	</insert>
+
+	<!-- 验证是否有车辆申报资源 by 运营商 -->
+	<select id="queryCelZy" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT T1.YUNSSBM, T1.CHEX, CX.CHEXMC, to_char(NVL((T1.SHUL - nvl(T2.SHUL,0)),0)) SHUL
+		  FROM (SELECT SB.CHEX, SB.SHUL, SB.YUNSSBM
+		          FROM ${dbSchemal2}FJ_CHELSB SB
+		         WHERE SB.USERCENTER = #UC#
+		           AND SB.YUNSSBM = #YUNSSBM#
+		           AND SB.SHENBSJ = TO_DATE(#YAOCJHXH#, 'YYYY-MM-DD')) T1
+		  JOIN (select * from ${dbSchemal3}CKX_CHEX where biaos='1') CX
+		    ON CX.CHEXBH = T1. CHEX
+		  LEFT  JOIN (SELECT PE.YUNSSBM, PE.JIHCX, NVL(COUNT(1), 0) SHUL
+		          FROM ${dbSchemal2}FJ_PEIZJH PE
+		          JOIN ${dbSchemal2}FJ_YAOCMX MX
+		            ON MX.ID = PE.YAOCMXH
+		         WHERE MX.YAOCJHXH = #YAOCJHXH#
+		           AND MX.USERCENTER = #UC#
+		           AND PE.YUNSSBM = #YUNSSBM#
+		         GROUP BY PE.YUNSSBM, PE.JIHCX) T2
+		    ON T1.YUNSSBM = T2.YUNSSBM
+		   AND T1.CHEX = T2.JIHCX
+	]]>
+	</select>
+	
+	<!-- 验证是此计划是否完成 by 运营商 -->
+	<select id="checkYaoCelJhZbIsWc" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT TO_CHAR((B.ZONGCC - C.ZONGCC)) ZONGCC
+		  FROM (SELECT B.ZONGCC
+		          FROM ${dbSchemal2}FJ_YAOCJHZB B
+		         WHERE B.YAOCJHXH = #YAOCJHXH#
+		           AND B.USERCENTER = #UC#) B,
+		       (SELECT COUNT(JH.ZONGCC) ZONGCC
+		          FROM ${dbSchemal2}FJ_YAOCJH JH
+		         WHERE EXISTS (SELECT 1
+		                  FROM ${dbSchemal2}FJ_YAOCMX X
+		                 WHERE X.YAOCJHXH = #YAOCJHXH#
+		                   AND X.USERCENTER = #UC#)) C
+	]]>
+	</select>
+	
+	
+	<!-- 更新要车计划总表 BY 要车计划序号 -->
+	<update id="updateYaoCZb" parameterClass="java.util.Map" >
+	<![CDATA[
+	UPDATE ${dbSchemal2}FJ_YAOCJHZB ZB
+	   SET ZB.SHIFWC = '1'
+	 WHERE ZB.YAOCJHXH = #YAOCJHXH#
+	   AND ZB.USERCENTER = #UC#
+	
+	]]> 
+	</update>
+	
+	
+	<!-- 2012-02-22  重新分配  -->
+	
+   <!-- 删除0204要货令明细 -->
+	<delete id="deleteYaohlmx"  parameterClass="java.util.Map">
+		<![CDATA[
+		DELETE ${dbSchemal2}FJ_YAOHLMX MX
+		 WHERE EXISTS (SELECT 1
+		          FROM ${dbSchemal2}FJ_YAOCMX YAO
+		         WHERE YAO.YAOCJHXH = #YAOCJHXH#
+		           AND YAO.USERCENTER = #UC#
+		           AND MX.YAOCMXH = YAO.ID)
+		]]>
+	</delete>
+	
+	 <!-- 删除0203配载计划 -->
+	<delete id="deletePeiZaiJh"  parameterClass="java.util.Map">
+		<![CDATA[
+		DELETE ${dbSchemal2}FJ_PEIZJH JH
+		 WHERE EXISTS (SELECT 1
+		          FROM ${dbSchemal2}FJ_YAOCMX YAO
+		         WHERE YAO.YAOCJHXH = #YAOCJHXH#
+		           AND YAO.USERCENTER = #UC#
+		           AND JH.YAOCMXH = YAO.ID)
+		]]>
+	</delete>
+	
+	<!-- 删除0201要车计划 -->
+	<delete id="deleteYaoCeJh"  parameterClass="java.util.Map">
+		<![CDATA[
+		DELETE ${dbSchemal2}FJ_YAOCJH JH
+		 WHERE EXISTS (SELECT 1
+		          FROM ${dbSchemal2}FJ_YAOCMX YAO
+		         WHERE YAO.YAOCJHXH = #YAOCJHXH#
+		           AND YAO.USERCENTER = #UC#
+		           AND JH.YAOCJHH = YAO.YAOCJHH)
+		]]>
+	</delete>
+	
+	<!-- 置空0202要车明细表的要车序号  -->
+	<delete id="updateYaoCeMxOfYaoCJHHToNull"  parameterClass="java.util.Map">
+		<![CDATA[
+		UPDATE ${dbSchemal2}FJ_YAOCMX JH
+		   SET JH.YAOCJHH = NULL
+		 WHERE JH.USERCENTER = #UC#
+		   AND JH.YAOCJHXH = #YAOCJHXH#
+		]]>
+	</delete>
+	
+	<!-- 2012-02-22 重新计算 -->
+	
+	<!-- 解除锁定配载 -->
+	<update id="updateYaoHL" parameterClass="java.util.Map" >
+	<![CDATA[
+	UPDATE ${dbSchemal4}CK_YAONBHL YAO
+	   SET YAO.SUODPZ = '0'
+	 WHERE YAO.USERCENTER = #UC#
+	   AND EXISTS
+	 (SELECT 1
+	          FROM ${dbSchemal2}FJ_JIHYHLMX M
+	         WHERE M.YAOHLBH = YAO.YAOHLH
+	           AND EXISTS
+	         (SELECT 1
+	                  FROM ${dbSchemal2}FJ_YAOCMX X
+	                 WHERE M.ID = X.ID
+	                   AND X.USERCENTER = #UC#
+	                   AND X.YAOCJHXH = #YAOCJHXH#
+	                   AND NOT EXISTS (
+	                        
+	                        SELECT 1
+	                          FROM ${dbSchemal2}FJ_YAOCJH H
+	                         WHERE H.USERCENTER = #UC#
+	                           AND H.YAOCJHH = X.YAOCJHH))
+	    )                      
+	]]> 
+	</update>
+
+	<!-- 清空计划要贷令 -->
+	<delete id="deleteJhYaoL" parameterClass="java.util.Map">
+		<![CDATA[
+		 DELETE ${dbSchemal2}FJ_JIHYHLMX M
+		 WHERE EXISTS (SELECT 1
+		          FROM ${dbSchemal2}FJ_YAOCMX X
+		         WHERE M.ID = X.ID
+		           AND X.USERCENTER = #UC#
+		           AND X.YAOCJHXH = #YAOCJHXH#
+		           AND NOT EXISTS (SELECT 1
+		                  FROM ${dbSchemal2}FJ_YAOCJH H
+		                 WHERE H.USERCENTER = #UC#
+		                   AND H.YAOCJHH = X.YAOCJHH))
+		]]>
+	</delete>
+
+	<!-- 清空要车明细 -->
+	<delete id="deleteYaoCmx" parameterClass="java.util.Map">
+		<![CDATA[
+		 DELETE ${dbSchemal2}FJ_YAOCMX X
+		 WHERE X.USERCENTER = #UC#
+		   AND X.YAOCJHXH = #YAOCJHXH#
+		   AND NOT EXISTS (SELECT 1
+		          FROM ${dbSchemal2}FJ_YAOCJH H
+		         WHERE H.USERCENTER = #UC#
+		           AND H.YAOCJHH = X.YAOCJHH
+		        )
+		]]>
+	</delete>
+
+	<!-- 清空车辆明细 -->
+	<delete id="deleteCelMx" parameterClass="java.util.Map">
+		<![CDATA[
+		DELETE ${dbSchemal2}FJ_CHELMX X WHERE X.YAOCJHXH=#YAOCJHXH#
+			AND X.USERCENTER=#UC#
+		]]>
+	</delete>
+	<!-- 清空要车计划总表 -->
+	<delete id="deleteJHZb" parameterClass="java.util.Map">
+		<![CDATA[
+		DELETE ${dbSchemal2}FJ_YAOCJHZB B WHERE B.USERCENTER=#UC# AND B.YAOCJHXH=#YAOCJHXH#
+		]]>
+	</delete>
+	
+	<!-- 统计每种车型的数量 -->
+	<select id="selectCelXx" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+	 SELECT MX.JIHCX, CX.CHEXMC, TO_CHAR(COUNT(1)) SL
+	   FROM ${dbSchemal2}FJ_YAOCMX MX
+	   JOIN (select * from ${dbSchemal3}CKX_CHEX where biaos='1') CX
+	     ON CX.CHEXBH = MX.JIHCX
+	  WHERE MX.YAOCJHXH = #YAOCJHXH#
+	    AND MX.USERCENTER = #UC#
+	  GROUP BY MX.JIHCX, CX.CHEXMC
+	]]>
+	</select>
+	
+	
+	<!--运输商查询  hzg 2012-4-1 -->
+   <select id="selectYunss" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			select gcbh,gongsmc from (select gcbh,gongsmc from ${dbSchemal3}CKX_GONGYS where leix='3' and usercenter=#usercenter# and biaos='1' ) g
+  			inner join 
+  			( select t.yunslxbh,t.chengysbh from ${dbSchemal3}ckx_keh_chengpk t where  usercenter=#usercenter#) c 
+  			on g.gcbh = c.chengysbh  
+  			where yunslxbh in ($yunslxbhs$)
+  			group by gcbh,gongsmc order by gcbh
+			
+		]]>
+   </select>
+   
+   <!--运输路线查询  hzg 2012-8-9 -->
+   <select id="selectYunslxOfYaocmx" parameterClass="java.util.Map" resultClass="java.lang.String">
+   	<![CDATA[
+			 select t.yunslx from ${dbSchemal2}fj_yaocmx t where t.yaocjhxh=#yaocjhxh# and t.usercenter=#usercenter# group by t.yunslx
+		]]>
+   </select>
+   
+   
+   <!--运输商下的车辆明细查询  hzg 2012-4-1 -->
+   <select id="selectYunssMx" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT SB.USERCENTER, SB.YUNSSBM, SB.CHEX,CG.GONGSMC, TO_CHAR(SB.SHUL) SHUL
+          FROM ${dbSchemal2}FJ_CHELSB SB
+          JOIN ${dbSchemal3}CKX_CHEX_YUNSS YS
+            ON YS.YUNSSBH = SB.YUNSSBM
+           AND YS.USERCENTER =#UC#
+          JOIN (select * from ${dbSchemal3}CKX_GONGYS where biaos='1') CG
+           ON  YS.YUNSSBH=CG.GCBH
+         WHERE SB.USERCENTER = #UC#
+           AND SB.SHENBSJ LIKE
+               TO_DATE(#SHENBSJ#, 'YYYY-MM-DD')  and SB.YUNSSBM=#YUNSSBH#
+        UNION
+        SELECT YS.USERCENTER,
+               YS.YUNSSBH,
+               YS.CHEXBH,
+               CG.GONGSMC,
+               '0'     SHUL
+          FROM ${dbSchemal3}CKX_CHEX_YUNSS YS
+          JOIN (select * from ${dbSchemal3}CKX_GONGYS where biaos='1') CG
+           ON  YS.YUNSSBH=CG.GCBH
+         WHERE YS.USERCENTER =#UC#
+           AND NOT EXISTS (SELECT 1
+                  FROM ${dbSchemal2}FJ_CHELSB S
+                 WHERE S.USERCENTER = YS.USERCENTER
+                   AND S.YUNSSBM = YS.YUNSSBH
+                   AND S.CHEX = YS.CHEXBH
+                   AND S.USERCENTER =#UC#
+               AND S.SHENBSJ LIKE
+                   TO_DATE(#SHENBSJ#, 'YYYY-MM-DD')  
+                   )  and  YS.YUNSSBH=#YUNSSBH#
+		]]>
+	</select>
+	
+	
+	
+	<!-- 查询运输商下的运输路线 2012-4-1 -->
+	<select id="selectLxzByCys"  parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+				SELECT GYS.GCBH, CPK.YUNSLXBH
+			  FROM (select * from ${dbSchemal3}CKX_GONGYS where biaos='1') GYS
+			  inner JOIN ${dbSchemal3}CKX_KEH_CHENGPK CPK
+			    ON CPK.CHENGYSBH = GYS.GCBH
+			   AND CPK.USERCENTER = #UC#
+			 WHERE GYS.USERCENTER = #UC#  AND GYS.LEIX = '3'
+			 GROUP BY GYS.GCBH, CPK.YUNSLXBH
+			 ORDER BY GYS.GCBH, CPK.YUNSLXBH
+		]]>
+	</select>
+	
+	<!-- 删除要车明细   hzg 2012-04-05-->
+	<delete id="delYaocmx" parameterClass="java.util.Map">
+		DELETE ${dbSchemal2}FJ_YAOCMX MX
+	 	WHERE MX.USERCENTER = #UC# AND  MX.ID in ($IDs$)
+		
+	</delete>
+	
+	<!-- 删除计划要货令明细  hzg 2012-04-05-->
+	<delete id="delJihYHLmx" parameterClass="java.util.Map">
+		DELETE ${dbSchemal2}FJ_JIHYHLMX MX WHERE MX.ID in ($IDs$)
+	</delete>
+	
+	<!-- 将要货令重置为未锁定状态  hzg 2012-04-05-->
+	<update id="updateYaohlOfIDs"  parameterClass="java.util.Map">
+ 		   UPDATE ${dbSchemal4}CK_YAONBHL YAO
+   			SET YAO.SUODPZ = '0'
+ 			WHERE YAO.USERCENTER = #UC#
+   			AND EXISTS (SELECT 1
+          	FROM ${dbSchemal2}FJ_JIHYHLMX MX
+            WHERE MX.ID in ($IDs$)
+           AND MX.YAOHLBH = YAO.YAOHLH)
+ 		
+	</update>
+	
+	<!-- 更新车辆明细总车次状态  hzg 2012-04-05-->
+	<update id="updateChelmx"  parameterClass="java.util.Map">
+		UPDATE ${dbSchemal2}FJ_CHELMX MX
+  		SET MX.ZONGCC = MX.ZONGCC - (select count(*) from ${dbSchemal2}FJ_YAOCMX M where id in ($IDs$) AND M.JIHCX=#CHEX#)
+ 		WHERE MX.YAOCJHXH = #YAOCJHXH#
+   		AND MX.USERCENTER = #UC#
+   		AND MX.CHEX = #CHEX#
+	</update>
+	
+	
+	<!-- 查询车辆明细总车次  hzg 2012-04-17-->
+	<select id="selectChelmxZcc"  parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT MX.ZONGCC FROM ${dbSchemal2}FJ_CHELMX MX
+ 		WHERE MX.YAOCJHXH = #YAOCJHXH#
+   		AND MX.USERCENTER = #UC#
+   		AND MX.CHEX = #CHEX#
+	</select>
+	
+	<!-- 删除车辆明细总车次为0的记录  hzg 2012-04-17-->
+	<delete id="deleteChelmx"  parameterClass="java.util.Map" >
+		DELETE ${dbSchemal2}FJ_CHELMX MX
+ 		WHERE MX.YAOCJHXH = #YAOCJHXH#
+   		AND MX.USERCENTER = #UC#
+   		AND MX.CHEX = #CHEX#
+	</delete>
+	
+	
+	<!-- 更新要车计划总表的总车次  hzg 2012-04-05-->
+	<update id="updateYaocjhzb"  parameterClass="java.util.Map">
+		UPDATE ${dbSchemal2}FJ_YAOCJHZB ZB
+   		SET ZB.ZONGCC = ZB.ZONGCC - (select count(*) from ${dbSchemal2}FJ_YAOCMX M where id in ($IDs$))
+ 		WHERE ZB.USERCENTER = #UC#
+   		AND ZB.YAOCJHXH = #YAOCJHXH#
+	</update>
+	
+	<!-- 判断这天的要车计划是否完成  hzg 2012-04-05-->
+	<select id="queryShifwc" parameterClass="java.util.Map"  resultClass="java.util.HashMap">
+		SELECT TO_CHAR(ZB.ZONGCC - TMP.ZCC) ZCC
+  		FROM ${dbSchemal2}FJ_YAOCJHZB ZB
+  		JOIN (SELECT COUNT(1) ZCC, #UC# USERCENTER, #YAOCJHXH# YAOCJHXH
+          FROM ${dbSchemal2}FJ_YAOCMX MX
+         WHERE MX.YAOCJHXH = #YAOCJHXH#
+           AND MX.USERCENTER = #UC#
+           AND MX.YAOCJHH IS NOT NULL) TMP
+    ON ZB.USERCENTER = TMP.USERCENTER
+   AND ZB.YAOCJHXH = TMP.YAOCJHXH
+ WHERE ZB.USERCENTER = #UC#
+   AND ZB.YAOCJHXH = #YAOCJHXH#
+	</select>
+	
+	<select id="checkPeizjhzt" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+			select COUNT(1) from ${dbSchemal2}FJ_PEIZJH pjh inner join ${dbSchemal2}FJ_YAOCMX ycmx on pjh.yaocmxh = ycmx.id  and ycmx.yaocjhxh = #YAOCJHXH# and ycmx.usercenter = #UC# where pjh.jihzt ='1' or pjh.jihzt ='2' 
+ 		]]>	
+	</select>
+</sqlMap>
+

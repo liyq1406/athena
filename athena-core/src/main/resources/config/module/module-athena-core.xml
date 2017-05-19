@@ -1,0 +1,24 @@
+<components namespace="core">
+
+	<component class="com.toft.core3.biz.module.ModuleConfig">
+		<property name="name" value="component" />
+		<property name="path" value="com/athena/component" />
+		
+		<property name="sqlMaps">
+			<list>
+				<value>sqlmap-config-component.xml</value>
+			</list>
+		</property>
+	</component>
+	
+	<component  id="classpathAdvisorCreator"
+				class="com.toft.core3.aop.creator.ClasspathAdvisorCreator">
+		<!-- 拦截的类，支持Ant style语法 -->
+		<property name="classPatterns" value="com/athena/**/*Service.class" />
+		<!-- 拦截的方法，正则表达式验证 -->
+		<property name="methodPatterns" value=".*" />
+		<property name="interceptorNames" value="exceptionInterceptor" />
+	</component>
+	
+</components>
+

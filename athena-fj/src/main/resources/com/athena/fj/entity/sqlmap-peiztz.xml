@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="peiztz">
+	<!-- 配载调整  hzg 2012-3-23  -->
+	<select id="queryPeizjhOfTiaoz" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	  <![CDATA[
+	 select p.jihcx,p.yunslx,to_char(p.faysj,'yyyy-MM-dd hh24:mi') as faysj,p.peizdh,p.yunssbm,m.shifmz,m.celbh, m.id,y.baozsl from 
+	        (select * from ${dbSchemal2}FJ_PEIZJH where usercenter=#usercenter# and jihzt='0'  and yaocmxh is not null) p
+	  left join 
+	       ${dbSchemal2}FJ_YAOCMX m
+	            on p.yaocmxh=m.id
+	  left join
+	       (select p.peizdh,count(y.yaohlbh) as baozsl from ${dbSchemal2}FJ_PEIZJH p inner join  ${dbSchemal2}FJ_YAOHLMX y  on p.peizdh = y.peizdh group by p.peizdh ) y
+	            on p.peizdh=y.peizdh where 1=1
+		]]>	
+		<dynamic>
+			<isNotEmpty prepend=" and " property="faysj"><![CDATA[p.faysj >= to_date(#faysj#,'yyyy-mm-dd')]]></isNotEmpty>
+		    <isNotEmpty prepend=" and " property="chex"><![CDATA[p.jihcx = #chex#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shifmz"><![CDATA[shifmz = #shifmz#]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[
+		  order by peizdh
+		]]>	
+	</select>
+	
+<!--查询配载单号下的要货令  hzg 2012-3-23 -->   
+   <select id="queryYaohlOfPeizd" parameterClass="java.util.Map"  resultClass="java.util.HashMap">
+   	<![CDATA[
+		select y.baozxh,y.lingjbh,y.yaohsl,y.xiehd,m.kehbm,
+   	  		   to_char(m.faysj,'yyyy-MM-dd hh24:mi') faysj,
+   	  		   to_char(m.jiaofsj,'yyyy-MM-dd hh24:mi') jiaofsj,m.yaohlbh
+	    from  
+	     	${dbSchemal2}FJ_YAOHLMX m
+     	left join 
+       		${dbSchemal4}CK_YAONBHL y
+     	on m.yaohlbh = y.yaohlh 
+     	where m.peizdh=#peizdh# 
+	     ]]>
+   </select>
+   
+   <!--转移要货令后修改配载单号 hzg 2012-3-29 --> 
+   <update id="updatePeizdhOfYaohlmx" parameterClass="java.util.Map">
+   		<![CDATA[
+   			update ${dbSchemal2}FJ_YAOHLMX SET PEIZDH=#peizdh# where  YAOHLBH in($yaohls$)
+   		]]>
+   </update>
+   
+   <!--转移要货令后查询配载单下的要货令数量  hzg 2012-3-29 --> 
+   <select id="selectCountYaohlOfPeizjh" parameterClass="java.lang.String" resultClass="java.lang.String">
+   		<![CDATA[
+   			select count(*) from ${dbSchemal2}FJ_YAOHLMX  where PEIZDH=#peizdh# 
+   		]]>
+   </select>
+   
+ <!--配载策略包装数量查询  hzg 2012-4-16 --> 
+	<select id="selectCelBaozsl" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+   			select sum(b.baozsl) as baozsl from ${dbSchemal3}CKX_PEIZCL a
+			inner join ${dbSchemal3}CKX_PEIZCLZB b 
+			on a.celbh=b.celbh
+ 			where a.celbh=#celbh# group by a.celbh
+   		]]>
+	</select>
+		
+	 <!--如果配载计划下的要货令全部转移则删除配载计划  hzg 2012-3-29 --> 
+	<delete id="deletePeizjh" parameterClass="java.util.Map">
+		<![CDATA[
+   			delete from ${dbSchemal2}FJ_PEIZJH   where PEIZDH=#peizdh_left# and USERCENTER=#usercenter#
+   		]]>
+	</delete>
+	
+	<!--配载计划下的要货令零件汇总  hzg 2012-3-29 -->   
+   <select id="queryPeizjhOfLingj" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+   	<![CDATA[
+     select lingjbh ,sum(lingjsl) as lingjsl from(
+		 select f.peizdh,
+		 f.lingjsl,
+		 f.usercenter,
+		 c.lingjbh,
+		 c.baozxh,
+		 c.xiehd,
+     	 c.keh,
+		 to_char(f.faysj, 'yyyy-MM-dd hh24:mi') as faysj,
+		 to_char(c.jiaofj,'yyyy-MM-dd')as jiaofj,
+		 c.yaohlh
+		 from ${dbSchemal2}FJ_YAOHLMX f 
+		 left join 
+		 ${dbSchemal4}CK_YAONBHL c 
+		 on f.yaohlbh=c.yaohlh 
+		 )s 
+		 where peizdh=#peizdh#
+		 group by lingjbh
+		 ]]>
+   </select>
+	
+	
+	
+	<!--配载计划下的包装组汇总  hzg 2012-3-29 update hzg 2012-7-26 -->   
+   <select id="queryPeizjhOfBaozz" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+   	<![CDATA[
+     select a.baozdm as baozxh,count(a.baozdm)as baozsl from  ${dbSchemal2}FJ_YAOHLMX a 
+     where a.peizdh=#peizdh# 
+	 group by baozdm
+	]]>
+   </select>
+   
+   <!--修改要车明细表中的是否满载状态为1  hzg 2012-4-16 -->  
+   <update id="updateYaocmxShifmz" parameterClass="java.lang.String" >
+   			<![CDATA[
+   				update ${dbSchemal2}FJ_YAOCMX SET SHIFMZ='1' WHERE ID=#yaocmxID#
+   			]]>
+   </update>
+   
+	
+</sqlMap>

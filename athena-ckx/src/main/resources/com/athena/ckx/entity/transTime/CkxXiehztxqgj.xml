@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="transTime">
+	
+	<select id="queryCkxXiehztxqgj" resultClass="com.athena.ckx.entity.transTime.CkxXiehztxqgj">
+	select xiehztbh ,chengysbh , lingjbh , xuqsl , usercenter,maoxqbb,kaissj, jiessj		
+	from ${dbSchemal3}ckx_xiehztxqgj 
+	where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysbh">chengysbh = #chengysbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+		</dynamic>
+		order by xiehztbh ,chengysbh , lingjbh
+	</select>
+	
+	<select id="getCkxXiehztxqgj" resultClass="com.athena.ckx.entity.transTime.CkxXiehztxqgj">
+		select xiehztbh ,chengysbh , lingjbh , xuqsl , usercenter,maoxqbb,kaissj, jiessj		
+		from ${dbSchemal3}ckx_xiehztxqgj 
+		where xiehztbh = #xiehztbh#,chengysbh = #chengysbh#,lingjbh = #lingjbh#
+	</select>
+	
+	<insert id="insertCkxXiehztxqgj" parameterClass="java.util.Map">
+	insert into ${dbSchemal3}ckx_xiehztxqgj(chengysbh,xiehztbh,lingjbh,xuqsl,usercenter,maoxqbb,kaissj,jiessj,creator,create_time,editor,edit_time)
+	 select chengys,xiehzt,lingjbh,sum(shul) shul,USERCENTER,xuqbc ,kaissj,jiezsj ,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss')
+ 	from ${dbSchemal3}ckx_temp_maoxqcf where  chengys is not null and xiehzt is not null   group by chengys,xiehzt ,kaissj,jiezsj,lingjbh,USERCENTER,xuqbc
+	</insert>
+	<select id="queryCkxXiehztxqgjByMxqcf" resultClass="java.util.HashMap">
+		 select chengys,xiehzt,lingjbh,sum(shul) shul,USERCENTER,xuqbc ,kaissj,jiezsj 
+ 	     from ${dbSchemal3}ckx_temp_maoxqcf where chengys is null or xiehzt is null  group by chengys,xiehzt ,kaissj,jiezsj,lingjbh,USERCENTER,xuqbc
+	</select>
+	<delete id="deleteCkxXiehztxqgj">
+		delete from ${dbSchemal3}ckx_xiehztxqgj
+	</delete>
+</sqlMap>

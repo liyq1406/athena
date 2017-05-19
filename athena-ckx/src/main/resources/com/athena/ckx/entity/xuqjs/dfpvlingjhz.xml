@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="dfpvlingjhz">
+	
+	<!-- 查询 -->
+	<select id="queryLingjhz" resultClass="com.athena.ckx.entity.xuqjs.DFPVLingjhz">
+		SELECT a.banbh,
+		       a.lingjbh,
+		       SUM(a.yshul) yshul,
+		       CASE 
+		         WHEN SUM(a.yshul) &lt;0 THEN '-'
+		         WHEN SUM(a.yshul) >=0 THEN '+'
+		       END tza,
+		       a.xlingjbh,
+		       SUM(a.xshul) xshul,
+		       CASE 
+		         WHEN SUM(a.xshul) &lt;0 THEN '-'
+		         WHEN SUM(a.xshul) >=0 THEN '+'
+		       END tzb,
+		       a.liush,
+		       a.touflwjh,
+		       to_char(a.shijqhrq, 'yyyy-MM-dd') shijqhrq
+		  FROM ${dbSchemal5}DDBH_LINGJQHFK a
+		  WHERE 1 = 1
+		<dynamic>
+			<isNotNull property="banbh" prepend=" and ">banbh = #banbh#</isNotNull>
+			<isNotNull property="banbh2" prepend=" and ">banbh = #banbh2#</isNotNull>
+			<isNotNull property="liush" prepend=" and ">liush = #liush#</isNotNull>
+			<isNotNull property="shijqhrq" prepend=" and ">shijqhrq = to_date(#shijqhrq#,'yyyy-MM-dd')</isNotNull>
+			<isNotNull property="lingjbh" prepend=" and ">lingjbh = #lingjbh#</isNotNull>
+			<isNotNull property="xlingjbh" prepend=" and ">xlingjbh = #xlingjbh#</isNotNull>
+		</dynamic>
+		 GROUP BY a.banbh, a.lingjbh, a.xlingjbh, a.liush, a.touflwjh, a.shijqhrq
+		ORDER BY a.banbh DESC,
+   		a.touflwjh, a.lingjbh, a.xlingjbh ASC
+	</select>
+	
+	<!-- 查询 -->
+	<select id="queryZUIJBANBHhz" resultClass="java.lang.String">
+		SELECT X.BANBH FROM 
+		(SELECT DISTINCT L.BANBH FROM ${dbSchemal5}DDBH_LINGJQHFK L
+		ORDER BY L.BANBH DESC)X
+		WHERE ROWNUM &lt;= 10
+	</select>
+	
+</sqlMap>

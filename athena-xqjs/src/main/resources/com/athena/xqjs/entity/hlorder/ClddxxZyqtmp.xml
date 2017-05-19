@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="hlorder" >
+  <resultMap id="ClddxxZyqtmp" class="com.athena.xqjs.entity.hlorder.ClddxxZyqtmp" >
+    <result column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="USERCENTER" property="usercenter" jdbcType="VARCHAR" />
+    <result column="WHOF" property="whof" jdbcType="VARCHAR" />
+    <result column="LCDV24" property="lcdv24" jdbcType="VARCHAR" />
+    <result column="YPLBJ" property="yplbj" jdbcType="VARCHAR" />
+    <result column="YJSXSJ" property="yjsxsj" jdbcType="TIMESTAMP" />
+    <result column="SCXH" property="scxh" jdbcType="VARCHAR" />
+    <result column="YJSYHSJ" property="yjsyhsj" jdbcType="VARCHAR" />
+    <result column="SXSXH" property="sxsxh" jdbcType="DECIMAL" />
+    <result column="LCDV" property="lcdv" jdbcType="VARCHAR" />
+    <result column="LEIX" property="leix" jdbcType="CHAR" />
+    <result column="CJ_DATE" property="cjDate" jdbcType="TIMESTAMP" />
+    <result column="CLZT" property="clzt" jdbcType="CHAR" />
+    <result column="LCDVBZK" property="lcdvbzk" jdbcType="VARCHAR" />
+    <result column="LIUSH" property="liush" jdbcType="DECIMAL" />
+  </resultMap>
+ 
+  
+  <delete id="deleteClddxxZyqTmpAlldata" >
+		truncate table ${dbSchemal5}IN_CLDDXX_ZYQTMP 
+  </delete>  
+ 
+  <insert id="insertClddxxZyqtmpByclddxx2" parameterClass="com.athena.xqjs.entity.hlorder.Clddxx2" >
+      insert into ${dbSchemal5}IN_CLDDXX_ZYQTMP (ID, 
+      USERCENTER, 
+      WHOF,      
+      LCDV24, 
+      YPLBJ, 
+      YJSXSJ, 
+      SCXH, 
+      YJSYHSJ, 
+      SXSXH, 
+      LCDV, 
+      LEIX, 
+      CJ_DATE, 
+      CLZT, 
+      LCDVBZK,
+      LIUSH)
+      values(
+				#id#,
+				#usercenter#,  
+				#whof#,
+				#lcdv24#,  
+				#yplbj#,
+				#yjsxsj#,
+				#scxh#,
+				#yjsyhsj#,
+				#sxsxh#,
+				#lcdv#,
+				#leix#,
+				#cjDate#,
+				#clzt#,
+				#lcdvbzk#,
+				#liush#
+			) 
+  </insert>
+   
+</sqlMap>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="time">
+	
+	<resultMap class="com.athena.ckx.entity.time.Group" id="Group">
+		<result column="bianzh" property="bianzh" />
+		<result column="appobj" property="appobj" />
+		<result column="rilbc" property="rilbc" />
+		<result column="beiz" property="beiz" />
+		<result column="biaos" property="biaos" />
+		<result column="usercenter" property="usercenter" />
+		<result column="mingc" property="mingc" />
+	</resultMap>
+	
+	<select id="queryGroup" resultMap="Group">select 
+		bianzh,
+		appobj,
+		rilbc,
+		beiz,
+		biaos,
+		usercenter,
+		mingc from CHANX_GROUP where 1=1 and biaos='1' 
+		
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="appobj">appobj = #appobj#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="rilbc">rilbc = #rilbc#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="bianzh">bianzh = #bianzh#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getGroup" resultClass="com.athena.ckx.entity.time.Group" parameterClass="com.athena.ckx.entity.time.Group">
+		select 
+		bianzh,
+		appobj,
+		rilbc,
+		beiz,
+		biaos,
+		usercenter,
+		mingc from CHANX_GROUP where 1=1 and usercenter = #usercenter# and  appobj = #appobj# and rilbc = #rilbc# and bianzh = #bianzh#
+	</select>
+	
+	<insert id="insertGroup" parameterClass="com.athena.ckx.entity.time.Group">insert into
+		CHANX_GROUP (bianzh,appobj,rilbc,beiz,biaos,usercenter,mingc)
+		values(
+			#bianzh#,
+			#appobj#,
+			#rilbc#,
+			#beiz#,
+			#biaos#,
+			#usercenter#,
+			#mingc#)
+	</insert>
+	
+	<update id="updateGroup" parameterClass="com.athena.ckx.entity.time.Group">
+		update CHANX_GROUP set 
+		bianzh=#bianzh#,
+		appobj=#appobj#,
+		rilbc=#rilbc#,
+		beiz=#beiz#,
+		biaos=#biaos#,
+		usercenter=#usercenter#,
+		mingc=#mingc# where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="appobj">appobj = #appobj#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="rilbc">rilbc = #rilbc#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="bianzh">bianzh = #bianzh#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deleteGroup" parameterClass="com.athena.ckx.entity.time.Group">
+		delete from CHANX_GROUP where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="appobj">appobj = #appobj#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="rilbc">rilbc = #rilbc#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="bianzh">bianzh = #bianzh#</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<update id="deleteLogicGroup" parameterClass="com.athena.ckx.entity.time.Group">
+		update CHANX_GROUP set biaos=#biaos# where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="appobj">appobj = #appobj#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="rilbc">rilbc = #rilbc#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="bianzh">bianzh = #bianzh#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+</sqlMap>

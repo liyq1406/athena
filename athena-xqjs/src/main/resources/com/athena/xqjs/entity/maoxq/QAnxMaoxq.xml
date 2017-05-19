@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="maoxqCompare">
+<select id="selAnxMxqs" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxq" parameterClass="com.athena.xqjs.entity.anxorder.AnxMaoxq">
+		
+select usercenter,ofh,zhongzlxh,decode(hanzbs,'1','总装','2','焊装') hanzbs,
+<!-- 0007182 将emon 转换成字符模式-->
+to_char(emon,'yyyy-MM-dd hh24:mi:ss') emon,shunxh,lingjbh,danw,xiaohd,to_char(xhsj,'yyyy-MM-dd hh24:mi:ss') xhsj,
+xiaohxs, decode(xuqly,'1','CLV','3','SPPV')  xuqly,chejh,chanx,zhizlx,caifsj
+ from ${dbSchemal1}xqjs_anxmaoxq x 
+		<dynamic prepend="where">
+				<isNotEmpty prepend=" and " property="xhsjTo">
+					<![CDATA[xhsj >= to_date(#xhsjTo#,'yyyy-MM-dd hh24:mi:ss') ]]> 
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="xhsjFrom">
+					<![CDATA[xhsj <= to_date(#xhsjFrom#,'yyyy-MM-dd hh24:mi:ss')  ]]> 
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+					lingjbh = #lingjbh#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="chanx">
+					chanx = #chanx#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohd">
+					xiaohd = #xiaohd#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="xuqly">
+					xuqly = #xuqly#
+				</isNotEmpty>
+			</dynamic>
+			
+			<!-- 0007182 按照用户中心、零件、消耗点、消耗时间升序，需求来源降序 -->
+		 order by usercenter,lingjbh,xiaohd,xhsj asc , xuqly desc
+	</select>
+	<select id="selAnxMxqsExport" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxq" parameterClass="com.athena.xqjs.entity.anxorder.AnxMaoxq">
+		
+select usercenter,ofh,zhongzlxh,decode(hanzbs,'1','总装','2','焊装') hanzbs,
+<!-- 0007182 将emon 转换成字符模式-->
+to_char(emon,'yyyy-MM-dd hh24:mi:ss') emon,shunxh,lingjbh,danw,xiaohd,to_char(xhsj,'yyyy-MM-dd hh24:mi:ss') xhsj,
+xiaohxs, decode(xuqly,'1','CLV','3','SPPV')  xuqly,chejh,chanx,zhizlx,caifsj
+ from ${dbSchemal1}xqjs_anxmaoxq x 
+		<dynamic prepend="where">
+				<isNotEmpty prepend=" and " property="xhsjTo">
+					<![CDATA[xhsj >= to_date(#xhsjTo#,'yyyy-MM-dd hh24:mi:ss') ]]> 
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="xhsjFrom">
+					<![CDATA[xhsj <= to_date(#xhsjFrom#,'yyyy-MM-dd hh24:mi:ss')  ]]> 
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+					lingjbh = #lingjbh#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="chanx">
+					chanx = #chanx#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohd">
+					xiaohd = #xiaohd#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="xuqly">
+					xuqly = #xuqly#
+				</isNotEmpty>
+			</dynamic>
+			<!-- 0007182 根据条件筛选获取数据量，如果数据量小于5000，则导出全部，否则导出0条 -->
+			<![CDATA[and  rownum <= case when (
+			             select count(usercenter) from ${dbSchemal1}xqjs_anxmaoxq ]]> 
+							<dynamic prepend="where">
+							<isNotEmpty prepend=" and " property="xhsjTo">
+								<![CDATA[xhsj >= to_date(#xhsjTo#,'yyyy-MM-dd hh24:mi:ss') ]]> 
+							</isNotEmpty>
+							<isNotEmpty prepend=" and " property="xhsjFrom">
+								<![CDATA[xhsj <= to_date(#xhsjFrom#,'yyyy-MM-dd hh24:mi:ss')  ]]> 
+							</isNotEmpty>
+							<isNotEmpty prepend=" and " property="usercenter">
+								usercenter = #usercenter#
+							</isNotEmpty>
+							<isNotEmpty prepend=" and " property="lingjbh">
+								lingjbh = #lingjbh#
+							</isNotEmpty>
+							<isNotEmpty prepend=" and " property="chanx">
+								chanx = #chanx#
+							</isNotEmpty>
+							<isNotEmpty prepend=" and " property="xiaohd">
+								xiaohd = #xiaohd#
+							</isNotEmpty>
+							<isNotEmpty prepend=" and " property="xuqly">
+								xuqly = #xuqly#
+							</isNotEmpty>
+						</dynamic>
+			     <![CDATA[   )>5000 then 0 else  5000 end ]]> 
+			<!-- 0007182 按照用户中心、零件、消耗点、消耗时间升序，需求来源降序 -->
+		 order by usercenter,lingjbh,xiaohd,xhsj asc , xuqly desc
+	</select>
+	
+	<!--查询最新一版clv毛需求-->	   
+	<select id="queryClvMaoxqNew" resultClass="java.lang.String">
+		  select max(m.xuqbc) from ${dbSchemal1}xqjs_maoxq m where m.xuqly = 'CLV' AND M.CREATOR = 'interface' AND M.active = '1' ORDER BY M.XUQBC DESC 
+	</select>
+	
+	<!--删除 XQJS_DDBHCLV_TOTLE表中数据 -->
+	<delete id="deleteDdbhClvTotle" parameterClass="java.util.Map">
+		truncate table ${dbSchemal1}XQJS_DDBHCLV_TOTLE
+	</delete>
+
+	<!--删除 XQJS_DDBHCLV表中数据 -->
+	<delete id="deleteDdbhClv" parameterClass="java.util.Map">
+		delete from ${dbSchemal1}XQJS_DDBHCLV  xb where  xb.bijrq = to_date(#BIJRQ#,'yyyy-mm-dd') 
+	</delete>
+	
+	<!--汇总clv毛需求数据到XQJS_DDBHCLV_TOTLE表中 -->
+	<insert id="sumClvMaoxq" parameterClass="java.util.Map">
+		<![CDATA[
+			INSERT INTO ${dbSchemal1}XQJS_DDBHCLV_TOTLE (BIJRQ,USERCENTER,CHANX,XUQRQ,LINGJBH,CLVSL,XUQLY,EDITOR,EDIT_TIME,CREATOR,CREATE_TIME)
+			SELECT TO_DATE(#BIJRQ#,'YYYY-MM-DD') BIJRQ,MXQ.USERCENTER,MXQ.CHANX,MXQ.XUQRQ,MXQ.LINGJBH,MXQ.CLVSL,'1' CLV,'' EDITOR,SYSDATE EDIT_TIME,'' CREATOR,SYSDATE CREATE_TIME FROM (
+			SELECT MX.USERCENTER,MX.CHANX,MX.XUQRQ,MX.LINGJBH,SUM(nvl(MX.XUQSL,0)) CLVSL FROM ${dbSchemal1}XQJS_MAOXQMX MX   WHERE MX.XUQBC = #XUQBC# GROUP BY MX.USERCENTER,MX.CHANX,MX.XUQRQ,MX.LINGJBH) MXQ 
+			INNER JOIN (SELECT DISTINCT XHD.USERCENTER,XHD.SHENGCXBH,XHD.LINGJBH  FROM ${dbSchemal3}ckx_lingjxhd XHD WHERE XHD.pdsbz is not null  and XHD.biaos = '1' and XHD.shengcxbh is NOT null) L 
+			ON MXQ.USERCENTER = L.USERCENTER AND MXQ.LINGJBH = L.LINGJBH AND MXQ.CHANX=L.SHENGCXBH
+		]]>
+	</insert>
+
+	<!--查询ddbh最大消耗时间-->	   
+	<select id="queryDdbhMaxXhsj" resultClass="java.lang.String" parameterClass="java.util.Map">
+		    SELECT TO_CHAR( MAX(am.xhsj),'YYYY-MM-DD') xhsj FROM ${dbSchemal1}XQJS_ANXMAOXQ AM WHERE (AM.XUQLY = '3' or AM.XUQLY = '1') and 
+		     <![CDATA[ am.xhsj >= to_date(#BIJRQ#,'yyyy-mm-dd') ]]>
+	</select>
+
+	<!--查询最新一版clv毛需求-->	   
+	<select id="queryDdbhXhsjRiqList" resultClass="java.util.HashMap" parameterClass="java.util.Map">
+		   select DISTINCT A.RIQ from ${dbSchemal3}ckx_calendar_center a where 
+		   <![CDATA[a.RIQ>=#BIJRQ# and a.RIQ <= #MAXXHSJ#  ]]>  order by A.RIQ
+	</select>
+
+	<!--汇总clv毛需求数据到XQJS_DDBHCLV_TOTLE表中 -->
+	<insert id="sumDdbhMaoxq" parameterClass="java.util.Map">
+		<![CDATA[
+      INSERT INTO ${dbSchemal1}XQJS_DDBHCLV_TOTLE (BIJRQ,USERCENTER,CHANX,XUQRQ,LINGJBH,DDBHSL,XUQLY,EDITOR,EDIT_TIME,CREATOR,CREATE_TIME)
+      SELECT TO_DATE(#BIJRQ#,'YYYY-MM-DD') BIJRQ,MXQ.USERCENTER,MXQ.CHANX,MXQ.XUQRQ,MXQ.LINGJBH,MXQ.DDBHSL,'2' CLV,'' EDITOR,SYSDATE EDIT_TIME,'' CREATOR,SYSDATE CREATE_TIME FROM (
+       SELECT MX.USERCENTER,MX.CHANX,TO_DATE(#XHSJRIQ#,'YYYY-MM-DD') XUQRQ,MX.LINGJBH,SUM(nvl(MX.XIAOHXS,0)) DDBHSL FROM  ${dbSchemal1}XQJS_ANXMAOXQ MX   
+ 				WHERE MX.XHSJ>=to_date(#XHSJRIQ#,'yyyy-mm-dd') + 410/1440 AND MX.XHSJ<=to_date(#XHSJRIQ#,'yyyy-mm-dd') + 1850/1440   
+          GROUP BY MX.USERCENTER,MX.CHANX,MX.LINGJBH) MXQ 
+			INNER JOIN (SELECT DISTINCT XHD.USERCENTER,XHD.SHENGCXBH,XHD.LINGJBH  FROM ${dbSchemal3}ckx_lingjxhd XHD WHERE XHD.pdsbz is not null  and XHD.biaos = '1' and XHD.shengcxbh is NOT null) L  
+      ON   MXQ.USERCENTER = L.USERCENTER AND MXQ.LINGJBH = L.LINGJBH AND MXQ.CHANX=L.SHENGCXBH
+		]]>
+	</insert>
+
+	<!--查询比较天数-->	   
+	<select id="queryBijts" resultClass="java.util.HashMap" parameterClass="java.util.Map">
+		  select * from ${dbSchemal3}ckx_xitcsdy t where t.zidlx = 'DDBHCLV' and t.ZIDBM = #USERCENTER#
+	</select>
+
+	<!--查询比较的用户中心，生产线-->	   
+	<select id="queryBijchanxList" resultClass="com.athena.xqjs.entity.maoxq.DdbhclvCompare" parameterClass="java.util.Map">
+		  select distinct dt.usercenter,dt.chanx from ${dbSchemal1}xqjs_ddbhclv_totle dt order by dt.usercenter,dt.chanx
+	</select>
+
+	<!--查询比较的用户中心，生产线的比较日期更具比较天数查询-->	   
+	<select id="queryBijchanxMaxRiq" resultClass="com.athena.xqjs.entity.maoxq.DdbhclvCompare" parameterClass="com.athena.xqjs.entity.maoxq.DdbhclvCompare">
+		 <![CDATA[ SELECT to_char(XUQRQ,'yyyy-mm-dd') XUQRQ FROM (
+			select distinct T.XUQRQ  from ${dbSchemal1}xqjs_ddbhclv_totle t where t.usercenter = #usercenter# AND T.CHANX = #chanx# AND T.XUQRQ>=TO_DATE(#bijrq#,'YYYY-MM-DD') ORDER BY T.XUQRQ ) TT 
+			WHERE ROWNUM <=#bijts# order by xuqrq desc]]>
+	</select>
+
+	<!--按照产线汇总XQJS_DDBHCLV_TOTLE数据到XQJS_DDBHCLV表中 -->
+	<insert id="sumDdbhClv" parameterClass="com.athena.xqjs.entity.maoxq.DdbhclvCompare">
+		<![CDATA[
+	  INSERT INTO ${dbSchemal1}XQJS_DDBHCLV (BIJRQ,USERCENTER,CHANX,XUQRQ,LINGJBH,DDBHSL,CLVSL,EDITOR,EDIT_TIME,CREATOR,CREATE_TIME)
+      SELECT TO_DATE(#bijrq#,'YYYY-MM-DD') BIJRQ,MXQ.USERCENTER,MXQ.CHANX,MXQ.XUQRQ,MXQ.LINGJBH,MXQ.DDBHSL,MXQ.CLVSL,'' EDITOR,SYSDATE EDIT_TIME,'' CREATOR,SYSDATE CREATE_TIME FROM (
+      SELECT MX.USERCENTER,MX.CHANX,MX.XUQRQ,MX.LINGJBH,SUM(nvl(MX.DDBHSL,0)) DDBHSL,SUM(nvl(MX.CLVSL,0)) CLVSL FROM  ${dbSchemal1}XQJS_DDBHCLV_TOTLE MX   WHERE MX.Usercenter = #usercenter# AND MX.CHANX =#chanx# 
+       and mx.XUQRQ>=TO_DATE(#bijrq#,'YYYY-MM-DD') and mx.XUQRQ<=TO_DATE(#maxrq#,'YYYY-MM-DD')
+      GROUP BY MX.USERCENTER,MX.CHANX,MX.XUQRQ,MX.LINGJBH) MXQ 
+		]]>
+	</insert>
+
+	<!--汇总clv毛需求数据到XQJS_DDBHCLV_TOTLE表中 -->
+	<update id="jisClvDdbhChae" parameterClass="java.util.Map">
+		<![CDATA[
+		update ${dbSchemal1}xqjs_ddbhclv dv set dv.clvddhbchae = (select case when d.clvsl = 0 then round((clvsl-ddbhsl)*100,2) else  round((clvsl-ddbhsl)*100/clvsl,2) end clv   
+		from ${dbSchemal1}xqjs_ddbhclv d where d.bijrq=dv.bijrq and d.usercenter=dv.usercenter and d.chanx=dv.chanx and d.xuqrq=dv.xuqrq and d.lingjbh=dv.lingjbh) 
+		where dv.bijrq = to_date(#BIJRQ#,'yyyy-mm-dd')
+		]]>
+	</update>
+
+
+	<!-- 日滚动 汇总到用户中心 -->
+	<select id="queryddbhclv" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.maoxq.Ddbhclv">
+		select to_char(mm.bijrq,'yyyy-mm-dd') as bijrq,
+		mm.usercenter as usercenter,
+		mm.lingjbh as lingjbh,
+		mm.chanx as chanx,
+		l.zhongwmc as lingjmc,
+		mm.clvj0 as clvj0,
+		mm.clvj1 as clvj1,
+		mm.clvj2 as clvj2,
+		mm.clvj3 as clvj3,
+		mm.clvj4 as clvj4,
+		mm.clvj5 as clvj5,
+		mm.clvj6 as clvj6,
+		mm.clvj7 as clvj7,
+		mm.clvj8 as clvj8,
+		mm.ddbhj0 as ddbhj0,
+    	mm.ddbhj1 as ddbhj1,
+    	mm.ddbhj2 as ddbhj2,
+    	mm.ddbhj3 as ddbhj3,
+    	mm.ddbhj4 as ddbhj4,
+    	mm.ddbhj5 as ddbhj5,
+    	mm.ddbhj6 as ddbhj6,
+    	mm.ddbhj7 as ddbhj7,
+    	mm.ddbhj8 as ddbhj8,
+    	
+    	mm.marginj0 as marginj0,
+    	mm.marginj1 as marginj1,
+   	 	mm.marginj2 as marginj2,
+    	mm.marginj3 as marginj3,
+    	mm.marginj4 as marginj4,
+    	mm.marginj5 as marginj5,
+    	mm.marginj6 as marginj6,
+    	mm.marginj7 as marginj7,
+    	mm.marginj8 as marginj8
+		from
+		(
+	select
+	    m.bijrq as bijrq,
+	    m.usercenter as usercenter,
+	    m.lingjbh as lingjbh,
+	    m.chanx as chanx,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J0#,m.clvsl,null)) as clvj0,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J1#,m.clvsl,null)) as clvj1,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J2#,m.clvsl,null)) as clvj2,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J3#,m.clvsl,null)) as clvj3,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J4#,m.clvsl,null)) as clvj4,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J5#,m.clvsl,null)) as clvj5,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J6#,m.clvsl,null)) as clvj6,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J7#,m.clvsl,null)) as clvj7,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J8#,m.clvsl,null)) as clvj8,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J0#,m.ddbhsl,null)) as ddbhj0,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J1#,m.ddbhsl,null)) as ddbhj1,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J2#,m.ddbhsl,null)) as ddbhj2,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J3#,m.ddbhsl,null)) as ddbhj3,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J4#,m.ddbhsl,null)) as ddbhj4,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J5#,m.ddbhsl,null)) as ddbhj5,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J6#,m.ddbhsl,null)) as ddbhj6,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J7#,m.ddbhsl,null)) as ddbhj7,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J8#,m.ddbhsl,null)) as ddbhj8,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J0#,m.clvddhbchae,null)) as marginj0,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J1#,m.clvddhbchae,null)) as marginj1,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J2#,m.clvddhbchae,null)) as marginj2,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J3#,m.clvddhbchae,null)) as marginj3,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J4#,m.clvddhbchae,null)) as marginj4,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J5#,m.clvddhbchae,null)) as marginj5,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J6#,m.clvddhbchae,null)) as marginj6,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J7#,m.clvddhbchae,null)) as marginj7,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J8#,m.clvddhbchae,null)) as marginj8
+	    from ${dbSchemal1}xqjs_ddbhclv m
+	    where 1=1  
+		<dynamic>
+			<isNotEmpty prepend=" and " property="bijrq">
+				<![CDATA[m.bijrq =to_date( #bijrq#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				<![CDATA[m.lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				<![CDATA[m.usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				<![CDATA[m.chanx = #chanx#]]>
+			</isNotEmpty>			
+		</dynamic>
+    	group by  m.bijrq,m.usercenter,m.lingjbh,m.chanx
+		) mm	
+		join ${dbSchemal3}ckx_lingj l
+		on(mm.usercenter = l.usercenter and mm.lingjbh = l.lingjbh )
+		order by mm.bijrq,mm.usercenter,mm.chanx,mm.lingjbh
+	</select>		
+
+
+	<!-- 日滚动 汇总到用户中心 -->
+	<select id="queryddbhclvce" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.maoxq.Ddbhclv">
+		select to_char(mm.bijrq,'yyyy-mm-dd') as bijrq,
+		mm.usercenter as usercenter,
+		mm.lingjbh as lingjbh,
+		mm.chanx as chanx,
+		l.zhongwmc as lingjmc,
+		mm.clvj0 as clvj0,
+		mm.clvj1 as clvj1,
+		mm.clvj2 as clvj2,
+		mm.clvj3 as clvj3,
+		mm.clvj4 as clvj4,
+		mm.clvj5 as clvj5,
+		mm.clvj6 as clvj6,
+		mm.clvj7 as clvj7,
+		mm.clvj8 as clvj8,
+		mm.ddbhj0 as ddbhj0,
+    	mm.ddbhj1 as ddbhj1,
+    	mm.ddbhj2 as ddbhj2,
+    	mm.ddbhj3 as ddbhj3,
+    	mm.ddbhj4 as ddbhj4,
+    	mm.ddbhj5 as ddbhj5,
+    	mm.ddbhj6 as ddbhj6,
+    	mm.ddbhj7 as ddbhj7,
+    	mm.ddbhj8 as ddbhj8,
+    	
+    	mm.marginj0 as marginj0,
+    	mm.marginj1 as marginj1,
+   	 	mm.marginj2 as marginj2,
+    	mm.marginj3 as marginj3,
+    	mm.marginj4 as marginj4,
+    	mm.marginj5 as marginj5,
+    	mm.marginj6 as marginj6,
+    	mm.marginj7 as marginj7,
+    	mm.marginj8 as marginj8
+		from
+		(
+	select
+	    m.bijrq  as bijrq,
+	    m.usercenter as usercenter,
+	    m.lingjbh as lingjbh,
+	    m.chanx as chanx,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J0#,m.clvsl,null)) as clvj0,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J1#,m.clvsl,null)) as clvj1,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J2#,m.clvsl,null)) as clvj2,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J3#,m.clvsl,null)) as clvj3,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J4#,m.clvsl,null)) as clvj4,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J5#,m.clvsl,null)) as clvj5,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J6#,m.clvsl,null)) as clvj6,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J7#,m.clvsl,null)) as clvj7,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J8#,m.clvsl,null)) as clvj8,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J0#,m.ddbhsl,null)) as ddbhj0,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J1#,m.ddbhsl,null)) as ddbhj1,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J2#,m.ddbhsl,null)) as ddbhj2,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J3#,m.ddbhsl,null)) as ddbhj3,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J4#,m.ddbhsl,null)) as ddbhj4,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J5#,m.ddbhsl,null)) as ddbhj5,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J6#,m.ddbhsl,null)) as ddbhj6,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J7#,m.ddbhsl,null)) as ddbhj7,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J8#,m.ddbhsl,null)) as ddbhj8,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J0#,m.clvddhbchae,null)) as marginj0,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J1#,m.clvddhbchae,null)) as marginj1,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J2#,m.clvddhbchae,null)) as marginj2,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J3#,m.clvddhbchae,null)) as marginj3,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J4#,m.clvddhbchae,null)) as marginj4,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J5#,m.clvddhbchae,null)) as marginj5,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J6#,m.clvddhbchae,null)) as marginj6,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J7#,m.clvddhbchae,null)) as marginj7,
+	    sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J8#,m.clvddhbchae,null)) as marginj8
+	    from ${dbSchemal1}xqjs_ddbhclv m
+	    where 1=1  
+		<dynamic>
+			<isNotEmpty prepend=" and " property="bijrq">
+				<![CDATA[m.bijrq =to_date( #bijrq#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				<![CDATA[m.lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				<![CDATA[m.usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				<![CDATA[m.chanx = #chanx#]]>
+			</isNotEmpty>			
+		</dynamic>
+    	group by  m.bijrq,m.usercenter,m.lingjbh,m.chanx
+		) mm	
+		
+		 INNER JOIN (SELECT distinct dd.bijrq,dd.usercenter,dd.chanx,dd.lingjbh  FROM ${dbSchemal1}xqjs_ddbhclv DD  WHERE 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="bijrq">
+				<![CDATA[dd.bijrq =to_date( #bijrq#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				<![CDATA[dd.lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				<![CDATA[dd.usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				<![CDATA[dd.chanx = #chanx#]]>
+			</isNotEmpty>			
+		</dynamic>
+          <![CDATA[ AND (DD.CLVDDHBCHAE>=$clvddhbchae$ OR  DD.CLVDDHBCHAE <= (-1)* $clvddhbchae$)]]>
+           ) CE 
+           ON CE.bijrq = MM.bijrq AND CE.usercenter=MM.usercenter AND CE.chanx=MM.CHANX AND CE.lingjbh=MM.lingjbh
+		
+		join ${dbSchemal3}ckx_lingj l
+		on(mm.usercenter = l.usercenter and mm.lingjbh = l.lingjbh )
+		order by mm.bijrq,mm.usercenter,mm.chanx,mm.lingjbh
+	</select>	
+	
+		<!--查询毛需求明细某版次的有多少日期-->	   
+	<select id="queryddbhDay" resultClass="java.util.HashMap" parameterClass="java.util.Map">
+		select distinct to_char(m.xuqrq,'yyyy-mm-dd') as xuqrq 
+			from ${dbSchemal1}xqjs_ddbhclv m 
+			where  m.bijrq= to_date(#bijrq#,'yyyy-mm-dd')  AND m.usercenter = #usercenter# AND m.chanx = #chanx#
+			order by xuqrq
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	<!--删除 XQJS_DDBHCLV表中数据 -->
+	<delete id="deleteXinaxJlv" parameterClass="java.util.Map">
+		delete from ${dbSchemal1}XQJS_JlvXinax  xb where  xb.bijrq = to_date(#BIJRQ#,'yyyy-mm-dd') 
+	</delete>
+	
+	
+		<!--查询最新一版clv毛需求-->	   
+	<select id="queryJlvMaoxqNew" resultClass="com.athena.xqjs.entity.maoxq.DdbhclvCompare"  parameterClass="java.util.Map">
+		  select max(m.xuqbc) xuqbc,usercenter from ${dbSchemal1}xqjs_maoxqmx m where m.xuqBC LIKE 'JLV%'   AND M.active = '1'   group by usercenter
+	</select>
+	
+		<!--汇总clv毛需求数据到XQJS_DDBHCLV_TOTLE表中 -->
+	<insert id="sumJlvMaoxq" parameterClass="com.athena.xqjs.entity.maoxq.DdbhclvCompare">
+		<![CDATA[
+		INSERT INTO ${dbSchemal1}XQJS_JlvXinax
+  (BIJRQ,
+   USERCENTER,
+   CHANX,
+   XUQRQ,
+   LINGJBH,
+   JLVSL,
+   XUQLY,
+   EDITOR,
+   EDIT_TIME,
+   CREATOR,
+   CREATE_TIME)
+  SELECT TO_DATE(#bijrq#, 'YYYY-MM-DD') BIJRQ,
+         MXQ.USERCENTER,
+         MXQ.CHANX,
+         MXQ.XUQRQ,
+         MXQ.LINGJBH,
+         MXQ.DDBHSL,
+         MXQ.JLVSL,
+         '' EDITOR,
+         SYSDATE EDIT_TIME,
+         '' CREATOR,
+         SYSDATE CREATE_TIME
+    FROM (SELECT MX.USERCENTER,
+                 MX.CHANX,
+                 MX.XUQRQ,
+                 MX.LINGJBH,
+                 SUM(nvl(MX.XUQSL, 0)) JLVSL
+            FROM ${dbSchemal1}XQJS_MAOXQMX MX
+           WHERE MX.XUQBC = #xuqbc#
+             and MX.usercenter = #usercenter#
+             AND chanx = #chanx#
+           GROUP BY MX.USERCENTER, MX.CHANX, MX.XUQRQ, MX.LINGJBH) M
+   INNER JOIN (SELECT DISTINCT XHD.USERCENTER, XHD.SHENGCXBH, XHD.LINGJBH
+                 FROM ${dbSchemal3}ckx_lingjxhd XHD
+                WHERE XHD.pdsbz is not null
+                  and XHD.biaos = '1'
+                  and XHD.shengcxbh is NOT null) L
+      ON M.USERCENTER = L.USERCENTER
+     AND M.LINGJBH = L.LINGJBH
+     AND M.CHANX = L.SHENGCXBH
+   where M.XUQRQ >= TO_DATE(#bijrq#, 'YYYY-MM-DD')
+     and M.XUQRQ <= TO_DATE(#maxrq#, 'YYYY-MM-DD')
+   GROUP BY M.USERCENTER, M.CHANX, M.XUQRQ, M.LINGJBH) MXQ
+		]]>
+	</insert>
+	
+	
+		<!--汇总xinax毛需求数据到XQJS_DDBHCLV_TOTLE表中 -->
+	<insert id="sumXinaxMaoxq" parameterClass="com.athena.xqjs.entity.maoxq.DdbhclvCompare">
+		<![CDATA[
+     INSERT INTO ${dbSchemal1}XQJS_JlvXinax
+  (BIJRQ,
+   USERCENTER,
+   CHANX,
+   XUQRQ,
+   LINGJBH,
+   XINAXHSL,
+   JLVSL,
+   EDITOR,
+   EDIT_TIME,
+   CREATOR,
+   CREATE_TIME)
+  SELECT TO_DATE(#bijrq#, 'YYYY-MM-DD') BIJRQ,
+         MXQ.USERCENTER,
+         MXQ.CHANX,
+         MXQ.XUQRQ,
+         MXQ.LINGJBH,
+         MXQ.DDBHSL,
+         '2' JLV,
+         '' EDITOR,
+         SYSDATE EDIT_TIME,
+         '' CREATOR,
+         SYSDATE CREATE_TIME
+    FROM (
+                SELECT MX.USERCENTER,
+                          MX.CHANX,
+                          XIAOHCRQ XUQRQ,
+                          MX.LINGJBH,
+                          SUM(nvl(MX.XIAOHXS, 0)) XINAXSL
+                    FROM ${dbSchemal1}xqjs_anxmaoxq_jl MX
+                   WHERE MX.XIAOHCRQ >= to_date(#bijrq#, 'yyyy-mm-dd')
+                     and MX.usercenter = #usercenter#
+                     AND chanx = #chanx#
+                   GROUP BY MX.USERCENTER, MX.CHANX, MX.LINGJBH) m
+           INNER JOIN (SELECT DISTINCT XHD.USERCENTER,
+                                      XHD.SHENGCXBH,
+                                      XHD.LINGJBH
+                        FROM ${dbSchemal3}ckx_lingjxhd XHD
+                       WHERE XHD.pdsbz is not null
+                         and XHD.biaos = '1'
+                         and XHD.shengcxbh is NOT null) L
+              ON m.USERCENTER = L.USERCENTER
+             AND m.LINGJBH = L.LINGJBH
+             AND m.CHANX = L.SHENGCXBH
+           where M.XUQRQ >= TO_DATE(#bijrq#, 'YYYY-MM-DD')
+             and M.XUQRQ <= TO_DATE(#maxrq#, 'YYYY-MM-DD')
+           GROUP BY M.USERCENTER, M.CHANX, M.XUQRQ, M.LINGJBH) MXQ
+           
+		]]>
+	</insert>
+	
+	
+		<!--汇总clv毛需求数据到XQJS_DDBHCLV_TOTLE表中 -->
+	<update id="jisJlvXinaxChae" parameterClass="java.util.Map">
+		<![CDATA[
+		update ${dbSchemal1}XQJS_JLVXINAX dv set dv.JLVXINAXCHAE = (select case when d.JLVSL = 0 then round((JLVSL-XINAXSL)*100,2) else  round((JLVSL-XINAXSL)*100/JLVSL,2) end jlv   
+		from ${dbSchemal1}XQJS_JLVXINAX d where d.bijrq=dv.bijrq and d.usercenter=dv.usercenter and d.chanx=dv.chanx and d.xuqrq=dv.xuqrq and d.lingjbh=dv.lingjbh) 
+		where dv.bijrq = to_date(#BIJRQ#,'yyyy-mm-dd')
+		]]>
+	</update>
+	
+	
+		<!--汇总clv毛需求数据到XQJS_DDBHCLV_TOTLE表中 -->
+	<insert id="sumjlvMaoxqTOTLE" parameterClass="java.util.Map">
+		<![CDATA[
+			INSERT INTO ${dbSchemal1}XQJS_JLVXINAX_TOTLE (BIJRQ,USERCENTER,CHANX,XUQRQ,LINGJBH,JLVSL,XUQLY,EDITOR,EDIT_TIME,CREATOR,CREATE_TIME)
+			SELECT TO_DATE(#BIJRQ#,'YYYY-MM-DD') BIJRQ,MXQ.USERCENTER,MXQ.CHANX,MXQ.XUQRQ,MXQ.LINGJBH,MXQ.JLVSL,'1' CLV,'' EDITOR,SYSDATE EDIT_TIME,'' CREATOR,SYSDATE CREATE_TIME FROM (
+			SELECT MX.USERCENTER,MX.CHANX,MX.XUQRQ,MX.LINGJBH,SUM(nvl(MX.XUQSL,0)) JLVSL FROM ${dbSchemal1}XQJS_MAOXQMX MX   WHERE MX.XUQBC = #XUQBC#   and MX.usercenter = #usercenter#
+			and XUQRQ <= to_date('9999-12-31', 'yyyy-mm-dd')
+            GROUP BY MX.USERCENTER,MX.CHANX,MX.XUQRQ,MX.LINGJBH) MXQ 
+			INNER JOIN (SELECT DISTINCT XHD.USERCENTER,XHD.SHENGCXBH,XHD.LINGJBH  FROM ${dbSchemal3}ckx_lingjxhd XHD WHERE XHD.pdsbz is not null  and XHD.biaos = '1' and XHD.shengcxbh is NOT null) L 
+			ON MXQ.USERCENTER = L.USERCENTER AND MXQ.LINGJBH = L.LINGJBH AND MXQ.CHANX=L.SHENGCXBH
+		]]>
+	</insert>
+	
+	
+		<!--汇总clv毛需求数据到XQJS_DDBHCLV_TOTLE表中 -->
+	<insert id="sumXinaxMaoxqTOTLE" parameterClass="java.util.Map">
+		<![CDATA[
+      INSERT INTO ${dbSchemal1}XQJS_JLVXINAX_TOTLE (BIJRQ,USERCENTER,CHANX,XUQRQ,LINGJBH,XINAXSL,XUQLY,EDITOR,EDIT_TIME,CREATOR,CREATE_TIME)
+      SELECT TO_DATE(#BIJRQ#,'YYYY-MM-DD') BIJRQ,MXQ.USERCENTER,MXQ.CHANX,MXQ.XUQRQ,MXQ.LINGJBH,MXQ.XINAXSL,'2' JLV,'' EDITOR,SYSDATE EDIT_TIME,'' CREATOR,SYSDATE CREATE_TIME FROM (
+       SELECT MX.USERCENTER,#chanx# CHANX,TO_DATE(XIAOHCRQ,'YYYY-MM-DD') XUQRQ,MX.LINGJBH,SUM(nvl(MX.XIAOHXS,0)) XINAXSL FROM  ${dbSchemal1}xqjs_anxmaoxq_jl MX   
+ 				WHERE to_date(MX.XIAOHCRQ,'yyyy-mm-dd') = to_date(#xuqrq#, 'yyyy-mm-dd')     and usercenter = #usercenter# 
+ 				AND   chanx in ($allchanx$)   and XIAOHCBH='DEFLT'
+          GROUP BY MX.USERCENTER,MX.LINGJBH,XIAOHCRQ) MXQ 
+			INNER JOIN (SELECT DISTINCT XHD.USERCENTER,XHD.SHENGCXBH,XHD.LINGJBH  FROM ${dbSchemal3}ckx_lingjxhd XHD WHERE XHD.pdsbz is not null  and XHD.biaos = '1' and XHD.shengcxbh is NOT null) L  
+      ON   MXQ.USERCENTER = L.USERCENTER AND MXQ.LINGJBH = L.LINGJBH AND MXQ.CHANX=L.SHENGCXBH
+		]]>
+	</insert>
+	
+	
+		<!--按照产线汇总XQJS_DDBHCLV_TOTLE数据到XQJS_DDBHCLV表中 -->
+	<insert id="sumTotleMaoxq" parameterClass="com.athena.xqjs.entity.maoxq.DdbhclvCompare">
+		<![CDATA[
+	  INSERT INTO ${dbSchemal1}XQJS_JlvXinax (BIJRQ,USERCENTER,CHANX,XUQRQ,LINGJBH,XINAXSL,JLVSL,EDITOR,EDIT_TIME,CREATOR,CREATE_TIME)
+      SELECT TO_DATE(#bijrq#,'YYYY-MM-DD') BIJRQ,MXQ.USERCENTER,MXQ.CHANX,MXQ.XUQRQ,MXQ.LINGJBH,MXQ.XINAXSL,MXQ.JLVSL,'' EDITOR,SYSDATE EDIT_TIME,'4291' CREATOR,SYSDATE CREATE_TIME FROM (
+      SELECT MX.USERCENTER,MX.CHANX,MX.XUQRQ,MX.LINGJBH,SUM(nvl(MX.XINAXSL,0)) XINAXSL,SUM(nvl(MX.JLVSL,0)) JLVSL FROM  ${dbSchemal1}XQJS_JLVXINAX_TOTLE MX   WHERE MX.Usercenter = #usercenter# AND MX.CHANX =#chanx# 
+       and mx.XUQRQ>=TO_DATE(#bijrq#,'YYYY-MM-DD') and mx.XUQRQ<=TO_DATE(#maxrq#,'YYYY-MM-DD')
+      GROUP BY MX.USERCENTER,MX.CHANX,MX.XUQRQ,MX.LINGJBH) MXQ 
+		]]>
+	</insert>
+	
+	
+		<!--删除 XQJS_DDBHCLV_TOTLE表中数据 -->
+	<delete id="deleteXQJS_jlvxinax_TOTLE" parameterClass="java.util.Map">
+		truncate table ${dbSchemal1}XQJS_jlvxinax_TOTLE
+	</delete>
+	
+	
+		<!--查询比较的用户中心，生产线-->	   
+	<select id="queryBijchanxListNew" resultClass="com.athena.xqjs.entity.maoxq.DdbhclvCompare" parameterClass="java.util.Map">
+		  select distinct dt.usercenter,dt.chanx from ${dbSchemal1}XQJS_JLVXINAX_TOTLE dt order by dt.usercenter,dt.chanx
+	</select>
+	
+		<!--查询比较的用户中心，生产线的比较日期更具比较天数查询-->	   
+	<select id="queryBijchanxMaxRiqNew" resultClass="com.athena.xqjs.entity.maoxq.DdbhclvCompare" parameterClass="com.athena.xqjs.entity.maoxq.DdbhclvCompare">
+		 <![CDATA[ SELECT to_char(XUQRQ,'yyyy-mm-dd') XUQRQ FROM (
+			select distinct T.XUQRQ  from ${dbSchemal1}XQJS_JLVXINAX_TOTLE t where t.usercenter = #usercenter# AND T.CHANX = #chanx# AND T.XUQRQ>=TO_DATE(#bijrq#,'YYYY-MM-DD') ORDER BY T.XUQRQ ) TT 
+			WHERE ROWNUM <=#bijts# order by xuqrq desc]]>
+	</select>
+	
+		<!--查询比较天数-->	   
+	<select id="queryBijtsNew" resultClass="java.util.HashMap" parameterClass="java.util.Map">
+		  select * from ${dbSchemal3}ckx_xitcsdy t where t.zidlx = 'JLVXINAX' and t.ZIDBM = #usercenter#
+	</select>
+	
+	
+	
+		<!--查询毛需求明细某版次的有多少日期-->	   
+	<select id="queryxinaxDay" resultClass="java.util.HashMap" parameterClass="java.util.Map">
+		select distinct to_char(m.xuqrq,'yyyy-mm-dd') as xuqrq 
+			from ${dbSchemal1}XQJS_JlvXinax m 
+			where  m.bijrq= to_date(#bijrq#,'yyyy-mm-dd')  AND m.usercenter = #usercenter# AND m.chanx = #chanx#
+			order by xuqrq
+	</select>
+	
+	
+	
+		<!-- 日滚动 汇总到用户中心 -->
+	<select id="queryjlvxinaxce" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.maoxq.JlvXinax">
+	select to_char(mm.bijrq,'yyyy-mm-dd') as bijrq,
+    mm.usercenter as usercenter,
+    mm.lingjbh as lingjbh,
+    mm.chanx as chanx,
+    l.zhongwmc as lingjmc,
+    mm.jlvj0 as jlvj0,
+    mm.jlvj1 as jlvj1,
+    mm.jlvj2 as jlvj2,
+    mm.jlvj3 as jlvj3,
+    mm.jlvj4 as jlvj4,
+    mm.jlvj5 as jlvj5,
+    mm.jlvj6 as jlvj6,
+    mm.jlvj7 as jlvj7,
+    mm.jlvj8 as jlvj8,
+    mm.xinaxj0 as xinaxj0,
+      mm.xinaxj1 as xinaxj1,
+      mm.xinaxj2 as xinaxj2,
+      mm.xinaxj3 as xinaxj3,
+      mm.xinaxj4 as xinaxj4,
+      mm.xinaxj5 as xinaxj5,
+      mm.xinaxj6 as xinaxj6,
+      mm.xinaxj7 as xinaxj7,
+      mm.xinaxj8 as xinaxj8,
+      
+      mm.marginj0 as marginj0,
+      mm.marginj1 as marginj1,
+        mm.marginj2 as marginj2,
+      mm.marginj3 as marginj3,
+      mm.marginj4 as marginj4,
+      mm.marginj5 as marginj5,
+      mm.marginj6 as marginj6,
+      mm.marginj7 as marginj7,
+      mm.marginj8 as marginj8
+    from
+    (
+  select
+      m.bijrq  as bijrq,
+      m.usercenter as usercenter,
+      m.lingjbh as lingjbh,
+      m.chanx as chanx,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J0#,m.jlvsl,null)) as jlvj0,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J1#,m.jlvsl,null)) as jlvj1,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J2#,m.jlvsl,null)) as jlvj2,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J3#,m.jlvsl,null)) as jlvj3,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J4#,m.jlvsl,null)) as jlvj4,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J5#,m.jlvsl,null)) as jlvj5,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J6#,m.jlvsl,null)) as jlvj6,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J7#,m.jlvsl,null)) as jlvj7,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J8#,m.jlvsl,null)) as jlvj8,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J0#,m.xinaxsl,null)) as xinaxj0,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J1#,m.xinaxsl,null)) as xinaxj1,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J2#,m.xinaxsl,null)) as xinaxj2,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J3#,m.xinaxsl,null)) as xinaxj3,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J4#,m.xinaxsl,null)) as xinaxj4,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J5#,m.xinaxsl,null)) as xinaxj5,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J6#,m.xinaxsl,null)) as xinaxj6,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J7#,m.xinaxsl,null)) as xinaxj7,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J8#,m.xinaxsl,null)) as xinaxj8,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J0#,m.jlvxinaxchae,null)) as marginj0,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J1#,m.jlvxinaxchae,null)) as marginj1,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J2#,m.jlvxinaxchae,null)) as marginj2,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J3#,m.jlvxinaxchae,null)) as marginj3,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J4#,m.jlvxinaxchae,null)) as marginj4,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J5#,m.jlvxinaxchae,null)) as marginj5,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J6#,m.jlvxinaxchae,null)) as marginj6,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J7#,m.jlvxinaxchae,null)) as marginj7,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J8#,m.jlvxinaxchae,null)) as marginj8
+      from ${dbSchemal1}XQJS_JLVXINAX  m
+      where 1=1  
+    <dynamic>
+      <isNotEmpty prepend=" and " property="bijrq">
+        <![CDATA[m.bijrq =to_date( #bijrq#,'yyyy-mm-dd')]]>
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="lingjbh">
+        <![CDATA[m.lingjbh = #lingjbh#]]>
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="usercenter">
+        <![CDATA[m.usercenter = #usercenter#]]>
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="chanx">
+        <![CDATA[m.chanx = #chanx#]]>
+      </isNotEmpty>      
+    </dynamic>
+      group by  m.bijrq,m.usercenter,m.lingjbh,m.chanx
+    ) mm  
+    
+     INNER JOIN (SELECT distinct dd.bijrq,dd.usercenter,dd.chanx,dd.lingjbh  FROM ${dbSchemal1}XQJS_JLVXINAX DD  WHERE 1=1 
+    <dynamic>
+      <isNotEmpty prepend=" and " property="bijrq">
+        <![CDATA[dd.bijrq =to_date( #bijrq#,'yyyy-mm-dd')]]>
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="lingjbh">
+        <![CDATA[dd.lingjbh = #lingjbh#]]>
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="usercenter">
+        <![CDATA[dd.usercenter = #usercenter#]]>
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="chanx">
+        <![CDATA[dd.chanx = #chanx#]]>
+      </isNotEmpty>      
+    </dynamic>
+          <![CDATA[ AND (DD.jlvxinaxchae>=$jlvxinaxchae$ OR  DD.jlvxinaxchae <= (-1)* $jlvxinaxchae$)]]>
+           ) CE 
+           ON CE.bijrq = MM.bijrq AND CE.usercenter=MM.usercenter AND CE.chanx=MM.CHANX AND CE.lingjbh=MM.lingjbh
+    
+    join ${dbSchemal3}ckx_lingj l
+    on(mm.usercenter = l.usercenter and mm.lingjbh = l.lingjbh )
+    order by mm.bijrq,mm.usercenter,mm.chanx,mm.lingjbh
+	</select>	
+	
+	
+	
+	<!-- 日滚动 汇总到用户中心 -->
+	<select id="queryjlvxinax" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.maoxq.JlvXinax">		
+    select to_char(mm.bijrq,'yyyy-mm-dd') as bijrq,
+    mm.usercenter as usercenter,
+    mm.lingjbh as lingjbh,
+    mm.chanx as chanx,
+    l.zhongwmc as lingjmc,
+    mm.jlvj0 as jlvj0,
+    mm.jlvj1 as jlvj1,
+    mm.jlvj2 as jlvj2,
+    mm.jlvj3 as jlvj3,
+    mm.jlvj4 as jlvj4,
+    mm.jlvj5 as jlvj5,
+    mm.jlvj6 as jlvj6,
+    mm.jlvj7 as jlvj7,
+    mm.jlvj8 as jlvj8,
+    mm.xinaxj0 as xinaxj0,
+      mm.xinaxj1 as xinaxj1,
+      mm.xinaxj2 as xinaxj2,
+      mm.xinaxj3 as xinaxj3,
+      mm.xinaxj4 as xinaxj4,
+      mm.xinaxj5 as xinaxj5,
+      mm.xinaxj6 as xinaxj6,
+      mm.xinaxj7 as xinaxj7,
+      mm.xinaxj8 as xinaxj8,
+      
+      mm.marginj0 as marginj0,
+      mm.marginj1 as marginj1,
+        mm.marginj2 as marginj2,
+      mm.marginj3 as marginj3,
+      mm.marginj4 as marginj4,
+      mm.marginj5 as marginj5,
+      mm.marginj6 as marginj6,
+      mm.marginj7 as marginj7,
+      mm.marginj8 as marginj8
+    from
+    (
+  select
+      m.bijrq as bijrq,
+      m.usercenter as usercenter,
+      m.lingjbh as lingjbh,
+      m.chanx as chanx,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J0#,m.jlvsl,null)) as jlvj0,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J1#,m.jlvsl,null)) as jlvj1,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J2#,m.jlvsl,null)) as jlvj2,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J3#,m.jlvsl,null)) as jlvj3,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J4#,m.jlvsl,null)) as jlvj4,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J5#,m.jlvsl,null)) as jlvj5,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J6#,m.jlvsl,null)) as jlvj6,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J7#,m.jlvsl,null)) as jlvj7,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J8#,m.jlvsl,null)) as jlvj8,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J0#,m.xinaxsl,null)) as xinaxj0,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J1#,m.xinaxsl,null)) as xinaxj1,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J2#,m.xinaxsl,null)) as xinaxj2,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J3#,m.xinaxsl,null)) as xinaxj3,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J4#,m.xinaxsl,null)) as xinaxj4,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J5#,m.xinaxsl,null)) as xinaxj5,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J6#,m.xinaxsl,null)) as xinaxj6,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J7#,m.xinaxsl,null)) as xinaxj7,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J8#,m.xinaxsl,null)) as xinaxj8,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J0#,m.jlvxinaxchae,null)) as marginj0,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J1#,m.jlvxinaxchae,null)) as marginj1,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J2#,m.jlvxinaxchae,null)) as marginj2,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J3#,m.jlvxinaxchae,null)) as marginj3,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J4#,m.jlvxinaxchae,null)) as marginj4,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J5#,m.jlvxinaxchae,null)) as marginj5,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J6#,m.jlvxinaxchae,null)) as marginj6,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J7#,m.jlvxinaxchae,null)) as marginj7,
+      sum(decode(to_char(m.xuqrq,'yyyy-mm-dd'),#J8#,m.jlvxinaxchae,null)) as marginj8
+      from ${dbSchemal1}XQJS_JLVXINAX m
+      where 1=1  
+    <dynamic>
+      <isNotEmpty prepend=" and " property="bijrq">
+        <![CDATA[m.bijrq =to_date( #bijrq#,'yyyy-mm-dd')]]>
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="lingjbh">
+        <![CDATA[m.lingjbh = #lingjbh#]]>
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="usercenter">
+        <![CDATA[m.usercenter = #usercenter#]]>
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="chanx">
+        <![CDATA[m.chanx = #chanx#]]>
+      </isNotEmpty>      
+    </dynamic>
+      group by  m.bijrq,m.usercenter,m.lingjbh,m.chanx
+    ) mm  
+    join ${dbSchemal3}ckx_lingj l
+    on(mm.usercenter = l.usercenter and mm.lingjbh = l.lingjbh )
+    order by mm.bijrq,mm.usercenter,mm.chanx,mm.lingjbh
+	</select>		
+	
+	
+		<!--查询某大线下的所有分装线  -->
+    <select id="getFenzx" parameterClass="com.athena.xqjs.entity.fenzxpc.Dax"  
+    	resultClass="com.athena.xqjs.entity.fenzxpc.Fenzx">
+		select f.fenzxh
+	    from ${dbSchemal3}ckx_fenzx f
+	
+	    where f.usercenter = #usercenter# and f.daxxh = #daxxh# and f.biaos = '1'
+	</select>
+</sqlMap>

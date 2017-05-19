@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+<select id="queryCkx_peizcl" resultClass="com.athena.ckx.entity.paicfj.Ckx_peizcl">
+   select usercenter , celbh , celmc , chexbh , youxj , beiz  , (select sum(baozsl) from ${dbSchemal3}ckx_peizclzb zb where  zb.celbh = cl.celbh) as baozsl
+   from ${dbSchemal3}ckx_peizcl cl
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="celbh"><![CDATA[celbh = #celbh#]]></isNotEmpty>
+		
+			<isNotEmpty prepend=" and " property="chexbh"><![CDATA[chexbh = #chexbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="celbhs"><![CDATA[celbh in ($celbhs$)]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,celbh,chexbh
+</select>
+<!-- <select id="getCkx_peizcl" resultClass="com.athena.ckx.entity.paicfj.Ckx_peizcl"> -->
+<!--    select usercenter , celbh , celmc , chexbh , youxj , beiz , active -->
+<!--    from ${dbSchemal3}ckx_peizcl -->
+<!--    where 1=1 -->
+<!--     <dynamic> -->
+<!-- 			<isNotEmpty prepend=" and " property="baozzbh"><![CDATA[baozzbh = #baozzbh#]]></isNotEmpty> -->
+<!-- 	</dynamic> -->
+<!-- </select> -->
+<insert id="insertCkx_peizcl" parameterClass="com.athena.ckx.entity.paicfj.Ckx_peizcl">
+	insert into ${dbSchemal3}ckx_peizcl
+	(usercenter , celbh , celmc , chexbh , youxj , beiz  ,
+	 creator , create_time , editor , edit_time)
+	values(<![CDATA[
+	 #usercenter# , #celbh# , #celmc# , #chexbh# , #youxj# , #beiz#  ,
+	  #creator# , #create_time# , #editor# , #edit_time# ]]> ) 
+	</insert>
+<update id="updateCkx_peizcl" parameterClass="com.athena.ckx.entity.paicfj.Ckx_peizcl">
+	update ${dbSchemal3}ckx_peizcl
+	set 
+       
+    		   <![CDATA[celmc = #celmc#]]> ,    
+    		   <![CDATA[chexbh = #chexbh#]]> ,
+    		   <![CDATA[youxj = #youxj#]]> ,
+    		   <![CDATA[beiz = #beiz#]]> ,
+    		   <![CDATA[editor = #editor#]]> ,
+    		   <![CDATA[edit_time = #edit_time#]]>
+    	
+	where <![CDATA[usercenter = #usercenter# and celbh = #celbh# ]]>  
+	</update>
+
+
+		<delete id="deleteCkx_peizcl" parameterClass="com.athena.ckx.entity.paicfj.Ckx_peizcl">
+	delete ${dbSchemal3}ckx_peizcl  
+	where <![CDATA[usercenter = #usercenter# and celbh = #celbh# ]]>  
+	</delete>
+	
+	<select id="queryCkx_peizclzb" resultClass="com.athena.ckx.entity.paicfj.Ckx_peizclzb">
+   select usercenter , celbh , baozzbh , baozsl 
+   from ${dbSchemal3}ckx_peizclzb
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="celbh"><![CDATA[celbh = #celbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozzbh"><![CDATA[baozzbh = #baozzbh#]]></isNotEmpty>
+		</dynamic>
+</select>
+<insert id="insertCkx_peizclzb" parameterClass="com.athena.ckx.entity.paicfj.Ckx_peizclzb">
+	insert into ${dbSchemal3}ckx_peizclzb
+	(usercenter , celbh , baozzbh ,baozsl,
+	 creator , create_time , editor , edit_time)
+	values(<![CDATA[
+	 #usercenter# , #celbh# , #baozzbh# , #baozsl#,
+	  #creator# , #create_time# , #editor# , #edit_time# ]]> ) 
+	</insert>
+<update id="updateCkx_peizclzb" parameterClass="com.athena.ckx.entity.paicfj.Ckx_peizclzb">
+	update ${dbSchemal3}ckx_peizclzb
+	set
+          <![CDATA[baozsl = #baozsl#]]> ,
+    	  <![CDATA[editor = #editor#]]> ,
+    	  <![CDATA[edit_time = #edit_time#]]> 
+    	
+	where <![CDATA[usercenter = #usercenter# and celbh = #celbh# and baozzbh = #baozzbh#]]>  
+	</update>
+
+	<delete id="deleteCkx_peizclzb" parameterClass="com.athena.ckx.entity.paicfj.Ckx_peizclzb">
+	delete ${dbSchemal3}ckx_peizclzb  
+	where  1=1
+	<dynamic >
+        <isNotEmpty property="usercenter" prepend=" and ">
+    		   <![CDATA[usercenter = #usercenter#]]> 
+    	</isNotEmpty>    
+    	  <isNotEmpty property="celbh" prepend=" and ">
+    		   <![CDATA[celbh = #celbh#]]> 
+    	</isNotEmpty>
+    	  <isNotEmpty property="baozzbh" prepend=" and ">
+    		   <![CDATA[baozzbh = #baozzbh#]]> 
+    	</isNotEmpty>
+    	</dynamic>	
+	</delete>
+	
+</sqlMap>

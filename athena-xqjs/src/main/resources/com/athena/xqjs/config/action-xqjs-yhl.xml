@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="yhl" extend="toft-default" namespace="/yhl">
+
+
+		<!-- 要货令查询初始化 -->
+		<action name="yhl" class="yaohlAction" method="init">
+			<result name="yhl">/WEB-INF/pages/xqjs/yhl/yhl.jsp</result>
+		</action>
+
+		<action name="nyhl" class="yaohlAction" method="nyhl">
+		        <result name="nyhl">/WEB-INF/pages/xqjs/yhl/nbyhl.jsp</result>
+		</action>
+		<!-- 查询外部要货令  -->
+
+		<action name="searchYaohl" class="yaohlAction" method="searchYaohl">
+		</action>
+		<action name="yaoHlDownLoadFile" class="yaohlAction" method="yaoHlDownLoadFile">
+		</action>
+		<action name="nyaoHlDownLoadFile" class="yaohlAction" method="nyaoHlDownLoadFile">
+		</action>
+		<!-- 查询外部要货令  -->
+		<action name="searchnYaohl" class="yaohlAction" method="searchnYaohl">
+		</action>
+		<!-- 查询零件编号 -->
+		<action name="selectLingj" class="yaohlAction" method="selectLingj">
+		</action>
+		<!-- 终止外部要货令 -->
+		<action name="ZZYaohl" class="yaohlAction" method="ZZYaohl">
+		</action>
+		<!-- 终止内部要货令 -->
+		<action name="ZZYaohlN" class="yaohlAction" method="ZZYaohlN">
+		</action>
+
+		<!-- 要货令批量终止模板下载-->
+        <action name="downloadYaohlMob" class="yaohlAction" method="downloadzhongzyhlMob"></action>
+        <!--导入批量终止的要货令 -->
+        <action name="importAth_pilzzyhl" class="yaohlAction" method="uploadyaohlzzdr">
+        	<result name="upload">/WEB-INF/pages/xqjs/yhl/yhl.jsp</result>
+		</action>
+
+		<!-- 批量终止导入要货令 -->
+		<action name="initplzzyhl" class="yaohlAction" method="initplzzyhl">
+        	<result name="init">/WEB-INF/pages/xqjs/yhl/plzzyhl.jsp</result>
+		</action>
+		<!--查询批量终止要货令  -->
+		<action name="queryPlzzyhl" class="yaohlAction" method="queryPlzzyhl"></action>
+		<!-- 批量终止要货令 -->
+		<action name="pizzyhl" class="yaohlAction" method="pizzyhl"></action>
+		<!-- 要货令调整批量模板下载-->
+        <action name="downloadYaohltzMob" class="yaohlAction" method="downloadYaohltzMob"></action>
+		<!-- 要货令调整批量导入 -->
+		<action name="importAth_yaohltz" class="yaohlAction" method="uploadyaohltzdr">
+		<result name="upload">/WEB-INF/pages/xqjs/yhl/yhl.jsp</result>
+		</action>
+		
+		<!-- V4_023 批量创建看板临时卡 -->
+		<action name="plcjlsk" class="yaohlAction" method="plcjlsk">
+        	<result name="plcjlsk">/WEB-INF/pages/xqjs/yhl/plcjlsk.jsp</result>
+		</action>
+		<!-- 查询 -->
+		<action name="searchPlcjlsk" class="yaohlAction" method="searchPlcjlsk"></action>
+		<!-- 删除12940 -->
+		<action name="deletelsk" class="yaohlAction" method="deletelsk"></action>
+		<!-- 创建临时卡 -->
+		<action name="doCreatelsk" class="yaohlAction" method="doCreatelsk"></action>
+		<!-- 模板下载 -->
+		<action name="downloadPlcjlsk" class="yaohlAction" method="downloadPlcjlsk"></action>
+		<!-- 模板导入 -->
+		<action name="importAth_pilcklsk" class="yaohlAction" method="importAth_pilcklsk">
+			<result name="upload">/WEB-INF/pages/xqjs/yhl/plcjlsk.jsp</result>
+		</action>
+	</package>
+</toft>

@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.Post" id="Post">
+		<result column="POST_CODE" property="postCode" />
+		<result column="POST_NAME" property="postName" />
+		<result column="POST_GROUP_ID" property="postGroupId" />
+		<result column="ATTR" property="attr" />
+		<result column="MENDER" property="mender" />
+		<result column="MODIFY_TIME" property="modifyTime" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="BIAOS" property="biaos" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="DIC_CODE" property="dicCode"/>
+		<result column="POST_PAGE_STYLE" property="postPageStyle" />
+	</resultMap>
+	<!-- 0008527: 用户组排序 gswang 2013-10-23"-->
+	<select id="queryPost" resultMap="Post">select 
+		post_.POST_CODE,
+		post_.POST_NAME,
+		post_.POST_GROUP_ID,
+		post_.ATTR,
+		post_.MENDER,
+		post_.MODIFY_TIME,
+		post_.CREATOR,
+		post_.CREATE_TIME,
+		post_.BIAOS,
+		post_.USERCENTER,
+		DIC_CODE,
+		POST_PAGE_STYLE
+		from ${dbSchemal0}SYS_POST post_ 
+			where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="  and " property="postName">POST_NAME like '%'||#postName#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="postGroupId">post_.POST_GROUP_ID = #postGroupId#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="postCode">post_.POST_CODE = #postCode#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dicCode">post_.DIC_CODE = #dicCode#
+			</isNotEmpty>
+		</dynamic>
+		
+		order by post_.POST_CODE,post_.BIAOS DESC
+	</select>
+	
+	<select id="listPostAll" resultMap="Post">select 
+		post_.POST_CODE,
+		post_.POST_NAME,
+		post_.POST_GROUP_ID,
+		post_.ATTR,
+		post_.MENDER,
+		post_.MODIFY_TIME,
+		post_.CREATOR,
+		post_.CREATE_TIME,
+		post_.BIAOS,
+		post_.USERCENTER,
+		DIC_CODE,
+		POST_PAGE_STYLE
+		from ${dbSchemal0}SYS_POST post_ 
+			where 1=1 and post_.BIAOS = #biaos#
+		<dynamic>
+			<isNotEmpty prepend="  and " property="postName">POST_NAME like '%'||#postName#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">post_.usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="postCode">post_.POST_GROUP_ID =#postCode#
+			</isNotEmpty>
+		</dynamic>
+		order by post_.POST_CODE, post_.BIAOS DESC
+	</select>
+	
+	<select id="getPost" resultMap="Post">select 
+		post_.POST_CODE,
+		post_.POST_NAME,
+		post_.POST_GROUP_ID,
+		post_.ATTR,
+		post_.MENDER,
+		post_.MODIFY_TIME,
+		post_.CREATOR,
+		post_.CREATE_TIME,
+		post_.BIAOS,
+		post_.USERCENTER,
+		DIC_CODE,
+		POST_PAGE_STYLE
+		from ${dbSchemal0}SYS_POST post_ 
+			where post_.POST_CODE=#postCode# 
+	</select>
+
+	
+	
+	<select id="getPostByGroupId" resultMap="Post">select 
+		post_.POST_CODE,
+		post_.POST_NAME,
+		post_.POST_GROUP_ID,
+		post_.ATTR,
+		post_.MENDER,
+		post_.MODIFY_TIME,
+		post_.CREATOR,
+		post_.CREATE_TIME,
+		post_.BIAOS,
+		post_.USERCENTER,
+		DIC_CODE,
+		POST_PAGE_STYLE
+		from ${dbSchemal0}SYS_POST post_ 
+			where 1=1 AND post_.POST_GROUP_ID=#postGroupId#
+			<dynamic>
+				<isNotEmpty prepend=" and "  property="usercenter"> post_.USERCENTER = #usercenter#</isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"> post.BIAOS = #biaos# </isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<insert id="insertPost" parameterClass="com.athena.authority.entity.Post">insert into
+		${dbSchemal0}SYS_POST (
+		POST_CODE,
+		POST_NAME,
+		POST_GROUP_ID,
+		ATTR,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		USERCENTER,
+		DIC_CODE,POST_PAGE_STYLE)
+		values(
+			#postCode#,
+			#postName#,
+			#postGroupId#,
+			#attr#,
+			#creator#,
+			to_date(#createTime#,'YYYY-MM-DD HH24:MI:SS'),
+			#biaos#,
+			#usercenter#,
+			#dicCode#,#postPageStyle#)
+	</insert>
+	
+	<update id="updatePost" parameterClass="com.athena.authority.entity.Post">
+		update ${dbSchemal0}SYS_POST set 
+			POST_CODE = #postCode#,
+			POST_NAME = #postName#,
+			POST_GROUP_ID = #postGroupId#,
+			ATTR = #attr#,
+			MENDER = #mender#,
+			MODIFY_TIME = to_date(#modifyTime#,'YYYY-MM-DD HH24:MI:SS'),
+			BIAOS = #biaos#,
+			DIC_CODE = #dicCode#,
+			POST_PAGE_STYLE = #postPageStyle#
+			where 1=1
+		 and POST_CODE = #postCode#
+	</update>
+	
+	<delete id="deletePost" parameterClass="java.util.HashMap">
+		delete from ${dbSchemal0}SYS_POST where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="postGroupId">POST_GROUP_ID = #postGroupId#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="postCode">POST_CODE = #postCode#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	<select id="countUser" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select count(*) from ${dbSchemal0}SYS_R_USER_POST where POST_CODE=#postCode#
+	</select>
+	<!-- 根据数据权限项查询岗位ID集合 -->
+	<select id="getPostByDataItem" resultClass="java.lang.String"> 
+		select t.POST_ID from (
+		<dynamic>
+			<iterate  property="items" conjunction=" union all ">
+				select POST_ID from ${dbSchemal0}sys_post_data_item 
+				    where value = #items[].value# and data_id = #items[].dataTypeId#
+			</iterate>
+		</dynamic>
+		) t
+		group by POST_ID having count(post_id)=#count#
+	</select>
+	
+	<!-- 保存岗位码 -->
+	<insert id="insertPostCode"> 
+		insert into ${dbSchemal0}$tableName$_PCODE(POST_CODE
+			<iterate  property="keyItems">
+			,$keyItems[].fieldName$
+			</iterate>
+			<iterate  property="items">
+			,$items[].fieldName$
+			</iterate>
+		)
+		values(#postCode#
+			<iterate  property="keyItems">
+			,#keyItems[].value#
+			</iterate>
+			<iterate  property="items">
+			,#items[].value#
+			</iterate>
+		)
+	</insert>
+	<!-- 更新岗位码 -->
+	<update id="updatePostCode"> 
+		update ${dbSchemal0}$tableName$_PCODE set 
+			POST_CODE=#postCode#
+			<iterate property="items">
+			 , $items[].fieldName$ = #items[].value#
+			</iterate>
+		where 1=1 and
+		<iterate  property="keyItems" conjunction=" and ">
+			$keyItems[].fieldName$ = #keyItems[].value#
+		</iterate>
+	</update>
+	
+	<update id="changePostActive"> 
+		update ${dbSchemal0}SYS_POST set 
+			BIAOS=#biaos#
+		where 1=1 AND POST_CODE = #postCode#
+	</update>
+	
+	<update id="disabledPostByGroupid"> 
+		update ${dbSchemal0}SYS_POST set 
+			BIAOS=#biaos#
+		where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="  and " property="postGroupId">POST_GROUP_ID = #postGroupId#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	<select id="validateOnlyPost"  parameterClass="com.athena.authority.entity.Post" resultClass="int">
+		SELECT COUNT(*) as COUNT FROM ${dbSchemal0}SYS_POST WHERE POST_CODE = #postCode#
+	</select>
+	<select id="getJihz" resultClass="com.athena.util.cache.CacheValue">
+		SELECT POST_NAME as value, POST_CODE as key ,POST_.usercenter FROM ${dbSchemal0}SYS_POST POST_ WHERE POST_.DIC_CODE = 'JIHUAY' and  POST_.Biaos = '1'
+
+	</select>
+	
+	<delete id="deleteSysCKGroup" parameterClass="java.util.HashMap">
+		DELETE FROM ${dbSchemal4}SYS_CK_GROUP WHERE POST_ID = #postId#
+	</delete>
+	<insert id="insertSysCkGroup" parameterClass="java.util.HashMap">
+		INSERT INTO ${dbSchemal4}SYS_CK_GROUP(
+			ID,
+			POST_ID,
+			USERCENTER,
+			CANGKBH,
+			CREATOR,
+			CREATE_TIME,
+			ACTIVE
+		) VALUES(
+			#id#,
+			#postId#,
+			#usercenter#,
+			#cangkbh#,
+			#creator#,
+			to_date(#createTime#,'YYYY-MM-DD HH24:MI:SS'),
+			#active#
+		)
+	</insert>
+	<delete id="deleteSysRQCGroup" parameterClass="java.util.HashMap">
+		DELETE FROM ${dbSchemal4}SYS_RQC_GROUP WHERE POST_ID = #postId#
+	</delete>
+	<insert id="insertSysRQCGroup" parameterClass="java.util.HashMap">
+		INSERT INTO ${dbSchemal4}SYS_RQC_GROUP(
+			ID,
+			POST_ID,
+			USERCENTER,
+			RONGQCBH,
+			CREATOR,
+			CREATE_TIME,
+			ACTIVE
+		) VALUES (
+			#id#,
+			#postId#,
+			#usercenter#,
+			#rqcbh#,
+			#creator#,
+			to_date(#createTime#,'YYYY-MM-DD HH24:MI:SS'),
+			#active#
+		)
+	</insert>
+	<delete id="deleteSysKHGroup"  parameterClass="java.util.HashMap">
+		DELETE FROM ${dbSchemal4}SYS_KH_GROUP WHERE POST_ID = #postId#
+	</delete>
+	<insert id="insertSysKHGroup" parameterClass="java.util.HashMap">
+		INSERT INTO ${dbSchemal4}SYS_KH_GROUP(
+			ID,
+			POST_ID,
+			USERCENTER,
+			KEH,
+			CREATOR,
+			CREATE_TIME,
+			ACTIVE
+		) VALUES (
+			#id#,
+			#postId#,
+			#usercenter#,
+			#keh#,
+			#creator#,
+			to_date(#createTime#,'YYYY-MM-DD HH24:MI:SS'),
+			#active#
+		)
+	</insert>
+	
+	<delete id="deleteSysQYGroup"  parameterClass="java.util.HashMap">
+		DELETE FROM ${dbSchemal4}SYS_QY_GROUP WHERE POST_ID = #postId#
+	</delete>
+	<insert id="insertSysQYGroup" parameterClass="java.util.HashMap">
+		INSERT INTO ${dbSchemal4}SYS_QY_GROUP(
+			ID,
+			POST_ID,
+			USERCENTER,
+			QUYBH,
+			CREATOR,
+			CREATE_TIME,
+			ACTIVE
+		) VALUES (
+			#id#,
+			#postId#,
+			#usercenter#,
+			#quybh#,
+			#creator#,
+			to_date(#createTime#,'YYYY-MM-DD HH24:MI:SS'),
+			#active#
+		)
+	</insert>
+	
+	<select id="getCkGroupData" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT ID,USERCENTER,CANGKBH FROM ${dbSchemal4}SYS_CK_GROUP WHERE 1=1 AND POST_ID = #postCode# ORDER BY USERCENTER,CANGKBH
+	</select>
+	<select id="getRQCGroupData" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT ID,USERCENTER,RONGQCBH FROM ${dbSchemal4}SYS_RQC_GROUP WHERE 1=1 AND POST_ID = #postCode# ORDER BY USERCENTER,RONGQCBH
+	</select>
+	<select id="getKHGroupData" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT ID,USERCENTER,KEH FROM ${dbSchemal4}SYS_KH_GROUP WHERE 1=1 AND POST_ID = #postCode# ORDER BY USERCENTER,KEH
+	</select>
+	<select id="getQYGroupData" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT ID,USERCENTER,QUYBH FROM ${dbSchemal4}SYS_QY_GROUP WHERE 1=1 AND POST_ID = #postCode# ORDER BY USERCENTER,QUYBH
+	</select>
+	<select id="queryPostDicCache"  resultClass="com.athena.util.cache.CacheValue">
+		SELECT DIC_CODE as value,POST_CODE as key ,usercenter FROM ${dbSchemal0}SYS_POST WHERE BIAOS = 1
+	</select>
+	
+	<insert id="saveAuthUsercenter" parameterClass="java.util.HashMap">
+		INSERT INTO ${dbSchemal0}SYS_R_POST_USERCENTER(POST_CODE,USERCENTER) VALUES(#postCode#,#usercenter#)
+	</insert>
+	<select id="getRoleuc" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT POST_CODE,USERCENTER FROM ${dbSchemal0}SYS_R_POST_USERCENTER WHERE POST_CODE = #postCode#
+	</select>
+	<delete id="deleteRoleuc" parameterClass="java.util.HashMap">
+		DELETE FROM ${dbSchemal0}SYS_R_POST_USERCENTER WHERE POST_CODE = #postCode#
+	</delete>
+	<select id="getRoleucByPostCode" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT distinct R_POST_USERCENTER_.USERCENTER FROM ${dbSchemal0}SYS_R_POST_USERCENTER R_POST_USERCENTER_
+		inner JOIN ${dbSchemal0}SYS_R_USER_POST R_USER_POST_ ON R_POST_USERCENTER_.POST_CODE = r_user_post_.post_code 
+		inner JOIN ${dbSchemal0}SYS_USER USER_ ON R_USER_POST_.USER_ID = USER_.ID WHERE USER_.LOGINNAME = #userId#
+	</select>
+	<select id="getAllUsercenter" resultClass="java.lang.String">
+		SELECT USERCENTER FROM ${dbSchemal0}CKX_USERCENTER WHERE 1=1 AND BIAOS = 1
+	
+	</select>
+	<select id="getAllPostCodeUsercenter" resultClass="java.util.HashMap" parameterClass="com.athena.authority.entity.User">
+		SELECT  POST_.DIC_CODE,R_POST_USERCENTER_.USERCENTER FROM ${dbSchemal0}SYS_R_POST_USERCENTER R_POST_USERCENTER_
+		inner JOIN ${dbSchemal0}SYS_POST POST_ ON R_POST_USERCENTER_.POST_CODE = POST_.post_code 
+		inner JOIN ${dbSchemal0}SYS_R_USER_POST R_USER_POST_ ON R_POST_USERCENTER_.POST_CODE = r_user_post_.post_code 
+		inner JOIN ${dbSchemal0}SYS_USER USER_ ON R_USER_POST_.USER_ID = USER_.ID WHERE USER_.LOGINNAME = #loginname#
+	</select>
+	
+	<select id="validatePostNotUser"  parameterClass="com.athena.authority.entity.Post" resultClass="int">
+		SELECT COUNT(*) as COUNT FROM ${dbSchemal0}sys_r_user_post WHERE POST_CODE = #postCode#
+	</select>
+</sqlMap>

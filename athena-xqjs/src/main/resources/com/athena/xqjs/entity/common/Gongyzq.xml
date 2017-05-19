@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="common">
+
+	<resultMap class="com.athena.xqjs.entity.common.Gongyzq" id="Gongyzq">
+		<result column="GONGYZQ" property="gongyzq" />
+		<result column="KAISSJ" property="kaissj" />
+		<result column="JIESSJ" property="jiessj" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="create_time" />
+		<result column="EDITOR" property="editor" />
+		<result column="EDIT_TIME" property="edit_time" />
+	</resultMap>
+
+	<select id="queryTime" resultMap="Gongyzq">
+		SELECT
+		gongyzq,
+		kaissj,
+		jiessj,
+		creator,
+		create_time,
+		editor,
+		edit_time
+		FROM
+		${dbSchemal3}ckx_calendar_gongyzq
+		WHERE
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="gongyzq">
+				<![CDATA[gongyzq = #gongyzq#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="rq">
+				<![CDATA[#rq# between kaissj and jiessj ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="apointzq">
+				      <![CDATA[ gongyzq >= #apointzq#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="kaissj">
+				<![CDATA[#kaissj# >= kaissj]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="kssj">
+				<![CDATA[(kaissj <= #kssj# and jiessj>=#kssj#) or kaissj >= #kssj#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiessj">
+				<![CDATA[#jiessj# <= jiessj]]>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY GONGYZQ
+	</select>
+	<select id="queryAllGongyzq"  resultMap="Gongyzq">
+		SELECT
+		gongyzq,
+		kaissj,
+		jiessj,
+		creator,
+		create_time,
+		editor,
+		edit_time
+		FROM
+		${dbSchemal3}ckx_calendar_gongyzq
+		WHERE
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="gongyzq">
+				<![CDATA[gongyzq = #gongyzq#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="currentDate">
+				<![CDATA[kaissj <= #currentDate#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="currentDate">
+				<![CDATA[jiessj >= #currentDate#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="queryLastGongyzq"  resultMap="Gongyzq">
+		SELECT gongyzq,
+		kaissj,
+		jiessj,
+		creator,
+		create_time,
+		editor,
+		edit_time FROM (SELECT gongyzq,
+		kaissj,
+		jiessj,
+		creator,
+		create_time,
+		editor,
+		edit_time FROM ${dbSchemal3}ckx_calendar_gongyzq order by GONGYZQ desc ) where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="gongyzq">
+				<![CDATA[GONGYZQ <#gongyzq# and ROWNUM < 2]]>
+			</isNotEmpty>
+		</dynamic> 
+	</select>
+	
+	
+	
+	<select id="queryVTime" resultClass="com.athena.xqjs.entity.common.Gongyzq">
+		select min(t.riq) as kaissj, max(t.riq) as jiessj, t.nianzq as gongyzq
+	  	from ${dbSchemal3}CKX_CALENDAR_VERSION t
+		 where t.banc = #rilbc#
+		 and t.usercenter = #usercenter#
+		 <dynamic>
+		         <isNotEmpty  prepend=" and "   property="riq">riq=#riq#</isNotEmpty>
+		 </dynamic>
+		 group by t.nianzq
+		 order by t.nianzq
+	</select>
+	
+	
+</sqlMap>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="common">
+
+
+
+	<select id="queryGonghmsMaoxq" resultClass="com.athena.xqjs.entity.common.GonghmsMaoxq">
+		select distinct XUQLY,
+		                (select zidmc from ${dbSchemal3}ckx_xitcsdy x where x.zidlx='XQLY' and x.zidbm=t.xuqly) as gonghms
+		 from ${dbSchemal3}CKX_GONGHMS_MAOXQ t 
+		 where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="gonghms">
+				GONGHMS = #gonghms#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gonghms0">
+				(GONGHMS = #gonghms0#
+			</isNotEmpty>
+			<isNotEmpty prepend="  or " property="gonghms1">
+				GONGHMS = #gonghms1#
+			</isNotEmpty>
+			<isNotEmpty prepend="  or " property="gonghms2">
+				GONGHMS = #gonghms2#
+			</isNotEmpty>
+			<isNotEmpty prepend="  or " property="gonghms3">
+				GONGHMS = #gonghms3#
+			</isNotEmpty>
+			<isNotEmpty prepend=" " property="gonghms0">
+				)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+    
+    <select id="queryGonghmsMaoxqDhlx" resultClass="com.athena.xqjs.entity.common.GonghmsMaoxq">
+		select GONGHMS,
+		       XUQLY,
+		       DINGHLX
+		 from ${dbSchemal3}CKX_GONGHMS_MAOXQ t 
+		 where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="xuqly">
+				XUQLY = #xuqly#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>

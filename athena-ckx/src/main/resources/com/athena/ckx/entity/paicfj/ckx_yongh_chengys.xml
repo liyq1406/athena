@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+<select id="queryCkx_yongh_chengys" resultClass="com.athena.ckx.entity.paicfj.Ckx_yongh_chengys">
+   select usercenter , yonghbh , chengysbh 
+   from ${dbSchemal3}ckx_yongh_chengys
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="yonghbh"><![CDATA[yonghbh = #yonghbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysbh"><![CDATA[chengysbh = #chengysbh#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,yonghbh,chengysbh
+</select>
+<insert id="insertCkx_yongh_chengys" parameterClass="com.athena.ckx.entity.paicfj.Ckx_yongh_chengys">
+insert into ${dbSchemal3}ckx_yongh_chengys
+(usercenter , yonghbh , chengysbh   , creator , create_time , editor , edit_time )
+values(#usercenter# , #yonghbh#, #chengysbh# , #creator# , #create_time# , #editor# , #edit_time# )
+</insert>
+
+<delete id="deleteCkx_yongh_chengys"  parameterClass="com.athena.ckx.entity.paicfj.Ckx_yongh_chengys">
+delete ${dbSchemal3}ckx_yongh_chengys
+where <![CDATA[ usercenter = #usercenter# and yonghbh = #yonghbh# and chengysbh = #chengysbh#]]>
+</delete>
+
+</sqlMap>

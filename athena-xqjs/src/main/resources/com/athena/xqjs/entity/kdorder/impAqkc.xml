@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 订单修改及生效 -->
+<sqlMap namespace="kdimp">
+	<!-- 导入订货安全库存 查询 -->
+	<select id="querykc" parameterClass="java.util.Map" resultClass="java.util.HashMap"
+		remapResults="true">
+		select y.*,x.jistzz as JISTZZ,
+		x.dinghck as CANGKBH,
+		x.dingdlj as DINGDBDZL,
+		x.jiaoflj as YIJFZL,
+		x.dingdzzlj as ZHONGZZL,
+		#ziyhqrq# as SYSTIME from 
+				(select distinct k.usercenter,
+				    k.lingjbh,
+				    l.zhizlx,
+				    l.dinghck,
+				    l.cangkbh,
+				    nvl(k.dingdlj,0) as dingdlj,
+				    nvl(k.jiaoflj,0) as jiaoflj,
+				    nvl(k.dingdzzlj,0) as dingdzzlj,
+				    nvl(l.jistzz,0) as jistzz
+				  from ${dbSchemal1}xqjs_ziykzb k,
+				       (select l.lingjbh,l.jihy,l.dinghcj,l.usercenter,l.cangkbh,wl.zhizlx,wl.dinghck,l.jistzz
+				  from (select distinct lj.*, cjk.cangkbh,cjk.jistzz
+				          from ${dbSchemal3}ckx_lingj lj, ${dbSchemal3}ckx_lingjck cjk
+				         where lj.usercenter = cjk.usercenter
+				           and lj.lingjbh = cjk.lingjbh) l,
+				       (select distinct wl.usercenter,wl.waibms,wl.lingjbh,case when wl.dinghck is null then
+				                          wl.xianbck 
+				                         else 
+				                          wl.dinghck end as dinghck,wl.zhizlx from ${dbSchemal3}ckx_wullj wl) wl
+				 where l.usercenter = wl.usercenter
+				   and l.lingjbh = wl.lingjbh
+				   and l.cangkbh = wl.dinghck
+				   and wl.waibms = 'PP'
+				   and wl.zhizlx ='97X') l
+				 where k.usercenter = l.usercenter
+				   and k.lingjbh = l.lingjbh
+				   and k.cangkdm = l.dinghck
+				   and l.zhizlx in ('97X')
+				   and k.ziyhqrq = to_date(#ziyhqrq#, 'yyyy-mm-dd')) x,
+				   
+				   
+					(select k.usercenter as USERCENTER,
+					       l.lingjbh as LINGJBH,
+					       l.dinghcj as DINGHCJ,
+					       sum(k.kucsl) as LINGJSL,
+					       l.jihy as JIHY
+					  from ${dbSchemal1}xqjs_ziykzb k,
+					       (select l.lingjbh,
+					               l.jihy,
+					               l.dinghcj,
+					               l.usercenter,
+					               l.cangkbh,
+					               wl.zhizlx
+					          from (select distinct lj.*, cjk.cangkbh
+					                  from ${dbSchemal3}ckx_lingj lj, ${dbSchemal3}ckx_lingjck cjk
+					                 where lj.usercenter = cjk.usercenter
+					                   and lj.lingjbh = cjk.lingjbh) l,
+					               (select distinct wl.usercenter,
+					                                wl.waibms,
+					                                wl.lingjbh,
+					                                case
+					                                  when wl.dinghck is null then
+					                                   wl.xianbck
+					                                  else
+					                                   wl.dinghck
+					                                end as dinghck,wl.zhizlx
+					                  from ${dbSchemal3}ckx_wullj wl) wl
+					         where l.usercenter = wl.usercenter
+					           and l.lingjbh = wl.lingjbh
+					           and l.cangkbh = wl.dinghck
+					           and wl.waibms = 'PP'
+					           and wl.zhizlx = '97X') l
+					 where k.usercenter = l.usercenter
+					   and k.lingjbh = l.lingjbh
+					   and l.zhizlx in ('97X')
+					   and k.ziyhqrq = to_date(#ziyhqrq#, 'yyyy-mm-dd')
+					 group by k.usercenter, l.lingjbh, l.dinghcj, l.zhizlx, l.jihy, k.ziyhqrq) y
+					 where x.lingjbh=y.lingjbh and x.usercenter = y.usercenter
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">x.usercenter
+				=#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">x.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy">y.jihy = #jihy#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 导出订货安全库存 查询 -->
+	<select id="expkc" parameterClass="java.util.Map" resultClass="java.util.HashMap"
+		remapResults="true">
+		select y.*,x.jistzz as JISTZZ,
+		x.dinghck as CANGKBH,
+		x.dingdlj as DINGDBDZL,
+		x.jiaoflj as YIJFZL,
+		x.dingdzzlj as ZHONGZZL,
+		#ziyhqrq# as SYSTIME from 
+				(select distinct k.usercenter,
+				    k.lingjbh,
+				    l.zhizlx,
+				    l.dinghck,
+				    l.cangkbh ,
+				    nvl(k.dingdlj,0) as dingdlj,
+				    nvl(k.jiaoflj,0) as jiaoflj,
+				    nvl(k.dingdzzlj,0) as dingdzzlj,
+				    nvl(l.jistzz,0) as jistzz
+				  from ${dbSchemal1}xqjs_ziykzb k,
+				       (select l.lingjbh,l.jihy,l.dinghcj,l.usercenter,l.cangkbh,wl.zhizlx,wl.dinghck,l.jistzz
+				  from (select distinct lj.*, cjk.cangkbh,cjk.jistzz
+				          from ${dbSchemal3}ckx_lingj lj, ${dbSchemal3}ckx_lingjck cjk
+				         where lj.usercenter = cjk.usercenter
+				           and lj.lingjbh = cjk.lingjbh) l,
+				       (select distinct wl.usercenter,wl.waibms,wl.lingjbh,case when wl.dinghck is null then
+				                          wl.xianbck 
+				                         else 
+				                          wl.dinghck end as dinghck,wl.zhizlx from ${dbSchemal3}ckx_wullj wl) wl
+				 where l.usercenter = wl.usercenter
+				   and l.lingjbh = wl.lingjbh
+				   and l.cangkbh = wl.dinghck
+				   and wl.waibms = 'PP'
+				   and wl.zhizlx ='97X') l
+				 where k.usercenter = l.usercenter
+				   and k.lingjbh = l.lingjbh
+				   and k.cangkdm = l.dinghck
+				   and l.zhizlx in ('97X')
+				   and k.ziyhqrq = to_date(#ziyhqrq#, 'yyyy-mm-dd')) x,
+				   
+					(select k.usercenter as USERCENTER,
+					       l.lingjbh as LINGJBH,
+					       l.dinghcj as DINGHCJ,
+					       sum(k.kucsl) as LINGJSL,
+					       l.jihy as JIHY
+					  from ${dbSchemal1}xqjs_ziykzb k,
+					       (select l.lingjbh,
+					               l.jihy,
+					               l.dinghcj,
+					               l.usercenter,
+					               l.cangkbh,
+					               wl.zhizlx
+					          from (select distinct lj.*, cjk.cangkbh
+					                  from ${dbSchemal3}ckx_lingj lj, ${dbSchemal3}ckx_lingjck cjk
+					                 where lj.usercenter = cjk.usercenter
+					                   and lj.lingjbh = cjk.lingjbh) l,
+					               (select distinct wl.usercenter,
+					                                wl.waibms,
+					                                wl.lingjbh,
+					                                case
+					                                  when wl.dinghck is null then
+					                                   wl.xianbck
+					                                  else
+					                                   wl.dinghck
+					                                end as dinghck,wl.zhizlx
+					                  from ${dbSchemal3}ckx_wullj wl) wl
+					         where l.usercenter = wl.usercenter
+					           and l.lingjbh = wl.lingjbh
+					           and l.cangkbh = wl.dinghck
+					           and wl.waibms = 'PP'
+					           and wl.zhizlx = '97X') l
+					 where k.usercenter = l.usercenter
+					   and k.lingjbh = l.lingjbh
+					   and l.zhizlx in ('97X')
+					   and k.ziyhqrq = to_date(#ziyhqrq#, 'yyyy-mm-dd')
+					 group by k.usercenter, l.lingjbh, l.dinghcj, l.zhizlx, l.jihy, k.ziyhqrq) y
+					 where x.lingjbh=y.lingjbh and x.usercenter = y.usercenter
+
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">x.usercenter
+				=#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">x.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy">y.jihy = #jihy#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="queryZykzb" resultClass="java.util.HashMap">
+		select to_char(max(k.ziyhqrq),'yyyy-mm-dd') as ziyhqrq
+		from ${dbSchemal1}xqjs_ziykzb k
+	</select>
+
+	<!--修改安全库存 -->
+	<update id="updatekc" parameterClass="com.athena.xqjs.entity.kanbyhl.Lingjck">
+		update ${dbSchemal3}ckx_lingjck
+		set
+		jistzz = #jistzz#,
+		editor =
+		#newEditor#,
+		edit_time=to_timestamp(#newEditTime#,'yyyy-mm-dd
+		HH24:mi:ss:ff3')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[ usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor"><![CDATA[editor = #editor#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="edit_time"><![CDATA[edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')]]></isNotEmpty>
+
+		</dynamic>
+	</update>
+	
+		<!--修改资源快照表 -->
+	<update id="updatezykzb" parameterClass="com.athena.xqjs.entity.kanbyhl.Lingjck">
+		update ${dbSchemal3}xqjs_ziykzb t
+		 set t.xttzz     = 0,
+       t.dingdlj   = #dingdlj#,
+       t.jiaoflj   = #jiaoflj#,
+       t.dingdzzlj = #zhongzlj#,
+       t.jstzsz    = #jistzz#
+		 where
+		   to_char(t.ziyhqrq, 'YYYY-MM-DD') = #ziyhqrq#
+		   and t.usercenter = #usercenter#
+		   and t.lingjbh = #lingjbh#
+		   and t.cangkdm = #cangkbh#
+	</update>
+	
+</sqlMap>

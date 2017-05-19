@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- 包装  denggq 2012-3-19 -->
+	
+	<!-- 多数据查询 -->
+	<select id="queryBaoz" parameterClass="com.athena.ckx.entity.xuqjs.Baoz" resultClass="com.athena.ckx.entity.xuqjs.Baoz">
+		select baozlx,baozmc,changd,kuand,gaod,baozzl,caiz,shifhs,leib,zhedgd,duidcs,baiffx,biaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_baoz
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="baozlx"><![CDATA[baozlx = #baozlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="leib"><![CDATA[leib = #leib#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by baozlx
+	</select>
+	<!-- 多数据查询 -->
+	<select id="queryBaozImport" parameterClass="com.athena.ckx.entity.xuqjs.Baoz" resultClass="com.athena.ckx.entity.xuqjs.Baoz">
+		select baozlx,baozmc,changd,kuand,gaod,baozzl,
+		decode(caiz,'1','金属','2','塑料','3','纸质','4','木质')	caiz,
+		decode(shifhs,'1','是','0','否') shifhs,
+		leib,zhedgd,duidcs,
+		decode(baiffx,'1','长边朝外','2','短边朝外')   baiffx,
+		decode(biaos,'1','有效','0','无效')   biaos,
+		creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_baoz
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="baozlx"><![CDATA[baozlx = #baozlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="leib"><![CDATA[leib = #leib#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by baozlx
+	</select>
+	<!-- 获取数量 -->
+	<select id="getCountBaoz" resultClass="java.lang.String">
+		select count(*) from ${dbSchemal3}ckx_baoz  where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="baozlx">
+				<![CDATA[baozlx = #baozlx#]]>
+			</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<!-- 单数据查询 -->
+	<select id="getBaoz" parameterClass="com.athena.ckx.entity.xuqjs.Baoz" resultClass="com.athena.ckx.entity.xuqjs.Baoz">
+		select baozlx,baozmc,changd,kuand,gaod,baozzl,caiz,shifhs,leib,zhedgd,duidcs,baiffx,biaos
+		from ${dbSchemal3}ckx_baoz
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="baozlx"><![CDATA[baozlx = #baozlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="leib"><![CDATA[leib = #leib#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 插入数据 -->
+	<insert id="insertBaoz" parameterClass="com.athena.ckx.entity.xuqjs.Baoz">
+		insert into ${dbSchemal3}ckx_baoz (baozlx,baozmc,changd,kuand,gaod,baozzl,caiz,shifhs,leib,zhedgd,duidcs,baiffx,biaos,creator,create_time,editor,edit_time)
+		values(<![CDATA[#baozlx#,#baozmc#,#changd#,#kuand#,#gaod#,#baozzl#,#caiz#,#shifhs#,#leib#,#zhedgd#,#duidcs#,#baiffx#,'1',#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+	</insert>
+	
+	
+	<!-- 更新数据 -->
+	<update id="updateBaoz" parameterClass="com.athena.ckx.entity.xuqjs.Baoz">
+		update ${dbSchemal3}ckx_baoz 
+		set baozmc = #baozmc#,
+	        changd = #changd#,
+	    	kuand = #kuand#,
+	    	gaod = #gaod#,
+	    	baozzl = #baozzl#,
+	    	caiz = #caiz#,
+	    	shifhs = #shifhs#,
+	    	leib = #leib#,
+	    	zhedgd = #zhedgd#,
+	    	duidcs = #duidcs#,
+	    	baiffx = #baiffx#,
+	    	biaos = #biaos#,
+	    	editor = #editor# ,
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+	    where  <![CDATA[baozlx = #baozlx#]]> 
+	</update>
+	
+	
+	<!-- 失效数据 -->
+	<delete id="deleteBaoz" parameterClass="com.athena.ckx.entity.xuqjs.Baoz">
+		update ${dbSchemal3}ckx_baoz
+		set <![CDATA[biaos = '0' , editor = #editor# , edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="baozlx">
+				<![CDATA[baozlx = #baozlx#]]>
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+</sqlMap>

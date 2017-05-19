@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="workCalendar">
+	
+	<resultMap class="com.athena.ckx.entity.workCalendar.CkxCalendarGongyzq" id="CkxCalendarGongyzq">
+		<result column="gongyzq" property="gongyzq" />
+		<result column="kaissj" property="kaissj" />
+		<result column="jiessj" property="jiessj" />
+		<result column="creator" property="creator" />
+		<result column="create_Time" property="createTime" />
+		<result column="editor" property="editor" />
+		<result column="edit_Time" property="editTime" />
+	</resultMap>
+	<!-- 多记录查询 -->
+	<select id="queryCkxCalendarGongyzq" resultMap="CkxCalendarGongyzq">select 
+		gongyzq,
+		kaissj,
+		jiessj,
+		creator,create_Time,editor,edit_Time
+		from ${dbSchemal3}ckx_calendar_gongyzq where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="  and " property="riq">gongyzq = #gongyzq#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">kaissj = #kaissj#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xingq">jiessj = #jiessj#</isNotEmpty>
+		</dynamic>
+		order by gongyzq,kaissj
+	</select>
+	<select id="getCkxCalendarGongyzq" resultMap="CkxCalendarGongyzq">select 
+		gongyzq,
+		kaissj,
+		jiessj,
+		creator,create_Time,editor,edit_Time
+		from ${dbSchemal3}ckx_calendar_gongyzq where gongyzq=#gongyzq# 
+	</select>
+	<!-- 插入记录 -->
+	<insert id="insertCkxCalendarGongyzq" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarGongyzq">insert into
+		${dbSchemal3}ckx_calendar_gongyzq (gongyzq,kaissj,jiessj,creator,create_Time,editor,edit_Time)
+		values(
+			#gongyzq#,
+			#kaissj#,
+			#jiessj#,
+			#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	<!-- 删除记录 -->
+	<delete id="deleteCkxCalendarGongyzq" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarGongyzq">
+		delete from ${dbSchemal3}ckx_calendar_gongyzq where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="gongyzq">
+				<![CDATA[gongyzq like '$gongyzq$%']]>
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+</sqlMap>

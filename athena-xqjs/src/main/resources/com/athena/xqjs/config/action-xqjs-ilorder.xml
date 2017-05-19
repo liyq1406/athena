@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="ilorder" extend="toft-default" namespace="/ilorder">
+		<action name="queryDingdlj" class="dingdljAction" method="query" />
+		<action name="dingdlj" class="dingdljAction" method="execute">
+			<result name="select">/WEB-INF/pages/xqjs/order/orderStop_1.jsp</result>
+		</action>
+
+		<action name="executeJislx" class="ilOrderAction" method="executeJislx" />
+		<action name="executeZiykzb" class="ilOrderAction" method="executeZiykzb" />
+		<!-- 初始化需求来源lizhi -->
+		<action name="executeMaoxqXqly" class="ilOrderAction" method="executeMaoxqXqly" />
+		<!-- 在session中查询选中的毛需求lizhi -->
+		<action name="querySessionMaoxq" class="ilOrderAction" method="querySessionMaoxq" />
+		
+		<!-- IL件订单计算初始页面 lizhi -->
+		<action name="dingdJisExecute" class="ilOrderAction" method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/ilOrderJs.jsp</result>
+		</action>
+
+		<!-- IL件订单计算页面查询毛需求列表 lizhi -->
+		<action name="queryMaoxp" class="ilOrderAction" method="queryListMaoxq" />
+
+		<!-- IL件订单零件终止初始页面 lizhi -->
+		<action name="dingdljListExecute" class="ilOrderLingjZzAction"
+			method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/dingdljZzList.jsp</result>
+		</action>
+
+		<!-- IL件订单零件终止页面查询订单零件列表 lizhi -->
+		<action name="queryDingdljByParam" class="ilOrderLingjZzAction"
+			method="queryDingdljByParam" />
+
+		<!-- Il件订单零件终止lizhi -->
+		<action name="dingdljZz" class="ilOrderLingjZzAction" method="dingdljZz" />
+		
+		<action name="effectDdmx" class="ilOrderEeAction" method="effectDdmx" />
+
+
+		<!-- IL件订单行终止初始页面 lizhi -->
+		<action name="dingdhListExecute" class="ilOrderMingxZzAction"
+			method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/dingdhZzList.jsp</result>
+		</action>
+
+		<!-- IL件订单行终止页面查询订单明细列表 lizhi -->
+		<action name="queryDingdmxByParam" class="ilOrderMingxZzAction"
+			method="queryDingdmxByParam" />
+
+		<!-- Il件订单行终止lizhi -->
+		<action name="dingdmxZz" class="ilOrderMingxZzAction" method="dingdmxZz" />
+
+		<!-- Il件订单分析初始页面lizhi -->
+		<action name="dingdFenxiExecute" class="ilOrderFenxiAction"
+			method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/dingdFenxi.jsp</result>
+		</action>
+
+		<!--Il件订单分析页面查询订单列表 lizhi -->
+		<action name="queryListDingd" class="ilOrderFenxiAction"
+			method="queryListDingd" />
+		<action name="querySumDingd" class="ilOrderFenxiAction"
+			method="querySumDingd" />
+		<action name="dingdFenxiDownLoadFile" class="ilOrderFenxiAction" method="dingdFenxiDownLoadFile" />
+		<!-- Il件订单分析页面查询毛需求列表 lizhi -->
+		<action name="queryListMaoxq" class="ilOrderFenxiAction"
+			method="queryListMaoxq" />
+
+		<!-- 跳到比较结果页面lizhi -->
+		<action name="toBijiaoResult" class="ilOrderFenxiAction"
+			method="toBijiaoResult">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/dingdFenxiResult.jsp</result>
+		</action>
+
+		<!-- 比较结果页面 lizhi -->
+		<action name="bijiao" class="ilOrderFenxiAction" method="bijiao" />
+
+        <!-- 卷料资源获取日期 NIESY -->
+		<action name="juanlZrhqrq" class="ilOrderAction" method="juanlZrhqrq" />
+
+		<!-- 初始化IL订单修改及生效页面NIESY -->
+		<action name="initEditE" class="ilOrderEeAction" method="initEditE">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/dingdEditE.jsp</result>
+		</action>
+        <!-- il订单零件修改 -->
+		<action name="updateDdLj" class="ilOrderEeAction" method="updateDdLj" />
+		<!-- il订单查询 -->
+		<action name="queryDd" class="ilOrderEeAction" method="queryDd" />
+		<!-- il订单新增 -->
+		<action name="insertIlDd" class="ilOrderEeAction" method="insertIlDd" />
+		<!-- il删除新增 -->
+		<action name="deleteDd" class="ilOrderEeAction" method="deleteDd" />
+		<!-- il订单待生效 /生效/拒绝 -->
+		<action name="updateDaStatus" class="ilOrderEeAction" method="updateDaStatus" />
+		<!-- 临时订单生效、待生效 -->
+		<action name="updateLsStatus" class="ilOrderEeAction" method="updateLsStatus" />
+		<action name="queryLingjck" class="ilOrderEeAction" method="queryLingjck" />
+		<!-- il订单待导出 -->
+		<action name="expilOrder" class="ilOrderEeAction" method="expilOrder" />
+		<!-- il订单零件增加 -->
+		<action name="insertIlDdlj" class="ilOrderEeAction" method="insertIlDdlj" />
+		<!-- 初始化IL订单零件页面NIESY -->
+		<action name="initDdlj" class="ilOrderEeAction" method="initDdlj">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/dingdljEe.jsp</result>
+		</action>
+		<!-- 查询订单零件页面 -->
+		<action name="queryDdLj" class="ilOrderEeAction" method="queryDdLj"/>
+		<!-- 查询订单明细页面 -->
+		<action name="queryDdmx" class="ilOrderEeAction" method="queryDdmx"/>
+		<!-- 查询订单明细页面(临时周期、周、日)-->
+		<action name="queryTempDdmx" class="ilOrderEeAction" method="queryTempDdmx"/>
+		<!-- 查询订单明细页面 （临时按需）-->
+		<action name="queryTempAnx" class="ilOrderEeAction" method="queryTempAnx"/>
+		<!-- 查询订单明细页面 （临时按需）-->
+		<action name="querykanbls" class="ilOrderEeAction" method="querykanbls"/>
+		<!-- 临时创建看板   修改 -->
+		<action name="updateLsKbSl" class="ilOrderEeAction" method="updateLsKbSl"/>
+		<!-- 临时创建看板   删除 -->
+		<action name="deleteKbDdmx" class="ilOrderEeAction" method="deleteKbDdmx"/>
+		
+		<action name="queryLjgys" class="ilOrderEeAction" method="queryLjgys"/>
+		
+		<action name="validateDindhck" class="ilOrderEeAction" method="validateDindhck"/>
+		
+		<action name="downLoadFileIlOrder" class="ilOrderDownLoadAction" method="downLoadFileIlOrder"/>
+		
+		<action name="execute" class="ilOrderDownLoadAction" method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/orderExp.jsp</result>
+		</action>
+	    <action name="queryExpDingdh" class="ilOrderDownLoadAction" method="queryExpDingdh"/>
+		
+		<action name="getKeh" class="ilOrderEeAction" method="getKeh"/>
+			<!-- 初始化IL订单零件页面NIESY -->
+		<action name="initDdmx" class="ilOrderEeAction" method="initDdmx">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/dingdmxEe.jsp</result>
+		</action>
+        <!--查询供应商  -->
+        <action name="ifExistGys" class="ilOrderEeAction" method="ifExistGys" />
+        <!--修改订单明细数量-->
+        <action name="updateMxSl" class="ilOrderEeAction" method="updateMxSl" />
+          <!--删除订单明细-->
+        <action name="deleteDdMx" class="ilOrderEeAction" method="deleteDdMx" />
+        
+          <!--添加订单明细-->
+        <action name="addDdMx" class="ilOrderEeAction" method="addDdMx" />
+        
+        <!-- 初始化IL临时订单创建页面NIESY -->
+		<action name="initTempDd" class="ilOrderEeAction" method="initTempDd">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/tempDdCreate.jsp</result>
+		</action>
+		<!-- 初始化IL临时订单修改及生效页面NIESY -->
+		<action name="initTempDdEe" class="ilOrderEeAction" method="initTempDdEe">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/tempDdEditE.jsp</result>
+		</action>
+		<!-- 初始化IL临时订单明细页面NIESY -->
+		<action name="initILTempDdmx" class="ilOrderEeAction" method="initTempDdmx">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/tempDdmxEe.jsp</result>
+		</action>
+		<action name="initTempDdmx" class="ilOrderEeAction" method="initTempDdmx">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/tempDdmxEe.jsp</result>
+		</action>
+		<!--初始化IL临时PJ订单明细页面  -->
+		<action name="initTempPJDdmx" class="ilOrderEeAction" method="initTempDdmx">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/tempPJDdmxEe.jsp</result>
+		</action>
+		<!-- 国产件订单计算 -->
+		<action name="ilCalculate" class="ilOrderAction" method="ilCalculate"/>
+		<!-- 国产件参数校验 -->
+		<action name="checkValue" class="ilOrderAction" method="checkValue"/>
+		<!-- 周期模式中间表导出-->
+		<action name="hzDownLoadFile" class="ilOrderAction" method="hzDownLoadFile"/>
+		<!-- 初始化IL订单定义页面 -->
+		<action name="initDingddy" class="ildingddyAction" method="initDingddy">
+			<result name="ildingddy">/WEB-INF/pages/xqjs/ilorder/ildingddy.jsp</result>
+		</action>
+		<!-- 初始化IL订单计算页面 -->
+		<action name="initDingdjs" class="ildingdjsAction" method="initDingdjs">
+			<result name="ildingdjs">/WEB-INF/pages/xqjs/ilorder/ildingdjs.jsp</result>
+		</action>
+		<!-- 校验供应商 -->
+		<action name="checkGongys" class="ildingdjsAction" method="checkGongys">
+		</action>
+		<!-- 查询处理类型 -->
+		<action name="queryChullx" class="ildingdjsAction" method="queryChullx">
+		</action> 
+		<!-- 查询订单列表 -->
+		<action name="queryDingd" class="ildingddyAction" method="queryDingd">
+		</action> 
+		<!-- 添加订单 -->
+		<action name="addDingd" class="ildingddyAction" method="addDingd">
+		</action> 
+		<!-- 删除订单 -->
+		<action name="removeDingd" class="ildingddyAction" method="removeDingd">
+		</action> 
+		<!-- 带出订单内容 -->
+		<action name="queryDingdNr" class="ildingddyAction" method="queryDingdNr">
+		</action> 
+		<!-- 查询订单号 -->
+		<action name="queryDingdh" class="ildingdjsAction" method="queryDingdh">
+		</action> 
+		<!-- 查询需求来源 -->
+		<action name="queryXuqly" class="ildingdjsAction" method="queryXuqly">
+		</action> 
+		<!-- 查询需求来源 wuyichao 只查非KD需求来源-->
+		<action name="queryXuqlyIl" class="ildingdjsAction" method="queryXuqlyIl">
+		</action> 
+		<!-- 查询需求来源 wuyichao 只差KD需求来源-->
+		<action name="queryXuqlyKd" class="ildingdjsAction" method="queryXuqlyKd">
+		</action> 
+		<!-- 查询需求来源 -->
+		<action name="queryMaoxqo" class="ildingdjsAction" method="queryMaoxqo">
+		</action> 
+		
+		<action name="validateXhd" class="ilOrderEeAction" method="validateXhd">
+		</action> 
+		<!-- 临时订单明细  工业周期第一天 -->
+		<action name="getNextZqFirstDay" class="ilOrderEeAction" method="getNextZqFirstDay" />
+			<!-- 临时订单明细  工业周期 -->
+		<action name="getThisGyzq" class="ilOrderEeAction" method="getThisGyzq">
+		</action> 
+			<!-- 临时订单明细  周期新增 -->
+		<action name="addLsZqMx" class="ilOrderEeAction" method="addLsZqMx">
+		</action> 
+		
+		<!-- IL订单修改及生效，按需零件页面 -->
+		<action name="initAnxDingd" class="ilOrderEeAction" method="initAnxDingd">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/dingdljAnxEe.jsp</result>
+			<result name="morderAx">/WEB-INF/pages/xqjs/ilorder/mDingdljAnxEe.jsp</result>
+		</action>
+		<action name="initAnxMxDingd" class="ilOrderEeAction" method="initAnxMxDingd">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/dingdljAnxMxEe.jsp</result>
+			<result name="mAxmxOrder">/WEB-INF/pages/xqjs/ilorder/mDdAnxMxEe.jsp</result>
+		</action>
+		<action name="initTempAnxDdmx" class="ilOrderEeAction" method="initTempAnxDdmx">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/lsddAnxMxEe.jsp</result>
+			<result name="mTempOrderAx">/WEB-INF/pages/xqjs/ilorder/mTempDdAnxMxEe.jsp</result>
+		</action>
+		<action name="initCreateTempAnxDdmx" class="ilOrderEeAction" method="initTempAnxDdmx">
+			<result name="success">/WEB-INF/pages/xqjs/ilorder/lsddAnxMxEe.jsp</result>
+			<result name="mTempOrderAx">/WEB-INF/pages/xqjs/ilorder/mTempDdAnxMxEe.jsp</result>
+		</action>
+		<!-- 创建临时看板 -->
+		<action name="insertLsKb" class="ilOrderEeAction" method="insertLsKb" />
+		<action name="getKanbxhbm" class="ilOrderEeAction" method="getKanbxhbm" />
+		<action name="validateExistGys" class="ilOrderEeAction" method="validateExistGys" />
+		<action name="validateGys" class="ilOrderEeAction" method="validateGys" />
+        <!-- 供货模式 -->
+		<action name="getGonghms" class="ilOrderEeAction" method="getGonghms" />
+		<!-- 状态查询 -->
+		<action name="queryAllStats" class="ilOrderAction" method="queryAllStats" />
+	
+		<action name="statsExcu" class="ilOrderAction" method="statsExcu" >
+		<result name="success">/WEB-INF/pages/xqjs/ilorder/zhuangtai.jsp</result>
+		</action>
+		<action name="changeStats" class="ilOrderAction" method="changeStats" />
+		<action name="getRonglvalidate" class="ilOrderEeAction" method="getRonglvalidate" />
+		<action name="queryWulljMudd" class="ilOrderEeAction" method="queryWulljMudd" />
+		
+		<action name="queryDdNopages" class="ilOrderEeAction" method="queryDdNopages" />
+
+		<!-- 按需订单下载  0011506  by hzg 2015.7.14 start -->
+		<action name="queryAnxDdCount" class="ilOrderEeAction" method="queryAnxDdCount" />
+		<action name="anxDingdmxDownload" class="ilOrderEeAction" method="anxDingdmxDownload"/>
+		<!-- 按需订单下载  0011506  by hzg 2015.7.14 end  -->
+	
+		<!-- 临时订单修改页面模板下载 -->
+		<action name="mubanxiazai" class="ilOrderEeAction" method="expMuban"></action>
+		<!-- 临时订单修改页面订单导入 -->
+		<action name="impIlorderTemp" class="ilOrderEeAction" method="impIlorderTemp"></action>
+		
+		<!-- 按需临时订单修改页面模板下载 -->
+		<action name="mubanxiazaiAX" class="anxOrderEeAction" method="expMubanAX"></action>
+		<!-- 按需临时订单修改页面订单导入 -->
+		<action name="impAXorderTemp" class="anxOrderEeAction" method="impAXorderTemp"></action>
+		
+		<!-- 按需临时订单新增订单明细 20170401 by CSY -->
+		<action name="addAnxlsddMx" class="anxlsOrderWebEeAction" method="addAnxlsddMx" />
+		
+	</package>
+</toft>

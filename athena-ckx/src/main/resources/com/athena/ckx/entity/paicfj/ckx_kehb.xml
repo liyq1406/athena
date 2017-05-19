@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+<select id="queryCkx_kehb" resultClass="com.athena.ckx.entity.paicfj.Ckx_kehb">
+   select kehbh , kehmc, kehxz, lianxr,diz,youzbh,dianh,chuanz,beiz,biaos
+   from ${dbSchemal3}ckx_kehb
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="kehbh"><![CDATA[kehbh = #kehbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="kehmc"><![CDATA[kehmc like '$kehmc$%']]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="kehxz"><![CDATA[kehxz = #kehxz#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by kehbh
+</select>
+
+<select id="getCountKehbh" resultClass="java.lang.String">
+	select count(kehbh)  from ${dbSchemal3}ckx_kehb
+   where 1=1
+  <dynamic>
+			<isNotEmpty prepend=" and " property="kehbh"><![CDATA[kehbh = #kehbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="kehxz"><![CDATA[kehxz = #kehxz#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+</select>
+
+
+<insert id="insertCkx_kehb" parameterClass="com.athena.ckx.entity.paicfj.Ckx_kehb">
+insert into ${dbSchemal3}ckx_kehb
+(kehbh , kehmc, kehxz, lianxr,diz,youzbh,dianh,chuanz,beiz,biaos,creator,create_time,editor,edit_time)
+values(#kehbh# , #kehmc#, #kehxz#, #lianxr# , #diz# , #youzbh# , #dianh# , 
+#chuanz# , #beiz# , '1', #creator# , #create_time# , #editor# , #edit_time# )
+</insert>
+
+<update id="updateCkx_kehb" parameterClass="com.athena.ckx.entity.paicfj.Ckx_kehb">
+update ${dbSchemal3}ckx_kehb
+set 
+      
+    		   <![CDATA[kehmc = #kehmc#]]> ,      	
+    		   <![CDATA[kehxz = #kehxz#]]> ,    	
+    		   <![CDATA[lianxr = #lianxr#]]>,    	
+    		   <![CDATA[diz = #diz#]]> ,    	
+    		   <![CDATA[youzbh = #youzbh#]]> ,    
+    		   <![CDATA[dianh = #dianh#]]> ,    
+    		   <![CDATA[chuanz = #chuanz#]]> ,    	
+    		   <![CDATA[beiz = #beiz#]]> ,    
+    		   <![CDATA[biaos = #biaos#]]> ,    	
+    		   <![CDATA[editor = #editor#]]> ,    	
+    		   <![CDATA[edit_time = #edit_time#]]> 
+    
+       where  <![CDATA[ kehbh = #kehbh#]]> 
+</update>
+<update id="deleteCkx_kehb"  parameterClass="com.athena.ckx.entity.paicfj.Ckx_kehb">
+update ${dbSchemal3}ckx_kehb
+set biaos = '0' , editor = #editor# , edit_time = #edit_time#
+where <![CDATA[ kehbh = #kehbh#]]> 
+</update>
+</sqlMap>

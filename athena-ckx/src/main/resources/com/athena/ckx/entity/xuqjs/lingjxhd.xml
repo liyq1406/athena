@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 消耗点-零件  denggq 2012-4-12 -->
+		
+		<!--内部物流路径使用(不包括新建和无效状态)-->
+		<select id="queryLingjxhdByCarry" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			  SELECT t.usercenter,t.lingjbh,t.fenpqbh,t.shengcxbh,s.zhizlx
+				  FROM (select distinct usercenter,lingjbh,fenpqbh,shengcxbh from ${dbSchemal3}CKX_LINGJXHD where biaos = 1) t
+				  left join ${dbSchemal3}ckx_shengcx_xianb m
+				    ON t.usercenter = m.usercenter
+				   and t.lingjbh = m.lingjbh
+				   and t.fenpqbh = m.fenpqh
+				 left join ${dbSchemal3}ckx_lingj s
+				   on t.usercenter = s.usercenter
+				   and t.lingjbh = s.lingjbh
+				 inner join ${dbSchemal3}ckx_fenpq f
+		            on t.usercenter=f.usercenter and t.fenpqbh=f.fenpqh
+				 where m.usercenter is null
+			<dynamic >			
+				<isNotEmpty prepend=" and " property="usercenter">t.usercenter = #usercenter#</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">t.lingjbh = #lingjbh#</isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohdbh">t.xiaohdbh = #xiaohdbh#</isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongysbh">t.gongysbh = #gongysbh#</isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh">t.shengcxbh = #shengcxbh#</isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenpqbh">t.fenpqbh = #fenpqbh#</isNotEmpty>
+				<isNotEmpty prepend=" and " property="zhizlx">s.zhizlx = #zhizlx#</isNotEmpty>
+				<isNotEmpty prepend=" and " property="wulgyyz">f.wulgyyz = #wulgyyz#</isNotEmpty>
+			</dynamic>
+			order by t.usercenter,t.lingjbh,t.shengcxbh,t.fenpqbh
+		</select>
+		
+		<!-- 修改数据(根据物流路径的模式和将来模式  mantis 0004334) 新增cv、mv by hanwu 20160318 0012590-->
+		<update id="updateCkxLingjxhdForCarry" >
+			update ${dbSchemal3}ckx_lingjxhd set pdsbz= '3',editor=#creator#,edit_time=sysdate
+			where trim(usercenter||fenpqbh||lingjbh) in(
+				select distinct trim(usercenter||fenpqh||lingjbh) from ${dbSchemal3}ckx_wullj  t
+				where 
+				 <![CDATA[	
+					  instr('C1,C0,CD,M1,MD,CS,CV,MV',t.waibms)>0 or        
+			          instr('C1,C0,CD,M1,MD,CS,CV,MV',t.mos)>0  or
+			          instr('C1,C0,CD,M1,MD,CS,CV,MV',t.mos2) >0 or
+			          instr('C1,C0,CD,M1,MD,CS,CV,MV',t.WJIANGLMS)>0 or        
+			          instr('C1,C0,CD,M1,MD,CS,CV,MV',t.JIANGLMS)>0  or
+			          instr('C1,C0,CD,M1,MD,CS,CV,MV',t.JIANGLMS2) >0
+			) and (pdsbz is null or pdsbz = '')
+			]]>
+		</update>
+		<!-- 修改数据(根据物流路径的模式和将来模式  mantis 0004334)去掉 pdsbz的状态  新增cv、mv by hanwu 20160318 0012590-->
+		<update id="updateCkxLingjxhdForCarry1">
+		update ${dbSchemal3}ckx_lingjxhd set pdsbz= '',editor=#creator#,edit_time=sysdate
+		where trim(usercenter||fenpqbh||lingjbh) in(
+		select distinct trim(usercenter||fenpqh||lingjbh) from ${dbSchemal3}ckx_wullj t	
+		where 
+		  <![CDATA[	
+			 instr('C1,C0,CD,M1,MD,CS,CV,MV',t.waibms)=0 and
+            instr('C1,C0,CD,M1,MD,CS,CV,MV',t.mos)=0 and 
+            case when t.mos2 is not null then  instr('C1,C0,CD,M1,MD,CS,CV,MV',t.mos2) else 0 end =0
+             and case when t.wjianglms is not null then  instr('C1,C0,CD,M1,MD,CS,CV,MV',t.wjianglms) else 0 end =0
+            and case when t.jianglms2 is not null then  instr('C1,C0,CD,M1,MD,CS,CV,MV',t.jianglms2) else 0 end =0
+            and case when t.jianglms is not null then  instr('C1,C0,CD,M1,MD,CS,CV,MV',t.jianglms) else 0 end =0
+			)
+			and pdsbz='3'
+		   ]]>
+		</update>
+		
+		<!-- 查询出均分比例的消耗点个数 -->
+		<select id="querycountLingjxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" resultClass="java.lang.Integer">
+			select count(*)
+			from ${dbSchemal3}ckx_lingjxhd t
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+				and fenpqbh in(
+					select distinct fenpqh from ${dbSchemal3}ckx_fenpq where 1=1
+					<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = t.usercenter]]></isNotEmpty>
+					<isNotEmpty prepend=" and " property="fenpqbh"><![CDATA[fenpqh = t.fenpqbh]]></isNotEmpty>
+					<isNotEmpty prepend=" and " property="wulgyyz"><![CDATA[wulgyyz = #wulgyyz#]]></isNotEmpty>
+				)
+			</dynamic>
+		</select>
+		
+		<!-- 按消耗点的升序排序后 给消耗比例赋值 -->
+		<select id="queryjunfCkxLingjxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			select usercenter,lingjbh,xiaohdbh,wulbh,fenpqbh,shengcxbh, gongybs,peislxbh,qianhcbs,jipbzwz,to_char(shengxr,'yyyy-MM-dd') as shengxr,
+				to_char(jiesr,'yyyy-MM-dd') as jiesr,guanlybh,xiaohbl*100 as xiaohbl,tiqjsxhbl*100 as tiqjsxhbl,shunxglbz,gongysbh,zidfhbz,xianbyhlx,
+				yancsxbz,beihdbz,xiaohcbh,xiaohccxbh,anqkcts,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,xittzz,pdsbz,yuanxhdbh,biaos,ceng,
+				creator,create_time,editor,edit_time,version
+			from ${dbSchemal3}ckx_lingjxhd t
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohdbh"><![CDATA[xiaohdbh=#xiaohdbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenpqbh"><![CDATA[fenpqbh = #fenpqbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongybs"><![CDATA[gongybs = #gongybs#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[gongysbh = #gongysbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohcbh"><![CDATA[xiaohcbh = #xiaohcbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohccxbh"><![CDATA[xiaohccxbh = #xiaohccxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="peislxbh"><![CDATA[peislxbh = #peislxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+				and fenpqbh in(
+					select distinct fenpqh from ${dbSchemal3}ckx_fenpq where 1=1
+					<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = t.usercenter]]></isNotEmpty>
+					<isNotEmpty prepend=" and " property="fenpqbh"><![CDATA[fenpqh = t.fenpqbh]]></isNotEmpty>
+					<isNotEmpty prepend=" and " property="wulgyyz"><![CDATA[wulgyyz = #wulgyyz#]]></isNotEmpty>
+				)
+			</dynamic>
+			order by usercenter,xiaohdbh
+		</select>
+		
+		
+		<!-- 查询零件消耗点对应的版本号-->
+	     <select id="getCkxLjxhdversion" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" resultClass="java.lang.String">
+               select version  from  ${dbSchemal3}ckx_lingjxhd 
+               where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh#]]>
+
+	    </select>
+		
+		<select id="getCountLingjxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" resultClass="java.lang.String">
+               select count(usercenter)  from  ${dbSchemal3}ckx_lingjxhd 
+               where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh#]]>
+
+		</select>
+	
+	    <!--分页查询(零件消耗点) -->
+		<select id="queryCkxLingjxhd" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			select usercenter,lingjbh,xiaohdbh,wulbh,fenpqbh,shengcxbh, gongybs,peislxbh,qianhcbs,jipbzwz,to_char(shengxr,'yyyy-MM-dd') as shengxr,
+				to_char(jiesr,'yyyy-MM-dd') as jiesr,guanlybh,xiaohbl*100 as xiaohbl,tiqjsxhbl*100 as tiqjsxhbl,shunxglbz,gongysbh,zidfhbz,xianbyhlx,
+				yancsxbz,beihdbz,xiaohcbh,xiaohccxbh,anqkcts,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,xittzz,pdsbz,yuanxhdbh,biaos,ceng,
+				creator,create_time,editor,edit_time,gongyxl
+			from ${dbSchemal3}ckx_lingjxhd t
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohdbh"><![CDATA[xiaohdbh=#xiaohdbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenpqbh"><![CDATA[fenpqbh = #fenpqbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongybs"><![CDATA[gongybs = #gongybs#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[gongysbh = #gongysbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohcbh"><![CDATA[xiaohcbh = #xiaohcbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohccxbh"><![CDATA[xiaohccxbh = #xiaohccxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="peislxbh"><![CDATA[peislxbh = #peislxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+				and fenpqbh in(
+					select distinct fenpqh from ${dbSchemal3}ckx_fenpq where 1=1
+					<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = t.usercenter]]></isNotEmpty>
+					<isNotEmpty prepend=" and " property="fenpqbh"><![CDATA[fenpqh = t.fenpqbh]]></isNotEmpty>
+					<isNotEmpty prepend=" and " property="wulgyyz"><![CDATA[wulgyyz = #wulgyyz#]]></isNotEmpty>
+				)
+			</dynamic>
+			order by usercenter, lingjbh, shengcxbh
+		</select>
+		
+		<!--分页查询(零件消耗点) -->
+		<select id="queryCkxLjxhdjp" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			select usercenter,lingjbh,xiaohdbh,wulbh,fenpqbh,shengcxbh, gongybs,peislxbh,qianhcbs,jipbzwz,to_char(shengxr,'yyyy-MM-dd') as shengxr,
+				to_char(jiesr,'yyyy-MM-dd') as jiesr,guanlybh,xiaohbl*100 as xiaohbl,tiqjsxhbl*100 as tiqjsxhbl,shunxglbz,gongysbh,zidfhbz,xianbyhlx,
+				yancsxbz,beihdbz,xiaohcbh,xiaohccxbh,anqkcts,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,xittzz,pdsbz,yuanxhdbh,biaos,ceng,
+				creator,create_time,editor,edit_time,version
+			from ${dbSchemal3}ckx_lingjxhd t
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohdbh"><![CDATA[xiaohdbh=#xiaohdbh#]]></isNotEmpty>
+<!-- 				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty> -->
+			</dynamic>
+			order by usercenter, lingjbh, shengcxbh
+		</select>
+		
+		<!--分页查询(零件消耗点) -->
+		<select id="queryCkxLjxhdTB" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			select usercenter,lingjbh,xiaohdbh,wulbh,fenpqbh,shengcxbh, gongybs,peislxbh,qianhcbs,jipbzwz,to_char(shengxr,'yyyy-MM-dd') as shengxr,
+				to_char(jiesr,'yyyy-MM-dd') as jiesr,guanlybh,xiaohbl*100 as xiaohbl,tiqjsxhbl*100 as tiqjsxhbl,shunxglbz,gongysbh,zidfhbz,xianbyhlx,
+				yancsxbz,beihdbz,xiaohcbh,xiaohccxbh,anqkcts,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,xittzz,pdsbz,yuanxhdbh,biaos,ceng,
+				creator,create_time,editor,edit_time,version
+			from ${dbSchemal3}ckx_lingjxhd t
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohdbh"><![CDATA[xiaohdbh=#xiaohdbh#]]></isNotEmpty>
+<!-- 				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty> -->
+			</dynamic>
+			order by usercenter, lingjbh, shengcxbh
+		</select>
+		
+		<select id="queryCkxLjxhdsx" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			select usercenter,lingjbh,xiaohdbh,wulbh,fenpqbh,shengcxbh, gongybs,peislxbh,qianhcbs,jipbzwz,to_char(shengxr,'yyyy-MM-dd') as shengxr,
+				to_char(jiesr,'yyyy-MM-dd') as jiesr,guanlybh,xiaohbl*100 as xiaohbl,tiqjsxhbl*100 as tiqjsxhbl,shunxglbz,gongysbh,zidfhbz,xianbyhlx,
+				yancsxbz,beihdbz,xiaohcbh,xiaohccxbh,anqkcts,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,xittzz,pdsbz,yuanxhdbh,biaos,ceng,
+				creator,create_time,editor,edit_time,version
+			from ${dbSchemal3}ckx_lingjxhd t
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohdbh"><![CDATA[xiaohdbh=#xiaohdbh#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter, lingjbh, shengcxbh
+		</select>
+		
+		 <!--分页查询(零件消耗点) -->
+		<select id="queryCkxLingjxhdImport" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			select usercenter,lingjbh,xiaohdbh,wulbh,fenpqbh,shengcxbh, 
+			    decode(gongybs,'1','有效','0','无效') gongybs,peislxbh,
+			    decode(qianhcbs,'-1','前车','0','当前车')    qianhcbs,jipbzwz,to_char(shengxr,'yyyy-MM-dd') as shengxr,
+				to_char(jiesr,'yyyy-MM-dd') as jiesr,guanlybh,xiaohbl*100 as xiaohbl,tiqjsxhbl*100 as tiqjsxhbl,shunxglbz,gongysbh,zidfhbz,xianbyhlx,
+				yancsxbz,beihdbz,xiaohcbh,xiaohccxbh,anqkcts,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,xittzz,
+				decode(pdsbz,'1','同步','2','集配','3','按需')   pdsbz,yuanxhdbh,
+				decode(biaos,'1','有效','2','新建','0','无效')   biaos,ceng,
+				creator,create_time,editor,edit_time,gongyxl,fenzxh
+			from ${dbSchemal3}ckx_lingjxhd t
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohdbh"><![CDATA[xiaohdbh=#xiaohdbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenpqbh"><![CDATA[fenpqbh = #fenpqbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongybs"><![CDATA[gongybs = #gongybs#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[gongysbh = #gongysbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohcbh"><![CDATA[xiaohcbh = #xiaohcbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohccxbh"><![CDATA[xiaohccxbh = #xiaohccxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+				and fenpqbh in(
+					select distinct fenpqh from ${dbSchemal3}ckx_fenpq where 1=1
+					<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = t.usercenter]]></isNotEmpty>
+					<isNotEmpty prepend=" and " property="fenpqbh"><![CDATA[fenpqh = t.fenpqbh]]></isNotEmpty>
+					<isNotEmpty prepend=" and " property="wulgyyz"><![CDATA[wulgyyz = #wulgyyz#]]></isNotEmpty>
+				)
+			</dynamic>
+			order by usercenter, lingjbh, shengcxbh
+		</select>
+		<!--单数据查询 -->
+		<select id="getCkxLingjxhd" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			select usercenter,lingjbh,xiaohdbh,wulbh,fenpqbh,shengcxbh, gongybs,peislxbh,qianhcbs,jipbzwz,to_char(shengxr,'yyyy-MM-dd') as shengxr,
+				to_char(jiesr,'yyyy-MM-dd') as jiesr,guanlybh,xiaohbl*100 as xiaohbl,tiqjsxhbl*100 as tiqjsxhbl,shunxglbz,gongysbh,zidfhbz,xianbyhlx,
+				yancsxbz,beihdbz,xiaohcbh,xiaohccxbh,anqkcts,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,xittzz,pdsbz,yuanxhdbh,biaos,ceng,
+				creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_lingjxhd t
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenpqbh"><![CDATA[fenpqbh=#fenpqbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohdbh"><![CDATA[xiaohdbh=#xiaohdbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<select id="queryLingjxhd" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			select usercenter,lingjbh,xiaohdbh,wulbh,fenpqbh,shengcxbh, 
+			    decode(gongybs,'1','有效','0','无效') gongybs,peislxbh,
+			    decode(qianhcbs,'-1','前车','0','当前车')    qianhcbs,jipbzwz,to_char(shengxr,'yyyy-MM-dd') as shengxr,
+				to_char(jiesr,'yyyy-MM-dd') as jiesr,guanlybh,xiaohbl*100 as xiaohbl,tiqjsxhbl*100 as tiqjsxhbl,shunxglbz,gongysbh,zidfhbz,xianbyhlx,
+				yancsxbz,beihdbz,xiaohcbh,xiaohccxbh,anqkcts,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,xittzz,
+				decode(pdsbz,'1','同步','2','集配','3','按需')   pdsbz,yuanxhdbh,
+				decode(biaos,'1','有效','2','新建','0','无效')   biaos,ceng,
+				creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_lingjxhd t
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohdbh"><![CDATA[xiaohdbh=#xiaohdbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter, lingjbh, shengcxbh
+		</select>
+		
+		
+		
+		<!--插入数据 -->
+		<insert id="insertCkxLingjxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" >
+			insert into ${dbSchemal3}ckx_lingjxhd(usercenter,lingjbh,xiaohdbh,wulbh,fenpqbh,shengcxbh,gongybs,peislxbh,qianhcbs,jipbzwz,shengxr,jiesr,
+				guanlybh,xiaohbl,tiqjsxhbl,shunxglbz,gongysbh,zidfhbz,xianbyhlx,yancsxbz,beihdbz,xiaohcbh,xiaohccxbh,anqkcts,anqkcs,xianbllkc,
+				yifyhlzl,jiaofzl,zhongzzl,xittzz,pdsbz,yuanxhdbh,biaos,ceng,creator,create_time,editor,edit_time,gongyxl,fenzxh)
+			values(<![CDATA[#usercenter#,#lingjbh#,#xiaohdbh#,#wulbh#,#fenpqbh#,#shengcxbh#,#gongybs#,#peislxbh#,#qianhcbs#,#jipbzwz#,to_date(#shengxr#,'yyyy-MM-dd'),to_date(#jiesr#,'yyyy-MM-dd'),
+				#guanlybh#,#xiaohbl#/100,#tiqjsxhbl#/100,#shunxglbz#,#gongysbh#,#zidfhbz#,#xianbyhlx#,#yancsxbz#,#beihdbz#,#xiaohcbh#,#xiaohccxbh#,#anqkcts#,#anqkcs#,#xianbllkc#,
+				#yifyhlzl#,#jiaofzl#,#zhongzzl#,#xittzz#,#pdsbz#,#yuanxhdbh#,#biaos#,#ceng#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),#gongyxl#,#fenzxh#]]>)
+		</insert>
+		
+		<!--插入数据 -->
+		<insert id="insertCkxLingjxhdImport" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" >
+			insert into ${dbSchemal3}ckx_lingjxhd(usercenter,lingjbh,xiaohdbh,wulbh,fenpqbh,shengcxbh,gongybs,peislxbh,qianhcbs,jipbzwz,shengxr,jiesr,
+				guanlybh,xiaohbl,tiqjsxhbl,shunxglbz,gongysbh,zidfhbz,xianbyhlx,yancsxbz,beihdbz,xiaohcbh,xiaohccxbh,anqkcts,anqkcs,
+				pdsbz,biaos,ceng,creator,create_time,editor,edit_time,gongyxl,fenzxh)
+			values(<![CDATA[#usercenter#,#lingjbh#,#xiaohdbh#,#wulbh#,#fenpqbh#,#shengcxbh#,'0',#peislxbh#,#qianhcbs#,#jipbzwz#,to_date(#shengxr#,'yyyy-MM-dd'),to_date(#jiesr#,'yyyy-MM-dd'),
+				#guanlybh#,#xiaohbl#/100,#tiqjsxhbl#/100,#shunxglbz#,#gongysbh#,#zidfhbz#,#xianbyhlx#,#yancsxbz#,#beihdbz#,#xiaohcbh#,#xiaohccxbh#,#anqkcts#,#anqkcs#,
+				#pdsbz#,#biaos#,#ceng#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),#gongyxl#,#fenzxh#]]>)
+		</insert>
+		
+		<!-- 弹出窗口修改数据 -->
+		<update id="updateCkxLingjxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			update ${dbSchemal3}ckx_lingjxhd
+			set wulbh = #wulbh#,
+				shengcxbh = #shengcxbh#,
+				guanlybh = #guanlybh#,
+				tiqjsxhbl = #tiqjsxhbl#/100,
+				shunxglbz = #shunxglbz#,
+				gongysbh = #gongysbh#,
+				zidfhbz = #zidfhbz#,
+				xianbyhlx = #xianbyhlx#,
+				yancsxbz = #yancsxbz#,
+				beihdbz = #beihdbz#,
+				xiaohcbh = #xiaohcbh#,
+				xiaohccxbh = #xiaohccxbh#,
+				anqkcts = #anqkcts#,
+				anqkcs = #anqkcs#,
+				xianbllkc = #xianbllkc#,
+				ceng = #ceng#,
+				version = #version#+1,
+				biaos = #biaos#,
+				editor = #editor#,
+				shengxr = to_date(#shengxr#,'yyyy-MM-dd'),
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+				<dynamic>
+				<isNotEmpty prepend=" , " property="xiaohbl"><![CDATA[xiaohbl = #xiaohbl#/100]]></isNotEmpty>
+				<isNotEmpty prepend=" , " property="jiesr"><![CDATA[jiesr = to_date(#jiesr#,'yyyy-MM-dd')]]></isNotEmpty>
+				
+			</dynamic>
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh#  and version=#version#]]>
+		</update>
+		
+		<!-- 导入的更新-->
+		<update id="updateCkxLingjxhdImport" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			update ${dbSchemal3}ckx_lingjxhd
+			set wulbh = #wulbh#,
+				shengcxbh = #shengcxbh#,
+				fenpqbh = #fenpqbh#,
+				guanlybh = #guanlybh#,
+				shunxglbz = #shunxglbz#,
+				gongysbh = #gongysbh#,
+				zidfhbz = #zidfhbz#,
+				xianbyhlx = #xianbyhlx#,
+				yancsxbz = #yancsxbz#,
+				beihdbz = #beihdbz#,
+				xiaohcbh = #xiaohcbh#,
+				xiaohccxbh = #xiaohccxbh#,
+				anqkcts = #anqkcts#,
+				anqkcs = #anqkcs#,
+				ceng = #ceng#,
+				shengxr = to_date(#shengxr#,'yyyy-MM-dd'),
+				jiesr = to_date(#jiesr#,'yyyy-MM-dd'),
+				biaos = #biaos#,
+				version = #version#+1,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh#  and version=#version#]]>
+		</update>
+		
+		
+		<!-- 版本号的更新-->
+		<update id="updateversion" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			update ${dbSchemal3}ckx_lingjxhd
+			set version = 1,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh#]]>
+		</update>
+		
+		
+		
+		<!-- 变更导入的更新语句-->
+		<update id="updatelingxhdbg" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			update ${dbSchemal3}ckx_lingjxhd
+			set shengxr = to_date(#shengxr#,'yyyy-MM-dd'),
+			    jiesr = to_date(#jiesr#,'yyyy-MM-dd'),
+				yuanxhdbh = #yuanxhdbh#,
+				wulbh = #wulbh#,
+				shengcxbh = #shengcxbh#,
+				xiaohcbh = #xiaohcbh#,
+				xiaohccxbh = #xiaohccxbh#,
+				ceng = #ceng#,
+				biaos = #biaos#,
+				version = #version#+1,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh# and version=#version#]]>
+		</update>
+		
+		<!-- 均分比例 更新每个消耗点的 消耗比例-->
+		<update id="updatejunfxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			update ${dbSchemal3}ckx_lingjxhd
+			set xiaohbl = #xiaohbl#,
+				version = #version#+1,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh# and version=#version#]]>
+		</update>
+		
+		<!--插入数据 -->
+		<insert id="insertlingxhdbg" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" >
+			insert into ${dbSchemal3}ckx_lingjxhd(usercenter,lingjbh,xiaohdbh,wulbh,fenpqbh,shengcxbh,shengxr,jiesr,xiaohcbh,xiaohccxbh,yuanxhdbh,biaos,ceng,creator,create_time,editor,edit_time,fenzxh)
+			values(<![CDATA[#usercenter#,#lingjbh#,#xiaohdbh#,#wulbh#,#fenpqbh#,#shengcxbh#,to_date(#shengxr#,'yyyy-MM-dd'),to_date(#jiesr#,'yyyy-MM-dd'),
+			#xiaohcbh#,#xiaohccxbh#,#yuanxhdbh#,#biaos#,#ceng#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),#fenzxh#]]>)
+		</insert>
+		
+		
+		
+		<!-- 弹出窗口修改数据 -->
+		<update id="updateCkxJipxx" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			update ${dbSchemal3}ckx_lingjxhd
+			set peislxbh = #peislxbh#,
+				pdsbz = #pdsbz#,
+				qianhcbs = #qianhcbs#,
+				jipbzwz = #jipbzwz#,
+				version = #version#+1,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh# and version=#version#]]>
+		</update>
+		
+		<!-- 弹出窗口修改数据 -->
+		<update id="updateCkxTongbxx" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			update ${dbSchemal3}ckx_lingjxhd
+			set peislxbh = #peislxbh#,
+				pdsbz = #pdsbz#,
+				qianhcbs = #qianhcbs#,
+				jipbzwz = #jipbzwz#,
+				version = #version#+1,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh# and version=#version#]]>
+		</update>
+		
+		<!-- 行编辑 -->
+		<update id="updateCkxLingjxhdEdit" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			update ${dbSchemal3}ckx_lingjxhd
+			set wulbh = #wulbh#,
+				shengxr = to_date(#shengxr#,'yyyy-MM-dd'),
+				jiesr = to_date(#jiesr#,'yyyy-MM-dd'),
+				xiaohbl = #xiaohbl#/100,
+				tiqjsxhbl = #tiqjsxhbl#/100,
+				biaos = #biaos#,
+				yuanxhdbh = #yuanxhdbh#,
+				version = #version#+1,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh#  and version=#version#]]>
+		</update>
+		
+		<update id="updateCkxLingjxhdbyshixiao" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			update ${dbSchemal3}ckx_lingjxhd
+			set wulbh = #wulbh#,
+				shengxr = to_date(#shengxr#,'yyyy-MM-dd'),
+				jiesr = to_date(#jiesr#,'yyyy-MM-dd'),
+				xiaohbl = #xiaohbl#/100,
+				biaos = #biaos#,
+				version = #version#+1,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh#  and version=#version#]]>
+		</update>
+		
+		<!-- 0007775当零件-消耗点 从失效恢复成有效时，交付、终止、表达、系统调整值4个值都要置0.-->
+		<update id="updateCkxLingjxhdZzzl" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			update ${dbSchemal3}ckx_lingjxhd
+			set yifyhlzl = 0,
+			    jiaofzl = 0 ,
+			    zhongzzl = 0,
+			    xittzz = 0,
+			    xianbllkc = 0,
+			    version = #version#+1,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh#  and version=#version#]]>
+		</update>
+		
+		<!-- 失效数据 -->
+		<delete id="deleteCkxLingjxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+			update ${dbSchemal3}ckx_lingjxhd
+			set biaos = '0' , xiaohbl = '0',editor = #editor# ,version = #version#+1,edit_time = to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh#  and version=#version#]]>
+		</delete>
+		
+		
+		<!-- 验证消耗比例100% hj using-->
+		<select id="checkXiaohblSum" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+		  	select usercenter,lingjbh,shengcxbh,sum(nvl(xiaohbl,0))*100 as xiaohbl
+		  	from  ${dbSchemal3}ckx_lingjxhd   
+		  	where <![CDATA[ biaos='1' and usercenter = #usercenter# 
+		  	and lingjbh=#lingjbh# and shengcxbh=#shengcxbh# 
+		  	and jiesr = to_date('9999-12-31','yyyy-MM-dd') 
+		  	and shengxr <to_date(#edit_time#,'yyyy-MM-dd  HH24:MI:SS')]]>
+		  	group by usercenter,lingjbh,shengcxbh
+        	having  <![CDATA[ sum(nvl(xiaohbl,0))*100 != 100  ]]>
+		</select>
+				
+		<!-- 判断pds拆分标记为集配时配送类型是否存在 -->
+		<select id="querypeislx" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" resultClass="java.lang.Integer">
+			select count(*)
+			from ${dbSchemal3}ckx_peislb t
+			where t.tongbjpbs = 2
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="peislxbh"><![CDATA[peislx=#peislxbh#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!-- 判断pds拆分标记为同步时配送类型是否存在 -->
+		<select id="querypeislxTB" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" resultClass="java.lang.Integer">
+			select count(*)
+			from ${dbSchemal3}ckx_peislb t
+			where t.tongbjpbs = 1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="peislxbh"><![CDATA[peislx=#peislxbh#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--PDS 生效失效时间 -->
+		<select id="queryPdssj" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" parameterClass="java.util.Map">
+			  SELECT x.usercenter,x.lingjbh,x.xiaohdbh,to_char(x.pdsshengxsj ,'yyyy-MM-dd') pdsshengxsj,to_char(x.pdsshixsj ,'yyyy-MM-dd') pdsshixsj
+				  FROM  ${dbSchemal3}ckx_lingjxhd_in x
+				 where  x.usercenter=#usercenter#  and x.lingjbh=#lingjbh# and x.xiaohdbh=#xiaohdbh#
+			     order by x.pdsshengxsj ,x.pdsshixsj
+		</select>
+		
+		<!-- 验证消耗比例是否为100% lc 2016-8-19 -->
+		<select id="getCountCkxLingjxhdbl" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" resultClass="java.lang.String">
+		    select sum(nvl(xiaohbl,0))*100 as xiaohbl
+		      from ${dbSchemal3}ckx_lingjxhd
+		     where usercenter=#usercenter#
+			   and lingjbh=#lingjbh#
+			   and shengcxbh=#shengcxbh#
+			   and biaos = #biaos#
+	   </select>
+</sqlMap>

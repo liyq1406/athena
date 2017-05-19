@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="ts_ckx">
+
+	<!-- lvchan -->
+	<!-- 零件收货和报废统计 -->
+	<select id="queryljshhbftj" resultClass="com.athena.ckx.entity.baob.Lingjshhbftj" parameterClass="com.athena.ckx.entity.baob.Lingjshhbftj">
+	    select tt.usercenter,tt.lingjbh,tt.lingjmc,tt.cangkbh,tt.ruksl,tt.lingjzt from (
+	        select t.usercenter,t.lingjbh,max(t.lingjmc) lingjmc,t.cangkbh,sum(t.yanssl) ruksl,'1' lingjzt 
+	      from ${dbSchemal3}ck_uabq t
+	      join (select distinct lingjbh from ${dbSchemal3}in_lingj) a
+            on t.lingjbh = a.lingjbh
+	     where t.baozzt='5'
+        <dynamic>
+       		<isNotEmpty prepend=" and " property="usercenter"><![CDATA[t.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[t.cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startrukrq"><![CDATA[t.ruksj >= to_date(#startrukrq#,'yyyy-MM-dd HH24:mi:ss')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="endrukrq"><![CDATA[t.ruksj <= to_date(#endrukrq#,'yyyy-MM-dd HH24:mi:ss')]]></isNotEmpty>
+	    </dynamic>
+	    group by t.usercenter,t.lingjbh,t.cangkbh
+	    union all
+	    select a.usercenter,a.lingjbh,max(a.lingjmc) lingjmc,a.cangkbh,sum(a.ruksl) ruksl,'2' lingjzt 
+	      from ${dbSchemal3}ck_buhgprk a
+	      join (select distinct lingjbh from ${dbSchemal3}in_lingj) t
+            on a.lingjbh = t.lingjbh
+	     where a.zhuangt='1'
+        <dynamic>
+       		<isNotEmpty prepend=" and " property="usercenter"><![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[a.cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startrukrq"><![CDATA[a.ruksj >= to_date(#startrukrq#,'yyyy-MM-dd HH24:mi:ss')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="endrukrq"><![CDATA[a.ruksj <= to_date(#endrukrq#,'yyyy-MM-dd HH24:mi:ss')]]></isNotEmpty>
+	    </dynamic>
+	    group by a.usercenter,a.lingjbh,a.cangkbh)tt
+	    where 1=1
+	    <dynamic>
+       		<isNotEmpty prepend=" and " property="lingjzt"><![CDATA[tt.lingjzt = #lingjzt#]]></isNotEmpty>			
+	    </dynamic>
+	    order by tt.lingjzt,tt.usercenter,tt.lingjbh,tt.cangkbh
+	</select>
+	
+	<!-- 收货明细查询 -->
+	<select id="queryshouhmx" resultClass="com.athena.ckx.entity.baob.Lingjshhbftj" parameterClass="com.athena.ckx.entity.baob.Lingjshhbftj">
+	    select t.usercenter,t.yaohlh,t.lingjbh,t.gongysdm,daoh.chengysdm,t.cangkbh,t.ruksj,t.yanssl,t.zhuangtsx 
+	      from ${dbSchemal3}ck_uabq t join ${dbSchemal3}ck_daohtzd daoh
+	        on t.usercenter=daoh.usercenter and t.uth=daoh.uth and t.blh=daoh.blh
+	      join (select distinct lingjbh from ${dbSchemal3}in_lingj) a
+            on t.lingjbh = a.lingjbh
+	     where t.baozzt='5'
+	       and daoh.zhuangt in ('3','4')
+        <dynamic>
+       		<isNotEmpty prepend=" and " property="usercenter"><![CDATA[t.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[t.cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startrukrq"><![CDATA[t.ruksj >= to_date(#startrukrq#,'yyyy-MM-dd HH24:mi:ss')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="endrukrq"><![CDATA[t.ruksj <= to_date(#endrukrq#,'yyyy-MM-dd HH24:mi:ss')]]></isNotEmpty>
+	    </dynamic>
+	    order by t.usercenter,t.lingjbh,t.cangkbh
+	</select>
+	
+	<!-- 报废明细查询 -->
+	<select id="querybaofmx" resultClass="com.athena.ckx.entity.baob.Lingjshhbftj" parameterClass="com.athena.ckx.entity.baob.Lingjshhbftj">
+	    select tt.usercenter,tt.lingjbh,tt.gongysdm,tt.cangkbh,tt.ruksj,tt.yuany,sum(tt.ruksl) ruksl from (
+	        select a.usercenter,a.lingjbh,a.gongysdm,a.cangkbh,a.ruksl,yc.yuany,a.ruksj 
+	      from ${dbSchemal3}ck_buhgprk a join ${dbSchemal3}ck_yicsb yc
+	        on a.usercenter=yc.usercenter and a.rukpjh=yc.xiaohdh and a.elh=yc.elh
+	      join (select distinct lingjbh from ${dbSchemal3}in_lingj) t
+            on a.lingjbh = t.lingjbh
+	     where a.zhuangt='1'
+        <dynamic>
+       		<isNotEmpty prepend=" and " property="usercenter"><![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[a.cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startrukrq"><![CDATA[a.ruksj >= to_date(#startrukrq#,'yyyy-MM-dd HH24:mi:ss')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="endrukrq"><![CDATA[a.ruksj <= to_date(#endrukrq#,'yyyy-MM-dd HH24:mi:ss')]]></isNotEmpty>
+	    </dynamic>
+	    union all
+	    select a.usercenter,a.lingjbh,a.gongysdm,a.cangkbh,a.ruksl,zhij.yuany,a.ruksj 
+	      from ${dbSchemal3}ck_buhgprk a join ${dbSchemal3}ck_zhijbgd zhij
+	        on a.usercenter=zhij.usercenter and a.rukpjh=zhij.zhijjjbgdh and a.elh=zhij.elh
+	      join (select distinct lingjbh from ${dbSchemal3}in_lingj) t
+            on a.lingjbh = t.lingjbh
+	     where a.zhuangt='1'
+        <dynamic>
+       		<isNotEmpty prepend=" and " property="usercenter"><![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[a.cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startrukrq"><![CDATA[a.ruksj >= to_date(#startrukrq#,'yyyy-MM-dd HH24:mi:ss')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="endrukrq"><![CDATA[a.ruksj <= to_date(#endrukrq#,'yyyy-MM-dd HH24:mi:ss')]]></isNotEmpty>
+	    </dynamic>)tt
+        group by tt.usercenter,tt.lingjbh,tt.gongysdm,tt.cangkbh,tt.ruksj,tt.yuany
+        order by tt.usercenter,tt.lingjbh,tt.cangkbh
+	</select>
+	
+	<!-- 插入数据前清空IN_LINGJ表  -->
+	<delete id="truncateIn_lingj">
+   		<![CDATA[
+   			truncate table ${dbSchemal3}in_lingj
+   		]]>
+	</delete>
+	
+	<!-- 插入记录 -->
+	<insert id="insertIn_lingj" parameterClass="com.athena.ckx.entity.baob.Lingjshhbftj">
+	    insert into ${dbSchemal3}in_lingj (lingjbh,create_Time)
+		values(#lingjbh#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+</sqlMap>

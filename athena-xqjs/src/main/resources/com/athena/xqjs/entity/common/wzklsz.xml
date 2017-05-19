@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+<!-- xss  0012845 -->
+<select id="querySumChuk" parameterClass="java.util.Map" resultClass="java.math.BigDecimal">
+		<![CDATA[
+		        select sum(t.lingjsl)
+          from ${dbSchemal3}IN_WZKLSZ t
+         where t.czm = #czm#
+         and t.ckbm like '$ckbm$%'
+           and t.lingjbh = #lingjbh#
+           and t.usercenter = #usercenter#
+           and t.jfrq >=  to_date(substr(#kais#, 1, 10), 'yyyy-MM-dd')
+           and t.jfrq < to_date(substr(#jies#, 1, 10), 'yyyy-MM-dd')
+		]]>
+	</select>
+</sqlMap>

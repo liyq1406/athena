@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+
+	<resultMap class="com.athena.authority.entity.User" id="User">
+		<result column="ID" property="id" />
+		<result column="LOGINNAME" property="loginname" />
+		<result column="NAME" property="name" />
+		<result column="PASSWORD" property="password" />
+		<result column="CELLPHONE" property="cellphone" />
+		<result column="OFFICEPHONE" property="officephone" />
+		<result column="FAMILYPHONE" property="familyphone" />
+		<result column="FAX" property="fax" />
+		<result column="EMAIL" property="email" />
+		<result column="DESCRIPTION" property="description" />
+		<result column="DEPTID" property="deptid" />
+		<result column="PWDMODTIME" property="pwdmodtime" />
+		<result column="PWDRESETTIME" property="pwdresettime" />
+		<result column="MENDER" property="mender" />
+		<result column="MODIFY_TIME" property="modifyTime" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="BIAOS" property="biaos" />
+		<result column="ZUH" property="zuh" />
+		<result column="USER_POST" property="userpost" />
+		<result column="USERCENTER" property="usercenter" />
+	</resultMap>
+
+	<select id="queryUser" resultMap="User">
+		select distinct
+		suser.ID,
+		suser.LOGINNAME,
+		suser.NAME,
+		suser.PASSWORD,
+		suser.CELLPHONE,
+		suser.OFFICEPHONE,
+		suser.FAMILYPHONE,
+		suser.FAX,
+		suser.EMAIL,
+		suser.DESCRIPTION,
+		suser.DEPTID,
+		suser.PWDMODTIME,
+		suser.PWDRESETTIME,
+		suser.MENDER,
+		suser.MODIFY_TIME,
+		suser.CREATOR,
+		suser.CREATE_TIME,
+		suser.BIAOS,
+		suser.ZUH,
+		zuh.userpost USER_POST,
+		suser.USERCENTER
+		from
+		${dbSchemal0}SYS_USER suser left outer join
+		${dbSchemal0}SYS_R_USER_POST r_post on suser.id = r_post.USER_ID 
+		left outer join (
+		SELECT user_id userid, to_char(wmsys.wm_concat(us.post_code)) userpost
+		FROM ${dbSchemal0}sys_r_user_post us	GROUP BY us.user_id
+		)   zuh on zuh.userid = suser.id
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="loginname">
+				LOGINNAME like
+				'%'||#loginname#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="name">
+				NAME like
+				'%'||#name#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				suser.USERCENTER =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="postId">
+				POST_CODE = #postId#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">
+				BIAOS = #biaos#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="deptid">
+				DEPTID = #deptid#
+			</isNotEmpty>			
+			<isNotEmpty prepend="  and " property="userpost">
+				zuh.userpost like
+				'%'||#userpost#||'%'
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY BIAOS DESC, suser.LOGINNAME ASC
+	</select>
+
+	<select id="getUser" resultMap="User">select
+		suser.ID,
+		suser.LOGINNAME,
+		suser.NAME,
+		suser.PASSWORD,
+		suser.CELLPHONE,
+		suser.OFFICEPHONE,
+		suser.FAMILYPHONE,
+		suser.FAX,
+		suser.EMAIL,
+		suser.DESCRIPTION,
+		suser.DEPTID,
+		suser.PWDMODTIME,
+		suser.PWDRESETTIME,
+		suser.MENDER,
+		suser.MODIFY_TIME,
+		suser.CREATOR,
+		suser.CREATE_TIME,
+		suser.BIAOS,
+		suser.ZUH,
+		'' USER_POST,
+		suser.USERCENTER
+		from ${dbSchemal0}SYS_USER suser
+		where ID=#id#
+	</select>
+
+	<insert id="insertUser" parameterClass="com.athena.authority.entity.User">insert into
+		${dbSchemal0}SYS_USER (
+		LOGINNAME,
+		PASSWORD,
+		ID,
+		OFFICEPHONE,
+		NAME,
+		CELLPHONE,
+		BIAOS,
+		ZUH,
+		CREATOR,
+		CREATE_TIME,
+		DEPTID,
+		USERCENTER
+		)
+		values(
+		#loginname#,
+		#password#,
+		#id#,
+		#officephone#,
+		#name#,
+		#cellphone#,
+		#biaos#,
+		#zuh#,
+		#creator#,
+		to_date(#createTime#,'YYYY-MM-DD HH24:MI:SS'),
+		#deptid#,
+		#usercenter#
+		)
+	</insert>
+
+	<update id="updateUser" parameterClass="com.athena.authority.entity.User">
+		update ${dbSchemal0}SYS_USER set
+		LOGINNAME=#loginname#,
+		ID=#id#,
+		OFFICEPHONE=#officephone#,
+		NAME=#name#,
+		CELLPHONE=#cellphone#,
+		ZUH=#zuh#,
+		MENDER = #mender#,
+		MODIFY_TIME =
+		to_date(#modifyTime#,'YYYY-MM-DD HH24:MI:SS'),
+		DEPTID=#deptid#,
+		USERCENTER =
+		#usercenter#
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<delete id="deleteUser" parameterClass="com.athena.authority.entity.User">
+		delete from ${dbSchemal0}SYS_USER where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+
+	<!-- 根据登录用户名查询用户 -->
+	<select id="getUserByLoginname" resultMap="User">
+		select
+		LOGINNAME,
+		PASSWORD,
+		ID,
+		OFFICEPHONE,
+		NAME,
+		CELLPHONE,
+		FAMILYPHONE,
+		FAX,
+		EMAIL,
+		DESCRIPTION,
+		DEPTID,
+		PWDMODTIME,
+		PWDRESETTIME,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		ZUH,
+		'' USER_POST,
+		USERCENTER
+		from ${dbSchemal0}SYS_USER suser where LOGINNAME=#loginname#
+	</select>
+
+	<!-- 查询用户组分类和用户组信息 -->
+	<select id="getLoginPosts" resultClass="java.util.HashMap">
+		select post_.post_code,
+		post_.dic_code
+		from (select post_code,usercenter
+		from ${dbSchemal0}sys_r_user_post user_post_
+		where user_post_.user_id = #id#) user_post_
+		left join ${dbSchemal0}sys_post post_ on user_post_.post_code =
+		post_.post_code
+	</select>
+
+	<select id="getLoginAttr" resultClass="java.util.HashMap">
+		select post_.post_code,
+		post_.attr
+		from (select post_code,usercenter
+		from ${dbSchemal0}sys_r_user_post user_post_
+		where user_post_.user_id = #id#) user_post_
+		left join ${dbSchemal0}sys_post post_ on user_post_.post_code =
+		post_.post_code 
+	</select>
+
+	<!-- 查询用户的菜单信息 -->
+	<select id="getMenuAndButtons" resultClass="java.util.HashMap">
+		select distinct
+		func_id
+		from ${dbSchemal0}sys_r_post_auth auth_
+		where auth_.post_group_id in
+		(select post_.post_group_id
+		from (select post_code,usercenter
+		from ${dbSchemal0}SYS_R_USER_POST user_post_
+		where user_id = #id#) user_post_
+		left join ${dbSchemal0}SYS_POST post_ on post_.POST_CODE =
+		user_post_.post_code )
+	</select>
+	<select id="getNewMenuAndButtons" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT FUNC_ID,coalesce(md.DIR_PATH,'null') DIR_PATH  FROM (
+		select distinct
+		FUNC_ID from
+		${dbSchemal0}SYS_R_USER_POST r_user_post_ inner JOIN
+		${dbSchemal0}SYS_USER user_ ON r_user_post_.USER_ID = user_.ID inner JOIN
+		${dbSchemal0}SYS_POST post_ ON r_user_post_.POST_CODE = post_.POST_CODE  inner JOIN
+		${dbSchemal0}SYS_R_POST_AUTH r_post_auth_ on post_.post_group_id = r_post_auth_.POST_GROUP_ID 
+		WHERE LOGINNAME=#loginname# ) menuB left join ${dbSchemal0}SYS_MENU_DIRECTORY md on menuB.FUNC_ID=md.id
+	</select>
+	
+	<!-- ？ select distinct user_.ID,LOGINNAME, r_post_auth_.FUNC_ID , r_post_auth_.POST_GROUP_ID 
+		from ${dbSchemal0}SYS_USER user_ LEFT OUTER JOIN ${dbSchemal0}SYS_R_USER_POST 
+		r_user_post_ ON user_.ID=r_user_post_.USER_ID LEFT OUTER JOIN ${dbSchemal0}SYS_POST 
+		post_ ON r_user_post_.POST_ID = post_.ID LEFT OUTER JOIN ${dbSchemal0}SYS_POST_GROUP 
+		post_group_ on post_.POST_GROUP_ID=post_group_.ID inner JOIN ${dbSchemal0}SYS_R_POST_AUTH 
+		r_post_auth_ on post_group_.ID = r_post_auth_.POST_GROUP_ID WHERE LOGINNAME=#loginname# -->
+
+	<update id="resetPassword" parameterClass="com.athena.authority.entity.User">
+		update ${dbSchemal0}SYS_USER set
+		PASSWORD=#password#,
+		MENDER = #mender#,
+		MODIFY_TIME =
+		to_date(#modifyTime#,'YYYY-MM-DD HH24:MI:SS')
+		
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	<delete id="deleteRPostUser">
+		delete from ${dbSchemal0}SYS_R_USER_POST where 1=1
+		and USER_ID = #userId#
+	</delete>
+
+	<insert id="saveRPostUser">
+		insert into
+		${dbSchemal0}SYS_R_USER_POST(POST_CODE,USER_ID,USERCENTER)
+		values(#postCode#,#userId#,#usercenter#) 
+	</insert>
+	<select id="listUserPosts" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		select r_user_post_.POST_CODE,USER_ID,r_user_post_.USERCENTER from
+		${dbSchemal0}SYS_R_USER_POST r_user_post_
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">USER_ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="countUserPageStyle" parameterClass="java.util.HashMap"
+		resultClass="int">
+		select count(post_.POST_CODE) from
+		${dbSchemal0}SYS_R_USER_POST r_user_post_ INNER JOIN ${dbSchemal0}SYS_POST post_ ON r_user_post_.POST_CODE = post_.POST_CODE
+		INNER JOIN ${dbSchemal0}SYS_USER user_ ON r_user_post_.USER_ID = user_.ID
+		WHERE 1=1 AND post_.POST_PAGE_STYLE = '1'
+		<dynamic>
+			<isNotEmpty prepend="  and " property="username">LOGINNAME = #username#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<update id="changeUserActive" parameterClass="com.athena.authority.entity.User">
+		UPDATE
+		${dbSchemal0}SYS_USER SET 
+		BIAOS=#biaos#,	
+		MENDER = #mender#,
+		MODIFY_TIME = to_date(#modifyTime#,'YYYY-MM-DD HH24:MI:SS') 
+		WHERE ID=#id#
+	</update>
+	<select id="validateOnlyUser" parameterClass="com.athena.authority.entity.User"
+		resultClass="int">
+		SELECT COUNT(*) as COUNT FROM ${dbSchemal0}SYS_USER WHERE
+		LOGINNAME = #loginname# 
+	</select>
+	<update id="updateUserPassword" parameterClass="java.util.HashMap">
+		UPDATE ${dbSchemal0}SYS_USER SET PASSWORD = #password#, PWDMODTIME = to_date(#pwdmodtime#,'yyyy-MM-dd HH24:mi:ss') WHERE LOGINNAME = #username#
+	</update>
+	
+	<select id="queryAllDept" resultClass="com.athena.util.cache.CacheValue">
+		select DP.ZIDBM as key,DP.ZIDMC as value
+		from ${dbSchemal3}ckx_xitcsdy dp where dp.ZIDLX = 'DEPT' order by dp.paix
+	</select>
+</sqlMap>

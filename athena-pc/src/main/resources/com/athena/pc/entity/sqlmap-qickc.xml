@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="qickc">
+	<!-- 查询 hzg 2012-6-18 -->
+	<!-- xss -0012252 同一天同一个零件没有进行数量汇总 -->
+	<!-- xss -0012251 发交数量 取pc_leijffceb表数据 -->
+	<select id="queryQickcAll"  resultClass="com.athena.pc.entity.Qickc">
+	<![CDATA[
+	SELECT QCKC.USERCENTER,QCKC.LINGJBH,TO_CHAR(QCKC.SHIJ,'YYYY-MM-DD') AS SHIJ,QCKC.BIAOS,
+	coalesce(ymn.LINGJSL,0) AS LINGJSL ,
+    coalesce(QCKC.LINGJSL,0) AS MAOXQ,
+    coalesce(QCKC.QICKC,0) AS QICKC,
+    coalesce(QCKC.ANQKC,0) AS ANQKC,
+    coalesce(SHIJSCSL,0) AS RUKSL,
+    coalesce(sum(jflj.jfsl),0) AS YAOHSL,
+   	coalesce(sum(bclj.leijbcsl), 0) AS BEICSL,
+   	(CASE QCKC.ANQKC WHEN 0 THEN 0 
+     ELSE  ROUND((QCKC.QICKC/QCKC.ANQKC), 2) end) AS KUCBZ
+   	FROM ${dbSchemal2}PC_LINGJRXQHZB QCKC
+   	]]>
+   	<!-- 月模拟实际产量(即入库数量) -->
+   	<dynamic>
+	   	<isEqual prepend=" " 
+	             property="biaos" 
+	             compareValue="Y">
+	   	<![CDATA[
+	   	left join (
+	   	select t.lingjbh, sum(t.lingjsl) as lingjsl,sum(t.shijscsl) as SHIJSCSL,p.shij,p.usercenter from ${dbSchemal2}PC_MONRGDLJCLB t 
+	   	inner join ${dbSchemal2}PC_YUEDMNJHMX p
+	   	on t.gongzbh=p.gongzbh
+	   	group by lingjbh,shij,usercenter
+	   	) ymn 
+	   	on qckc.lingjbh=ymn.lingjbh and qckc.shij=ymn.shij and qckc.usercenter=ymn.usercenter 
+	   	]]>
+	   	</isEqual> 
+   	</dynamic>
+   	<!-- 日滚动实际产量(即入库数量) -->
+   	<dynamic>
+	   	<isEqual prepend=" " 
+	             property="biaos" 
+	             compareValue="R">
+	   	<![CDATA[
+	   	left join (select t.lingjbh,
+                    sum(t.lingjsl) as lingjsl ,
+                    sum(t.shijscsl) as SHIJSCSL ,
+                    t.shij,
+                    t.usercenter from ${dbSchemal2}PC_RIGDPCJHMX t
+                    group by lingjbh,shij,usercenter
+                    ) ymn
+		on qckc.lingjbh=ymn.lingjbh and qckc.shij=ymn.shij and qckc.usercenter=ymn.usercenter 
+	   	]]>
+	   	</isEqual> 
+   	</dynamic>
+   	<!-- 滚动周期模拟实际产量(即入库数量) -->
+   	<!-- Mantis 0003907 -->
+   	<dynamic>
+	   	<isEqual prepend=" " 
+	             property="biaos" 
+	             compareValue="G">
+	   	<![CDATA[
+	   	left join (
+	   	select t.lingjbh, sum(t.lingjsl) as lingjsl,t.shijscsl,p.shij,p.usercenter from ${dbSchemal2}pc_gundymnrgdljclb t 
+	   	inner join ${dbSchemal2}PC_YUEDMNJHMX p
+	   	on t.gongzbh=p.gongzbh
+	   	group by lingjbh,shijscsl,shij,usercenter
+	   	) ymn 
+	   	on qckc.lingjbh=ymn.lingjbh and qckc.shij=ymn.shij and qckc.usercenter=ymn.usercenter 
+	   	]]>
+	   	</isEqual> 
+   	</dynamic>   	
+   <!-- 和要货令关联，取交付的要货令，状态为00 -->
+   	<![CDATA[	
+
+   	]]>
+   	<!-- 累计备储 -->
+   	<![CDATA[	
+   left join (
+   select sum(hhz.leijbcsl) as leijbcsl,hhz.usercenter,hhz.lingjbh,hhz.shij from ${dbSchemal2}pc_beicrzhhz hhz where hhz.usercenter = #usercenter# AND hhz.biaos = #biaos# 
+   group by hhz.usercenter,hhz.lingjbh,hhz.shij,hhz.biaos 
+   ) bclj     
+   on qckc.lingjbh = bclj.lingjbh
+   and qckc.shij = bclj.shij
+   and qckc.usercenter = bclj.usercenter 
+   	]]>
+   	
+   	<!-- xss -0012251 - 发交数量-->
+   	<![CDATA[	
+    left join(
+    select sum(leijjf.sjjf) as jfsl,
+                     leijjf.usercenter,
+                     leijjf.lingjbh,
+                     leijjf.shij
+                from ${dbSchemal2}pc_leijfceb leijjf
+               where leijjf.usercenter = #usercenter#
+               group by leijjf.usercenter, leijjf.lingjbh, leijjf.shij )jflj 
+   on qckc.lingjbh = jflj.lingjbh and qckc.shij = jflj.shij and qckc.usercenter = jflj.usercenter
+   	]]>
+   	<!-- 计划员权限(获得计划员编号) -->
+   	<![CDATA[
+    WHERE  QCKC.USERCENTER=#usercenter# AND qckc.biaos = #biaos#
+    AND QCKC.lingjbh in (
+	SELECT LINGJBH FROM  ${dbSchemal3}CKX_SHENGCX_LINGJ CXLJ 
+    INNER JOIN ${dbSchemal3}CKX_SHENGCX SCX
+    ON CXLJ.SHENGCXBH=SCX.SHENGCXBH AND CXLJ.USERCENTER=SCX.USERCENTER
+    INNER JOIN ${dbSchemal3}CKX_CHANXZ CXZ
+    ON SCX.CHANXZBH=CXZ.CHANXZBH AND SCX.USERCENTER=CXZ.USERCENTER
+    WHERE CXZ.JIHYZBH=#jihyzbh# and CXLJ.USERCENTER = #usercenter#  GROUP BY LINGJBH)
+	]]>
+	<dynamic>
+		<isNotEmpty prepend=" and " property="kaissj"><![CDATA[qckc.shij >= to_date(#kaissj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="jiessj"><![CDATA[qckc.shij <= to_date(#jiessj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[qckc.lingjbh = #lingjbh#]]></isNotEmpty>
+	</dynamic>
+	group by  QCKC.USERCENTER,QCKC.LINGJBH, QCKC.SHIJ,QCKC.BIAOS,QCKC.LINGJSL,
+	ymn.LINGJSL,QCKC.QICKC,QCKC.ANQKC,  SHIJSCSL
+	<![CDATA[ order by SHIJ ,LINGJBH]]>
+	</select>
+</sqlMap>

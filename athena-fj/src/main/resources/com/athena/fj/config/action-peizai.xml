@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<!-- 王冲 by wangChong 2012-02-21 -->
+	<package name="fj_peizai" extend="toft-default" namespace="/fj">
+	
+		 <!-- 调用webService执行要车计算 hzg 2012-4-10 -->
+		<!-- <action name="caculateYaocjh" class="fenPeiYaoCeJHAction" method="caculateYaocjh"/> -->
+		<action name="caculateYaocjh" class="fenPeiYaoCeJHAction" method="transferCaculateYaocjh"/>
+		
+		
+		<!-- 查询要车计划总表 -->
+		<action name="fenpycjhForJsp" class="fenPeiYaoCeJHAction" method="queryYaocjhZbForJsp">
+			<result name="selectZb">/WEB-INF/pages/fj/fenpycjh/fenpycjhList.jsp</result>
+		</action>
+		<action name="fenpycjhForAjax" class="fenPeiYaoCeJHAction" method="queryYaocjhZbForAjax"/>
+		
+		<!-- 查询车辆明细 -->
+		<action name="queryYaocjhCelMx" class="fenPeiYaoCeJHAction" method="queryYaocjhCelMx"/>
+		<!-- 查询要车明细 -->
+		
+		<action name="selectYaoCelMxAll" class="fenPeiYaoCeJHAction" method="selectYaoCelMxAll"/>
+		
+		
+		
+		<!-- tiao转至要车明细页面 -->
+		<action name="toPageYaocjhMx" class="fenPeiYaoCeJHAction" method="toPageYaocjhMx">
+			<result name="selectMx">/WEB-INF/pages/fj/fenpycjh/yaoCeMxList.jsp</result>
+		</action>
+		
+		<!-- 查询尚未分配的要车明细 -->
+		<action name="selectYaocjhMx" class="fenPeiYaoCeJHAction" method="selectYaocjhMx">
+		</action>
+		
+		<!-- 查询车辆申报资源 -->
+		<action name="selectYaocjhYyS" class="fenPeiYaoCeJHAction" method="selectYaocjhYyS">
+		</action>
+		
+		<!-- 查询要车明细 -->
+		<action name="selectYaoCelMx" class="fenPeiYaoCeJHAction" method="selectYaoCelMx"/>
+		
+		
+		
+		<!-- 更新要车明细 -->
+		<action name="updateYaoCMx" class="fenPeiYaoCeJHAction" method="updateYaoCMx"/>
+		<!-- 删除要车明细 -->
+		<action name="deleteYaoCMx" class="fenPeiYaoCeJHAction" method="deleteYaoCMx"/>
+		
+		<!-- 重新计算 -->
+		<action name="caculateFotJiShuan" class="fenPeiYaoCeJHAction" method="caculateFotJiShuan" />
+		
+		<!-- 重新分配 -->
+		<action name="caculateForFenPei" class="fenPeiYaoCeJHAction" method="caculateForFenPei">
+			<result name="selectMx">/WEB-INF/pages/fj/fenpycjh/yaoCeMxList.jsp</result>
+			<result name="selectZb">/WEB-INF/pages/fj/fenpycjh/fenpycjhList.jsp</result>
+		</action>
+		
+		<!-- 运输商查询 -->
+		<action name="selectYunss" class="fenPeiYaoCeJHAction" method="selectYunss"/>
+		<action name="selectYunssMx" class="fenPeiYaoCeJHAction" method="selectYunssMx"/>
+		
+		<!-- 下载demo -->
+		<action name="down" class="fenPeiYaoCeJHAction" method="downLoadFile">
+		</action>
+		
+		
+	</package>
+	
+	
+</toft>

@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+	零件
+	@author denggq
+	@date 2012-2-7
+-->
+<sqlMap namespace="ts_ckx">
+	
+	<!-- 分页查询 -->
+	<select id="queryCkxLingj" resultClass="com.athena.ckx.entity.xuqjs.CkxLingj">
+		select usercenter,lingjbh,zhongwmc,fawmc,lingjlx,lingjsx,danw,zhizlx,to_char(kaisrq,'yyyy-MM-dd') as kaisrq,to_char(jiesrq,'yyyy-MM-dd') as jiesrq,
+			   zhuangcxs,anqm,lingjzl,biaos,guanjljjb,dinghcj,gongybm,zongcldm,to_char(diycqysj,'yyyy-MM-dd') as diycqysj,jihy,wuly,wlgyy,zhijy,
+			   creator,create_time,editor,edit_time,anjmlxhd
+		from ${dbSchemal3}ckx_lingj
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjlx">lingjlx = #lingjlx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjsx">lingjsx = #lingjsx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="guanjljjb">guanjljjb = #guanjljjb#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos = #biaos#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wuly">wuly = #wuly#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wlgyy">wlgyy = #wlgyy#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhijy">zhijy = #zhijy#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy">jihy = #jihy#</isNotEmpty>
+		</dynamic>
+		order by jiesrq, usercenter, lingjbh
+	</select>
+	<!-- 分页查询 -->
+	<select id="queryCkxLingjImport" resultClass="com.athena.ckx.entity.xuqjs.CkxLingj">
+		select usercenter,lingjbh,zhongwmc,fawmc,lingjlx,anjmlxhd,
+		decode(lingjsx,'A','零件','K','卷料','M','辅料') as lingjsx,
+		danw,zhizlx,to_char(kaisrq,'yyyy-MM-dd') as kaisrq,to_char(jiesrq,'yyyy-MM-dd') as jiesrq,
+			   zhuangcxs,anqm,lingjzl,
+			   decode(biaos,'1','有效','0','无效','2','新建') biaos,
+			   decode(guanjljjb,'1','关键零件','2','次关键零件','3','一般零件') guanjljjb,
+			   dinghcj,gongybm,zongcldm,to_char(diycqysj,'yyyy-MM-dd') as diycqysj,jihy,wuly,wlgyy,zhijy,
+			   creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_lingj
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjlx">lingjlx = #lingjlx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjsx">lingjsx = #lingjsx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="guanjljjb">guanjljjb = #guanjljjb#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos = #biaos#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wuly">wuly = #wuly#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wlgyy">wlgyy = #wlgyy#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhijy">zhijy = #zhijy#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy">jihy = #jihy#</isNotEmpty>
+		</dynamic>
+		order by jiesrq, usercenter, lingjbh
+	</select>
+	<!-- 分页查询  左连接车间-->
+	<select id="queryCkxLingjBychej" resultClass="com.athena.ckx.entity.xuqjs.CkxLingj">
+		select l.usercenter,lingjbh,zhongwmc,fawmc,lingjlx,lingjsx,danw,zhizlx,to_char(kaisrq,'yyyy-MM-dd') as kaisrq,to_char(jiesrq,'yyyy-MM-dd') as jiesrq,
+			   zhuangcxs,anqm,lingjzl,biaos,guanjljjb,dinghcj,gongybm,zongcldm,to_char(diycqysj,'yyyy-MM-dd') as diycqysj,jihy,wuly,wlgyy,
+			   zhijy,
+			   l.creator,l.create_time,l.editor,l.edit_time,c.chejmc as chejmc,anjmlxhd
+		from ${dbSchemal3}ckx_lingj l
+		left join ${dbSchemal3}ckx_chej c
+		on l.usercenter = c.usercenter 
+		and l.dinghcj = c.chejbm
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">l.usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjlx">lingjlx = #lingjlx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjsx">lingjsx = #lingjsx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="guanjljjb">guanjljjb = #guanjljjb#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos = #biaos#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wuly">wuly = #wuly#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wlgyy">wlgyy = #wlgyy#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhijy">zhijy = #zhijy#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy">jihy = #jihy#</isNotEmpty>
+		</dynamic>
+		order by jiesrq, usercenter, lingjbh
+	</select>
+	<!-- 过滤零件 计划员-->
+	<select id="queryJihyByLingj" resultClass="java.util.HashMap">
+		select distinct jihy as KEY , jihy as VALUE
+		from ${dbSchemal3}ckx_lingj l
+		where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">l.usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos = #biaos#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy">jihy = #jihy#</isNotEmpty>
+		</dynamic>
+		and jihy is not null
+	</select>
+	<!-- 导入的时候查询计划员是否存在并且是所属计划员组-->
+	<select id="getCountPost" parameterClass="com.athena.ckx.entity.xuqjs.Post" resultClass="com.athena.ckx.entity.xuqjs.Post">
+		 <!--  select  post_code as postcode,post_name as postname,post_group_id as postGroupId from ${dbSchemal3}SYS_POST  
+	     where 1=1  -->
+	     select  p.post_code as postcode,p.post_name as postname from ${dbSchemal3}sys_post  p  left join ${dbSchemal3}sys_r_post_usercenter u 
+		 on p.post_code=u.post_code
+		 where   u.usercenter=#usercenter# and  p.dic_code = #dicCode#  and  biaos = #biaos#
+		 order by p.post_code
+		<!--<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="postCode">post_Code = #postCode#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dicCode">dic_Code = #dicCode#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos = #biaos#</isNotEmpty>
+		</dynamic>-->
+	</select>
+	
+	
+	<!-- 单记录查询 -->
+	<select id="getCkxLingj" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingj" resultClass="com.athena.ckx.entity.xuqjs.CkxLingj">
+		select usercenter,lingjbh,zhongwmc,fawmc,lingjlx,lingjsx,danw,zhizlx,to_char(kaisrq,'yyyy-MM-dd') as kaisrq,to_char(jiesrq,'yyyy-MM-dd') as jiesrq,
+			   zhuangcxs,anqm,lingjzl,biaos,guanjljjb,dinghcj,gongybm,zongcldm,to_char(diycqysj,'yyyy-MM-dd') as diycqysj,jihy,wuly,wlgyy,zhijy,anjmlxhd
+		from ${dbSchemal3}ckx_lingj
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getCountLingj" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_lingj
+		where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos = #biaos#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getLingj" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingj" resultClass="com.athena.ckx.entity.xuqjs.CkxLingj">
+		select usercenter,lingjbh,zhongwmc,fawmc,lingjlx,lingjsx,danw,zhizlx,to_char(kaisrq,'yyyy-MM-dd') as kaisrq,to_char(jiesrq,'yyyy-MM-dd') as jiesrq,
+			   zhuangcxs,anqm,lingjzl,biaos,guanjljjb,dinghcj,gongybm,zongcldm,to_char(diycqysj,'yyyy-MM-dd') as diycqysj,jihy,wuly,wlgyy,zhijy,anjmlxhd
+		from ${dbSchemal3}ckx_lingj
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos = #biaos#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询权限组代码 -->
+<!-- 	<select id="getZudmByAthority" parameterClass="java.lang.String" resultClass="com.athena.ckx.entity.xuqjs.Post"> -->
+<!-- 		select distinct post_code AS postCode from ${dbSchemal1}sys_post  -->
+<!-- 		where dic_code = #role#  -->
+<!-- 		order by post_code -->
+<!-- 	</select> -->
+	<select id="getZudmByAthority" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingj" resultClass="java.util.HashMap">
+		select  p.post_code AS KEY,p.post_code||' '||p.post_name AS VALUE from ${dbSchemal1}sys_post  p  left join ${dbSchemal1}sys_r_post_usercenter u 
+		on p.post_code=u.post_code    
+		where   u.usercenter=#usercenter# and  p.dic_code = #role# 
+		order by p.post_code
+	</select>
+	
+	<select id="getZJZQX" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingj" resultClass="java.util.HashMap">
+		select  p.post_code AS KEY,p.post_code||' '||p.post_name AS VALUE from ${dbSchemal1}sys_post  p  left join ${dbSchemal1}sys_r_post_usercenter u 
+		on p.post_code=u.post_code    
+		where   u.usercenter=#usercenter# and  p.dic_code = #role# 
+		and p.post_code=#zhijy#
+		order by p.post_code
+	</select>
+	
+	
+	<select id="getZJZQXNew" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingj" resultClass="java.util.HashMap">
+		select  p.post_code AS KEY,p.post_code||' '||p.post_name AS VALUE from ${dbSchemal1}sys_post  p  left join ${dbSchemal1}sys_r_post_usercenter u 
+		on p.post_code=u.post_code    
+		where   u.usercenter=#usercenter# and  p.dic_code ='ZHIJIA'
+		and p.post_code= #zhijy#
+		order by p.post_code
+	</select>
+	
+	<select id="getLingjXX" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingj" resultClass="java.lang.String">
+		select zhijy
+		from ${dbSchemal3}ckx_lingj
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 插入数据 -->
+	<insert id="insertCkxLingj" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingj">
+		insert into ${dbSchemal3}ckx_lingj(usercenter,lingjbh,zhongwmc,fawmc,lingjlx,lingjsx,danw,zhizlx,kaisrq,jiesrq,zhuangcxs,anqm,lingjzl,
+					biaos,guanjljjb,dinghcj,gongybm,zongcldm,diycqysj,creator,create_time,editor,edit_time,jihy,wuly,wlgyy,zhijy,anjmlxhd)
+		values(#usercenter#,#lingjbh#,#zhongwmc#,#fawmc#,#lingjlx#,#lingjsx#,#danw#,#zhizlx#,to_date(#kaisrq#,'yyyy-MM-dd'),to_date(#jiesrq#,'yyyy-MM-dd'),#zhuangcxs#,#anqm#,#lingjzl#,
+					#biaos#,#guanjljjb#,#dinghcj#,#gongybm#,#zongcldm#,to_date(#diycqysj#,'yyyy-MM-dd'),#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss'),
+					#jihy#,#wuly#,#wlgyy#,#zhijy#,#anjmlxhd#)
+	</insert>
+	
+	
+	<!-- 修改数据 -->	
+	<update id="updateCkxLingj" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingj">
+		update ${dbSchemal3}ckx_lingj
+		set zhongwmc = #zhongwmc#,
+	    	fawmc = #fawmc#,
+	    	lingjlx = #lingjlx#,
+	    	lingjsx = #lingjsx#,
+	    	danw = #danw#,
+	    	zhizlx = #zhizlx#,
+	    	kaisrq = to_date(#kaisrq#,'yyyy-MM-dd'),     
+	    	jiesrq = to_date(#jiesrq#,'yyyy-MM-dd'),
+	    	zhuangcxs = #zhuangcxs#,
+	    	anqm = #anqm#,
+	    	lingjzl = #lingjzl#,
+	    	guanjljjb = #guanjljjb#,
+	    	dinghcj = #dinghcj#,
+	    	gongybm = #gongybm#,
+	    	zongcldm = #zongcldm#,
+	    	diycqysj = to_date(#diycqysj#,'yyyy-MM-dd'),
+	    	biaos = #biaos#,
+	    	jihy = #jihy#,
+	    	zhijy = #zhijy#,
+	    	editor = #editor#,
+	    	edit_time = to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+	    where  <![CDATA[ usercenter = #usercenter# and lingjbh = #lingjbh# ]]> 
+	</update>
+	<!-- 执行层层POA  -->	
+	<update id="updateCkxLingjByZxcpoa" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingj">
+		update ${dbSchemal3}ckx_lingj
+		set zhongwmc = #zhongwmc#,
+	    	fawmc = #fawmc#,
+	    	lingjlx = #lingjlx#,
+	    	lingjsx = #lingjsx#,
+	    	danw = #danw#,
+	    	zhizlx = #zhizlx#,
+	    	kaisrq = to_date(#kaisrq#,'yyyy-MM-dd'),     
+	    	jiesrq = to_date(#jiesrq#,'yyyy-MM-dd'),
+	    	zhuangcxs = #zhuangcxs#,
+	    	anqm = #anqm#,
+	    	lingjzl = #lingjzl#,
+	    	guanjljjb = #guanjljjb#,
+	    	dinghcj = #dinghcj#,
+	    	gongybm = #gongybm#,
+	    	zongcldm = #zongcldm#,
+	    	diycqysj = to_date(#diycqysj#,'yyyy-MM-dd'),
+	    	biaos = #biaos#,
+	    	editor = #editor#,
+	    	edit_time = to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss'),
+	    	wuly = #wuly#,
+	    	zhijy = #zhijy#
+	    where  <![CDATA[ usercenter = #usercenter# and lingjbh = #lingjbh# ]]> 
+	</update>
+	<!-- 准备层POA -->	
+	<update id="updateCkxLingjByZbcpoa" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingj">
+		update ${dbSchemal3}ckx_lingj
+		set zhongwmc = #zhongwmc#,
+	    	fawmc = #fawmc#,
+	    	lingjlx = #lingjlx#,
+	    	lingjsx = #lingjsx#,
+	    	danw = #danw#,
+	    	zhizlx = #zhizlx#,
+	    	kaisrq = to_date(#kaisrq#,'yyyy-MM-dd'),     
+	    	jiesrq = to_date(#jiesrq#,'yyyy-MM-dd'),
+	    	zhuangcxs = #zhuangcxs#,
+	    	anqm = #anqm#,
+	    	lingjzl = #lingjzl#,
+	    	guanjljjb = #guanjljjb#,
+	    	dinghcj = #dinghcj#,
+	    	gongybm = #gongybm#,
+	    	zongcldm = #zongcldm#,
+	    	diycqysj = to_date(#diycqysj#,'yyyy-MM-dd'),
+	    	biaos = #biaos#,
+	    	editor = #editor#,
+	    	edit_time = to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss'),
+	    	jihy = #jihy#,
+	    	wlgyy = #wlgyy#,
+	    	anjmlxhd = #anjmlxhd#
+	    where  <![CDATA[ usercenter = #usercenter# and lingjbh = #lingjbh# ]]> 
+	</update>
+	
+	<!-- 导入修改数据 -->	
+	<update id="updateLingj" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingj">
+		update ${dbSchemal3}ckx_lingj
+		set lingjlx = #lingjlx#,
+	    	lingjsx = #lingjsx#,
+	    	zhuangcxs = #zhuangcxs#,
+	    <dynamic>
+			<isNotEmpty property="anqm">
+				anqm = #anqm#,
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty property="lingjzl">
+				lingjzl = #lingjzl#,
+			</isNotEmpty>
+		</dynamic>
+	    	guanjljjb = #guanjljjb#,
+	    <dynamic>
+			<isNotEmpty property="anjmlxhd">
+				anjmlxhd = #anjmlxhd#,
+			</isNotEmpty>
+		</dynamic>
+	    	biaos = #biaos#,
+	    	jihy = #jihy#,
+	    	editor = #editor#,
+	    	edit_time = to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+	    where  <![CDATA[ usercenter = #usercenter# and lingjbh = #lingjbh# ]]> 
+	 </update>
+	
+	<!-- 失效数据 -->
+	<update id="deleteCkxLingj" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingj">
+		update ${dbSchemal3}ckx_lingj 
+		set biaos=#biaos# ,editor = #editor#,edit_time = to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+		where <![CDATA[ usercenter = #usercenter# and lingjbh = #lingjbh# ]]>
+	</update>
+	
+</sqlMap>

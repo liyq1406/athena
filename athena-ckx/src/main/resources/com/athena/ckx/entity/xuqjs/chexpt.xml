@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- 车型平台   denggq  2012-4-18 -->
+
+	<select id="queryChexpt" parameterClass="com.athena.ckx.entity.xuqjs.Chexpt" resultClass="com.athena.ckx.entity.xuqjs.Chexpt">
+		select usercenter,chejbhzz,shengcxbhzz,chejbhhz,shengcxbhhz,shengcptbh,lcdv,creator,create_time,editor,edit_time
+		from ${dbSchemal5}ckx_chexpt
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="chejbhhz"><![CDATA[chejbhhz = #chejbhhz#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbhzz"><![CDATA[shengcxbhzz = #shengcxbhzz#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="chejbhzz"><![CDATA[chejbhzz = #chejbhzz#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbhhz"><![CDATA[shengcxbhhz = #shengcxbhhz#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcptbh"><![CDATA[shengcptbh = #shengcptbh#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,chejbhzz,shengcxbhzz,chejbhhz,shengcxbhhz,shengcptbh
+	</select>
+	
+	<select id="getChexpt" parameterClass="com.athena.ckx.entity.xuqjs.Chexpt" resultClass="com.athena.ckx.entity.xuqjs.Chexpt">
+		select usercenter,chejbhzz,shengcxbhzz,chejbhhz,shengcxbhhz,shengcptbh,lcdv
+		from ${dbSchemal5}ckx_chexpt
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="chejbhhz"><![CDATA[chejbhhz = #chejbhhz#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbhzz"><![CDATA[shengcxbhzz = #shengcxbhzz#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="chejbhzz"><![CDATA[chejbhzz = #chejbhzz#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbhhz"><![CDATA[shengcxbhhz = #shengcxbhhz#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcptbh"><![CDATA[shengcptbh = #shengcptbh#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<insert id="insertChexpt" parameterClass="com.athena.ckx.entity.xuqjs.Chexpt">
+		insert into ${dbSchemal5}ckx_chexpt(usercenter,chejbhzz,shengcxbhzz,chejbhhz,shengcxbhhz,shengcptbh,lcdv,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter#,#chejbhzz#,#shengcxbhzz#,#chejbhhz#,#shengcxbhhz#,#shengcptbh#,#lcdv#,#creator#,to_date(#create_time#,'yyyy-MM-ddhh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]> )
+	</insert>
+	
+	
+	<update id="updateChexpt" parameterClass="com.athena.ckx.entity.xuqjs.Chexpt">
+		update ${dbSchemal5}ckx_chexpt 
+		set	chejbhhz = #chejbhhz#,
+			shengcxbhhz = #shengcxbhhz#,
+			shengcptbh = #shengcptbh#,	
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  <![CDATA[usercenter = #usercenter# and  shengcxbhzz = #shengcxbhzz# and  chejbhzz = #chejbhzz# and lcdv = #lcdv#]]> 
+	</update>
+	
+	<delete id="deleteChexpt" parameterClass="com.athena.ckx.entity.xuqjs.Chexpt">
+		delete from ${dbSchemal5}ckx_chexpt
+		where <![CDATA[usercenter = #usercenter# and  shengcxbhzz = #shengcxbhzz# and  chejbhzz = #chejbhzz# and lcdv=#lcdv#]]>
+	</delete>
+</sqlMap>

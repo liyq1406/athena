@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 零件库存报表 -->
+<sqlMap namespace="report">
+	<!-- 查询零件库存情况 -->
+	<select id="queryLingjkc" resultClass="com.athena.xqjs.entity.ilorder.Ziykzb">
+		select distinct
+			a.usercenter,a.lingjbh,e.cangkdm,a.zickbh,b.zhongwmc,to_char(e.ziyhqrq,'yyyy-MM-dd')as ziyhqrq,
+			e.kucsl,a.dingdbdzl as dingdlj,a.yijfzl as jiaoflj,a.jistzz as jstzsz 
+		from 
+			${dbSchemal3}ckx_lingj b left join ${dbSchemal3}ckx_lingjck a 
+		on 
+			a.usercenter = b.usercenter and a.lingjbh = b.lingjbh and b.biaos = '1'
+		left join 
+			${dbSchemal3}ckx_lingjgys c 
+		on 
+			a.usercenter = c.usercenter and a.lingjbh = c.lingjbh and c.biaos = '1'
+		left join 
+			${dbSchemal3}ckx_gongys d 
+		on 
+			c.usercenter = d.usercenter and c.gongysbh = d.gcbh and d.biaos = '1'
+		left join 
+			${dbSchemal1}xqjs_ziykzb e 
+		on 
+			a.usercenter = e.usercenter and a.lingjbh = e.lingjbh and a.cangkbh = e.cangkdm 
+		where 
+			e.ziyhqrq = (select max(ziyhqrq) from ${dbSchemal1}xqjs_ziykzb where 1 = 1 
+			<dynamic>
+				<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+				<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+				<isNotNull prepend=" and " property="cangkdm">cangkdm = #cangkdm#</isNotNull>
+			</dynamic>)
+			<dynamic>
+				<isNotNull prepend=" and " property="usercenter">a.usercenter = #usercenter#</isNotNull>
+				<isNotNull prepend=" and " property="lingjbh">a.lingjbh = #lingjbh#</isNotNull>
+				<isNotNull prepend=" and " property="cangkdm">a.cangkbh = #cangkdm#</isNotNull>
+			</dynamic>
+			and d.gonghlx in ($gonghlx$) 
+	</select>
+	
+	<!-- 汇总用户中心查询零件库存情况 -->
+	<select id="queryLingjkcByUc" resultClass="com.athena.xqjs.entity.ilorder.Ziykzb">
+		select distinct
+			b.usercenter,b.lingjbh,max(b.zhongwmc) as zhongwmc,to_char(max(e.ziyhqrq),'yyyy-MM-dd') as ziyhqrq,
+			sum(e.kucsl) as kucsl,sum(a.dingdbdzl) as dingdlj,sum(a.yijfzl) as jiaoflj,
+			sum(a.jistzz) as jstzsz
+		from 
+			${dbSchemal3}ckx_lingj b left join ${dbSchemal3}ckx_lingjck a 
+		on 
+			a.usercenter = b.usercenter and a.lingjbh = b.lingjbh and b.biaos = '1'
+		left join 
+			${dbSchemal3}ckx_lingjgys c 
+		on 
+			a.usercenter = c.usercenter and a.lingjbh = c.lingjbh and c.biaos = '1'
+		left join 
+			${dbSchemal3}ckx_gongys d 
+		on 
+			c.usercenter = d.usercenter and c.gongysbh = d.gcbh and d.biaos = '1'
+		left join 
+			${dbSchemal1}xqjs_ziykzb e 
+		on 
+			a.usercenter = e.usercenter and a.lingjbh = e.lingjbh and a.cangkbh = e.cangkdm 
+		where 
+			e.ziyhqrq = (select max(ziyhqrq) from ${dbSchemal1}xqjs_ziykzb where 1 = 1 
+			<dynamic>
+				<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+				<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+				<isNotNull prepend=" and " property="cangkdm">cangkdm = #cangkdm#</isNotNull>
+			</dynamic>)
+			<dynamic>
+				<isNotNull prepend=" and " property="usercenter">a.usercenter = #usercenter#</isNotNull>
+				<isNotNull prepend=" and " property="lingjbh">a.lingjbh = #lingjbh#</isNotNull>
+				<isNotNull prepend=" and " property="cangkdm">a.cangkbh = #cangkdm#</isNotNull>
+			</dynamic>
+			and d.gonghlx in ($gonghlx$) 
+			group by b.usercenter,b.lingjbh
+	</select>
+	
+	<!-- 汇总用户中心,零件编号 -->
+	<select id="queryMaoxqLjByUc" resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select 
+			usercenter,lingjbh,max(danw) as danw,max(zhizlx) as zhizlx
+		from 
+			${dbSchemal1}xqjs_maoxqmx 
+		where 
+			xuqbc = (select max(xuqbc) from ${dbSchemal1}xqjs_maoxqmx where xuqbc like 'DIP%') 
+		group by usercenter,lingjbh
+	</select>
+	
+	<!-- 汇总用户中心,零件编号 -->
+	<select id="queryMaoxqKDLjByUc" resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select 
+			usercenter,lingjbh,max(danw) as danw,max(zhizlx) as zhizlx
+		from 
+			${dbSchemal1}xqjs_maoxqmx 
+		where 
+			xuqbc = (select max(xuqbc) from ${dbSchemal1}xqjs_maoxq where xuqbc like 'DKS%') and usercenter = #usercenter#
+		group by usercenter,lingjbh
+	</select>
+	
+	<!-- 汇总用户中心,零件编号 -->
+	<select id="queryMaoxqLjByCx" resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select 
+			usercenter,lingjbh,max(danw) as danw,max(zhizlx) as zhizlx,chanx
+		from 
+			${dbSchemal1}xqjs_maoxqmx 
+		where 
+			xuqbc = (select max(xuqbc) from ${dbSchemal1}xqjs_maoxq where xuqbc like 'DIP%') and usercenter = #usercenter#
+		group by usercenter,lingjbh,chanx
+	</select>
+	
+	<!-- 查询CLV毛需求明细 -->
+	<select id="queryCLVMaoxqMx" resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select 
+			to_char(xuqrq,'yyyy-MM-dd') as xuqrq,sum(xuqsl) as xuqsl 
+		from 
+			${dbSchemal1}xqjs_maoxqmx 
+		where 
+			xuqbc like 'CLV%' and lingjbh = #lingjbh# and usercenter = #usercenter# 
+		group by xuqrq order by xuqrq
+	</select>
+	
+	<!-- 查询DIS毛需求明细数量 -->
+	<select id="queryDISMaoxqMxSl" resultClass="java.math.BigDecimal">
+		select 
+			sum(xuqsl) as xuqsl
+    	from 
+      		${dbSchemal1}xqjs_maoxqmx 
+    	where 
+      		xuqbc = (select max(xuqbc) from ${dbSchemal1}xqjs_maoxq where xuqly = 'DIS') 
+      		and usercenter = #usercenter# and lingjbh = #lingjbh# and xuqz = #xuqz#
+	</select>
+	
+	<!-- 查询DIS毛需求明细数量 -->
+	<select id="queryDKSMaoxqMxSl" resultClass="java.math.BigDecimal">
+		select 
+			sum(xuqsl) as xuqsl
+    	from 
+      		${dbSchemal1}xqjs_maoxqmx 
+    	where 
+      		xuqbc = (select max(xuqbc) from ${dbSchemal1}xqjs_maoxq where xuqly = 'DKS') 
+      		and usercenter = #usercenter# and lingjbh = #lingjbh# and xuqz = #xuqz#
+	</select>
+	
+	<!-- 查询DIP毛需求明细数量 -->
+	<select id="queryDIPMaoxqMxSl" resultClass="java.math.BigDecimal">
+		select 
+			sum(xuqsl) as xuqsl
+    	from 
+      		${dbSchemal1}xqjs_maoxqmx 
+    	where 
+      		xuqbc = (select max(xuqbc) from ${dbSchemal1}xqjs_maoxq where xuqly = 'DIP') 
+      		and usercenter = #usercenter# and lingjbh = #lingjbh# and xuqsszq = #nianzq#
+	</select>
+	
+	<!-- 查询毛需求明细 -->
+	<select id="queryDISMaoxqMx" resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select 
+			xuqz,sum(xuqsl) as xuqsl 
+		from 
+			${dbSchemal1}xqjs_maoxqmx 
+		where 
+			xuqbc = (select max(xuqbc) from ${dbSchemal1}xqjs_maoxq where xuqly = 'DIS') 
+			and lingjbh = #lingjbh# and usercenter = #usercenter# 
+		group by xuqz order by xuqz
+	</select>
+	
+	<!-- 查询毛需求明细 -->
+	<select id="queryDKSMaoxqMx" resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select 
+			xuqz,max(xuqsszq) as xuqsszq,sum(xuqsl) as xuqsl 
+		from 
+			${dbSchemal1}xqjs_maoxqmx 
+		where 
+			xuqbc = (select max(xuqbc) from ${dbSchemal1}xqjs_maoxq where xuqly = 'DKS') 
+			and lingjbh = #lingjbh# and usercenter = #usercenter# 
+		group by xuqz order by xuqz
+	</select>
+	
+	<!-- 查询毛需求明细 -->
+	<select id="queryDKSMaoxqMxZq" resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select 
+			xuqsszq,sum(xuqsl) as xuqsl 
+		from 
+			${dbSchemal1}xqjs_maoxqmx 
+		where 
+			xuqbc = (select max(xuqbc) from ${dbSchemal1}xqjs_maoxq where xuqly = 'DKS') 
+			and lingjbh = #lingjbh# and usercenter = #usercenter# 
+		group by xuqsszq order by xuqsszq
+	</select>
+	
+	<!-- 查询毛需求明细 -->
+	<select id="queryDIPMaoxqMx" resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select 
+			xuqsszq,sum(xuqsl) as xuqsl 
+		from 
+			${dbSchemal1}xqjs_maoxqmx 
+		where 
+			xuqbc = (select max(xuqbc) from ${dbSchemal1}xqjs_maoxq where xuqly = 'DIS') 
+			and lingjbh = #lingjbh# and usercenter = #usercenter# 
+		group by xuqsszq order by xuqsszq
+	</select>
+	
+	<!-- 查询年周序 -->
+	<select id="queryNianzx" resultClass="com.athena.xqjs.entity.common.CalendarCenter">
+		select 
+			nianzx,shifgzr 
+		from 
+			${dbSchemal3}ckx_calendar_center 
+		where biaos = '1'
+	</select>
+	
+	<!-- 查询年周序 -->
+	<select id="queryNianzxBanc" resultClass="com.athena.xqjs.entity.common.CalendarCenter">
+		select 
+			nianzx,shifgzr,banc
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where biaos = '1'
+	</select>
+	
+	<!-- 查询年周期 -->
+	<select id="queryNianzq" resultClass="java.lang.String">
+		select 
+		 	distinct nianzq
+		from 
+			${dbSchemal3}ckx_calendar_center 
+		where nianzx= #xuqz# and usercenter  = #usercenter# and biaos = '1'
+	</select>
+	
+	<!-- 查询年周期 -->
+	<select id="queryNianzqBanc" resultClass="java.lang.String">
+		select 
+		 	distinct nianzq
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where banc = #rilbc# and nianzx= #xuqz# and usercenter  = #usercenter# and biaos = '1'
+	</select>
+	
+	<!-- 查询年周期 -->
+	<select id="queryNianzqByRiq" resultClass="java.lang.String">
+		select 
+			nianzq 
+		from 
+			(select distinct nianzq from ${dbSchemal3}ckx_calendar_center where biaos = '1' and nianzq >= 
+			(select distinct nianzq from ${dbSchemal3}ckx_calendar_center where riq= #today# and usercenter  = #usercenter# and biaos = '1') 
+			order by nianzq) 
+		where rownum <![CDATA[ <= ]]> $num$
+	</select>
+	
+	<!-- 查询年周期 -->
+	<select id="queryNianzqByRiqBanc" resultClass="java.lang.String">
+		select 
+			nianzq 
+		from 
+			(select distinct nianzq from ${dbSchemal3}ckx_calendar_version where biaos = '1' and banc = #rilbc# and nianzq >= 
+			(select distinct nianzq from ${dbSchemal3}ckx_calendar_version where riq= #today# and banc = #rilbc# and usercenter  = #usercenter# and biaos = '1') 
+			order by nianzq) 
+		where rownum <![CDATA[ <= ]]> $num$
+	</select>
+	
+	<!-- 查询周工作天数 -->
+	<select id="queryZxGongzrSl" resultClass="java.math.BigDecimal">
+		select 
+			count(*) 
+		from 
+			${dbSchemal3}ckx_calendar_center
+		where 
+			nianzx = #nianzx# and usercenter  = #usercenter# and shifgzr = '1' and biaos = '1'
+	</select>
+	
+	<!-- 查询周工作天数 -->
+	<select id="queryZxGongzrSlBanc" resultClass="java.math.BigDecimal">
+		select 
+			count(*) 
+		from 
+			${dbSchemal3}ckx_calendar_version
+		where 
+			nianzx = #nianzx# and usercenter  = #usercenter# and banc = #rilbc# and shifgzr = '1' and biaos = '1'
+	</select>
+	
+	<!-- 查询周工作天数 -->
+	<select id="queryZqGongzrSl" resultClass="java.math.BigDecimal">
+		select 
+			count(*) 
+		from 
+			${dbSchemal3}ckx_calendar_center
+		where 
+			nianzq = #nianzq# and usercenter  = #usercenter# and shifgzr = '1' and biaos = '1
+	</select>
+	
+	<!-- 查询周工作天数 -->
+	<select id="queryZqGongzrSlBanc" resultClass="java.math.BigDecimal">
+		select 
+			count(*) 
+		from 
+			${dbSchemal3}ckx_calendar_version
+		where 
+			nianzq = #nianzq# and usercenter  = #usercenter# and banc = #rilbc# and shifgzr = '1' and biaos = '1'
+	</select>
+	
+	<!-- 查询日历班次版次号 -->
+	<select id="queryRilbc" resultClass="java.lang.String">
+		select 
+			distinct rilbc 
+		from 
+			${dbSchemal3}ckx_calendar_group 
+		where 
+			usercenter = #usercenter# and appobj = #appobj#
+	</select>
+	
+	<!-- 查询当前日期后两周的年周序 -->
+	<select id="queryNextNianzx" resultClass="java.lang.String">
+		select nianzx from 
+		(select distinct nianzx from ${dbSchemal3}ckx_calendar_center where biaos = '1' and nianzx 
+		<![CDATA[ >= ]]> (select  nianzx from ${dbSchemal3}ckx_calendar_center where riq = #today# and biaos = '1' and usercenter  = #usercenter# ) order by nianzx)
+		where rownum <![CDATA[ <= ]]> $num$
+	</select>
+	
+	<!-- 查询当前日期后两周的年周序 -->
+	<select id="queryNextNianzxBanc" resultClass="java.lang.String">
+		select nianzx from 
+		(select distinct nianzx from ${dbSchemal3}ckx_calendar_version where banc = #rilbc# and biaos = '1' and nianzx 
+		<![CDATA[ >= ]]> (select  nianzx from ${dbSchemal3}ckx_calendar_version where riq = #today# and biaos = '1' and usercenter  = #usercenter# and banc = #rilbc#) order by nianzx)
+		where rownum <![CDATA[ <= ]]> $num$
+	</select>
+	
+	<!-- 清除毛需求报表中间表 -->
+	<delete id="deleteRepMaoxq">
+		truncate table ${dbSchemal1}rep_maoxq
+	</delete>
+	
+	<!-- 插入毛需求分析结果 -->
+	<insert id="insertRepMaoxq">
+		insert into 
+			${dbSchemal1}rep_maoxq(id,usercenter,lingjbh,lingjmc,danw,gongysdm,gongysmc,gongyfe,dinghlx,chanx,jihy,j0,j1,j2,
+			j3,j4,j5,j6,j7,j8,j9,j10,j11,j12,j13,s0,s1,s2,s3,s4,p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,creator,create_time,leix)
+		values(#id#,#usercenter#,#lingjbh#,#lingjmc#,#danw#,#gongysdm#,#gongysmc#,#gongyfe#,#dinghlx#,#chanx#,#jihy#,#j0#,
+		#j1#,#j2#,#j3#,#j4#,#j5#,#j6#,#j7#,#j8#,#j9#,#j10#,#j11#,#j12#,#j13#,#s0#,#s1#,#s2#,#s3#,#s4#,#p0#,#p1#,#p2#,#p3#,
+		#p4#,#p5#,#p6#,#p7#,#p8#,#p9#,#p10#,#p11#,#creator#,to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),#leix#)
+	</insert>
+	
+	<!-- 查询毛需求报表信息 -->
+	<select id="queryMaoxq" resultClass="com.athena.xqjs.entity.report.RepMaoxq">
+		select 
+			id,usercenter,lingjbh,lingjmc,danw,gongysdm,gongysmc,gongyfe,dinghlx,chanx,jihy,j0,j1,j2,j3,j4,j5,j6,j7,j8,j9,
+			j10,j11,j12,j13,s0,s1,s2,s3,s4,p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,creator,create_time 
+		from 
+			${dbSchemal1}rep_maoxq
+		where 
+			1 = 1
+		<dynamic>
+				<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+				<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+				<isNotNull prepend=" and " property="gongysdm">gongysdm = #gongysdm#</isNotNull>
+				<isNotNull prepend=" and " property="dinghlx">dinghlx = #dinghlx#</isNotNull>
+				<isNotNull prepend=" and " property="baoblx">leix = #baoblx#</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 查询毛需求报表信息 -->
+	<select id="queryMaoxqUc" resultClass="com.athena.xqjs.entity.report.RepMaoxq">
+		select 
+			usercenter,lingjbh,max(lingjmc),max(danw),gongysdm,max(gongysmc),max(gongyfe),max(dinghlx),max(jihy),sum(j0),
+			sum(j1),sum(j2),sum(j3),sum(j4),sum(j5),sum(j6),sum(j7),sum(j8),sum(j9),sum(j10),sum(j11),sum(j12),sum(j13),
+			sum(s0),sum(s1),sum(s2),sum(s3),sum(s4),sum(p0),sum(p1),sum(p2),sum(p3),sum(p4),sum(p5),sum(p6),sum(p7),sum(p8),
+			sum(p9),sum(p10),sum(p11),max(creator),max(create_time) 
+		from 
+			${dbSchemal1}rep_maoxq
+		where 
+			1 = 1
+		<dynamic>
+				<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+				<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+				<isNotNull prepend=" and " property="gongysdm">gongysdm = #gongysdm#</isNotNull>
+				<isNotNull prepend=" and " property="dinghlx">dinghlx = #dinghlx#</isNotNull>
+				<isNotNull prepend=" and " property="baoblx">leix = #baoblx#</isNotNull>
+		</dynamic>
+		group by lingjbh,usercenter,gongysdm
+	</select>
+	
+	<!-- 获取零件的供应商集合 -->
+	<select id="queryLingjGysList" resultClass="com.athena.xqjs.entity.common.LingjGongys">
+		select
+			a.usercenter,gongysbh,lingjbh,gongyhth,gongyfe,youxq,a.fayd,shengxsj,shixsj,zuixqdl,cankfz,zhijcjbl,shifyzpch,
+      		ucbzlx,ucrl,uabzlx,uaucgs,gaib,neic,shifczlsbz,b.gongsmc
+    	from 
+      		${dbSchemal3}ckx_lingjgys a,${dbSchemal3}ckx_gongys b
+    	where 
+      		a.usercenter = #usercenter# and a.usercenter = b.usercenter and a.gongysbh = b.gcbh 
+      		and a.biaos = '1' and b.biaos = '1'
+	</select>
+</sqlMap>

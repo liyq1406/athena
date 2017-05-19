@@ -1,0 +1,75 @@
+<components namespace="authority">
+	<!-- 权限模块国际化消息配置 -->
+	<message resource="config.module.AthenaAuthority"/>
+	
+	<component class="com.toft.core3.biz.module.ModuleConfig">
+		<property name="name" value="authority" />
+		<property name="path" value="com/athena/authority" />
+		
+		<property name="actions">
+			<list>
+				<value>config/action-authority.xml</value>
+			</list>
+		</property>
+		
+		<property name="sqlMaps">
+			<list>
+				<value>sqlmap-config-authority.xml</value>
+			</list>
+		</property>
+	</component>
+	<!-- 安全控制 ： 使用shiro框架  -->
+	
+	<!-- realm -->
+	<component id="realm" class="com.athena.authority.AthenaRealm">
+		<property name="userService" ref="userService"/>
+		<property name="menuDirectoryService" ref="menuDirectoryService"></property>
+	</component>
+	
+	<component id="authenticator" class="com.athena.authority.AthenaRealmAuthenticator">
+		<property name="realm" ref="authority.realm"></property>
+	</component>
+	<!-- 使用ehCache缓存登录用户信息 -->
+	<component id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+	</component>
+	
+	<component id="authc" class="com.athena.authority.AthenaFormAuthenticationFilter"></component>
+	
+	<component id="securityManager" init-method="init" class="com.athena.authority.AthenaWebSecurityManager">
+		<property name="realm" ref="authority.realm"></property>
+		<property name="cacheManager" ref="authority.cacheManager"></property>
+		<property name="toftAuthenticator" ref="authority.authenticator"></property>
+	</component>
+	
+	<component class="com.athena.authority.ShiroFilterFactoryBean">
+		<property name="filters">
+			<map>
+				<entry key="authc" value-ref="authority.authc"></entry>
+			</map>
+		</property>
+		<property name="securityManager" ref="authority.securityManager"/>
+		<property name="loginUrl" value="/login.jsp"/>
+        <property name="successUrl" value="/index.jsp" />
+        <property name="unauthorizedUrl" value="/unauthorized.jsp"/>
+		<property name="filterChainDefinitions">
+            <value>
+            	/login.jsp = authc
+            	/index.jsp = authc
+            	/unauthorized.jsp = anon
+				/scripts/** = anon
+				/styles/** = anon
+				/decorators/** = anon
+            </value>
+        </property>
+        <!-- 基于菜单的角色URL过滤  -->
+        <property name="resourceManager" ref="menuDirectoryService"></property>
+	</component>
+	
+	<!-- 和授权结合的日记 -->
+	<!--
+	<component id="logHandler" class="com.athena.authority.log.AthenaLogHandler">
+		<property name="LogService" ref="LogService"></property>
+	</component> -->
+	
+</components>
+

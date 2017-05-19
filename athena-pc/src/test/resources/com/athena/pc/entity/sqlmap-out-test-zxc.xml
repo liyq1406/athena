@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="outputTestzxc">
+
+	<!--客户操作码-单据打印:单据打印表中不存在对应的客户-->
+	<select id="queryCKX_KEHCZM_nokeh" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	 select s.* from  CKX_KEHCZM s
+	 left join ckx_danjdy c on s.usercenter = c.usercenter and s.kehbh = c.kehbh and s.caozm in ('A35','A36','A70') 
+	 where c.kehbh is null
+	]]>
+	</select>
+
+	<!--客户操作码-单据打印：打印单据中的仓库编号不存在-->
+	<select id="queryCKX_DANJDY_nocangk" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select s.* from ckx_danjdy s left join zbc_test.ckx_cangk ck on s.usercenter = ck.usercenter and s.cangkbh = ck.cangkbh
+		where ck.cangkbh is null
+	]]>
+	</select>
+	
+		<!--库位: 仓库   不存在-->
+	<select id="queryCKX_KUW_nocangk" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	    select w.* from ckx_kuw w left join zbc_test.ckx_cangk c on w.usercenter=c.usercenter and w.cangkbh = c.cangkbh 
+	    where W.usercenter=#UC#  and W.CREATOR = #CREATOR# AND c.cangkbh is null 
+    	]]>
+	</select>
+
+		<!--库位: 子仓库  不存在-->
+	<select id="queryCKX_KUW_noZICK" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+        select w.* from ckx_kuw w left join zbc_test.ckx_zick c on w.usercenter=c.usercenter and w.cangkbh = c.cangkbh and w.zickbh=c.zickbh
+ 	   where W.usercenter=#UC#  and W.CREATOR = #CREATOR# AND c.zickbh is null
+	]]>
+	</select>
+	
+	<!--库位: 库位等级不存在-->
+	<select id="queryCKX_KUW_nokuwdj" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select w.* from ckx_kuw w left join ckx_kuwdj dj on w.usercenter =dj.usercenter and w.cangkbh = dj.cangkbh and  w.kuwdjbh = dj.kuwdjbh 
+		where dj.kuwdjbh is  null
+	]]>
+	</select>
+
+	<!--库位: 库位等级不存在-->
+	<select id="queryCKX_KUW_nolingjck" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select w.* from ckx_lingjck w left join ckx_kuw dj on w.usercenter =dj.usercenter and w.cangkbh = dj.cangkbh and  w.DINGZKW = dj.KUWBH 
+	    where W.usercenter=#UC#  and W.CREATOR = #CREATOR# AND w.DINGZKW is not null  and  dj.KUWBH is  null
+	]]>
+	</select>
+	
+	<!--库位等级:仓库 不存在-->
+	<select id="queryCKX_KUWDJ_nocangk" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select w.* from ckx_kuwdj w left join zbc_test.ckx_cangk ck on w.usercenter=ck.usercenter and 
+		w.cangkbh = ck.cangkbh where ck.cangkbh is  null
+	]]>
+	</select>	
+	
+	<!--库位等级包装: 库位等级不存在-->
+	<select id="queryCKX_KUWDJ_nokuwdj" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select z.* from ckx_kuwdj  z left join ckx_kuwdj_baoz  dj
+		on z.usercenter = dj.usercenter and z.cangkbh = dj.cangkbh and z.kuwdjbh = dj.kuwdjbh 
+		where dj.kuwdjbh is null
+	]]>
+	</select>		
+	
+	<!--库位等级：仓库 不存在-->
+	<select id="queryCKX_KUWDJ_BAOZ_nocangk" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select w.* from ckx_kuwdj_baoz w left join zbc_test.ckx_cangk ck on w.usercenter = ck.usercenter and w.cangkbh = ck.cangkbh
+		where ck.cangkbh is  null 
+	]]>
+	</select>	
+	
+		<!--库位等级：库位等级不存在-->
+	<select id="queryCKX_KUWDJ_BAOZ_nokuwdj" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select w.* from ckx_kuwdj_baoz w 
+		left join ckx_kuwdj dj on w.usercenter = dj.usercenter and w.cangkbh = dj.cangkbh and  w.kuwdjbh = dj.kuwdjbh
+		 where  dj.kuwdjbh is  null 
+	]]>
+	</select>
+	
+		<!--库位等级：包装类型 不存在-->
+	<select id="queryCKX_KUWDJ_BAOZ_nobaoz" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select w.* from ckx_kuwdj_baoz w 
+		left join zbc_test.ckx_baoz bz on w.baozlx = bz.baozlx where  bz.baozlx is  null
+	]]>
+	</select>
+	
+	<!--物理点容器场:  如果是产线  1  看物理点(产线)是否存在-->
+	<select id="queryCKX_WULDRQGX_noshengcx" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select x.* from CKX_WULDRQGX x left join zbc_test.ckx_shengcx cx on x.usercenter = cx.usercenter and x.wuld = cx.shengcxbh 
+		where x.wuldlx ='1' and cx.shengcxbh is  null
+	]]>
+	</select>	
+	
+	<!--物理点容器场:  如果是其他  2 容器场编号(其他)是否存在-->
+	<select id="queryCKX_WULDRQGX_norongqc" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	select x.*  from CKX_WULDRQGX x left join ckx_rongqc  qc on x.usercenter = qc.usercenter and x.wuld2 = qc.rongqcbh
+	  where x.wuldlx ='2'  and qc.rongqcbh is null
+	]]>
+	</select>	
+	
+		<!--工艺消耗点:  执行层工艺消耗点在准备层数据中不存在-->
+	<select id="queryCKX_GONGYXHD_nozbc" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select t.* from CKX_GONGYXHD t left join ZBC_TEST.CKX_SHENGCX d on  t.Shengcxbh = d.Shengcxbh where   d.Shengcxbh is null
+	]]>
+	</select>	
+	
+	<!--工艺消耗点:  工艺消耗点中对应的容器场不存在-->
+	<select id="queryCKX_GONGYXHD_norongqc" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select t.* from CKX_GONGYXHD t left join ZBC_TEST.CKX_GONGYXHD d on  t.gongyxhd = d.gongyxhd where  T.CREATOR = #CREATOR# AND d.gongyxhd is null
+	]]>
+	</select>	
+	
+	
+	
+	
+	
+	<!-- 客户成品库关系 : CKX_KEH_CHENGPK 运输路线编号不为null ，看运输线路是否存在 (也可以为null) -->
+	<select id="queryckx_keh_chengpk" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select x.* from CKX_KEH_CHENGPK x left join ckx_yunslx lx 
+		on x.usercenter = lx.usercenter and x.yunslxbh = lx.yunslxbh 
+		where lx.yunslxbh is  null
+	]]>
+	</select>
+
+	<!--客户成品库关系： 仓库编号 不存在对应的表中 -->
+	<select id="queryckx_keh_chengpk_nocangk" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select x.* from CKX_KEH_CHENGPK x left join ZBC_TEST.ckx_cangk ck on x.usercenter=ck.usercenter and x.cangkbh = ck.cangkbh
+		where ck.cangkbh is null 
+	]]>
+	</select>
+
+	<!--客户成品库关系： 客户编号 不存在对应的表中 -->
+	<select id="queryckx_keh_chengpk_nokeh" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select x.* from CKX_KEH_CHENGPK x 
+		left join ckx_kehb b on x.kehbh = b.kehbh
+		where  b.kehbh is null 
+	]]>
+	</select>
+	
+		<!--客户成品库关系： 承运商编号 不存在对应的表中 -->
+	<select id="queryckx_keh_chengpk_nocys" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select x.* from CKX_KEH_CHENGPK x 
+		left join ZBC_TEST.ckx_gongys gs on x.usercenter = gs.usercenter and x.chengysbh = gs.gcbh
+		where  gs.gcbh is null
+	]]>
+	</select>
+	<!--零件客户关系 -->
+	<select id="queryckx_lingjkh" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+    select x.* from CKX_LINGJKH x left join ZBC_TEST.ckx_lingj  lj on x.usercenter=lj.usercenter and x.lingjbh = lj.lingjbh
+    left join ckx_kehb b on x.kehbh = b.kehbh
+		left join ckx_fahzt gt on x.usercenter = gt.usercenter and x.fahzt = gt.fahztbh
+		where lj.lingjbh is null or b.kehbh is null or gt.fahztbh is null
+	]]>
+	</select>
+
+	<!--配送类别:包装类型 不存在 -->
+	<select id="queryckx_peislb_nobaoz" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+    select x.* from CKX_PEISLB x  left join ZBC_TEST.ckx_baoz bz on x.baozlx = bz.baozlx
+		where x.usercenter=#UC#  and x.CREATOR = #CREATOR# and bz.baozlx is null 
+	]]>
+	</select>
+
+	<!--配送类别:仓库、子仓库 不存在 -->
+	<select id="queryckx_peislb_nocangk" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+    select x.* from CKX_PEISLB x  
+    left join ZBC_TEST.ckx_cangk ck on x.usercenter = ck.usercenter and x.cangkbh = ck.cangkbh
+		left join ZBC_TEST.ckx_zick z on x.usercenter = z.usercenter and x.zickbh = z.zickbh
+		where x.usercenter=#UC#  and x.CREATOR = #CREATOR# and ck.cangkbh is null or z.zickbh is null
+	]]>
+	</select>
+	
+	<!--零件供应商： 零件编号不存在 -->
+	<select id="queryckx_lingjgys_nolingj" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select s.* from CKX_LINGJGYS s left join ZBC_TEST.ckx_lingj lj on s.usercenter=lj.usercenter and s.lingjbh = lj.lingjbh
+		where lj.lingjbh is null 
+	]]>
+	</select>
+
+	<!--零件供应商： 供应商编号 不存在 -->
+	<select id="queryckx_lingjgys_nogongys" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select s.* from CKX_LINGJGYS s 
+		left join ZBC_TEST.ckx_gongys gs on s.usercenter = gs.usercenter and s.gongysbh = gs.gcbh
+		where gs.gcbh is null
+	]]>
+	</select>
+		
+	<!--同步集配零件:零件编号 不存在-->
+	<select id="queryckx_tongbjplj_nolingj" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select j.* from CKX_TONGBJPLJ j left join ZBC_TEST.ckx_lingj lj on j.usercenter = lj.usercenter and j.lingjbh = lj.lingjbh
+		where J.usercenter=#UC#  and J.CREATOR = #CREATOR# and lj.lingjbh is null 
+	]]>
+	</select>
+	
+		<!--同步集配零件:生产线编号 不存在-->
+	<select id="queryckx_tongbjplj_noshengcx" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select j.* from CKX_TONGBJPLJ j 
+		left join ZBC_TEST.ckx_shengcx cx on j.usercenter=cx.usercenter and j.shengcxbh = cx.shengcxbh
+		where j.usercenter=#UC#  and j.CREATOR = #CREATOR# and cx.shengcxbh is null 
+	]]>
+	</select>
+	
+		<!--同步集配零件:配送类型 不存在-->
+	<select id="queryckx_tongbjplj_nopeislb" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select j.* from CKX_TONGBJPLJ j 
+		left join ckx_peislb pb on j.usercenter=pb.usercenter and j.peislx=pb.peislx
+		where j.usercenter=#UC#  and j.CREATOR = #CREATOR# and pb.peislx is null
+	]]>
+	</select>
+	<!--零件验收比例设置:  零件编号不存在-->
+	<select id="queryckx_yansbllj_nolingj" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select l.* from  CKX_YANSBLLJ l left join ZBC_TEST.ckx_lingj lj on l.usercenter = lj.usercenter and l.lingjbh=lj.lingjbh	
+		where lj.lingjbh is null 
+	]]>
+	</select>
+
+	<!--零件验收比例设置:  供应商编号 不存在-->
+	<select id="queryckx_yansbllj_nogongys" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select l.* from  CKX_YANSBLLJ l 
+		left join ZBC_TEST.ckx_gongys gs on l.usercenter = gs.usercenter and l.gongysbh = gs.gcbh
+		where  gs.gcbh is null 
+	]]>
+	</select>
+	
+		<!--零件验收比例设置:  验收项编号 不存在-->
+	<select id="queryckx_yansbllj_noyansbh" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select l.* from  CKX_YANSBLLJ l 
+		left join ckx_xingzysts ts on l.yansxbh = ts.yansxbh	
+		where ts.yansxbh is null
+	]]>
+	</select>
+	
+	<!--打印设备(打印机组和打印机设备):打印机组在打印机设备中不存在 -->
+	<select id="queryckx_print_devicegrou" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from ckx_print_devicegroup t left join ckx_print_device d on t.usercenter=d.usercenter and 
+		t.spcodes = d.spcodes where d.usercenter=#UC# and d.spcodes is null
+	]]>
+	</select>
+	
+	
+	<!--打印用户组和用户: 用户在用户组中不存在 -->
+	<select id="queryckx_print_users" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_PRINT_USERS t left join CKX_PRINT_USERINFO d on t.usercenter=d.usercenter 
+		and t.userscode = d.userscode where d.usercenter=#UC# and d.userscode is null
+	]]>
+	</select>
+	
+	<!--打印单据设置:  无关联 -->
+	<select id="queryckx_print_dictinfos" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_PRINT_DICTINFOS 
+			]]>
+	</select>
+	
+	<!--打印单据与仓库之间的关系设置:  无关联 -->
+	<select id="queryckx_print_strogdict" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from   CKX_PRINT_STROGDICT  t 	
+	]]>
+	</select>
+	
+	<!--打印权限的设置: 用户组不存在 -->
+	<select id="queryckx_print_right" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select t.* from  CKX_PRINT_RIGHT  t left join ckx_print_users u on t.usercenter=u.usercenter and t.userscode=u.userscode
+		where u.userscode is null 
+	]]>
+	</select>
+	
+	<!--打印权限的设置: 单据不存在 -->
+		<select id="queryckx_print_right_nostrogdict" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select t.* from  CKX_PRINT_RIGHT  t 
+		left join ckx_print_strogdict ct on t.usercenter = ct.usercenter and t.scodes = ct.danjzbh
+		where ct.danjzbh is null 
+	]]>
+	</select>
+	
+	<!--打印权限的设置: 仓库不存在 -->
+		<select id="queryckx_print_right_nocangk" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select t.* from  CKX_PRINT_RIGHT  t 
+		left join zbc_test.ckx_cangk ck on t.usercenter=ck.usercenter  and t.storagescode = ck.cangkbh
+		where ck.cangkbh is null
+	]]>
+	</select>
+</sqlMap>

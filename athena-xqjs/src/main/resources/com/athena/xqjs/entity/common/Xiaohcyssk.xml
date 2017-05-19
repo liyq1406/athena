@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+
+	<select id="queryXiaohcyssk" resultClass="com.athena.xqjs.entity.common.Xiaohcyssk"
+		parameterClass="java.util.Map">
+		SELECT
+			kaisbhsj,
+			chufsxsj,
+			tangc
+		FROM
+			${dbSchemal3}ckx_xiaohcyssk
+		WHERE
+			1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				USERCENTER = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+				riq = #riq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xiaohcbh">
+				xiaohcbh = #xiaohcbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shengcxbh">
+				shengcxbh = #shengcxbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="kaisbhsj">
+				<![CDATA[ kaisbhsj <= to_date(#kaisbhsj#,'yyyy-mm-dd HH24:MI') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="chufsxsj">
+				<![CDATA[ chufsxsj <= to_date(#chufsxsj#,'yyyy-mm-dd HH24:MI') ]]>
+			</isNotEmpty>
+		</dynamic>
+		order by kaisbhsj desc
+	</select>
+
+</sqlMap>

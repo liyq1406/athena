@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	行政验收提示
+	@author denggq
+	@date 2012-2-6
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryXingzysts" parameterClass="com.athena.ckx.entity.cangk.Xingzysts" resultClass="com.athena.ckx.entity.cangk.Xingzysts">
+		select yansxbh,yansxsm,biaos ,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_xingzysts 
+		where 1=1
+		<dynamic>
+	    	<isNotEmpty property="yansxbh" prepend="and">
+	    		<![CDATA[yansxbh = #yansxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="yansxsm" prepend="and">
+	    		<![CDATA[yansxsm like '$yansxsm$%']]>
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by yansxbh
+	</select>
+	
+	<!-- 获取行政验收提示数量 -->
+	<select id="getCountXingzysts" resultClass="java.lang.String">
+		select count(*) from ${dbSchemal3}ckx_xingzysts where 1=1
+		<dynamic>			
+	    	<isNotEmpty property="yansxbh" prepend="and">
+	    		<![CDATA[yansxbh = #yansxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<select id="getXingzysts" resultClass="com.athena.ckx.entity.cangk.Xingzysts">
+		select yansxbh,yansxsm,biaos 
+		from ${dbSchemal3}ckx_xingzysts 
+		<dynamic prepend="where">
+			<isNotEmpty property="yansxbh" prepend="and">
+	    		<![CDATA[yansxbh = #yansxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<select id="getYansxsm" resultClass="java.lang.String" parameterClass="java.lang.String">
+		select yansxsm 
+		from ${dbSchemal3}ckx_xingzysts 
+		where yansxbh = #yansxbh#
+	</select>
+	
+	<insert id="insertXingzysts" parameterClass="com.athena.ckx.entity.cangk.Xingzysts">
+		insert into ${dbSchemal3}ckx_xingzysts(yansxbh,yansxsm,biaos,creator,create_time,editor,edit_time)
+		values(#yansxbh#,#yansxsm#,#biaos#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<update id="updateXingzysts" parameterClass="com.athena.ckx.entity.cangk.Xingzysts">
+		update ${dbSchemal3}ckx_xingzysts 
+		set yansxsm = #yansxsm# ,
+			biaos = #biaos# ,
+			editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+		where <![CDATA[yansxbh = #yansxbh#]]> 
+	</update>
+	
+	<delete id="deleteXingzysts" parameterClass="com.athena.ckx.entity.cangk.Xingzysts">
+		update ${dbSchemal3}ckx_xingzysts 
+		set <![CDATA[biaos = '0', editor = #editor# , edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		<dynamic prepend="where">
+			<isNotEmpty property="yansxbh"  prepend="and">
+	    		<![CDATA[yansxbh = #yansxbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+	<delete id="removeXingzysts" parameterClass="com.athena.ckx.entity.cangk.Xingzysts">
+		delete from ${dbSchemal3}ckx_xingzysts where
+		<dynamic prepend=" ">
+			<isNotEmpty property="yansxbh"  prepend="and">
+	    		<![CDATA[yansxbh = #yansxbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+</sqlMap>

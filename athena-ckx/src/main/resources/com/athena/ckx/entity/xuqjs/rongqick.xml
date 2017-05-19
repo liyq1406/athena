@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+	容器区-仓库
+	@author xss
+	@date 2015-4-9
+	0010495
+-->
+<sqlMap namespace="rongqick">
+	
+	<!-- 查询主从供应商 -->
+	<select id="queryRongqick" resultClass="com.athena.ckx.entity.xuqjs.Rongqick">	 
+		select usercenter,rongqqbh ,cangkbh from ${dbSchemal3}ckx_ckrqq where 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">
+				usercenter = #usercenter#
+			</isNotNull>
+			<isNotNull property="rongqqbh" prepend=" and ">
+				rongqqbh = #rongqqbh#
+			</isNotNull>
+			<isNotNull property="cangkbh" prepend=" and ">
+				cangkbh = #cangkbh#
+			</isNotNull>
+		</dynamic>
+	
+	</select>
+	
+	
+	<!-- 保存 -->
+	<insert id="saveRongqick">
+		insert into ${dbSchemal3}ckx_ckrqq(usercenter,rongqqbh,cangkbh,creator,create_time,editor,edit_time)values(#usercenter#,#rongqqbh#,#cangkbh#,#creator#,sysdate,#editor#,sysdate)
+	</insert>
+	
+	<!-- 更新 -->
+	<update id="updateRongqick" parameterClass="com.athena.ckx.entity.xuqjs.Rongqick">
+		update ${dbSchemal3}ckx_ckrqq 
+		set cangkbh = #cangkbh#,
+			editor=#editor#,
+			edit_time=sysdate
+		where usercenter = #usercenter#  and rongqqbh = #rongqqbh#
+	</update>	
+		
+	<!-- 删除-->
+	<delete id="deleteRongqick" parameterClass="com.athena.ckx.entity.xuqjs.Rongqick">	 
+		delete from ${dbSchemal3}ckx_ckrqq where 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">
+				usercenter = #usercenter#
+			</isNotNull>
+			<isNotNull property="rongqqbh" prepend=" and ">
+				rongqqbh = #rongqqbh#
+			</isNotNull>
+			<isNotNull property="cangkbh" prepend=" and ">
+				cangkbh = #cangkbh#
+			</isNotNull>
+		</dynamic>			
+	</delete>
+	
+
+	<!-- 查询容器区编号 -->
+	<select id="queryRongqcbh" parameterClass="java.util.Map" resultClass="com.athena.util.cache.CacheValue">
+			select 				
+				t1.RONGQCBH as key,
+				t1.RONGQCBH as value
+			from ${dbSchemal3}SYS_RQC_GROUP t1 inner join ${dbSchemal3}CKX_RONGQC t2 
+			on t1.USERCENTER=t2.USERCENTER and t1.RONGQCBH=t2.RONGQCBH 
+			where t1.ACTIVE = '1' and t2.BIAOS = '1' and t1.USERCENTER = #usercenter# and t1.POST_ID = #postId# 
+			and t2.shiffk !='J'
+			order by t1.RONGQCBH
+		</select>
+		
+	<!-- 查询仓库-编号 -->
+	<select id="queryCangkbh" parameterClass="java.util.Map" resultClass="com.athena.util.cache.CacheValue">
+			select 
+				t1.CANGKBH as key,
+				t1.CANGKBH as value
+			from ${dbSchemal3}SYS_CK_GROUP t1 inner join ${dbSchemal3}CKX_CANGK t2 
+			on t1.USERCENTER=t2.USERCENTER and t1.CANGKBH=t2.CANGKBH
+			where t1.ACTIVE = '1' and t2.BIAOS = '1' and t1.USERCENTER = #usercenter# and t1.POST_ID = #postId# 
+			order by t1.CANGKBH
+	</select>	
+	
+</sqlMap>

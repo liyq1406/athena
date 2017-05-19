@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+<package name="pc" extend="toft-default" namespace="/pc">
+	<!-- 月模拟  author:贺志国  date:2012-2-9 -->
+	<action name="yuemn" class="yuemnAction" method="accessYuemn">
+		<result name="select" >/WEB-INF/pages/pc/yuemn/yuemn.jsp</result>
+	</action> 
+	<action name="queryQickc" class="yuemnAction" method="queryQickc"/>
+	<action name="monPaic" class="yuemnAction" method="monPaic"/>
+	<action name="mnPaicSure" class="yuemnAction" method="mnPaicSure"/>
+	<action name="queryShifqr" class="yuemnAction" method="queryShifqr"/>
+	<action name="cansmn" class="yuemnAction" method="accessCansmn">
+		<result name="success" >/WEB-INF/pages/pc/yuemn/cansmn.jsp</result>
+	</action>
+	<action name="workDetail" class="yuemnAction" method="workCalendarDetail">
+		<result name="success" >/WEB-INF/pages/pc/yuemn/viewWorkCalendar.jsp</result>
+	</action>
+	<action name="queryYuemn" class="yuemnAction" method="queryYuemn">
+		<result name="success" >/WEB-INF/pages/pc/yuemn/queryYuemn.jsp</result>
+	</action>
+	<action name="queryChanxLj" class="yuemnAction" method="queryChanxLj"/>
+	<action name="queryErrorMessage" class="yuemnAction" method="queryErrorMessage"/>
+	
+	<action name="message" class="yuemnAction" method="accessMessage">
+		<result name="success" >/WEB-INF/pages/pc/yuemn/message.jsp</result>
+	</action>
+	<action name="queryMessage" class="yuemnAction" method="queryMessage"/>
+	<action name="monService" class="yuemnAction" method="monService"/>
+	<action name="rukmxService" class="yuemnAction" method="rukmxService"/>
+	<!-- 月模拟计划跟踪  author:贺志国  date:2012-2-9 -->
+	<action name="yuemnjhgz" class="yuemnjhgzAction" method="accessYuemnjhgz">
+		<result name="select" >/WEB-INF/pages/pc/yuemn/yuemnjhgz.jsp</result>
+	</action>
+	<action name="queryYuemnjh" class="yuemnjhgzAction" method="queryYuemnjh"/>
+	
+	<!-- 备储计划 author:贺志国 date:2012-2-24 -->
+	<action name="beic" class="beicAction" method="accessBeic">
+		<result name="select">/WEB-INF/pages/pc/beic/beic.jsp</result>
+	</action>
+	<action name="queryBeic" class="beicAction" method="queryBeic" />
+	<action name="queryBeicmx" class="beicAction" method="queryBeicmx" />
+	<action name="saveBeic" class="beicAction" method="saveBeic" />
+	<action name="deleteBeic" class="beicAction" method="deleteBeic" />
+	<action name="queryBeicjhh" class="beicAction" method="queryBeicjhh" />
+	
+	<!-- 日滚动排产  author:贺志国  date:2012-3-7 -->
+	<action name="rigd" class="rigdAction" method="accessRigd">
+		<result name="select">/WEB-INF/pages/pc/rigd/rigd.jsp</result>
+	</action>
+	<action name="queryRigd" class="rigdAction" method="queryRigd" />
+	<action name="saveRigd"  class="rigdAction" method="saveRigd" />
+	
+	<action name="rigdPaic"  class="rigdAction" method="rigdPaic" />
+	<action name="rigdShengx"  class="rigdAction" method="rigdShengx" />
+	<action name="queryShiFPC"  class="rigdAction" method="queryShiFPC" />
+	<action name="queryShiFSX"  class="rigdAction" method="queryShiFSX" />
+	<action name="queryRiMessage" class="rigdAction" method="queryRiMessage"/>
+	<action name="rigdLeijjf"  class="rigdAction" method="rigdLeijjf" />
+	
+	
+	<!-- 毛需求查询action date:2011-10-25-->
+		<action name="maoxqhz" class="maoxqhzAction" method="accessMaoxqhz">
+			<result name="select">/WEB-INF/pages/pc/maoxqhz/maoxqhz.jsp</result>
+		</action>
+		<action name="queryMaoxqhz" class="maoxqhzAction" method="queryMaoxqhz"/>
+	
+	<!-- 月模拟文件下载 -->
+	<action name="yuemndown" class="yuemnAction" method="yuemnDownLoadFile">
+		<result name="yuemndown" >/WEB-INF/pages/pc/yuemn/yuemn.jsp</result>
+	</action>	
+	
+	<!-- 累计交付差额  author:贺志国  date:2012-6-12 -->
+	<action name="leijce" class="leijceAction" method="accessLeijce">
+		<result name="select">/WEB-INF/pages/pc/leijce/leijjfce.jsp</result>
+	</action>
+	<action name="queryLeijce"  class="leijceAction" method="queryLeijce" />
+	<action name="deleteLeijce"  class="leijceAction" method="deleteLeijce" />
+	<action name="updateLeijce"  class="leijceAction" method="updateLeijce" />
+	
+	<!-- 延迟要货令查询 author:贺志国  date:2012-6-15 -->
+	<action name="yancyhl" class="yancyhlAction" method="accessYancyhl">
+		<result name="select">/WEB-INF/pages/pc/yancyhl/yancyhl.jsp</result>
+	</action>
+	<action name="queryYancyhl"  class="yancyhlAction" method="queryYancyhl" />
+	
+	<!-- 期初库存查询 author:贺志国  date:2012-6-18 -->
+	<action name="qickc" class="qickcAction" method="accessQickc">
+		<result name="select">/WEB-INF/pages/pc/qickc/qickc.jsp</result>
+	</action>
+	<action name="queryQickcAll"  class="qickcAction" method="queryQickcAll" />
+	
+	<!-- 未处理需求查询 author:贺志国  date:2012-6-18 -->
+	<action name="weiclxq" class="weiclxqAction" method="accessWeiclxq">
+		<result name="select">/WEB-INF/pages/pc/yancyhl/weiclxq.jsp</result>
+	</action>
+	<action name="queryWeiclxq"  class="weiclxqAction" method="queryWeiclxq" />
+	
+	<!-- 工时调整查询 author:贺志国  date:2012-6-20 -->
+	<action name="toPageGongstz"  class="sgEquilibriaSCXAction" method="toPageGongstz">
+		<result name="selectGstz">/WEB-INF/pages/pc/yuemn/gongstz.jsp</result>
+	</action>
+	<action name="toPageGongstzGun"  class="sgEquilibriaSCXAction" method="toPageGongstz">
+		<result name="selectGstz">/WEB-INF/pages/pc/yuemn/gongstz.jsp</result>
+	</action>
+	<action name="queryGongstz"  class="sgEquilibriaSCXAction" method="queryGongstz" />
+	<action name="changxGongstz"  class="sgEquilibriaSCXAction" method="changxGongstz" />
+	
+	<!-- 工时调整确认查询  author:贺志国  date:2012-7-1  -->
+	<action name="gsQickc" class="sgEquilibriaSCXAction" method="toPageSGQickc">
+		<result name="selectGSqckc">/WEB-INF/pages/pc/yuemn/qickc.jsp</result>
+	</action>
+	<action name="querySGQickcAll"  class="sgEquilibriaSCXAction" method="querySGQickcAll" />
+	
+	<!-- 工时调整确认数据转移  author:贺志国  date:2012-7-6  -->
+	<action name="confirmTiaoz"  class="sgEquilibriaSCXAction" method="confirmTiaoz" />
+	
+	<!-- 滚动周期模拟  author:王国首  date:2012-7-11 -->
+	<action name="gundyuemn" class="gundyuemnAction" method="accessGundyuemn">
+		<result name="select" >/WEB-INF/pages/pc/yuemn/gundyuemn.jsp</result>
+	</action>
+	<action name="queryGundyuemn" class="gundyuemnAction" method="queryGundyuemn"/>
+	<action name="queryGunMessage" class="gundyuemnAction" method="queryGunMessage"/>
+	<action name="queryShiFFG" class="gundyuemnAction" method="queryShiFFG"/>
+	<action name="gundCover" class="gundyuemnAction" method="gundCover"/>
+	
+	<!-- 日滚动导出 -->
+	<action name="rigdDownLoad"  class="rigdAction" method="rigdDownLoad" >
+	<result name="rigdDownLoad" >/WEB-INF/pages/pc/yuemn/downLoad.jsp</result>
+	</action>	
+	
+	
+	
+	<!-- 订单调整&接口调整 by wangChong 2012-07-30 -->
+	
+	<action name="adjust" class="adjustAction" method="selectDate">
+	<result name="selectDD">/WEB-INF/pages/pc/adjust/ddtz.jsp
+	</result>
+	<result name="selectJK">/WEB-INF/pages/pc/adjust/jktz.jsp
+	</result>
+	</action>	
+	<action name="adjustSelect" class="adjustAction" method="selectObject"/>
+	<action name="adjustUpdate" class="adjustAction" method="updateObject"/>
+	<action name="selectLx" class="adjustAction" method="selectLx"/>
+	<!-- 周期模拟计划跟踪 -->
+	<action name="gzDownload" class="yuemnjhgzAction" method="downLoad"/>
+	
+	
+</package>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 王国首 -->
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</toft>

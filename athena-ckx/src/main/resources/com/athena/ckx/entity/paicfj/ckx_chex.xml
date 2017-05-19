@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+<select id="queryCkx_chex" resultClass="com.athena.ckx.entity.paicfj.Ckx_chex">
+   select chexbh , chexmc , biaos 
+   from ${dbSchemal3}ckx_chex
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="chexbh"><![CDATA[chexbh = #chexbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by chexbh
+</select>
+<insert id="insertCkx_chex" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chex">
+insert into ${dbSchemal3}ckx_chex
+(chexbh , chexmc , biaos ,creator , create_time , editor , edit_time)
+values(#chexbh# , #chexmc# , '1' , #creator# , #create_time# , #editor# , #edit_time# )
+</insert>
+
+<update id="updateCkx_chex" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chex">
+update ${dbSchemal3}ckx_chex
+set      
+    	<![CDATA[chexmc = #chexmc#]]>, 
+    	<![CDATA[biaos = #biaos#]]> ,
+    	<![CDATA[editor = #editor#]]> ,
+    	<![CDATA[edit_time = #edit_time#]]> 
+    	
+       where  <![CDATA[chexbh = #chexbh# ]]> 
+</update>
+<delete id="deleteCkx_chex" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chex">
+delete from ${dbSchemal3}ckx_chex 
+where <![CDATA[ chexbh = #chexbh#]]>
+</delete>
+</sqlMap>

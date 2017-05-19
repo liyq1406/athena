@@ -1,0 +1,19 @@
+<components namespace="print">
+
+	<component class="com.toft.core3.biz.module.ModuleConfig">
+		<property name="name" value="print" />
+		<property name="path" value="com/athena/print" />
+		<property name="actions">
+			<list>
+				<value>config/action-sys.xml</value>
+				<value>config/action-pcenter.xml</value>
+			</list>
+		</property>
+		<property name="sqlMaps">
+			<list>
+				<value>sqlmap-config-sys.xml</value>
+			</list>
+		</property>
+	</component>
+</components>
+

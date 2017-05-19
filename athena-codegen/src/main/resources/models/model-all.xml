@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<models>
+  <module name="admin" caption="01后台管理">
+    <model id="010101" name="user" table="ADMIN_USER" caption="用户" idType="String" toString="super.toString()">
+      <property name="userId" caption="用户ID" length="32" isId="true" type="String" column="USER_ID"/>
+      <property name="agencyId" caption="机构ID" length="32" type="String" column="AGENCY_ID"/>
+      <property name="userName" caption="登录名" length="20" type="String" column="USER_NAME"/>
+      <property name="password" caption="密码" length="36" type="String" column="PASSWORD"/>
+      <property name="userCaption" caption="用户描述" length="100" type="String" column="USER_CAPTION"/>
+    </model>
+    <model id="010102" name="agency" table="ADMIN_AGENCY" caption="机构" idType="String" toString="super.toString()">
+      <property name="agencyId" caption="机构ID" length="32" isId="true" type="String" column="AGENCY_ID"/>
+      <property name="agencyCode" caption="机构编码" length="20" type="String" column="AGENCY_CODE"/>
+      <property name="agencyCaption" caption="机构描述" length="100" type="String" column="AGENCY_CAPTION"/>
+      <property name="agencyPath" caption="机构路径" length="200" type="String" column="AGENCY_PATH"/>
+    </model>
+  </module>
+  <module name="base" caption="02基础信息">
+    <model id="020101" name="region" table="BASE_REGION" caption="行政区划" idType="String" toString="super.toString()">
+      <foreign name="region" column="PARENT_REGION_ID" caption="父行政区划ID" refModel="region"/>
+      <property name="regionId" caption="行政区划ID" length="32" isId="true" type="String" column="REGION_ID"/>
+      <property name="regionCode" caption="行政区划编码" length="20" type="String" column="REGION_CODE"/>
+      <property name="regionCaption" caption="行政区划名称" length="100" type="String" column="REGION_CAPTION"/>
+    </model>
+  </module>
+  <module name="pd" caption="03成品库管理">
+    <model id="030101" name="warehouse" table="PD_WAREHOUSE" caption="仓库" idType="String" toString="super.toString()">
+      <property name="warehouseId" caption="仓库ID" length="32" isId="true" type="String" column="WAREHOUSE_ID"/>
+      <property name="warehouseNo" caption="仓库编号" length="20" type="String" column="WAREHOUSE_NO"/>
+      <property name="warehouseName" caption="仓库名称" length="100" type="String" column="WAREHOUSE_NAME"/>
+    </model>
+    <model id="030201" name="warehouseStorage" table="PD_WAREHOUSE_STORAGE" caption="仓库存储" idType="String" toString="super.toString()">
+      <foreign name="warehouse" column="WAREHOUSE_ID" caption="仓库ID" refModel="warehouse"/>
+      <property name="warehouseStorageId" caption="存储ID" length="32" isId="true" type="String" column="WAREHOUSE_STORAGE_ID"/>
+      <property name="partNo" caption="零件编号" length="20" type="String" column="PART_NO"/>
+      <property name="partCount" caption="零件数量" type="String" column="PART_COUNT"/>
+    </model>
+  </module>
+</models>

@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>athena</artifactId>
+    <groupId>com.athena</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <groupId>com.athena</groupId>
+  <artifactId>athena-xqjs</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>athena-xqjs</name>
+  <url>http://maven.apache.org</url>
+  
+  
+	<!-- 导入项目公共包 -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.athena</groupId>
+				<artifactId>athena</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
+	<dependencies>
+	<dependency>
+			 <groupId>commons-fileupload</groupId>
+			 <artifactId>commons-fileupload</artifactId>
+			 <version>1.2.2</version>
+			 <scope>provided</scope>
+	</dependency>
+		<dependency>
+			<groupId>com.athena</groupId>
+			<artifactId>athena-core</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+	
+	<dependency>
+			<groupId>com.athena</groupId>
+			<artifactId>athena-excore</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+	
+	<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.athena</groupId>
+			<artifactId>athena-authority</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		
+		
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>sonar</artifactId>
+				<version>2.12</version>
+				<configuration></configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-surefire-plugin</artifactId>
+			    <version>2.7.2</version>
+				<configuration>
+				    <skip>true</skip>
+			    	<includes>
+ 						   <include>com/athena/xqjs/module/aixdd/*Test.java</include>
+   						   <include>com/athena/xqjs/kdorder/*Test.java</include>
+                           <include>com/athena/xqjs/kdorderFuzhu/*Test.java</include>
+					</includes>
+			    </configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

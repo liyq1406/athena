@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="kdys">
+
+	<select id="selectInwuld" resultClass="java.util.HashMap">
+		SELECT
+		ID,
+		FALG,
+		PAP_SHEET_ID,
+		PAP_BOX_ID,
+		KDYS_SHEET_ID,
+		KDYS_BOX_ID,
+		C_POINT_ID,
+		T_TIME,
+		to_char(CJ_DATE,'YYYY-MM-DD') AS CJ_DATE,
+		CLZT
+		FROM ${dbSchemal1}IN_KDWLD WHERE CLZT = '0'
+	</select>
+	<insert id="insertTC" parameterClass="com.athena.xqjs.entity.laxkaix.TC">
+		INSERT INTO ${dbSchemal1}XQJS_TC(
+			ID,
+			TCNO,
+			CREATOR,
+			CREATE_TIME,
+			PAP_SHEET_ID,
+			PAP_BOX_ID,
+			KDYS_SHEET_ID
+		)VALUES(
+			#id#,
+			#tcNo#,
+			#creator#,
+			to_date(#createTime#,'YYYY-MM-DD HH24:MI:SS'),
+			#papSheetId#,
+			#papBoxId#,
+			#kdysSheetId#
+		)
+	</insert>
+	
+	<update id="updateTC" parameterClass="com.athena.xqjs.entity.laxkaix.TC">
+		UPDATE ${dbSchemal1}XQJS_TC SET
+		TCNO = #tcNo#,
+		EDITOR = #editor#,
+		EDIT_TIME = to_date(#editTime#,'YYYY-MM-DD HH24:MI:SS')
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty  prepend="AND"  property="papBoxId"> PAP_BOX_ID = #papBoxId# </isNotEmpty>
+			<isNotEmpty  prepend="AND"  property="kdysSheetId"> KDYS_SHEET_ID = #kdysSheetId# </isNotEmpty>
+		</dynamic>
+	</update>
+	<update id="updateTCWuld" parameterClass="com.athena.xqjs.entity.laxkaix.TC">
+		UPDATE ${dbSchemal1}XQJS_TC SET
+		QIYD = #qiyd#,
+		QIYSJ = to_date(#qiysj#,'yyyy-MM-dd'),
+		ZUISWLD = #zuiswld#,
+		DAODWLDSJ = to_date(#daodwldsj#,'yyyy-MM-dd')
+		WHERE 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="tcNo"> TCNO = #tcNo# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="kdysSheetId"> KDYS_SHEET_ID = #kdysSheetId# </isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<select id="getTcId" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT MAX(ID) as ID FROM ${dbSchemal1}XQJS_TC 
+		WHERE ID LIKE '%'||#createTimeNoLine#||'%'
+	</select>
+	<select id="getDaohtzdInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DISTINCT
+		USERCENTER,
+		TCH,
+		UTH,
+		CANGKBH,
+		ZHUANGT
+		FROM ${dbSchemal1}CK_DAOHTZD
+		WHERE 1=1 AND(ZHUANGT = 2 or ZHUANGT = 3 or ZHUANGT = 4)
+	</select>
+	<select id="getUabqInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DISTINCT
+		USERCENTER,
+		UTH,
+		GONGYSDM,
+		LINGJBH,
+		DINGDH,
+		YAOHLH 
+		FROM ${dbSchemal1}CK_UABQ WHERE 1=1
+	</select>
+	<select id="getDingdlj" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.ilorder.Dingdlj">
+		SELECT 
+		DINGDH,
+		LINGJBH,
+		GONGYSDM,
+		USERCENTER,
+		FAHD,
+		LUJDM,
+		CANGKDM,
+		DINGHCJ FROM ${dbSchemal1}XQJS_DINGDLJ WHERE 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" AND " property="dingdh">DINGDH = #dingdh#</isNotEmpty>
+			<isNotEmpty prepend=" AND " property="lingjbh">LINGJBH = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" AND " property="gongysdm">GONGYSDM = #gongysdm#</isNotEmpty>
+			<isNotEmpty prepend=" AND " property="usercenter">USERCENTER = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" AND " property="CANGKDM">DINGDH = #cangkbh#</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getJihsysj" resultClass="java.util.HashMap">
+		SELECT 
+		LUJBH,
+		XUH,
+		WULDBH,
+		JIHDHSYSJ 
+		FROM ${dbSchemal3}CKX_WAIBWLXX WHERE 1=1 
+	</select>
+	<select id="getZwjfsj" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		YAOHLH,
+		USERCENTER,
+		to_char(ZUIWSJ,'YYYY-MM-DD') as ZUIWSJ
+		FROM ${dbSchemal1}CK_YAOHL WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend=" AND " property="usercenter"> USERCENTER = #usercenter# </isNotEmpty>
+			<isNotEmpty prepend=" AND " property="yaohlh">  YAOHLH = #yaohlh# </isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getYunswuld"  resultClass="java.util.HashMap">
+		SELECT 
+		WULDBH,
+		WULDMC,
+		WULDLX,
+		SHUNXH FROM ${dbSchemal3}CKX_YUNSWLD WHERE BIAOS = 1
+	</select>
+	<update id="updateTcInfo" parameterClass="com.athena.xqjs.entity.laxkaix.TC">
+		UPDATE ${dbSchemal1}XQJS_TC SET 
+		UTNO = #utNo#,
+		QIYSJ = to_date(#qiysj#,'yyyy-MM-dd'),
+		QIYD = #qiyd#,
+		MUDD = #mudd#,
+		LUJDM = #lujdm#,
+		DINGHCJ = #dinghcj#,
+		YUJDDSJ = to_date(#yujddsj#,'yyyy-MM-dd'),
+		TCZT = #tczt#
+		<dynamic>
+			<isNotEmpty property="zuixyjddsj">
+				,ZUIXYJDDSJ = to_date(#zuixyjddsj#,'yyyy-MM-dd')
+			</isNotEmpty>
+		</dynamic>
+		WHERE TCNO = #tcNo#
+		AND KDYS_SHEET_ID = #kdysSheetId#
+	</update>
+	<update id="updateYaohl" parameterClass="java.util.HashMap">
+		UPDATE ${dbSchemal1}CK_YAOHL SET 
+		<dynamic>
+			<isNotEmpty property="xiughyjjfsj">
+				XIUGHYJJFSJ = to_date(#xiughyjjfsj#,'yyyy-MM-dd'),
+			</isNotEmpty>
+		</dynamic>
+		JIAOFZT = #jiaofzt#,
+		SHIJFYSJ = to_date(#shijfysj#,'yyyy-MM-dd')
+		WHERE YAOHLH = #yaohlh#
+		AND USERCENTER = #usercenter#
+	</update>
+	<select id="selectTc" parameterClass="com.athena.xqjs.entity.laxkaix.TC" resultClass="com.athena.xqjs.entity.laxkaix.TC">
+		SELECT ID,
+		TCNO,
+		QIYD,
+		to_char(QIYSJ,'yyyy-MM-dd') FROM ${dbSchemal1}XQJS_TC
+		WHERE TCNO = #tcNo# AND KDYS_SHEET_ID = #kdysSheetId#
+	</select>
+	<delete id="deleteTc">
+		DELETE FROM ${dbSchemal1}XQJS_TC WHERE PAP_SHEET_ID = 'Z0000'
+	</delete>
+	<select id="selectNewTC" resultClass="com.athena.xqjs.entity.laxkaix.TC">
+		SELECT 
+		ID,
+		TCNO,
+		UTNO,
+		to_char(QIYSJ,'YYYY-MM-DD') as QIYSJ,
+		QIYD,
+		MUDD,
+		DINGHCJ,
+		to_char(YUJDDSJ,'YYYY-MM-DD') as YUJDDSJ,
+		ZUISWLD,
+		to_char(DAODWLDSJ,'YYYY-MM-DD') as DAODWLDSJ,
+		to_char(ZUIXYJDDSJ,'YYYY-MM-DD') as ZUIXYJDDSJ,
+		TCZT,
+		LUJDM,
+		PAP_SHEET_ID AS PAPSHEETID,
+		PAP_BOX_ID AS PAPBOXID,
+		KDYS_SHEET_ID  AS KDYSSHEETID
+		 FROM  ${dbSchemal1}XQJS_TC WHERE 1=1 AND ID LIKE '%'||#createTimeNoLine#||'%' ORDER BY UTNO ASC
+	</select>
+</sqlMap>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<select id="queryJiaofmzd" parameterClass="com.athena.ckx.entity.xuqjs.Jiaofmzd" resultClass="com.athena.ckx.entity.xuqjs.Jiaofmzd">
+		select usercenter,jiaofm,shuom,beiz,biaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_jiaofmzd
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiaofm"><![CDATA[jiaofm = #jiaofm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,jiaofm
+	</select>
+	
+	<select id="getJiaofmzd" parameterClass="com.athena.ckx.entity.xuqjs.Jiaofmzd" resultClass="com.athena.ckx.entity.xuqjs.Jiaofmzd">
+		select usercenter,jiaofm,shuom,beiz,biaos
+		from ${dbSchemal3}ckx_jiaofmzd
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="jiaofm"><![CDATA[jiaofm = #jiaofm#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	<select id="getCountJiaofmzd" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_jiaofmzd
+		where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiaofm">jiaofm = #jiaofm#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos = #biaos#</isNotEmpty>
+		</dynamic>
+	</select>
+	<insert id="insertJiaofmzd" parameterClass="com.athena.ckx.entity.xuqjs.Jiaofmzd">
+		insert into ${dbSchemal3}ckx_jiaofmzd(usercenter,jiaofm,shuom,beiz,biaos,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter# , #jiaofm# , #shuom# , #beiz# , '1' , #creator# ,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')  ]]> )
+	</insert>
+	
+	<update id="updateJiaofmzd" parameterClass="com.athena.ckx.entity.xuqjs.Jiaofmzd">
+		update ${dbSchemal3}ckx_jiaofmzd 
+		set shuom = #shuom#,
+			beiz = #beiz#,
+			biaos = #biaos#,
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  <![CDATA[usercenter = #usercenter# and  jiaofm = #jiaofm# ]]> 
+	</update>
+	
+	
+	<!-- 逻辑删除数据 -->
+	<delete id="deleteJiaofmzd" parameterClass="com.athena.ckx.entity.xuqjs.Jiaofmzd">
+		update ${dbSchemal3}ckx_jiaofmzd
+		set <![CDATA[biaos = '0',editor=#editor#,edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		where <![CDATA[usercenter = #usercenter# and  jiaofm = #jiaofm# ]]>
+	</delete>
+	
+	<!-- 0005620 -->
+	<!-- 物理删除数据 -->
+	<delete id="removeJiaofmzd" parameterClass="com.athena.ckx.entity.xuqjs.Jiaofmzd">
+		delete from ${dbSchemal3}ckx_jiaofmzd
+		where <![CDATA[usercenter = #usercenter#  and  jiaofm = #jiaofm#  and biaos = '0']]>
+	</delete>
+</sqlMap>

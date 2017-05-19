@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts.ckx">
+	<!-- hj -->	
+	<!-- 实时延误要货令   11458-->
+	<!-- V4_025 -->
+	<select id="queryConfig" parameterClass="com.athena.ckx.entity.baob.Yanwyhlconfig" resultClass="com.athena.ckx.entity.baob.Yanwyhlconfig">
+		select usercenter,dapsxsj,yanwbjsj,yanwbjsl,cangkbh,chanx,lingjbh,yaohllx,yaohlzt,gongysdm,chengysdm,jihy,gongc
+		  from ${dbSchemal3}ckx_ywyhldp_config 
+		  where usercenter=#usercenter#
+	</select>
+	<!-- 11726 -->
+	<select id="queryCangkByUsercenter" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		select cangkbh as KEY,cangkbh as VALUE
+			from ${dbSchemal3}ckx_cangk
+		where usercenter=#usercenter#
+		and biaos='1'
+		order by cangkbh
+	</select>
+	
+	<select id ="queryFactoryNameByBs" parameterClass="java.lang.String" resultClass="java.util.HashMap">		
+		select zidmc
+			from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='GC'
+		and   zidbm=#gongc#
+	</select>
+	
+	<update id="saveConfig" parameterClass="com.athena.ckx.entity.baob.Yanwyhlconfig" >
+		update ${dbSchemal3}ckx_ywyhldp_config 
+			set dapsxsj =#dapsxsj#,
+			yanwbjsj=#yanwbjsj#,
+			yanwbjsl=#yanwbjsl#,
+			cangkbh=#cangkbh#,
+			lingjbh=#lingjbh#,
+			chanx=#chanx#,
+			yaohllx=#yaohllx#,
+			yaohlzt=#yaohlzt#,
+			gongysdm=#gongysdm#,
+			chengysdm=#chengysdm#,
+			jihy=#jihy#,
+			gongc=#gongc#
+			where usercenter=#usercenter#
+	</update>
+
+	<select id="queryFactoryByUsercebter"  parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		select distinct(a.gongc)as KEY,b.zidmc  as VALUE
+			from ${dbSchemal3}ckx_cangk a,${dbSchemal3}ckx_xitcsdy b
+		  where a.usercenter = b.beiz
+		  and   trim(a.gongc) = b.zidbm
+		  and  b.zidlx='GC'
+		  and  a.usercenter=#usercenter#
+		  order by a.gongc
+	</select>
+	<!-- 11726 -->
+	<select id="queryYwyhlByParam" parameterClass="com.athena.ckx.entity.baob.Yanwyhlconfig" resultClass="com.athena.ckx.entity.baob.Shisywyhl">
+		select 
+      	 a.lingjbh as lingjbh,
+       	 substr(a.lingjmc,1,10) as lingjmc,
+      	 a.cangkbh as cangkbh,
+       decode(a.muddlx,'1',a.chanx,b.xianh)   as chanx,
+       a.yaohllx as yaohllx,
+       decode(a.yaohlzt, '01', '表达', '02', '在途', '03', '等待交付') as yaohlzt,
+       a.yaohlh as yaohlh,
+       a.gongysdm as gongysdm,
+       a.yaohsl as yaohsl,
+       decode(a.chengysdm, a.gongysdm, '自理', substr(a.chengysmc,1,6)) as chengysmc,
+       c.jihy as jihy,
+       d.zidmc as factory,
+       floor((sysdate - a.zuiwsj)*24*60) as yanwsj
+  from ${dbSchemal3}ck_yaohl a, ${dbSchemal3}ckx_lingj c,${dbSchemal3}ckx_cangk b,${dbSchemal3}ckx_xitcsdy d
+ where a.usercenter=b.usercenter
+ 	   and a.usercenter=c.usercenter
+ 	   and a.usercenter=d.beiz
+ 	   and b.biaos='1'
+ 	   and d.zidlx='GC'
+ 	   and trim(b.gongc)=d.zidbm
+       $yaohlzt$
+       $yaohllx$
+       $factory$
+ <dynamic>
+		<isNotEmpty prepend=" and " property="usercenter"> <![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="lingjbh"> <![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[a.gongysdm = #gongysdm#]]></isNotEmpty>		
+		<isNotEmpty prepend=" and " property="jihy">    <![CDATA[c.jihy = #jihy#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="chengysdm">     <![CDATA[a.chengysdm = #chengysdm#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="chanx"> <![CDATA[decode(a.muddlx,'1',a.chanx,b.xianh) = #chanx#]]>   </isNotEmpty>
+		<isNotEmpty prepend=" and " property="cangkbh"> <![CDATA[a.cangkbh = #cangkbh#]]>   </isNotEmpty>
+ </dynamic>
+   	 <![CDATA[ and a.zuiwsj <= to_date(#currentDate#,'yyyy-mm-dd hh24:mi:ss') ]]> 
+  	 and b.biaos='1'
+   	 and a.cangkbh=b.cangkbh
+  	 and a.lingjbh = c.lingjbh
+  	 and a.beiz3 = '1'
+  	 order by a.zuiwsj
+	</select>
+
+	<select id="queryNumGroupByJihy" parameterClass="com.athena.ckx.entity.baob.Yanwyhlconfig" resultClass="com.athena.ckx.entity.baob.JihuChengys">
+		select count(yaohlh) as num_1,jihy as jihy,factory as factory_1 from (
+			select a.yaohlh as yaohlh,c.jihy as jihy,d.zidmc  as factory
+    		from ${dbSchemal3}ck_yaohl a, ${dbSchemal3}ckx_lingj c,${dbSchemal3}ckx_cangk b,${dbSchemal3}ckx_xitcsdy d
+   			where a.usercenter = c.usercenter
+   			and a.usercenter=b.usercenter
+ 			and a.usercenter=d.beiz
+ 			and a.cangkbh=b.cangkbh
+ 			and trim(b.gongc) = d.zidbm
+			and d.zidlx='GC'
+ 			and a.lingjbh=c.lingjbh
+ 			and b.biaos='1'
+ 			and a.beiz3='1'
+	<dynamic>
+		<isNotEmpty prepend=" and " property="usercenter"> <![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="lingjbh"> <![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[a.gongysdm = #gongysdm#]]></isNotEmpty>		
+		<isNotEmpty prepend=" and " property="jihy">    <![CDATA[c.jihy = #jihy#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="chengysdm">     <![CDATA[a.chengysdm = #chengysdm#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="chanx"> <![CDATA[a.chanx = #chanx#]]>   </isNotEmpty>
+		<isNotEmpty prepend=" and " property="cangkbh"> <![CDATA[a.cangkbh = #cangkbh#]]>   </isNotEmpty>
+ 	</dynamic>
+   	 <![CDATA[ and a.zuiwsj <= to_date(#currentDate#,'yyyy-mm-dd hh24:mi:ss') ]]> 
+ 			$yaohlzt$
+ 			$yaohllx$ 
+ 			$factory$
+ 			) 
+ 			group by jihy ,factory order by jihy
+	</select>
+	
+		<select id="queryNumGroupByChengys" parameterClass="com.athena.ckx.entity.baob.Yanwyhlconfig" resultClass="com.athena.ckx.entity.baob.JihuChengys">
+		select g.num_1,g.chengys,g.chengyslx,g.chengysmc,g.factory_1 from 
+		(select h.chengys ,h.chengyslx,h.chengysmc,h.factory_1,
+		 sum(h.num_1) over(partition by h.chengys, h.factory_1) num_1, 
+		 row_number()  over( partition by h.chengys, h.factory_1 order by rownum ) cn  from
+		(select count(yaohlh) as num_1,chengys as chengys,chengyslx as chengyslx,chengysmc as chengysmc,factory as factory_1 from (
+			select a.yaohlh as yaohlh,a.chengysdm as chengys,a.chengysmc as chengysmc,d.zidmc  as factory,
+			decode(a.chengysdm, a.gongysdm, '自理', '中转库') as chengyslx
+    		from ${dbSchemal3}ck_yaohl a, ${dbSchemal3}ckx_lingj c,${dbSchemal3}ckx_cangk b,${dbSchemal3}ckx_xitcsdy d
+   			where a.usercenter = c.usercenter
+   			and a.usercenter=b.usercenter
+ 			and a.usercenter=d.beiz
+ 			and a.cangkbh=b.cangkbh
+ 			and trim(b.gongc) = d.zidbm
+			and d.zidlx='GC'
+ 			and a.lingjbh=c.lingjbh
+ 			and b.biaos='1' 
+ 			and a.beiz3='1'
+	<dynamic>
+		<isNotEmpty prepend=" and " property="usercenter"> <![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="lingjbh"> <![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[a.gongysdm = #gongysdm#]]></isNotEmpty>		
+		<isNotEmpty prepend=" and " property="jihy">    <![CDATA[c.jihy = #jihy#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="chengysdm">     <![CDATA[a.chengysdm = #chengysdm#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="chengysmc">     <![CDATA[a.chengysmc = #chengysmc#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="chanx"> <![CDATA[a.chanx = #chanx#]]>   </isNotEmpty>
+		<isNotEmpty prepend=" and " property="cangkbh"> <![CDATA[a.cangkbh = #cangkbh#]]>   </isNotEmpty>
+ 	</dynamic>
+   	 <![CDATA[ and a.zuiwsj <= to_date(#currentDate#,'yyyy-mm-dd hh24:mi:ss') ]]> 
+ 			$yaohlzt$
+ 			$yaohllx$ 
+ 			$factory$
+ 			) 
+ 			group by chengys, factory, chengysmc, chengyslx
+			 order by chengys, chengysmc) h ) g where g.cn = 1
+	</select>
+	
+	
+</sqlMap>

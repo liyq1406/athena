@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<config>
+	<browser>*iexplore</browser>
+	<password>123456</password>
+	<timeout>10000</timeout>
+	
+	<batchHost>10.26.202.56</batchHost>
+	<batchName>PAStest1</batchName>
+	<batchPassword>PAStest1</batchPassword>
+	
+	<zbcInterfaceSFTPHost>10.26.171.201</zbcInterfaceSFTPHost>
+	<zbcInterfaceSFTPName>root</zbcInterfaceSFTPName>
+	<zbcInterfaceSFTPpwd>rootroot</zbcInterfaceSFTPpwd>
+	<zbcInterfaceSFTPport>22</zbcInterfaceSFTPport>
+	<zbcInterfaceSFTPdirectory>/users/ath00/tmp</zbcInterfaceSFTPdirectory>
+	
+	<zxcInterfaceSFTPHost>10.26.171.224</zxcInterfaceSFTPHost>
+	<zxcInterfaceSFTPName>root</zxcInterfaceSFTPName>
+	<zxcInterfaceSFTPpwd>rootroot</zxcInterfaceSFTPpwd>
+	<zxcInterfaceSFTPport>22</zxcInterfaceSFTPport>
+	<zxcInterfaceSFTPdirectory>/users/ath00/tmp</zxcInterfaceSFTPdirectory>
+	
+	<ddbhInterfaceSFTPHost>10.26.171.224</ddbhInterfaceSFTPHost>
+	<ddbhInterfaceSFTPName>root</ddbhInterfaceSFTPName>
+	<ddbhInterfaceSFTPpwd>rootroot</ddbhInterfaceSFTPpwd>
+	<ddbhInterfaceSFTPport>22</ddbhInterfaceSFTPport>
+	<ddbhInterfaceSFTPdirectory>/users/ath00/tmp</ddbhInterfaceSFTPdirectory>
+	
+	<urls>
+		<url key='zbc'>http://10.26.171.50:8085/athena/login.jsp</url>
+		<url key='zxc'>http://10.26.171.224:7001/athena/login.jsp</url>
+		<url key='interface_zbc'>http://10.26.171.201:7001/athena-interface-zbc/</url>
+		<url key='interface_zxc'>http://10.26.171.224:7001/athena-interface-zxc/</url>
+		<url key='interface_ddbh'>http://10.26.171.224:7001/athena-interface-ddbh/</url>
+	</urls>
+	<users>
+		<user>
+			<!-- 准备层POA -->
+			<username role='zbc_POA' usercenter='UW'>zbcpoa</username>
+			<!-- 准备层物流工艺员 -->
+			<username role='wlgyy' usercenter='UW'>sundaiyin</username>
+			<!-- Il计划员 -->
+			<username role='jhl' usercenter='UW'>zhanglei</username>
+			<!-- 审核人 -->
+			<username role='shr' usercenter='UW'>root</username>
+			<!-- 管理员 -->
+			<username role='root' usercenter='UW'>root</username>
+			
+			<!-- 执行层POA -->
+			<username role='zxc_POA' usercenter='UW'>ZXCPOA</username>
+			<!-- 执行层物流工艺员 -->
+			<username role='zxc_wlgyy' usercenter='UW'>LIXIAODAN</username>
+			<!-- 收货员 -->
+			<username role='shl' usercenter='UW'>SHY1</username>
+			<!-- 线边扫卡员 -->
+			<username role='xianbsky' usercenter='UW'>SKY1</username>
+			<!-- 质检员 -->
+			<username role='zjy' usercenter="UW">ZJY1</username>
+			<!-- 出库员 -->
+			<username role='cky' usercenter='UW'>LIXIAODAN</username>
+			<!-- 仓库管理员 -->
+			<username role='ckgly' usercenter='UW'>LIXIAODAN</username>
+		</user>
+	</users>
+	
+	<!-- properties路径 -->
+	<properties>
+		<propertiesurl key="login">common/i18n_login_zh_CN.properties</propertiesurl>
+		<propertiesurl key="common">common/i18n_common_zh_CN.properties</propertiesurl>
+		<propertiesurl key="R1toR1">R1toR1/i18n_R1toR1_zh_CN.properties</propertiesurl>
+		<propertiesurl key="PPtoMDtoMD">PPtoMDtoMD/i18n_PPtoMDtoMD_zh_CN.properties</propertiesurl>
+		<propertiesurl key="PPtoRMtoRD">PPtoRMtoRD/i18n_PPtoRMtoRD_zh_CN.properties</propertiesurl>
+		<propertiesurl key="C1toC0">C1toC0/i18n_C1toC0_zh_CN.properties</propertiesurl>
+		<propertiesurl key="CDtoCD">CDtoCD/i18n_CDtoCD_zh_CN.properties</propertiesurl>
+	</properties>
+</config>

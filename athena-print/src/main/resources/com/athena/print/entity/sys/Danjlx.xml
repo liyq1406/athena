@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sys">
+
+	
+	<!-- 多数据查询 -->
+	<select id="queryDanjlx" parameterClass="com.athena.print.entity.sys.Danjlx" resultClass="com.athena.print.entity.sys.Danjlx">
+		select usercenter,zidbm,zidmc,beiz
+		from ${dbSchemal3}ckx_print_djlx
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidbm"><![CDATA[zidbm = #zidbm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidmc"><![CDATA[zidmc like #zidmc#||'%']]></isNotEmpty>
+		</dynamic>
+		order by length (zidbm),zidbm
+	</select>
+	
+	
+	<!-- 单数据查询 -->
+	<select id="getDanjlx" parameterClass="com.athena.print.entity.sys.Danjlx" resultClass="com.athena.print.entity.sys.Danjlx">
+		select usercenter,zidbm,zidmc,beiz
+		from ${dbSchemal3}ckx_print_djlx
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidbm"><![CDATA[zidbm = #zidbm#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 插入数据 -->
+	<insert id="insertDanjlx" parameterClass="com.athena.print.entity.sys.Danjlx">
+		insert into ${dbSchemal3}ckx_print_djlx (usercenter,zidbm,zidmc,beiz,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter#,#zidbm#,#zidmc#,#beiz#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+	</insert>
+	
+	
+	<!-- 更新数据 -->
+	<update id="updateDanjlx" parameterClass="com.athena.print.entity.sys.Danjlx">
+		update ${dbSchemal3}ckx_print_djlx 
+		 	<dynamic prepend="SET">
+	        <isNotEmpty property="zidmc" prepend=",">
+	    		<![CDATA[zidmc = #zidmc#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="beiz" prepend=",">
+	    		<![CDATA[beiz = #beiz#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="editor" prepend=",">
+		    	<![CDATA[editor = #editor# ]]> 
+		    </isNotEmpty>
+		    <isNotEmpty property="edit_time" prepend=",">
+		    	<![CDATA[edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ]]> 
+		    </isNotEmpty>
+	    </dynamic> 
+	    where  <![CDATA[usercenter = #usercenter# and zidbm = #zidbm#]]> 
+	</update>
+	
+	
+	<!-- 删除数据 -->
+	<delete id="deleteDanjlx" parameterClass="com.athena.print.entity.sys.Danjlx">
+		delete from ${dbSchemal3}ckx_print_djlx
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter">
+				<![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidbm">
+				<![CDATA[zidbm = #zidbm#]]>
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+</sqlMap>

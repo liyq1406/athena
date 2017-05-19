@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+
+<!-- xss_12947 -->
+<select id="queryXhbl"  resultClass="com.athena.xqjs.entity.common.Xiaohblzjb" >
+	insert into ${dbSchemal1}XQJS_XIAOHBLZJB select usercenter, lingjbh,  xiaohbl ,shengcxbh
+  from (select xm.usercenter,
+               xm.chanx as shengcxbh,
+               xm.lingjbh,
+               sum(t.xiaohbl) as xiaohbl
+          from 
+          
+            ( select 
+ zp.usercenter,
+ zp.lingjbh,
+ zp.chanx,
+ lj.waibms,
+  lj.fenpqh
+ from ${dbSchemal1}xqjs_maoxqhzp zp left join ${dbSchemal3}ckx_wullj lj 
+on zp.usercenter = lj.usercenter and zp.lingjbh = lj.lingjbh and zp.zhizlx = lj.zhizlx and zp.chanx = lj.shengcxbh
+where zp.waibms = 'PP' group by zp.usercenter , zp.lingjbh , zp.chanx,lj.waibms,lj.fenpqh) xm  left join ${dbSchemal3}CKX_LINGJXHD t on xm.usercenter = t.usercenter and xm.chanx = t.shengcxbh and xm.lingjbh = t.lingjbh AND  xm.fenpqh = t.fenpqbh and t.biaos ='1'
+         group by xm.usercenter, xm.chanx, xm.lingjbh) bl
+ where xiaohbl &lt;&gt; 1 or xiaohbl is null
+</select>
+
+<!-- xss_12947 -->
+<select id="queryXhblPS"  resultClass="com.athena.xqjs.entity.common.Xiaohblzjb" >
+	insert into ${dbSchemal1}XQJS_XIAOHBLZJB select usercenter, lingjbh,  xiaohbl ,shengcxbh
+  from (select xm.usercenter,
+               xm.chanx as shengcxbh,
+               xm.lingjbh,
+               sum(t.xiaohbl) as xiaohbl
+          from ( select 
+ zp.usercenter,
+ zp.lingjbh,
+ zp.chanx,
+ lj.waibms,
+  lj.fenpqh
+ from ${dbSchemal1}xqjs_maoxqhzs zp left join ${dbSchemal3}ckx_wullj lj 
+on zp.usercenter = lj.usercenter and zp.lingjbh = lj.lingjbh and zp.zhizlx = lj.zhizlx and zp.chanx = lj.shengcxbh
+group by zp.usercenter , zp.lingjbh , zp.chanx,lj.waibms,lj.fenpqh) xm  left join ${dbSchemal3}CKX_LINGJXHD t on xm.usercenter = t.usercenter and xm.chanx = t.shengcxbh and xm.lingjbh = t.lingjbh AND  xm.fenpqh = t.fenpqbh  and t.biaos ='1'
+         group by xm.usercenter, xm.chanx, xm.lingjbh) bl
+ where xiaohbl &lt;&gt; 1 or xiaohbl is null
+</select>
+
+<!-- xss_12947 -->
+<select id="queryXhblPJ"  resultClass="com.athena.xqjs.entity.common.Xiaohblzjb" >
+	insert into ${dbSchemal1}XQJS_XIAOHBLZJB select usercenter, lingjbh,  xiaohbl ,shengcxbh
+  from (select xm.usercenter,
+               xm.chanx as shengcxbh,
+               xm.lingjbh,
+               sum(t.xiaohbl) as xiaohbl
+          from  (select 
+ zp.usercenter,
+ zp.lingjbh,
+ zp.chanx,
+ lj.waibms,
+  lj.fenpqh
+ from ${dbSchemal1}xqjs_maoxqhzj zp left join ${dbSchemal3}ckx_wullj lj 
+on zp.usercenter = lj.usercenter and zp.lingjbh = lj.lingjbh and zp.zhizlx = lj.zhizlx and zp.chanx = lj.shengcxbh
+group by zp.usercenter , zp.lingjbh , zp.chanx,lj.waibms,lj.fenpqh) xm  left join ${dbSchemal3}CKX_LINGJXHD t on xm.usercenter = t.usercenter and xm.chanx = t.shengcxbh and xm.lingjbh = t.lingjbh AND  xm.fenpqh = t.fenpqbh  and t.biaos ='1'
+         group by xm.usercenter, xm.chanx, xm.lingjbh) bl
+ where xiaohbl &lt;&gt; 1 or xiaohbl is null
+</select>
+
+<delete id="clearZjb" parameterClass="com.athena.xqjs.entity.common.Xiaohblzjb">
+		delete 
+		from 
+			${dbSchemal3}xqjs_xiaohblzjb 
+		where 
+			1=1
+</delete>
+
+<insert id="insertXhbl" parameterClass="com.athena.xqjs.entity.common.Xiaohblzjb">
+	insert into
+		${dbSchemal1}xqjs_xiaohblzjb
+		(
+		lingjbh,
+		shengcxbh,
+		xiaohbl,
+		usercenter 
+		)
+		values(
+		#lingjbh#,
+		#shengcxbh#,
+		#xiaohbl#,
+		#usercenter#)
+</insert>
+
+	<select id="queryWulljForupdate" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.common.Wullj">
+		SELECT
+		    distinct 
+			usercenter,
+			lingjbh,
+			gongysbh,
+			lujbh,
+			zhidgys,
+			fahd,
+			dinghck,
+			xianbck,
+			xiehztbh,
+			gcbh,
+			ceil(beihzq/30)*30 as BEIHZQ,
+	        ceil(yunszq/7)*7 as YUNSZQ
+		FROM
+			${dbSchemal3}ckx_wullj
+		WHERE
+			1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">
+				gongysbh = #gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notwaibms">
+				waibms not in ( $notwaibms$ )
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+				zhizlx = #zhizlx#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="queryWullj" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.common.Wullj">
+		SELECT
+		usercenter,
+		fenpqh,
+		lingjbh,
+		gongysbh,
+		lujbh,
+		lujmc,
+		fahd,
+		waibms,
+		zhidgys,
+		jiaofm,
+		beihzq,
+		yunszq,
+		gcbh,
+		xiehztbh,
+		songhpc,
+		mudd,
+		dinghck,
+		mos2,
+		cangkshpc2,
+		cangkshsj2,
+		cangkfhsj2,
+		beihsj2,
+		ibeihsj2,
+		pbeihsj2,
+		beihsjc,
+		xianbck,
+		mos,
+		cangkshpc,
+		cangkshsj,
+		cangkfhsj,
+		beihsj,
+		ibeihsj,
+		pbeihsj,
+		wulgyyz,
+		wulgyyz1,
+		wulgyyz2
+		FROM
+		${dbSchemal3}ckx_wullj
+		WHERE
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+				zhizlx = #zhizlx#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">
+				gongysbh = #gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				shengcxbh = #shengcxbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">
+				fenpqh = #fenpqh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="waibms">
+				waibms = #waibms#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notwaibms">
+				waibms not in ( $notwaibms$ )
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">
+				mudd = #mudd#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- xss_0012868 _按照供应商取唯一物流路径-->
+<select id="queryWulljForShouhdcl" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.common.Wullj">
+		SELECT distinct
+		usercenter,
+		lingjbh,
+		waibms,
+		lujbh 
+		FROM
+		${dbSchemal3}ckx_wullj
+		WHERE
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">
+				mudd = #mudd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">
+				gongysbh = #gongysbh#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- xss-0011223 0012868-->
+	<select id="ShouhdclCheckXhd" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.common.Wullj">
+		 select t.lingjbh, t.fenpqh,t.waibms , t.usercenter,t.beihsj,t.shengcxbh,t.mudd , t.lujbh
+		 from ${dbSchemal3}ckx_lingjxhd x ,${dbSchemal3}ckx_wullj t 
+		 where x.biaos = '1' and substr(x.xiaohdbh,0,5) =t.fenpqh   and x.usercenter=t.usercenter and x.lingjbh=t.lingjbh and rownum=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				t.usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohdbh">
+			    x.xiaohdbh = #xiaohdbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				t.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="waibms">
+				t.waibms = #waibms#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 收货待处理查询物流路径 -->
+	<select id="ShouhdclQueryWullj"
+		resultClass="com.athena.xqjs.entity.common.Wullj">
+		select 
+			distinct xiehztbh,waibms
+		from 
+			${dbSchemal3}ckx_wullj 
+		where 
+			usercenter = #usercenter# and lingjbh = #lingjbh# and gongysbh = #gongysdm# 
+			and (dinghck = #cangkbh# or ( dinghck is null and xianbck = #cangkbh#))
+	</select>
+
+
+<select id="queryWulljForlsck" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.common.Wullj">
+		SELECT
+		DISTINCT
+		usercenter,
+		lingjbh,
+		xiehztbh,
+		xianbck,
+		lujbh,
+		beihsjc,
+		beihsj,
+		yunszq,
+		cangkshsj2
+		FROM
+		${dbSchemal3}ckx_wullj
+		WHERE
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dinghck">
+				dinghck = #dinghck#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xianbck">
+				xianbck = #xianbck#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">
+				fenpqh = #fenpqh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">
+				mos = #mos#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos2">
+				mos2 = #mos2#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="queryWulljForlsc1" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.common.Wullj">
+		SELECT
+		DISTINCT
+		usercenter,
+		lujbh,
+		gcbh,
+		lingjbh,
+		xiehztbh,
+		beihsjc,
+		xianbck,
+		yunszq
+		FROM
+		${dbSchemal3}ckx_wullj
+		WHERE
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">
+				fenpqh = #fenpqh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">
+				mudd = #mudd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="waibms">
+				waibms = #waibms#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">
+				gongysbh = #gongysbh#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+	<select id="queryWulljForAnx" resultClass="com.athena.xqjs.entity.common.Wullj">
+		select
+		wl.usercenter as usercenter,
+		fenpqh,
+		wl.lingjbh as lingjbh,
+		wl.gongysbh as gongysbh,
+		lujbh,
+		lujmc,
+		fahd,
+		waibms,
+		zhidgys,
+		jiaofm,
+		beihzq,
+		yunszq,
+		gcbh,
+		xiehztbh,
+		songhpc,
+		mudd,
+		dinghck,
+		mos2,
+		cangkshpc2,
+		cangkshsj2,
+		cangkfhsj2,
+		beihsj2,
+		ibeihsj2,
+		pbeihsj2,
+		xianbck,
+		mos,
+		cangkshpc,
+		cangkshsj,
+		cangkfhsj,
+		beihsj,
+		ibeihsj,
+		pbeihsj,
+		temp.xiaohd as xiaohd
+		from
+		${dbSchemal3}ckx_wullj wl,
+		(select
+		anx.usercenter as usercenter,
+		anx.lingjbh as lingjbh,
+		xhd.gongysbh as gongysbh,
+		xhd.fenpqbh as fenpqbh,
+		anx.xiaohd as xiaohd
+		from
+		${dbSchemal3}ckx_lingjxhd xhd ,
+		${dbSchemal1}xqjs_anxmaoxq anx
+		where
+		xhd.usercenter = anx.usercenter
+		and
+		xhd.lingjbh = anx.lingjbh
+		and
+		xhd.xiaohdbh = anx.xiaohd)temp
+		where
+		wl.usercenter = temp.usercenter
+		and
+		wl.fenpqh = temp.fenpqbh
+		and
+		wl.lingjbh = temp.lingjbh
+		and
+		wl.gongysbh = temp.gongysbh 
+  	</select>
+
+
+
+	<select id="queryWulljForDinghck" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.common.Wullj">
+		select 
+			distinct 
+			usercenter,
+			lingjbh ,
+			xianbck
+		from
+			${dbSchemal3}ckx_wullj
+		where
+			1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dinghck">
+				dinghck = #dinghck#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xianbck">
+				xianbck = #xianbck#
+			</isNotEmpty>
+		</dynamic>
+		group by 
+			usercenter,
+			lingjbh ,
+			xianbck
+	</select>
+	<select id="queryWlgyy" parameterClass="java.util.Map" resultClass="String">
+	select t.wulgyyz
+  from ${dbSchemal3}CKX_CANGK t
+ where 
+ t.usercenter = #usercenter#
+   and t.cangkbh = #cangkbh#
+   and t.biaos = '1'
+	</select>
+	
+	<select id="queryWulgyy" parameterClass="java.util.Map" resultClass="String">
+	SELECT distinct
+       wulgyyz
+  FROM ${dbSchemal3}ckx_wullj
+ WHERE 1 = 1
+ <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				shengcxbh = #shengcxbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">
+				fenpqh = #fenpqh#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+</sqlMap>

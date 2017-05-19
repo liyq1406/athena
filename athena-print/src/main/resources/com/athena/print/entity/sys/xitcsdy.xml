@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sys">
+
+	
+	<!-- 多数据查询 -->
+	<select id="queryXitcsdy" parameterClass="com.athena.print.entity.sys.Xitcsdy" resultClass="com.athena.print.entity.sys.Xitcsdy">
+		select usercenter,zidlx,zidlxmc,zidbm,zidmc,beiz,shifqj,qujzdz,qujzxz,paix
+		from ${dbSchemal3}ckx_xitcsdy
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidlx"><![CDATA[zidlx = #zidlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidlxmc"><![CDATA[zidlxmc = #zidlxmc#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidmc"><![CDATA[zidmc = #zidmc#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 单数据查询 -->
+	<select id="getXitcsdy" parameterClass="com.athena.print.entity.sys.Xitcsdy" resultClass="com.athena.print.entity.sys.Xitcsdy">
+		select usercenter,zidlx,zidlxmc,zidbm,zidmc,beiz,shifqj,qujzdz,qujzxz,paix
+		from ${dbSchemal3}ckx_xitcsdy
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidlx"><![CDATA[zidlx = #zidlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidbm"><![CDATA[zidbm = #zidbm#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 插入数据 -->
+	<insert id="insertXitcsdy" parameterClass="com.athena.print.entity.sys.Xitcsdy">
+		insert into ${dbSchemal3}ckx_xitcsdy (usercenter,zidlx,zidlxmc,zidbm,zidmc,beiz,shifqj,qujzdz,qujzxz,paix,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter#,#zidlx#,#zidlxmc#,#zidbm#,#zidmc#,#beiz#,#shifqj#,#qujzdz#,#qujzxz#,#paix#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+	</insert>
+	
+	
+	<!-- 更新数据 -->
+	<update id="updateXitcsdy" parameterClass="com.athena.print.entity.sys.Xitcsdy">
+		update ${dbSchemal3}ckx_xitcsdy 
+		 	<dynamic prepend="SET">
+	    	<isNotEmpty property="zidlxmc" prepend=",">
+	    		<![CDATA[zidlxmc = #zidlxmc#]]> 
+	    	</isNotEmpty>
+	        <isNotEmpty property="zidmc" prepend=",">
+	    		<![CDATA[zidmc = #zidmc#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shifqj" prepend=",">
+	    		<![CDATA[shifqj = #shifqj#]]>
+	    	</isNotEmpty>
+	    	<isNotEmpty property="qujzdz" prepend=",">
+	    		<![CDATA[qujzdz = #qujzdz#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="qujzxz" prepend=",">
+	    		<![CDATA[qujzxz = #qujzxz#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="beiz" prepend=",">
+	    		<![CDATA[beiz = #beiz#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="paix" prepend=",">
+	    		<![CDATA[paix = #paix#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="editor" prepend=",">
+		    	<![CDATA[editor = #editor# ]]> 
+		    </isNotEmpty>
+		    <isNotEmpty property="edit_time" prepend=",">
+		    	<![CDATA[edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ]]> 
+		    </isNotEmpty>
+	    </dynamic> 
+	    where  <![CDATA[usercenter = #usercenter# and zidlx = #zidlx# and zidbm = #zidbm#]]> 
+	</update>
+	
+	
+	<!-- 删除数据 -->
+	<delete id="deleteXitcsdy" parameterClass="com.athena.print.entity.sys.Xitcsdy">
+		delete from ${dbSchemal3}ckx_xitcsdy
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter">
+				<![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidlx">
+				<![CDATA[zidlx = #zidlx#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidbm">
+				<![CDATA[zidbm = #zidbm#]]>
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+</sqlMap>

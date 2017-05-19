@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="yuemnjhgz">
+
+	<!-- 月模拟计划跟踪查询  hzg 2012-2-9  -->
+	<select id="queryYuemnjh"  resultClass="com.athena.pc.entity.Yuemnjh">
+	<![CDATA[
+	select usercenter,chanxh,to_char(shij,'yyyy-MM-dd')as shij,lingjbh,lingjsl,shijscsl,dantce,ywhour,leijce from
+		(select ymnjh.usercenter,ymnjh.chanxh,ymnjh.kaissj,ymnjh.jiessj,ymnjhmx.shij,mnrlj.lingjbh,mnrlj.lingjsl,mnrlj.shijscsl,mnrlj.dantce,mnrlj.ywhour,mnrlj.leijce 
+		from ${dbSchemal2}PC_YUEDMNJHB ymnjh 
+		left join ${dbSchemal2}PC_YUEDMNJHMX ymnjhmx on ymnjh.yuemnjhh=ymnjhmx.yuemnjhh 
+		left join ${dbSchemal2}PC_MONRGDLJCLB mnrlj on ymnjhmx.gongzbh=mnrlj.gongzbh)s where 1 = 1 and lingjbh is not null 
+	]]>	
+			<dynamic>
+				<isNotEmpty prepend=" and " property="kaissj"><![CDATA[shij >= to_date(#kaissj#,'yyyy-MM-dd')]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="jiessj"><![CDATA[shij <= to_date(#jiessj#,'yyyy-MM-dd')]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="chanxh"><![CDATA[chanxh = #chanxh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh like '$lingjbh$%']]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="chanxhall"><![CDATA[chanxh in ($chanxhall$)]]></isNotEmpty>
+			</dynamic>
+		<![CDATA[	order by shij,chanxh,lingjbh ]]>	
+	</select>
+	
+	<!-- 参考系产线查询  hzg 2012-2-9  -->
+	<select id="queryShengcx" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		<![CDATA[select shengcxbh from ${dbSchemal3}ckx_shengcx	where usercenter=#usercenter# order by shengcxbh]]>	
+	</select>
+</sqlMap>

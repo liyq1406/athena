@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- 物理点容器关系  wangyu 2012-12-10 -->
+	
+	<select id="queryWuldrqgx" parameterClass="com.athena.ckx.entity.cangk.Wuldrqgx" resultClass="com.athena.ckx.entity.cangk.Wuldrqgx">
+		select usercenter,wuld,wuldlx,wuld2,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_wuldrqgx
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="wuld"><![CDATA[wuld = #wuld#]]></isNotEmpty>
+	    		<isNotEmpty prepend=" and " property="wuld2"><![CDATA[wuld2 = #wuld2#]]></isNotEmpty>
+			</dynamic>
+			order by USERCENTER, WULD
+	</select>
+	
+	<select id="getWuldrqgx" parameterClass="com.athena.ckx.entity.cangk.Wuldrqgx" resultClass="com.athena.ckx.entity.cangk.Wuldrqgx">
+		select usercenter,wuld,wuldlx,wuld2,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_wuldrqgx
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="wuld"><![CDATA[wuld = #wuld#]]></isNotEmpty>
+	    		<isNotEmpty prepend=" and " property="wuld2"><![CDATA[wuld2 = #wuld2#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	
+	<select id="yzsxc" parameterClass="java.util.Map" resultClass="com.athena.ckx.entity.xuqjs.Shengcx">
+		select t.shengcxbh,t.usercenter from  ${dbSchemal3}ckx_shengcx t 
+		left join 
+		(select distinct(shengcxbh)  from ${dbSchemal3}ckx_gongyxhd)  s  
+		on t.shengcxbh=s.shengcxbh
+		where s.shengcxbh is null and t.usercenter=#usercenter# and t.shengcxbh=#shengcxbh#
+	</select>
+	
+	
+	<insert id="insertWuldrqgx" parameterClass="com.athena.ckx.entity.cangk.Wuldrqgx">
+		insert into ${dbSchemal3}ckx_wuldrqgx(usercenter,wuld,wuldlx,wuld2,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter#,#wuld#,#wuldlx#,#wuld2#,#creator# ,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')  ]]> )
+	</insert>
+	
+	<update id="updateWuldrqgx" parameterClass="com.athena.ckx.entity.cangk.Wuldrqgx">
+		update ${dbSchemal3}ckx_wuldrqgx
+		set wuld2 = #wuld2#,
+	    	editor = #editor#,
+	    	edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  <![CDATA[wuld = #wuld# and usercenter=#usercenter#]]> 
+	</update>
+	<delete id="deleteWuldrqgx" parameterClass="com.athena.ckx.entity.cangk.Wuldrqgx">
+		delete  from  ${dbSchemal3}ckx_wuldrqgx
+        where  <![CDATA[wuld = #wuld# and usercenter=#usercenter#]]> 
+	</delete>
+	
+</sqlMap>

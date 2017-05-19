@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="select">
+	 <!-- 查询所有打印区域   -->
+	<resultMap class="java.util.HashMap" id="queryMap">
+		<result property="key" column="areaid"/>
+		<result property="value" column="sname"/>
+	</resultMap>
+   <select id="queryPrintAreaMap"  resultMap="queryMap">
+	select areaid,sname
+	from ${dbSchemal3}print_area 
+	where  active=1
+   </select>
+   
+   <resultMap class="java.util.HashMap" id="queryDevcieMap">
+		<result property="key" column="pgid"/>
+		<result property="value" column="sname"/>
+	</resultMap>
+   <select id="queryPrintDevcieMap"  resultMap="queryDevcieMap">
+	select pgid,sname
+	from ${dbSchemal3}print_devicegroup
+	where  active=1
+   </select>
+   
+   <resultMap class="java.util.HashMap" id="queryPostDevice">
+		<result property="key" column="postid"/>
+		<result property="value" column="pgid"/>
+	</resultMap>
+   <select id="queryPrintPostMap"  resultMap="queryPostDevice">
+	select postid,pgid
+	from ${dbSchemal3}print_r_postdevice
+	where  1=1
+   </select>
+</sqlMap>

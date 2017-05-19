@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ckxgongysxhc">
+	<!-- 插入供应商小火车 -->
+	<insert id="insertGongysxhc" >
+		<![CDATA[
+		insert into ${dbSchemal1}CKX_GONGYSXHC(
+			usercenter, 
+			gongysbh,
+			shengcxbh, 
+			xiaohcbh, 
+			qistc, 
+			hebtc, 
+			ishunt, 
+			biaos,
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3
+			)
+		values(
+			#usercenter#, 
+			#gongysbh#, 
+			#shengcxbh#,
+			#xiaohcbh#, 
+			$qistc$, 
+			$hebtc$, 
+			#ishunt#, 
+			#biaos#,
+			#creator#,
+			to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),
+			#editor#,
+			to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),
+			#beiz1#,
+			#beiz2#,
+			#beiz3#
+		)]]>
+	</insert>
+    <!-- 更新标识 -->
+	<update id="updateBiaosByParam" >
+		update
+		${dbSchemal1}CKX_GONGYSXHC
+		set
+			biaos='0',			
+			editor=#editor#,
+			edit_time=to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where
+			1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">
+				gongysbh =
+				#gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				shengcxbh =
+				#shengcxbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohcbh">
+				xiaohcbh =
+				#xiaohcbh#
+			</isNotEmpty>			
+		</dynamic>
+	</update>
+	
+	<!-- 更新供应商小火车 -->
+	<update id="updateGongysxhc" >
+		update
+		${dbSchemal1}CKX_GONGYSXHC
+		set			
+			qistc=$qistc$,
+			hebtc=$hebtc$,
+			biaos=#biaos#,
+			ishunt=#ishunt#,
+			editor=#editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where
+			1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">
+				gongysbh =
+				#gongysbh#
+			</isNotEmpty>			
+			<isNotEmpty prepend=" and " property="xiaohcbh">
+				xiaohcbh =
+				#xiaohcbh#
+			</isNotEmpty>			
+		</dynamic>
+	</update>
+
+	<!-- 删除供应商小火车 -->
+	<delete id="deleteGongysxhc" >
+		delete
+		from
+		${dbSchemal1}CKX_GONGYSXHC
+		where
+		1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">
+				gongysbh =
+				#gongysbh#
+			</isNotEmpty>			
+			<isNotEmpty prepend=" and " property="xiaohcbh">
+				xiaohcbh =
+				#xiaohcbh#
+			</isNotEmpty>			
+		</dynamic>
+	</delete>
+
+	<!-- 参数查询供应商小火车 -->
+	<select id="queryGongysxhcByParam" resultClass="com.athena.ckx.entity.xuqjs.Gongysxhc">
+		select
+		usercenter, 
+			gongysbh, 
+			shengcxbh,
+			xiaohcbh, 
+			qistc, 
+			hebtc, 
+			ishunt, 
+			biaos,
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3
+		from
+		${dbSchemal1}CKX_GONGYSXHC
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">
+				gongysbh =
+				#gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				shengcxbh =
+				#shengcxbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohcbh">
+				xiaohcbh =
+				#xiaohcbh#
+			</isNotEmpty>	
+			<isNotEmpty prepend=" and " property="biaos">
+				biaos =
+				#biaos#
+			</isNotEmpty>	
+			<isNotEmpty prepend=" and " property="ishunt">
+				ishunt =
+				#ishunt#
+			</isNotEmpty>			
+		</dynamic>
+		order by usercenter,shengcxbh,gongysbh,xiaohcbh
+	</select>	
+</sqlMap>

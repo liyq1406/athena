@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_kac">
+	
+	<select id="queryQuymc" parameterClass="java.util.Map" resultClass="com.athena.truck.entity.Dengdqy">
+		select  quybh,quymc
+		from ${dbSchemal3}ckx_dengdqy
+		where usercenter = #usercenter#
+		and quybh  in(select qy.quybh from ${dbSchemal3}SYS_QY_GROUP qy
+ 		inner join ${dbSchemal3}sys_post p on qy.post_id = p.post_code and p.biaos = '1'
+ 		inner join ${dbSchemal3}ckx_dengdqy d on qy.usercenter = d.usercenter  and qy.quybh = d.quybh  and d.biaos = '1'
+ 		where qy.usercenter in (select ru.usercenter from ${dbSchemal3}sys_r_post_usercenter ru where ru.post_code = #post_code#)
+   		and p.post_code = #post_code# and qy.usercenter = #usercenter#)
+		order by quybh
+	</select>
+	
+	<select id="querydaztbyquybh" parameterClass="java.util.Map" resultClass="com.athena.truck.entity.Yund">
+		select  distinct daztbh,quybh
+		from ${dbSchemal3}ckx_dazt
+		where usercenter= #usercenter# and quybh = #quybh# and biaos='1'
+		order by daztbh
+	</select>
+	
+<!-- 	<select id="querydaztbyquybhinner" parameterClass="java.util.Map" resultClass="com.athena.truck.entity.Yund"> -->
+<!-- 		select distinct zt.daztbh,qy.quybh,qy.quymc -->
+<!-- 		from ${dbSchemal3}ckx_dengdqy qy inner join ${dbSchemal3}ckx_dazt zt on qy.usercenter=zt.usercenter and qy.quybh = zt.quybh -->
+<!--         where  qy.quybh=#quybh# and qy.usercenter=#usercenter#  and zt.biaos='1' order by zt.daztbh -->
+<!-- 	</select> -->
+	
+	<select id="querydaztbyquybhinner" parameterClass="java.util.Map" resultClass="com.athena.truck.entity.Yund">
+		<![CDATA[select distinct zt.daztbh, qy.quybh, qy.quymc , (select  count(*)   from ${dbSchemal3}kc_yund   where usercenter= qy.usercenter and quybh=qy.quybh and daztbh=zt.daztbh and zhuangt='1' ) sb,
+		(select  count(*)   from ${dbSchemal3}kc_chelpd   where usercenter= qy.usercenter and quybh=qy.quybh and daztbh=zt.daztbh and paidzt='0') pd ,
+		(select  count(*)   from ${dbSchemal3}kc_chelpd   where usercenter= qy.usercenter and quybh=qy.quybh and daztbh=zt.daztbh and paidsx='4') jj ,
+		( select  count(*)   from ${dbSchemal3}kc_yund   where  usercenter= qy.usercenter and quybh=qy.quybh and daztbh=zt.daztbh and zhuangt='8') fk ,
+		(select  max(tt.aa) aa from (select  t.usercenter,t.daztbh,d.quybh,  to_char(wmsys.wm_concat(t.chewbh||'_'||t.chewzt)over(partition by t.usercenter, t.daztbh, d.quybh order by t.chewbh)) aa  from ${dbSchemal3}ckx_chew t inner join ${dbSchemal3}ckx_dazt d on  t.usercenter=d.usercenter and t.daztbh= d.daztbh and t.biaos='1' and t.chewsx<>'4'
+		) tt where  tt.usercenter= qy.usercenter and tt.quybh=qy.quybh and tt.daztbh=zt.daztbh) cw
+  		from ${dbSchemal3}ckx_dengdqy qy inner join ${dbSchemal3}ckx_dazt zt on qy.usercenter = zt.usercenter and qy.quybh = zt.quybh
+ 		where qy.quybh = #quybh# and qy.usercenter = #usercenter# and zt.biaos = '1' order by zt.daztbh]]>
+	</select>
+	
+	<select id="querysbkcbydazt" parameterClass="java.util.Map" resultClass="java.lang.String">
+		select  count(*)
+		from ${dbSchemal3}kc_yund
+		where usercenter= #usercenter# and quybh = #quybh# and daztbh=#daztbh# and zhuangt='1'
+	</select>
+	
+	<select id="querypdkcbydazt" parameterClass="java.util.Map" resultClass="java.lang.String">
+		select  count(*)
+		from ${dbSchemal3}kc_chelpd
+		where usercenter= #usercenter# and quybh = #quybh# and daztbh=#daztbh# and paidzt='0'
+	</select>
+	
+	<select id="queryfpkcbydazt" parameterClass="java.util.Map" resultClass="java.lang.String">
+		select  count(*)
+		from ${dbSchemal3}kc_chelpd
+		where usercenter= #usercenter# and quybh = #quybh# and daztbh=#daztbh# and paidzt='1'
+	</select>
+	
+	<select id="queryunda" parameterClass="java.util.Map" resultClass="com.athena.truck.entity.Yund">
+		select distinct  quybh
+		from ${dbSchemal3}ckx_dazt
+		where usercenter= #usercenter# and daztbh = #daztbh#
+	</select>
+	
+	<select id="queryfkwccbydazt" parameterClass="java.util.Map" resultClass="java.lang.String">
+		select  count(*)
+		from ${dbSchemal3}kc_yund
+		where usercenter= #usercenter# and quybh = #quybh# and daztbh=#daztbh# and zhuangt='8'
+	</select>
+</sqlMap>

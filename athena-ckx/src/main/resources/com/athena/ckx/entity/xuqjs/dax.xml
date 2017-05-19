@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<select id="getDax" parameterClass="com.athena.ckx.entity.xuqjs.Dax" resultClass="com.athena.ckx.entity.xuqjs.Dax">
+		select usercenter,daxxh,paicfbq,chaifts,beiz,biaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_dax
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="daxxh"><![CDATA[daxxh = #daxxh#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<insert id="insertHanzdx" parameterClass="com.athena.ckx.entity.xuqjs.Dax">
+		insert into ${dbSchemal3}ckx_dax(usercenter,daxxh,paicfbq,chaifts,beiz,biaos,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter#,#daxxh#,#paicfbq#,#chaifts#,#beiz#,#biaos#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]> )
+	</insert>
+	
+	<update id="updateHanzdx" parameterClass="com.athena.ckx.entity.xuqjs.Dax">
+		update ${dbSchemal3}ckx_dax set 
+		paicfbq = #paicfbq# ,
+		chaifts = #chaifts#,
+		beiz = #beiz# ,
+		biaos = #biaos# ,
+		editor = #editor# ,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  usercenter = #usercenter# and  daxxh = #daxxh#
+	</update>
+	
+	<!-- 获取分装线数量 -->
+	<select id="getCountFenzx" parameterClass="com.athena.ckx.entity.xuqjs.Dax" resultClass="java.lang.String">
+		select count(1) from ${dbSchemal3}ckx_fenzx  where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="daxxh" prepend="and">
+	    		<![CDATA[fenzxh = #daxxh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    and biaos = '1'
+	</select>
+	
+	<!-- 获取分装线数量 -->
+	<select id="getCountFenzxByDaxxh" parameterClass="com.athena.ckx.entity.xuqjs.Dax" resultClass="java.lang.String">
+		select count(1) from ${dbSchemal3}ckx_fenzx  where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="daxxh" prepend="and">
+	    		<![CDATA[daxxh = #daxxh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    and biaos = '1'
+	</select>
+	
+	<!-- 焊装大线下拉框查询 -->
+	<select id="queryDax" parameterClass="com.athena.ckx.entity.xuqjs.Dax" resultClass="com.athena.ckx.entity.xuqjs.Dax">
+		SELECT daxxh FROM ${dbSchemal3}ckx_dax
+		where biaos = '1' and usercenter = #usercenter#
+		order by usercenter,daxxh
+	</select>
+</sqlMap>

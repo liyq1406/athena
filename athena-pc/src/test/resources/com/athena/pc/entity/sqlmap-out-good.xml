@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="outputgood">
+
+	<!--工作时间-->
+	<select id="queryCKX_CALENDAR_TEAM" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_CALENDAR_TEAM cc where  cc.creator = #CREATOR#
+	]]>
+	</select>
+
+	<!--交付码字典-->
+	<select id="queryCKX_JIAOFMZD" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_JIAOFMZD JF where JF.USERCENTER = #UC# and jf.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!--交付码设定-->
+	<select id="queryCKX_JIAOFMSD" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_JIAOFMSD JF where JF.USERCENTER = #UC# and jf.creator = #CREATOR#
+	]]>
+	</select>	
+
+	<!--仓库循环时间-->
+	<select id="queryCKX_CANGKXHSJ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_CANGKXHSJ ckxh where ckxh.USERCENTER = #UC# and ckxh.creator = #CREATOR#
+	]]>
+	</select>	
+
+	<!--外部模式-->
+	<select id="queryCKX_WAIBMS" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_WAIBMS wbms where wbms.USERCENTER = #UC# and wbms.creator = #CREATOR#
+	]]>
+	</select>	
+	
+	<!--零件仓库-->
+	<select id="queryckx_lingjck" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select 
+		USERCENTER,LINGJBH,CANGKBH,ZICKBH,YUANCKBH,XIEHZTBH,ANQKCTS,ANQKCSL,ZUIDKCTS,ZUIDKCSL,DINGDBDZL,DINGDZZZL,YIJFZL,XITTZZ,DANQKBH,DANQKW,ZUIDSX,ZUIXXX,JISTZZ,ZUIXQDL,SHIFXLH,BEIYKBH,DINGZKW,USBZLX,USBZRL,UCLX,UCRL,FIFO,ZIDFHBZ,CREATOR,to_char(CREATE_TIME,'yyyy-mm-dd') CREATE_TIME,EDITOR,to_char(EDIT_TIME,'yyyy-mm-dd') EDIT_TIME,ZUH
+		from ckx_lingjck lc WHERE lc.usercenter=#UC#  and lc.creator = #CREATOR#
+	]]>
+	</select>
+
+	<!--包装-->
+	<select id="queryCKX_BAOZ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_BAOZ bz where  bz.creator = #CREATOR#
+	]]>
+	</select>	
+	
+	<!--分配区 -->
+	<select id="queryCKX_FENPQ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select f.* from ckx_fenpq f where f.usercenter=#UC# and f.creator = #CREATOR#
+	]]>
+	</select>
+	
+		<!--工艺消耗点-->
+	<select id="queryCKX_GONGYXHD" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select g.* from ckx_gongyxhd g where g.Gongyxhd LIKE 'W%'  and g.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!--零件消耗点-->
+	<select id="queryCKX_LINGJXHD" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from ckx_lingjxhd lx  where lx.usercenter=#UC# and lx.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!--零件供应商-->
+	<select id="queryCKX_LINGJGYS" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select lg.* from ckx_lingjgys lg where lg.usercenter=#UC# and lg.creator = #CREATOR#
+	]]>
+	</select>	
+	
+	<!--卸货站台-->
+	<select id="queryCKX_XIEHZT" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select x.* from ckx_xiehzt x where x.usercenter=#UC# and x.creator = #CREATOR#
+	]]>
+	</select>	
+	
+		<!--外部物流-->
+	<select id="queryCKX_WAIBWL" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select w.* from ckx_waibwl w where w.usercenter=#UC# and w.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!--外部物流详细-->
+	<select id="queryCKX_WAIBWLXX" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select w.* from ckx_waibwlxx w where w.usercenter=#UC# and w.creator = #CREATOR#
+	]]>
+	</select>		
+	
+	<!--内部物流路径-->
+	<select id="queryCKX_SHENGCX_XIANB" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select s.* from ckx_shengcx_xianb s where s.usercenter=#UC# and s.creator = #CREATOR#
+	]]>
+	</select>	
+	
+	<!--生产线-->
+	<select id="queryCKX_SHENGCX" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_SHENGCX scx where scx.USERCENTER = #UC# and scx.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!--车间-->
+	<select id="queryCKX_CHEJ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_CHEJ cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>	
+	
+	<!--卸货站台编组-->
+	<select id="queryCKX_XIEHZTBZ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_XIEHZTBZ cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!--仓库-->
+	<select id="queryCKX_CANGK" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_CANGK cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>	
+	
+	<!--子仓库-->
+	<select id="queryCKX_ZICK" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_ZICK cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>	
+	
+	<!--供应商-->
+	<select id="queryCKX_GONGYS" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_GONGYS cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>	
+	
+	
+	<!-- 22222 -->	
+		
+	<!-- 产线/仓库 -日历版次-工作时间编组 -->
+	<select id="queryCKX_CALENDAR_GROUP" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_CALENDAR_GROUP cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>
+		
+	<!-- 小火车运输时刻模板 -->
+	<select id="queryCKX_HUOCMB" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_HUOCMB cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 零件表 -->
+	<select id="queryCKX_LINGJ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_LINGJ cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 零件客户关系 -->
+	<select id="queryCKX_LINGJKH" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_LINGJKH cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>		
+	
+	<!-- 线边仓库-订货仓库 -->
+	<select id="queryCKX_XIANB_DINGH" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_XIANB_DINGH cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 小火车 -->
+	<select id="queryCKX_XIAOHC" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_XIAOHC cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 小火车车厢 -->
+	<select id="queryCKX_XIAOHCCX" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_XIAOHCCX cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 卸货站台循环时间 -->
+	<select id="queryCKX_XIEHZTXHSJ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_XIEHZTXHSJ cj where cj.USERCENTER = #UC# and cj.creator = #CREATOR#
+	]]>
+	</select>
+</sqlMap>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	小火车
+	@author denggq
+	@date 2012-4-10
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryXiaohc" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohc" resultClass="com.athena.ckx.entity.xuqjs.Xiaohc">
+		select usercenter,shengcxbh,xiaohcbh,xiaohcmc,biaos ,creator,create_time,editor,edit_time
+		            ,pianycws,xunhcss,beihtqcss,shangxtqcss
+		,to_char(jianglcssxr,'yyyy-MM-dd') jianglcssxr,jianglpycws,jianglxhcss,jianglbhtqcss,jianglsxtqcss
+		from ${dbSchemal3}ckx_xiaohc 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcmc" prepend="and">
+	    		<![CDATA[xiaohcmc like '$xiaohcmc$%']]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xunhcss" prepend="and">
+	    		<![CDATA[xunhcss > $xunhcss$]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,shengcxbh,xiaohcbh
+	</select>
+
+	<select id="getXiaohc" resultClass="com.athena.ckx.entity.xuqjs.Xiaohc">
+		select usercenter,shengcxbh,xiaohcbh,xiaohcmc,biaos,pianycws,xunhcss,beihtqcss,shangxtqcss  
+		from ${dbSchemal3}ckx_xiaohc 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	<select id="getCountXiaohc" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_xiaohc where 1=1
+		<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohcbh"><![CDATA[xiaohcbh = #xiaohcbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	<insert id="insertXiaohc" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohc">
+		insert into ${dbSchemal3}ckx_xiaohc(usercenter,shengcxbh,xiaohcbh,xiaohcmc,biaos,creator,create_time,editor,edit_time,pianycws,xunhcss,beihtqcss,shangxtqcss,jianglcssxr,jianglpycws,jianglxhcss,jianglbhtqcss,jianglsxtqcss)
+		values(#usercenter#,#shengcxbh#,#xiaohcbh#,#xiaohcmc#,'1',#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),#pianycws#,#xunhcss#,#beihtqcss#,#shangxtqcss#,
+		       to_date(#jianglcssxr#,'yyyy-MM-dd'),#jianglpycws#,#jianglxhcss#,#jianglbhtqcss#,#jianglsxtqcss#)
+	</insert>
+	
+	<update id="updateXiaohc" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohc">
+		update ${dbSchemal3}ckx_xiaohc 
+		set xiaohcmc = #xiaohcmc#,
+			biaos = #biaos#
+			,pianycws = $pianycws$
+			,xunhcss = $xunhcss$
+			,beihtqcss = $beihtqcss$
+			,shangxtqcss = $shangxtqcss$
+			<dynamic>
+			<isNotEmpty property="jianglcssxr" prepend=" , ">
+			jianglcssxr = to_date(#jianglcssxr#,'yyyy-MM-dd')
+			 ,jianglpycws = $jianglpycws$
+		    ,jianglxhcss = $jianglxhcss$
+		    ,jianglbhtqcss = $jianglbhtqcss$
+		    ,jianglsxtqcss = $jianglsxtqcss$
+			</isNotEmpty>
+			<isEmpty property="jianglcssxr" prepend=" , ">
+			jianglcssxr = ''
+			 ,jianglpycws = ''
+		    ,jianglxhcss = ''
+		    ,jianglbhtqcss = ''
+		    ,jianglsxtqcss = ''
+			</isEmpty>
+			</dynamic>
+			,editor = #editor# 
+			,edit_time = sysdate
+		where <![CDATA[usercenter = #usercenter# and shengcxbh = #shengcxbh# and xiaohcbh = #xiaohcbh#]]>  
+	</update>
+	
+	<delete id="deleteXiaohc" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohc">
+		update ${dbSchemal3}ckx_xiaohc 
+		set <![CDATA[biaos = '0' , editor = #editor# , edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+</sqlMap>

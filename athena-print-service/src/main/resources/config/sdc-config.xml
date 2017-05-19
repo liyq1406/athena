@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components>
+	<import resource="classpath*:config/**/module-*.xml" />
+	<constant name="useIBatis" value="classpath:config/sqlmap-config.xml" />
+	<constant name="useCache" value="classpath:config/ehcache.xml" />
+
+	<component-scan
+		package="com.toft.widgets,com.toft.core3,com.toft.core2,com.athena" />
+	<datasources transaction-manager="local">
+		<!-- jdbc数据连接 -->
+
+
+		${jdbcstart.label}
+		<datasource id="1" name="测试数据库" type="Oracle">
+			<connection user-name="${user-name}" password="${password}"
+				server-name="${server-name}" port="1521" db-name="${db-name}">
+			</connection>
+		</datasource>
+		${jdbcend.label}
+
+		${jndistart.label}
+		<datasource id="1" name="JNDI连接数据库" type="Oracle">
+			<connection jndi="${jndi.name}"></connection>
+		</datasource>
+		${jndiend.label}
+	</datasources>
+
+	<listener class="com.toft.core3.biz.module.ModuleListener" />
+
+	<!-- 新缓存监听 2011-11-08 wangl and zhangl -->
+	<listener class="com.athena.util.cache.CacheListener" />
+	<listener class="com.athena.component.StartListener" />
+
+
+	<message resource="config.toft.ToftErrorCode" />
+	<message resource="config.toft.ToftSYSErrorCode" />
+
+</components>

@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sys">
+	<!--查询打印机状态表  -->
+	<select id="queryPrintDevicestatus" resultClass="com.athena.print.entity.sys.PrintDevicestatus">
+	select usercenter,spcode,spcodes,sname,sip,sport,nlevel,status,enable,usercode,lastqid,replacespcode
+	from ${dbSchemal3}ckx_printstatus 
+	</select>
+	
+	<!-- 根据打印机组编号查询 打印机表，获取打印机组下打印机信息列表 -->
+	<select id="queryPrintDevicelist" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevicestatus">
+	select spcode,spcodes,sname,sip,sport,nlevel,status,enable,usercode,lastqid,replacespcode
+	from ${dbSchemal3}ckx_printstatus   
+	where spcodes=#spcodes# 
+	</select>
+	
+	<!--根据打印机IP  查询打印机状态表   -->
+	<select id="queryPrintDevicestatus1" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevicestatus">
+	select spcode,spcodes,sname,sip,sport,nlevel,status,enable,usercode,lastqid,replacespcode
+	from ${dbSchemal3}ckx_printstatus
+	where sip=#sip# 
+	</select>
+	
+	<!--根据 打印机编号 、打印机组编号、 用户    查询出 该用户上次使用的打印机是否空闲  -->
+	<select id="queryPrintDevicestatus2" parameterClass="com.athena.print.entity.sys.PrintDevicestatus" resultClass="com.athena.print.entity.sys.PrintDevicestatus">
+	select spcodes,usercode
+  	from ${dbSchemal3}ckx_printstatus
+  	where spcode=#spcode# and enable=0 and status=0 and spcodes=#spcodes# and usercode =#usercode# 
+	</select>
+	
+	<!--根据打印机组编号 和 状态 查询出    打印机集合   -->
+	<select id="queryPrintDevicestatus3" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevice">
+	select spcode,spcodes,sname,sip,sport,nlevel,status,enable,usercode,lastqid,replacespcode
+  	from ${dbSchemal3}ckx_printstatus
+  	where spcodes=#spcodes# and enable=0 and status=0  and <![CDATA[rownum<=1]]> 
+	</select>
+	
+	<!--启用优先级     order by优先级  查询 -->
+	<select id="queryPrintDevicestatus4" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevice">
+	select spcode,spcodes,sname,sip,sport,nlevel,status,enable,usercode,lastqid,replacespcode
+	from ${dbSchemal3}ckx_printstatus  
+	where spcodes=#spcodes# and status=0 and enable=0 and <![CDATA[rownum<=1]]>
+	order by nlevel
+	</select>
+	
+	<!--获取存在空闲打印机的打印机组   -->
+	<select id="queryPrintDevicestatusByspcodes"  parameterClass="java.lang.String"  resultClass="com.athena.print.entity.sys.PrintDevicestatus">
+	select distinct spcodes  from  ${dbSchemal3}ckx_printstatus
+	where enable=0 and status=0 and spcodes=#pgid#
+	</select>
+	
+	<!--根据打印机的编号 查询出 该打印机设备的 IP 及 PORT   -->
+	<select id="queryPrintDevicestatusByspcode" parameterClass="java.lang.String"  resultClass="com.athena.print.entity.sys.PrintDevicestatus">
+	select  spcode,spcodes,sname,sip,sport,nlevel,status,enable,usercode,lastqid,replacespcode
+	from  ${dbSchemal3}ckx_printstatus
+	where spcode=#spcode# 
+	</select>
+	
+	<!--插入一条数据   -->
+	<insert id="insertPrintDevicestatus" parameterClass="com.athena.print.entity.sys.PrintDevicestatus">insert into
+		${dbSchemal3}ckx_printstatus (spcode,spcodes,sname,sip,sport,status,enable,usercode,lastqid,nlevel)
+		values(#spcode#,#spcodes#,#sname#,#sip#,#sport#,#status#,#enable#,#usercode#,#lastqid#,#nlevel#)
+	</insert>
+	
+	<!--更新数据   -->
+	<update id="updatePrintDevicestatus" parameterClass="com.athena.print.entity.sys.PrintDevicestatus">
+		update ${dbSchemal3}ckx_printstatus set 
+		spcode=#spcode#,
+		spcodes=#spcodes#,
+		sip=#sip#,
+		sport=#sport#,
+		sname=#sname#,
+		status=#status#,
+		enable=#enable#,
+		usercode=#usercode#,
+		lastqid=#lastqid#,
+		nlevel=#nlevel#
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="spcode">spcode = #spcode#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="sip">sip = #sip#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--根据打印机编号 更新打印设备的主状态为 占用  -->
+	<update id="updatePrintDevicestatusBydevice" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_printstatus set 
+		enable=1
+		where spcode = #spcode#  and enable=0 and status=0 
+	</update>
+	
+	<!--卡纸、缺纸 从新连接后  根据作业的ID来   更新打印作业的状态为 打印中  -->
+	<update id="updatePrintDevicestatusBylastqid" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_print_qtask_main set 
+		status=2
+		where qid = #qid# 
+	</update>
+	
+	<!--根据打印机编号 更新打印设备的主状态为  不占用  -->
+	<update id="updatePrintDevicestatusBydevice1" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_printstatus set 
+		enable=0
+		where spcode = #spcode# 
+	</update>
+	
+	<!--根据打印机编号   更新状态表  主作业任务号、用户编号  -->
+	<update id="updatePrintDevicestatusBydevice3" parameterClass="com.athena.print.entity.sys.PrintDevicestatus">
+		update ${dbSchemal3}ckx_printstatus set 
+		usercode=#usercode#,
+		lastqid=#lastqid#
+		where spcode = #spcode# 
+	</update>
+	
+	<!--根据打印机编号 更新打印设备的 辅状态为 繁忙  -->
+	<update id="updatePrintDevicestatusBydevice2" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_printstatus set 
+		status=1
+		where spcode = #spcode#
+	</update>
+	
+	<!--根据打印机IP 更新打印设备的 辅状态为 空闲  -->
+<!-- 	<update id="updatePrintDevicestatusByqid" parameterClass="java.lang.String"> -->
+<!-- 		update ${dbSchemal3}ckx_printstatus set  -->
+<!-- 		status=0 -->
+<!-- 		where sip = #sip# -->
+<!-- 	</update> -->
+	
+	<!--根据打印机IP 更新打印设备   主状态为  不占用    辅状态为  空闲  作业号置为空-->
+	<update id="updatePrintDevicestatusByqid1" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_printstatus set 
+		status=0,
+		enable=0,
+		lastqid=''
+		where sip = #sip# 
+	</update>
+	
+	<!--根据打印IP  更新打印设备的 辅状态为 空闲  -->
+	<update id="updatePrintDevicestatus0" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_printstatus set 
+		status=0,
+		enable=0
+		where sip = #sip# 
+	</update>
+	
+	<!--根据打印IP  更新打印设备的 辅状态为  繁忙  -->
+	<update id="updatePrintDevicestatus1" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_printstatus set 
+		status=1
+		where sip = #sip# 
+	</update>
+	
+	<!--根据打印IP  更新打印设备的 辅状态为 卡纸   -->
+	<update id="updatePrintDevicestatus3" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_printstatus set 
+		status=3
+		where sip = #sip# 
+	</update>
+	
+	<!--根据打印IP  更新打印设备的 辅状态为 缺纸  -->
+	<update id="updatePrintDevicestatus2" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_printstatus set 
+		status=2
+		where sip = #sip# 
+	</update>
+	
+	<!--根据打印IP  更新打印设备的 辅状态为  网路故障  -->
+	<update id="updatePrintDevicestatus4" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_printstatus set 
+		status=4,
+		enable=0
+		where sip = #sip# 
+	</update>
+	
+	<!--根据打印IP  更新打印设备的 辅状态为  打印机故障  -->
+	<update id="updatePrintDevicestatus5" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_printstatus set 
+		status=5
+		where sip = #sip# 
+	</update>
+	
+	
+	<!--根据打印IP  清空设备上的最后 打印作业的编号  并修改主状态为 不占用 -->
+	<update id="updatelastqid" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_printstatus set 
+		lastqid='',
+		enable=0
+		where sip = #sip# 
+	</update>
+	
+	<!--删除一条数据   -->
+	<delete id="deletePrintDevicestatus" parameterClass="com.athena.print.entity.sys.PrintDevicestatus">
+		delete from ${dbSchemal3}ckx_printstatus where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="spcode">id = #spcode#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<!-- 查询打印设备表 -->
+	<select id="queryPrintDevice" resultClass="com.athena.print.entity.sys.PrintDevice">
+	select spcode,spcodes,sname,sdesc,sip,sport,nlevel,replacespcode
+	from ${dbSchemal3}ckx_print_device  
+	where 1=1 
+	<dynamic>
+			<isNotEmpty prepend="  and " property="spcode">
+			spcode like '%'||#spcode#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="spcodes">spcodes=#spcodes#
+			</isNotEmpty>
+	</dynamic>	
+	</select>
+	
+	<select id="queryPDevice"  parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevice">
+	select spcode,spcodes,sname,sdesc,sip,sport,nlevel,replacespcode
+	from ${dbSchemal3}ckx_print_device  
+	where spcode=#spcode# 
+	</select>
+	
+	<select id="queryPDevicegroup"  parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevice">
+	select spcode,spcodes,sname,sdesc,sip,sport,nlevel,replacespcode
+	from ${dbSchemal3}ckx_print_device  
+	where spcodes=#spcodes# and <![CDATA[rownum<=1]]> 
+	</select>
+	
+	<!-- 根据打印机编号 查询出打印机实体-->
+	<select id="getPrintDevice" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevice">
+	select spcode,spcodes,sname,sdesc,sip,sport,nlevel,replacespcode
+	from ${dbSchemal3}ckx_print_device   
+	where spcode=#spcode# 
+	</select>
+	
+<!-- 	<select id="queryPrintDevice1" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevice"> -->
+<!-- 	select spcode,spcodes,sname,sdesc,sip,sport,nlevel -->
+<!-- 	from ${dbSchemal3}ckx_print_device    -->
+<!-- 	where spcode=#spcode#  -->
+<!-- 	</select> -->
+	
+	<!-- 插入一条数据-->
+	<insert id="insertPrintDevice" parameterClass="com.athena.print.entity.sys.PrintDevice">insert into
+		${dbSchemal3}ckx_print_device  (spcode,spcodes,sname,sdesc,sip,sport,nlevel,creator,create_time)
+		values(#spcode#,#spcodes#,#sname#,#sdesc#,#sip#,#sport#,#nlevel#,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<!-- 更新一条数据-->
+	<update id="updatePrintDevice" parameterClass="com.athena.print.entity.sys.PrintDevice">
+		update ${dbSchemal3}ckx_print_device  set 
+		spcode=#spcode#,
+		spcodes=#spcodes#,
+		sname=#sname#,
+		sdesc=#sdesc#,
+		sip=#sip#,
+		sport=#sport#,
+		nlevel=#nlevel#,
+		editor=#editor#,
+		edit_time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="spcode">spcode = #spcode#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	 
+	<!-- 删除一条数据-->
+	<delete id="deletePrintDevice" parameterClass="com.athena.print.entity.sys.PrintDevice">
+		delete from ${dbSchemal3}ckx_print_device 
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="spcode">spcode = #spcode#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	
+	<!--查询有效的打印机组设备数据  -->
+	<select id="queryPrintDevicegroup" parameterClass="java.lang.String"  resultClass="com.athena.print.entity.sys.PrintDevicegroup">
+	select usercenter,sname,spcodes,sdesc,nflag,biaos,creator,create_time,editor,edit_time
+	from ${dbSchemal3}ckx_print_devicegroup 
+	where biaos='1'
+	</select>
+	
+	<!--根据打印机组编号 查询出该打印机组是否启用优先级 -->
+	<select id="getPrintDevicegroup" 
+		parameterClass="java.lang.String" 
+		resultClass="java.lang.Long">
+	select nflag
+	from ${dbSchemal3}ckx_print_devicegroup 
+	where spcodes=#spcodes# 
+	</select>
+	
+	<!--插入一条打印机组数据-->
+	<insert id="insertPrintDevicegroup" parameterClass="com.athena.print.entity.sys.PrintDevicegroup">insert into
+		${dbSchemal3}ckx_print_devicegroup (sname,spcodes,sdesc,nflag,biaos,creator,create_time)
+		values(#sname#,#spcodes#,#sdesc#,#nflag#,1,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	
+	<!--更新一条打印机组数据 -->
+	<update id="updatePrintDevicegroup" parameterClass="com.athena.print.entity.sys.PrintDevicegroup">
+		update ${dbSchemal3}ckx_print_devicegroup set 
+		sname=#sname#,
+		spcodes=#spcodes#,
+		sdesc=#sdesc#,
+		biaos='1',
+		editor=#editor#,
+		edit_time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss'),
+		nflag=#nflag# 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="spcodes">spcodes = #spcodes#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--打印机组设置有效-->
+	<update id="updatePrintDevicegroup1" parameterClass="com.athena.print.entity.sys.PrintDevicegroup">
+		update ${dbSchemal3}ckx_print_devicegroup set 
+		active='1'
+		where spcodes=#spcodes#
+	</update>
+	
+	<!--打印机组的逻辑删除  更新标识即可-->
+	<delete id="deletePrintDevicegroup" parameterClass="com.athena.print.entity.sys.PrintDevicegroup">
+		update ${dbSchemal3}ckx_print_devicegroup
+		set <![CDATA[biaos = 0]]> 
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="spcodes">spcodes = #spcodes#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

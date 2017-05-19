@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sys">
+	
+	<!--RESULTMAP  返回的值-->
+	<resultMap class="com.athena.print.entity.sys.Printlog" id="Printlog">
+		<result column="SDESC" property="sdesc" />
+		<result column="SMENUNAME" property="smenuname" />
+		<result column="LID" property="lid" />
+		<result column="OPERATETIME" property="operatetime" />
+		<result column="SOPERATER" property="soperater" />
+		<result column="SFUNCTIONNAME" property="sfunctionname" />
+		<result column="ENABLED" property="enabled" />
+	</resultMap>
+	
+	<!--插入一条数据-->
+	<select id="queryPrintlog" resultMap="Printlog">select 
+		SDESC,
+		SMENUNAME,
+		LID,
+		OPERATETIME,
+		SOPERATER,
+		SFUNCTIONNAME,
+		ENABLED
+		from ${dbSchemal3}print_log where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="operatetime">operatetime = #operatetime#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="soperater">soperater = #soperater#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!--查询一条数据-->
+	<insert id="insertPrintlog" parameterClass="com.athena.print.entity.sys.Printlog">insert into
+		${dbSchemal3}print_log (SDESC,SMENUNAME,LID,OPERATETIME,SOPERATER,SFUNCTIONNAME,ENABLED)
+		values(
+			#sdesc#,
+			#smenuname#,
+			#lid#,
+			#operatetime#,
+			'张三',
+			#sfunctionname#,
+			#enabled#)
+	</insert>
+	
+	<!--更新一条数据-->
+	<update id="updatePrintlog" parameterClass="com.athena.print.entity.sys.Printlog">
+		update ${dbSchemal3}print_log set 
+		SDESC=#sdesc#,
+		SMENUNAME=#smenuname#,
+		lID=#lid#,
+		OPERATETIME=#operatetime#,
+		SOPERATER=#soperater#,
+		SFUNCTIONNAME=#sfunctionname#,
+		ENABLED=#enabled# 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lid">LID = #lid#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--删除一条数据-->
+	<delete id="deletePrintlog" parameterClass="com.athena.print.entity.sys.Printlog">
+		delete from ${dbSchemal3}print_log where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lid">LID = #lid#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

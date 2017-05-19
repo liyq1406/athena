@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="carry">
+	<select id="queryCkxInnerPathAndModle" resultClass="com.athena.ckx.entity.carry.CkxInnerPathAndModle">
+		select s.usercenter,s.lingjbh,s.fenpqh,s.shengcxbh,s.mos,s.jianglms,s.jianglmssxsj,s.qidlx,s.qid  xianbk,
+		       x.mos mos2,x.jianglms jianglms2,x.jianglmssxsj jianglmssxsj2,x.qidlx  qidlx2,x.qid  dinghk,
+		       wm.MOS  wms,wm.zhidgys,wm.jianglms	wjlms,wm.shengxsj
+		  from ${dbSchemal3}ckx_shengcx_xianb s
+		  LEFT JOIN ${dbSchemal3}ckx_xianb_dingh x
+		    on s.usercenter = x.usercenter and s.lingjbh = x.lingjbh  and s.qid = x.xianbk
+		  left join ${dbSchemal3}ckx_waibms wm
+		    on s.usercenter = wm.usercenter and s.lingjbh = wm.lingjbh and s.fenpqh=wm.fenpqh
+		  inner join  ${dbSchemal3}ckx_fenpq f
+		    on s.usercenter=f.usercenter    and s.fenpqh=f.fenpqh
+		   where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">s.usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">s.lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">s.fenpqh = #fenpqh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">s.shengcxbh = #shengcxbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">s.mos = #mos#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xianbk">s.qid = #xianbk#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos2">x.mos = #mos2#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dinghk">x.qid = #dinghk#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhidgys">wm.zhidgys = #zhidgys#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wms">wm.MOS = #wms#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wulgyyz">f.wulgyyz = #wulgyyz#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="uclist">s.usercenter in ($uclist$)</isNotEmpty>
+		</dynamic>
+		 order by s.lingjbh,s.fenpqh
+	</select>
+	
+	<!-- 内部物流增加导入功能将qidlx转换成中文  add by lc 2016-10-31 -->
+	<select id="queryCkxInnerPathAndModleExport" resultClass="com.athena.ckx.entity.carry.CkxInnerPathAndModle">
+		select s.usercenter,s.lingjbh,s.fenpqh,s.shengcxbh,s.mos,s.jianglms,s.jianglmssxsj,
+		       decode(s.qidlx,'1','合格品库','2','不合格品库','3','成品库','4','成品不合格品库','5','卷料库','6','辅料库','7','外租库') qidlx,
+		       s.qid  xianbk,x.mos mos2,x.jianglms jianglms2,x.jianglmssxsj jianglmssxsj2,
+		       decode(x.qidlx,'1','合格品库','2','不合格品库','3','成品库','4','成品不合格品库','5','卷料库','6','辅料库','7','外租库') qidlx2,
+		       x.qid  dinghk,wm.MOS  wms,wm.zhidgys,wm.jianglms	wjlms,wm.shengxsj
+		  from ${dbSchemal3}ckx_shengcx_xianb s
+		  LEFT JOIN ${dbSchemal3}ckx_xianb_dingh x
+		    on s.usercenter = x.usercenter and s.lingjbh = x.lingjbh  and s.qid = x.xianbk
+		  left join ${dbSchemal3}ckx_waibms wm
+		    on s.usercenter = wm.usercenter and s.lingjbh = wm.lingjbh and s.fenpqh=wm.fenpqh
+		  inner join  ${dbSchemal3}ckx_fenpq f
+		    on s.usercenter=f.usercenter    and s.fenpqh=f.fenpqh
+		   where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">s.usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">s.lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">s.fenpqh = #fenpqh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">s.shengcxbh = #shengcxbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">s.mos = #mos#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xianbk">s.qid = #xianbk#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos2">x.mos = #mos2#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dinghk">x.qid = #dinghk#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhidgys">wm.zhidgys = #zhidgys#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wms">wm.MOS = #wms#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wulgyyz">f.wulgyyz = #wulgyyz#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="uclist">s.usercenter in ($uclist$)</isNotEmpty>
+		</dynamic>
+		 order by s.lingjbh,s.fenpqh
+	</select>
+	
+	<select id="getCkxInnerPathAndModle" resultClass="com.athena.ckx.entity.carry.CkxInnerPathAndModle">
+		select s.usercenter,
+		       s.lingjbh,
+		       s.fenpqh,
+		       s.shengcxbh, 
+		       s.mos,
+		       s.jianglms,
+		       s.jianglmssxsj,
+		       s.qidlx,
+		       s.qid          xianbk,
+		       s.qid          xianbk1,
+		       x.mos          mos2,
+		       x.jianglms     jianglms2,
+		       x.jianglmssxsj jianglmssxsj2,
+		       x.qidlx        qidlx2,
+		       x.qid          dinghk,
+		       wm.MOS         wms,
+		       wm.zhidgys,
+		       wm.jianglms wjlms,
+		       wm.mudd,
+		       wm.shengxsj
+		  from ${dbSchemal3}ckx_shengcx_xianb s
+		  LEFT JOIN ${dbSchemal3}ckx_xianb_dingh x
+		    on s.usercenter = x.usercenter and s.lingjbh = x.lingjbh  and s.qid = x.xianbk
+		  left join ${dbSchemal3}ckx_waibms wm
+		    on s.usercenter = wm.usercenter and s.lingjbh = wm.lingjbh and s.fenpqh=wm.fenpqh
+		   where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">s.usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">s.lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">s.fenpqh = #fenpqh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xianbk">s.qid = #xianbk#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dinghk">x.qid = #dinghk#</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 检测多少条数据被更新  0003843 -->
+	<select id="checkUpdateCkxXianbDingh" resultClass="java.lang.Integer" parameterClass="com.athena.ckx.entity.carry.CkxInnerPathAndModle">
+		select count(s.usercenter) 
+		from ${dbSchemal3}ckx_shengcx_xianb s
+		inner join ${dbSchemal3}ckx_xianb_dingh x 
+		on s.usercenter=x.usercenter and s.lingjbh=x.lingjbh and s.qid=x.xianbk
+		where x.usercenter=#usercenter# and x.lingjbh=#lingjbh# and x.qid=#dinghk#
+	</select>
+	<!-- 检测多少条数据被更新  0003843 -->
+	<select id="checkUpdateCkxShengcxXianb" resultClass="java.lang.Integer" parameterClass="com.athena.ckx.entity.carry.CkxInnerPathAndModle">
+		select count(usercenter)
+          from ${dbSchemal3}ckx_shengcx_xianb
+         where usercenter=#usercenter# and lingjbh=#lingjbh# and qid=#xianbk#
+	</select>
+	<!-- 根据零件，线边库 更新外部模式   0003843-->
+	<update id="updateCkxShengcxXianbMos"  parameterClass="com.athena.ckx.entity.carry.CkxInnerPathAndModle">
+		update (
+		 	select w.* from ${dbSchemal3}ckx_waibms w
+		  	inner join ${dbSchemal3}ckx_shengcx_xianb s
+		  	on w.usercenter=s.usercenter and w.lingjbh=s.lingjbh and w.fenpqh=s.fenpqh
+		  	where s.usercenter=#usercenter# and s.lingjbh=#lingjbh# and s.qid=#xianbk# 
+		 ) t  set t.mos=#wms# ,t.jianglms = #wjlms# ,t.shengxsj=#shengxsj# ,t.zhidgys=#zhidgys#  
+	</update>
+	<!-- 根据零件，订货库 更新外部模式     0003843 -->
+	<update id="updateCkxXianbDinghMos"  parameterClass="com.athena.ckx.entity.carry.CkxInnerPathAndModle">
+	update (
+		select w.* from ${dbSchemal3}ckx_waibms w
+		inner join (
+			select s.usercenter,s.lingjbh,s.fenpqh from ${dbSchemal3}ckx_shengcx_xianb s
+  			inner join ${dbSchemal3}ckx_xianb_dingh x
+  			on s.usercenter=x.usercenter and s.lingjbh=x.lingjbh and s.qid=x.xianbk
+ 			where x.usercenter =#usercenter# and x.lingjbh=#lingjbh# and x.qid=#dinghk# 
+ 		) n 
+ 		on w.usercenter=n.usercenter and w.lingjbh=n.lingjbh and w.fenpqh=n.fenpqh
+	) t  set t.mos=#wms# ,t.jianglms = #wjlms# ,t.shengxsj=#shengxsj# ,t.zhidgys=#zhidgys# 
+	</update>
+	
+	<!-- 根据零件，线边库 更新上线模式   lc 2016-12-09 -->
+	<update id="updateSXMos" parameterClass="com.athena.ckx.entity.carry.CkxInnerPathAndModle">
+		update (
+		 	select s.* from ${dbSchemal3}ckx_waibms w
+		  	inner join ${dbSchemal3}ckx_shengcx_xianb s
+		  	on w.usercenter=s.usercenter and w.lingjbh=s.lingjbh and w.fenpqh=s.fenpqh
+		  	where s.usercenter=#usercenter# and s.lingjbh=#lingjbh# and s.qid=#xianbk# 
+		 ) t  set t.mos=#mos#
+	</update>
+	
+	<!-- 根据零件，线边库 更新上线将来模式   lc 2016-12-09 -->
+	<update id="updateSXJLMos" parameterClass="com.athena.ckx.entity.carry.CkxInnerPathAndModle">
+		update (
+		 	select s.* from ${dbSchemal3}ckx_waibms w
+		  	inner join ${dbSchemal3}ckx_shengcx_xianb s
+		  	on w.usercenter=s.usercenter and w.lingjbh=s.lingjbh and w.fenpqh=s.fenpqh
+		  	where s.usercenter=#usercenter# and s.lingjbh=#lingjbh# and s.qid=#xianbk# 
+		 ) t  set t.jianglms = #jianglms# ,t.jianglmssxsj=#jianglmssxsj#
+	</update>
+	
+	<!-- 根据零件，订货库 更新上线模式   lc 2016-12-09 -->
+	<update id="updateXDMos" parameterClass="com.athena.ckx.entity.carry.CkxInnerPathAndModle">
+	update (
+		select n.* from ${dbSchemal3}ckx_waibms w
+		inner join (
+			select s.* from ${dbSchemal3}ckx_shengcx_xianb s
+  			inner join ${dbSchemal3}ckx_xianb_dingh x
+  			on s.usercenter=x.usercenter and s.lingjbh=x.lingjbh and s.qid=x.xianbk
+ 			where x.usercenter =#usercenter# and x.lingjbh=#lingjbh# and x.qid=#dinghk# 
+ 		) n 
+ 		on w.usercenter=n.usercenter and w.lingjbh=n.lingjbh and w.fenpqh=n.fenpqh
+	) t  set t.mos=#mos#
+	</update>
+	
+	<!-- 根据零件，订货库 更新上线将来模式   lc 2016-12-09 -->
+	<update id="updateXDJLMos" parameterClass="com.athena.ckx.entity.carry.CkxInnerPathAndModle">
+	update (
+		select n.* from ${dbSchemal3}ckx_waibms w
+		inner join (
+			select s.* from ${dbSchemal3}ckx_shengcx_xianb s
+  			inner join ${dbSchemal3}ckx_xianb_dingh x
+  			on s.usercenter=x.usercenter and s.lingjbh=x.lingjbh and s.qid=x.xianbk
+ 			where x.usercenter =#usercenter# and x.lingjbh=#lingjbh# and x.qid=#dinghk# 
+ 		) n 
+ 		on w.usercenter=n.usercenter and w.lingjbh=n.lingjbh and w.fenpqh=n.fenpqh
+	) t  set t.jianglms = #jianglms# ,t.jianglmssxsj=#jianglmssxsj#
+	</update>
+</sqlMap>

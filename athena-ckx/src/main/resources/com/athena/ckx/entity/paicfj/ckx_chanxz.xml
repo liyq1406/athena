@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+<select id="queryCkx_chanxz" resultClass="com.athena.ckx.entity.paicfj.Ckx_chanxz">
+   select usercenter , chanxzbh, chanxzmc , beiz,jihyzbh,tessjxq1,tessjxs1,tessjxq2,tessjxs2,tessjxq3,tessjxs3
+   from ${dbSchemal3}ckx_chanxz 
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanxzbh"><![CDATA[chanxzbh = #chanxzbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihyzbh"><![CDATA[jihyzbh = #jihyzbh#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,chanxzbh,jihyzbh
+</select>
+<select id="getCkx_chanxz" resultClass="com.athena.ckx.entity.paicfj.Ckx_chanxz">
+    select usercenter , chanxzbh ,  chanxzmc , beiz,jihyzbh,tessjxq1,tessjxs1,tessjxq2,tessjxs2,tessjxq3,tessjxs3
+    from ${dbSchemal3}ckx_chanxz 
+    where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanxzbh"><![CDATA[chanxzbh = #chanxzbh#]]></isNotEmpty>
+	</dynamic>
+</select>
+<insert id="insertCkx_chanxz" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chanxz">
+	insert into ${dbSchemal3}ckx_chanxz
+	(usercenter,chanxzbh,chanxzmc,beiz,jihyzbh,tessjxq1,tessjxs1,tessjxq2,tessjxs2,tessjxq3,tessjxs3,creator,create_time,editor,edit_time)
+	values(<![CDATA[
+	 #usercenter#,#chanxzbh#,#chanxzmc#,#beiz#,#jihyzbh#,#tessjxq1#,#tessjxs1#,#tessjxq2#,#tessjxs2#,#tessjxq3#,#tessjxs3#,#creator#,#create_time#,#editor#,#edit_time#
+	   ]]> )
+	</insert>
+<update id="updateCkx_chanxz" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chanxz">
+	update ${dbSchemal3}ckx_chanxz
+	set 	
+    <![CDATA[chanxzmc = #chanxzmc#]]> ,    
+    <![CDATA[beiz = #beiz#]]> ,    	
+    <![CDATA[jihyzbh = #jihyzbh#]]> ,   
+    <![CDATA[tessjxq1 = #tessjxq1#]]> ,    
+    <![CDATA[tessjxs1 = #tessjxs1#]]> ,
+    <![CDATA[tessjxq2 = #tessjxq2#]]> ,    
+    <![CDATA[tessjxs2 = #tessjxs2#]]> ,
+    <![CDATA[tessjxq3 = #tessjxq3#]]> ,
+    <![CDATA[tessjxs3 = #tessjxs3#]]> ,
+    <![CDATA[editor = #editor#]]> ,
+    <![CDATA[edit_time = #edit_time#]]>     
+	 where <![CDATA[usercenter = #usercenter# and  chanxzbh = #chanxzbh# ]]> 
+	</update>
+<select id="queryCkx_chanxz_paiccs" resultClass="com.athena.ckx.entity.paicfj.Ckx_chanxz_paiccs">
+     select to_char(banb,'yyyy-MM-dd') as banb,gundzq,tiqq,fengbq,zengcts,dagdw*100 dagdw,usercenter,chanxzbh,shifzskcsx
+     from ${dbSchemal3}ckx_chanxz_paiccs
+     where 1=1
+       <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanxzbh"><![CDATA[chanxzbh = #chanxzbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="banb"><![CDATA[banb = to_date(#banb#,'yyyyMMdd')]]></isNotEmpty>
+		</dynamic>
+</select>
+<select id="getCountpaiccs" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+     select count(banb) from ${dbSchemal3}ckx_chanxz_paiccs
+     where 1=1 and  banb > to_date(#currentDate#,'yyyy-MM-dd')  
+     <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanxzbh"><![CDATA[chanxzbh = #chanxzbh#]]></isNotEmpty>
+		</dynamic>
+</select>
+<insert id="insertCkx_chanxz_paiccs" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chanxz_paiccs">
+	insert into ${dbSchemal3}ckx_chanxz_paiccs
+	(usercenter,chanxzbh,banb,gundzq,tiqq,fengbq,zengcts,dagdw,shifzskcsx,creator,create_time,editor,edit_time)
+	values(<![CDATA[
+	 #usercenter#,#chanxzbh#,to_date(#banb#,'yyyy-MM-dd'),	 
+	 #gundzq#,#tiqq#,#fengbq#,#zengcts#,#dagdw#/100,#shifzskcsx#,
+	 #creator#,#create_time#,#editor#,#edit_time#
+	   ]]> )
+	</insert>
+<update id="updateCkx_chanxz_paiccs" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chanxz_paiccs">
+	update ${dbSchemal3}ckx_chanxz_paiccs 
+	set 
+	 <![CDATA[gundzq = #gundzq#]]> ,
+     <![CDATA[tiqq = #tiqq#]]>,
+     <![CDATA[fengbq = #fengbq#]]> ,
+     <![CDATA[zengcts = #zengcts#]]> ,
+     <![CDATA[dagdw = #dagdw#/100]]> ,
+     <![CDATA[shifzskcsx = #shifzskcsx#]]> ,
+     <![CDATA[editor = #editor#]]> ,
+     <![CDATA[edit_time = #edit_time#]]> 
+    	
+       where  <![CDATA[usercenter = #usercenter# and  chanxzbh = #chanxzbh# and banb=to_date(#banb#,'yyyy-MM-dd')]]> 
+	</update>
+	<delete id="deleteCkx_chanxz_paiccs" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chanxz_paiccs">
+	delete ${dbSchemal3}ckx_chanxz_paiccs  
+	where  <![CDATA[usercenter = #usercenter# and  chanxzbh = #chanxzbh# and banb = to_date(#banb#,'yyyy-MM-dd') ]]> 
+	</delete>
+</sqlMap>

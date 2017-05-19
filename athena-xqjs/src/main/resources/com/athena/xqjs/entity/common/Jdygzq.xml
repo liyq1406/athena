@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="common">
+   <select id="queryDingdnr" resultClass="com.athena.xqjs.entity.common.Jdygzq" parameterClass="java.util.Map">
+		select t.dinghlx,
+       t.suozgyzq,
+       t.jidzqs,
+       t.yugzqs,
+       t.creator,
+       t.create_time,
+       t.editor,
+       t.edit_time,
+       t.dingdnr
+  from ${dbSchemal3}CKX_JDYGZQ t
+  where 1=1
+  <dynamic>
+			<isNotEmpty prepend="  and " property="dinghlx">
+				t.dinghlx =#dinghlx#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="suozgyzq">
+				t.suozgyzq = #suozgyzq#
+			</isNotEmpty>
+		</dynamic>
+  	</select>
+</sqlMap>

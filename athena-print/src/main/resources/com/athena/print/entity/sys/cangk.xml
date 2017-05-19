@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sys">
+	
+	<select id="queryCangk" parameterClass="com.athena.print.entity.sys.Cangk" resultClass="com.athena.print.entity.sys.Cangk">
+		select usercenter,cangkbh,cangklx,rongqcbh,daoctqq,biaos 
+		from ${dbSchemal3}ckx_cangk 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="rongqcbh" prepend="and">
+	    		<![CDATA[rongqcbh = #rongqcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangklx" prepend="and">
+	    		<![CDATA[cangklx = #cangklx#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<select id="queryCangks"  parameterClass="java.util.Map"  resultClass="com.athena.print.entity.sys.Cangk">
+		select usercenter,cangkbh,cangklx,rongqcbh,daoctqq,biaos 
+		from ${dbSchemal3}ckx_cangk 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<select id="queryCangkr" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.Cangk">
+		select usercenter,cangkbh,cangklx,rongqcbh,daoctqq,biaos 
+		from ${dbSchemal3}ckx_cangk 
+		where usercenter = #usercenter# and biaos='1'
+	</select>
+	
+	<select id="queryGuanlybh" parameterClass="com.athena.print.entity.sys.Zick" resultClass="com.athena.print.entity.sys.Zick">
+		select usercenter,cangkbh,zickbh,guanlyzbh,biaos 
+		from ${dbSchemal3}ckx_zick
+		where usercenter = #usercenter# and guanlyzbh=#guanlyzbh# and biaos='1'
+	</select>
+</sqlMap>

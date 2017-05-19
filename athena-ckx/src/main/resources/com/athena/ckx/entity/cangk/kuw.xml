@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+	库位
+	@author denggq
+	@date 2012-21-8
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<!-- 多记录查询 -->
+	<select id="queryKuw" parameterClass="com.athena.ckx.entity.cangk.Kuw" resultClass="com.athena.ckx.entity.cangk.Kuw">
+	   select t.usercenter,
+       t.cangkbh,
+       t.zickbh,
+       t.kuwbh,
+       t.kuwdjbh,t.kuwzt,
+       t.baozgs,
+       t.baozlx,
+       t.yifgs,
+       T.LINGJBH
+        from (select t1.usercenter as usercenter,
+       t1.cangkbh as cangkbh,
+       t1.zickbh as zickbh,
+       t1.kuwbh as kuwbh,
+       t1.kuwdjbh kuwdjbh,
+       case when t1.kuwzt=0 then 
+       		<![CDATA[ case when nvl(t2.baozgs,0)=0 then 'L' ]]>
+	       <![CDATA[ when nvl(t2.dingybzgs,0)-nvl(t2.baozgs,0) = 0 then 'P' ]]>
+	       <![CDATA[when nvl(t2.dingybzgs,0)>nvl(t2.dingybzgs,0) - nvl(t2.baozgs,0) and nvl(t2.dingybzgs,0) - nvl(t2.baozgs,0)> 0 then 'A' end ]]>    
+       else 'I' end as kuwzt,
+       t2.dingybzgs as baozgs,
+       t2.baozxh as baozlx,
+       t2.baozgs as yifgs,
+       T3.LINGJBH
+	   from ${dbSchemal3}ckx_kuw t1
+	   left join ${dbSchemal4}ck_kwbzxx t2 on t1.usercenter = t2.usercenter
+	                         and t1.cangkbh = t2.cangkbh
+	                         and t1.zickbh = t2.zickbh
+	                         and t1.kuwbh = t2.kuwbh
+	                         and nvl(t2.baozgs,0)>0
+                             and (t2.shifky = 1 or t2.shifky = 0)
+      left join ${dbSchemal3}ckx_lingjck t3 on t1.cangkbh=t3.cangkbh
+                             and (t1.zickbh = t3.zickbh AND t1.kuwbh = t3.dingzkw)
+                                   or (t1.zickbh=t3.danqkbh and t1.kuwbh=t3.danqkw)
+                             and t1.usercenter=t3.usercenter) t
+                             
+	   <![CDATA[where 1=1 ]]>
+	  	
+	  	<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[t.usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[t.cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="zickbh" prepend="and">
+	    		<![CDATA[t.zickbh = #zickbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kuwbh" prepend="and">
+	    		<![CDATA[t.kuwbh = #kuwbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kuwdjbh" prepend="and">
+	    		<![CDATA[t.kuwdjbh = #kuwdjbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kuwzt" prepend="and">
+	    		<![CDATA[t.kuwzt = #kuwzt#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjbh" prepend="and">
+	    		<![CDATA[t.lingjbh = #lingjbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="mian" prepend="and">
+	    		<![CDATA[substr(t.kuwbh,1,2) = #mian#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="ceng" prepend="and">
+	    		<![CDATA[substr(t.kuwbh,5,2) = #ceng#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	     order by t.usercenter,t.cangkbh,t.zickbh,t.kuwbh
+	</select>
+	
+	<!-- 单记录查询 -->
+	<select id="getKuw" parameterClass="com.athena.ckx.entity.cangk.Kuw" resultClass="com.athena.ckx.entity.cangk.Kuw">
+		select usercenter,cangkbh,zickbh,kuwbh,kuwdjbh
+	  	from ${dbSchemal3}ckx_kuw 
+	  	where 1=1
+	  	<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="zickbh" prepend="and">
+	    		<![CDATA[zickbh = #zickbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kuwbh" prepend="and">
+	    		<![CDATA[kuwbh = #kuwbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	<select id="getCountKuw" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_kuw
+		where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zickbh">zickbh = #zickbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="kuwbh">kuwbh = #kuwbh#</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 插入记录 参考器库位表中-->
+	<insert id="insertKuw" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+		insert into ${dbSchemal3}ckx_kuw(usercenter,cangkbh,zickbh,kuwbh,kuwdjbh,kuwzt,creator,create_time,editor,edit_time)
+		values(#usercenter#,#cangkbh#,#zickbh#,#kuwbh#,#kuwdjbh#,#kuwzt#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<!-- 插入记录 仓库库位包装信息表中-->
+<!-- 	<insert id="insertKuwxx" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+		insert into ${dbSchemal4}ck_kwbzxx(usercenter,cangkbh,zickbh,kuwbh,kuwdjbh,shifky,baozxh)
+		select t.usercenter,t.cangkbh,t.zickbh,t.kuwbh,t.kuwdjbh, '1' as kuwzt,x.baozxh from ${dbSchemal3}ckx_kuw t
+				left join ${dbSchemal4}ck_kuwdjxx x on t.usercenter=x.usercenter
+				and t.cangkbh=x.cangkbh and t.kuwdjbh=x.kuwdjbh
+				where t.usercenter=#usercenter# and t.cangkbh=#cangkbh# and t.zickbh=#zickbh#  and t.kuwbh=#kuwbh#
+	</insert> -->
+	
+	<!-- 修改参考器库位表中库位等级编号 -->
+	<update id="updateKuw" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+		update ${dbSchemal3}ckx_kuw
+		<dynamic prepend="set">
+	    	<isNotEmpty property="kuwdjbh" prepend=",">
+	    		<![CDATA[kuwdjbh = #kuwdjbh# ]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kuwzt" prepend=",">
+	    		<![CDATA[kuwzt = #kuwzt# ]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="editor" prepend=",">
+	    		<![CDATA[editor = #editor# ]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="edit_time" prepend=",">
+	    		<![CDATA[edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ]]> 
+	    	</isNotEmpty>
+			<isNotEmpty prepend=" where " property="usercenter">
+				<![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">
+				<![CDATA[cangkbh = #cangkbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zickbh">
+				<![CDATA[zickbh = #zickbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="kuwbh">
+	    		<![CDATA[kuwbh = #kuwbh#]]> 
+	    	</isNotEmpty>
+		</dynamic>
+	</update>
+	
+		<!-- 修改仓库库位包装信息表中库位等级编号 -->
+	<update id="updateKwbzxx" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+		update ${dbSchemal4}ck_kwbzxx
+		<dynamic prepend="set">
+	    	<isNotEmpty property="kuwdjbh" prepend=",">
+	    		<![CDATA[kuwdjbh = #kuwdjbh# ]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="baozgs" prepend=",">
+	    		<![CDATA[dingybzgs = #baozgs# ]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shifky" prepend=",">
+	    		<![CDATA[shifky = #shifky# ]]> 
+	    	</isNotEmpty>
+			<isNotEmpty prepend=" where " property="usercenter">
+				<![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">
+				<![CDATA[cangkbh = #cangkbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zickbh">
+				<![CDATA[zickbh = #zickbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="kuwbh">
+	    		<![CDATA[kuwbh = #kuwbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend=" and " property="kuwdjbh">
+	    		<![CDATA[kuwdjbh = #kuwdjbh#]]> 
+	    	</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 删除记录 -->
+	<delete id="deleteKuw" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+		delete from ${dbSchemal3}ckx_kuw where
+		<dynamic prepend="  ">
+			<isNotEmpty prepend=" and " property="usercenter">
+				<![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">
+				<![CDATA[cangkbh = #cangkbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zickbh">
+				<![CDATA[zickbh = #zickbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="kuwbh">
+	    		<![CDATA[kuwbh = #kuwbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+		<!-- 删除记录 -->
+	<delete id="deleteKwbzxx" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+		delete from ${dbSchemal4}ck_kwbzxx 
+		<![CDATA[ where usercenter = #usercenter# and cangkbh = #cangkbh# and zickbh = #zickbh# and kuwbh = #kuwbh# ]]> 
+	</delete>
+	<!-- 库位等级查询 -->
+	<select id="queryKuwdjbh" parameterClass="com.athena.ckx.entity.cangk.Kuw" resultClass="com.athena.ckx.entity.cangk.Kuw">                          
+      select a.kuwdjbh as ykuwdjbh,
+                rownum     as qislh,
+                a.kuwbh   as kuwbh,
+                a.kuwdjbh as kuwdjbh,
+                a.kuwzt   as kuwzt,
+                a.kuwdjbhtd as kuwdjbhtd,
+       			a.kuwzttd   as kuwzttd
+                 from (select t1.kuwbh as kuwbh,t1.kuwdjbh as ykuwdjbh,t1.kuwdjbh as kuwdjbh,
+     t1.kuwzt as kuwzt,t1.kuwdjbhtd as kuwdjbhtd,t1.kuwzttd as kuwzttd from ${dbSchemal3}ckx_kuw t1 inner join 
+         (select kuwbh,zickbh,cangkbh,usercenter,sum(baozgs) as baozgs from ${dbSchemal4}ck_kwbzxx group by kuwbh,zickbh,cangkbh,usercenter) t2
+         on t1.usercenter = t2.usercenter
+                                    and t1.cangkbh = t2.cangkbh
+                                    and t1.zickbh = t2.zickbh
+                                    and t1.kuwbh = t2.kuwbh  
+                                    <![CDATA[and nvl(t2.baozgs,0) <= 0]]>                       
+                                    where t1.usercenter=#usercenter#
+                                    and t1.cangkbh=#cangkbh#
+                                    and t1.zickbh=#zickbh# 
+                                    and t1.kuwbh>=#kuwbh#
+                                    and substr(t1.kuwbh,0,2)=#mian#
+                                    and substr(t1.kuwbh,5,6)=#ceng#
+                                    order by t1.kuwbh) a                              
+                                    
+	</select>
+	<!-- 在次验证库位等级查询 -->
+	<select id="queryKuwdjbh1" parameterClass="com.athena.ckx.entity.cangk.Kuw" resultClass="com.athena.ckx.entity.cangk.Kuw">                          
+      select a.kuwdjbh as ykuwdjbh,
+                rownum     as qislh,
+                a.kuwbh   as kuwbh,
+                a.kuwdjbh as kuwdjbh,
+                a.kuwzt   as kuwzt,
+                a.kuwdjbhtd as kuwdjbhtd,
+       			a.kuwzttd   as kuwzttd
+                 from (select t1.kuwbh as kuwbh,t1.kuwdjbh as ykuwdjbh,t1.kuwdjbh as kuwdjbh,
+     t1.kuwzt as kuwzt,t1.kuwdjbhtd as kuwdjbhtd,t1.kuwzttd as kuwzttd from ${dbSchemal3}ckx_kuw t1 inner join 
+         (select kuwbh,zickbh,cangkbh,usercenter,sum(baozgs) as baozgs from ${dbSchemal4}ck_kwbzxx group by kuwbh,zickbh,cangkbh,usercenter) t2
+         on t1.usercenter = t2.usercenter
+                                    and t1.cangkbh = t2.cangkbh
+                                    and t1.zickbh = t2.zickbh
+                                    and t1.kuwbh = t2.kuwbh  
+                                    <![CDATA[and nvl(t2.baozgs,0) <= 0]]>                       
+                                    where t1.usercenter=#usercenter#
+                                    and t1.cangkbh=#cangkbh#
+                                    and t1.zickbh=#zickbh# 
+                                    and t1.kuwbh=#kuwbh#
+                                    order by t1.kuwbh) a                              
+                                    
+	</select>
+	
+	<!-- 反查被清空的替代库位等级编号 -->
+	<select id="queryKuwdjbhbs" parameterClass="com.athena.ckx.entity.cangk.Kuw" resultClass="com.athena.ckx.entity.cangk.Kuw">                          
+    select * from  ${dbSchemal3}ckx_kuw t 
+     where t.kuwzttd='Y' and t.usercenter=#usercenter# and t.cangkbh=#cangkbh# and t.zickbh=#zickbh# and t.kuwbh=#kuwbh#                                                    
+	</select>
+	
+	<!-- 库位等级修改 -->
+	<update id="updateKuwdjbh" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+	update ${dbSchemal3}ckx_kuw t set t.kuwdjbh=#kuwdjbh#,t.kuwzt=#kuwzt# where t.kuwbh=#kuwbh#
+	</update>
+	<!-- 库位等级修改 -->
+	<update id="updateKuwdjbhxx" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+	  update ${dbSchemal4}CK_KWBZXX set DINGYKWGS=
+(select count(*) from ${dbSchemal4}CKX_KUW where USERCENTER=#usercenter# and  CANGKBH=#cangkbh# and KUWDJBH=#kuwdjbh#)
+where USERCENTER=#usercenter# and  CANGKBH=#cangkbh# and KUWDJBH=#kuwdjbh#
+	</update>
+	<!-- 在库位表中查询出库位等级编号 -->
+	<select id="querykuwbKuwdjbh" parameterClass="com.athena.ckx.entity.cangk.Kuw" resultClass="com.athena.ckx.entity.cangk.Kuw">
+	select t.kuwdjbh from ${dbSchemal3}ckx_kuw t where t.usercenter=#usercenter#
+and t.cangkbh=#cangkbh# and t.zickbh=#zickbh# and t.kuwbh=#kuwbh#
+	</select>
+	
+	
+	<!-- 在库位表和库位包装表中查询数据 -->
+	<select id="querykuwbaoz" parameterClass="com.athena.ckx.entity.cangk.Kuw" resultClass="com.athena.ckx.entity.cangk.Kuw">
+		select t.usercenter,t.cangkbh,t.zickbh,t.kuwbh,b.baozlx,t.kuwdjbh,b.baozgs as dingybzgs from ${dbSchemal3}ckx_kuw t
+		left join ${dbSchemal3}ckx_kuwdj_baoz b
+		on t.usercenter=b.usercenter and 
+		t.cangkbh=b.cangkbh and
+		t.kuwdjbh=b.kuwdjbh
+		where t.usercenter=#usercenter#
+		and t.cangkbh=#cangkbh#
+		and t.kuwdjbh=#kuwdjbh#
+		and t.zickbh=#zickbh#
+		and t.kuwbh=#kuwbh#
+		and b.baozlx is not null
+	</select>
+	
+	<!-- 在库位包装表中插入数据 -->
+	<insert id="insertKuwxxs" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+		insert into ${dbSchemal3}ck_kwbzxx(usercenter,cangkbh,zickbh,kuwbh,kuwdjbh,shifky,baozxh,dingybzgs,baozgs)
+    	select t.usercenter,t.cangkbh,t.zickbh,t.kuwbh,t.kuwdjbh,
+         case when t.kuwzt=0 then 
+         '1'
+         else '0' end as shifky,
+         b.baozlx,b.baozgs as dingybzgs,0 as baozgs from ${dbSchemal3}ckx_kuw t
+    	left join ${dbSchemal3}ckx_kuwdj_baoz b
+   		 on t.usercenter=b.usercenter and 
+    	t.cangkbh=b.cangkbh and
+    	t.kuwdjbh=b.kuwdjbh
+    	where t.usercenter=#usercenter#
+    	and t.cangkbh=#cangkbh#
+    	and t.kuwdjbh=#kuwdjbh#
+    	and t.zickbh=#zickbh#
+    	and t.kuwbh=#kuwbh#
+    	and b.baozlx is not null
+	</insert>
+	
+	
+			<!-- 查询出定义库位个数 -->
+	<select id="querydingykwgs" parameterClass="com.athena.ckx.entity.cangk.Kuw" resultClass="com.athena.ckx.entity.cangk.Kuw">
+		select count(*) as dingykwgs from ${dbSchemal3}ckx_kuw w where w.kuwdjbh=#kuwdjbh#
+	</select>
+	
+		<!-- 插入记录 仓库库位包装信息表中-->
+	<insert id="insertKuwxx" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+		insert into ${dbSchemal4}ck_kwbzxx(usercenter,cangkbh,zickbh,kuwbh,kuwdjbh,shifky,baozxh,dingybzgs,baozgs)
+   values(#usercenter#,#cangkbh#,#zickbh#,#kuwbh#,#kuwdjbh#,#shifky#,#baozlx#,#dingybzgs#,#baozgs#)
+	</insert>
+	
+	<!-- 插入记录 仓库库位包装信息表中-->
+	<insert id="insertKuwtemp" parameterClass="com.athena.ckx.entity.cangk.Kuwtemp">
+		insert into ${dbSchemal4}ckx_kuw_temp(usercenter,cangkbh,zickbh,kuwdjbh,dingykwgs,creator,create_time)
+		select distinct temp.usercenter,temp.cangkbh,temp.zickbh,temp.kuwdjbh,x.dingykwgs,'4280'as creator,sysdate as create_time from (select  distinct  t.usercenter,t.cangkbh,t.zickbh,t.kuwdjbh from ${dbSchemal4}ckx_kuw t where t.kuwdjbhtd is not null
+		union 
+		select  distinct  t.usercenter,t.cangkbh,t.zickbh,t.kuwdjbhtd  from ${dbSchemal4}ckx_kuw t where t.kuwdjbhtd is not null) temp
+		left join ${dbSchemal4}ck_kwbzxx x on temp.usercenter=x.usercenter and temp.cangkbh = x.cangkbh and  temp.zickbh = x.zickbh and temp.kuwdjbh = x.kuwdjbh
+        where   not exists (select * from ${dbSchemal4}ckx_kuw_temp t )
+	</insert>
+	
+	<!-- 查询临时表-->
+	<select id="queryKuwtemp" parameterClass="com.athena.ckx.entity.cangk.Kuwtemp" resultClass="com.athena.ckx.entity.cangk.Kuwtemp">
+		select usercenter,cangkbh,zickbh,kuwdjbh,dingykwgs,creator,create_time  from ${dbSchemal3}ckx_kuw_temp 
+	</select>
+	
+	<!-- 删除临时表 -->
+	<delete id="deleteKuwtemp" parameterClass="com.athena.ckx.entity.cangk.Kuwtemp">
+		delete from ${dbSchemal4}ckx_kuw_temp 
+	</delete>
+	
+	<update id="updateKuwdjbhxxtemp" parameterClass="com.athena.ckx.entity.cangk.Kuwtemp">
+	  update ${dbSchemal4}CK_KWBZXX set DINGYKWGS=
+(select count(*) from ${dbSchemal4}CKX_KUW where USERCENTER=#usercenter# and  CANGKBH=#cangkbh# and ZICKBH=#zickbh# and KUWDJBH=#kuwdjbh#)
+where USERCENTER=#usercenter# and  CANGKBH=#cangkbh#  and ZICKBH=#zickbh# and KUWDJBH=#kuwdjbh#
+	</update>
+	
+			<!-- 查询库位等级存不存在 -->
+	<select id="querykuwdjcbcz" parameterClass="com.athena.ckx.entity.cangk.Kuw" resultClass="com.athena.ckx.entity.cangk.Kuw">
+		select count(t.kuwdjbh) as kuwdjbhgs from ${dbSchemal3}ckx_kuw t
+    left join ${dbSchemal3}ckx_kuwdj_baoz b
+    on t.usercenter=b.usercenter and 
+    t.cangkbh=b.cangkbh and
+    t.kuwdjbh=b.kuwdjbh
+    where  t.kuwdjbh=#kuwdjbh#
+	</select>
+			
+			<!-- 删除库位包装信息表中的相关数据 -->
+	<delete id="deleteKwbzxxkuw" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+		delete from ${dbSchemal3}ck_kwbzxx where
+		<dynamic prepend="  ">
+			<isNotEmpty prepend=" and " property="usercenter">
+				<![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">
+				<![CDATA[cangkbh = #cangkbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zickbh">
+				<![CDATA[zickbh = #zickbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="kuwdjbh">
+				<![CDATA[kuwdjbh = #kuwdjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="kuwbh">
+	    		<![CDATA[kuwbh = #kuwbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+	
+		<!-- 更新库位包装信息表中定义库位个数 -->
+	<update id="updateKuwbzxxkuw" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+update ${dbSchemal4}ck_kwbzxx set dingykwgs=#dingykwgs# where  kuwdjbh=#kuwdjbh#
+	</update>
+			<!-- 更新库位包装信息表中定义库位个数 -->
+	<update id="updateKuwbzxxkuw1" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+update ${dbSchemal4}ck_kwbzxx set dingykwgs=(select count(*) from ${dbSchemal4}CKX_KUW where USERCENTER=#usercenter# and  CANGKBH=#cangkbh# and ZICKBH=#zickbh# and KUWDJBH=#kuwdjbh#)
+where USERCENTER=#usercenter# and  CANGKBH=#cangkbh#  and ZICKBH=#zickbh# and KUWDJBH=#kuwdjbh#
+	</update>
+	
+	<!-- 更新库位表中库位等级编号 -->
+	<update id="updateKuwzdjbh" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+update ${dbSchemal3}ckx_kuw set kuwdjbhtd=#kuwdjbhtd#,kuwzt=#kuwzt#,kuwzttd='Y' where usercenter=#usercenter# and cangkbh=#cangkbh# and zickbh=#zickbh# and kuwbh=#kuwbh#
+	</update>
+	
+	<update id="updateKuwzdjbhbs" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+update ${dbSchemal3}ckx_kuw set kuwdjbhtd=#kuwdjbhtd#,kuwzt=#kuwzt#,kuwzttd='' where usercenter=#usercenter# and cangkbh=#cangkbh# and zickbh=#zickbh# and kuwbh=#kuwbh#
+	</update>
+	
+	<!-- 更新库位包装信息表中的是否可用为 不可用 -->
+	<update id="updateKuwbzxxsfky" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+update ${dbSchemal3}ck_kwbzxx set shifky='0' where usercenter=#usercenter# and cangkbh=#cangkbh# and zickbh=#zickbh# and kuwbh=#kuwbh#
+	</update>
+	
+	<!-- 更新库位包装信息表中的是否可用为 可用 -->
+	<update id="updateKuwbzxxsfky1" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+update ${dbSchemal3}ck_kwbzxx set shifky='1' where usercenter=#usercenter# and cangkbh=#cangkbh# and zickbh=#zickbh# and kuwbh=#kuwbh#
+	</update>
+	<!-- 更新库位表中库位等级编号 -->
+	<update id="updateKuwzdjbh1" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+update ${dbSchemal3}ckx_kuw set kuwdjbh=#kuwdjbh#,kuwzt=#kuwzt# where kuwbh=#kuwbh#
+	</update>
+	
+	<!-- 更新库位包装信息表中定义库位个数 -->
+	<update id="updateKuwbxxgss" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+update ${dbSchemal4}ck_kwbzxx set dingybzgs=#dingybzgs# where  kuwdjbh=#kuwdjbh# and kuwbh=#kuwbh#
+	</update>
+	
+	<!-- 更新库位表中库位状态 -->
+	<update id="updateKuwztdongj" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+update ${dbSchemal4}ck_kwbzxx set shifky=#shifky# where kuwbh=#kuwbh#
+	</update>
+	
+<!-- 查询库位等级中 替代的库位等级编号  和 替代的库位状态 不为空的数据 -->
+	<select id="queryCkkwbzxx" parameterClass="com.athena.ckx.entity.cangk.Kuw" resultClass="com.athena.ckx.entity.cangk.Kuw">
+		select t.usercenter,t.cangkbh,t.zickbh,t.kuwbh,t.kuwdjbh,t.kuwzt,t.kuwdjbhtd,t.kuwzttd  
+		from ${dbSchemal3}ckx_kuw t where t.kuwdjbhtd is not null
+	</select>
+	
+<!-- 更新库位表中真实的 库位等级编号 和 库位状态 -->
+	<update id="updateCkkwbzxx" parameterClass="com.athena.ckx.entity.cangk.Kuw">
+	update ${dbSchemal3}ckx_kuw t set kuwdjbh=#kuwdjbhtd#,kuwdjbhtd='',kuwzttd=''
+    where usercenter=#usercenter# and cangkbh=#cangkbh# and zickbh=#zickbh# and kuwbh=#kuwbh#
+	</update>
+	
+</sqlMap> 

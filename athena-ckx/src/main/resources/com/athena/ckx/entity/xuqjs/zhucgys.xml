@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+	主从供应商
+	@author xss
+	@date 2015-2-4
+	0010495
+-->
+<sqlMap namespace="zhucgys">
+	
+	<!-- 查询主从供应商 -->
+	<select id="queryZhucgys" resultClass="com.athena.ckx.entity.xuqjs.Zhucgys">
+		select usercenter,masterfanhs,slavefanhs from ${dbSchemal3}ckx_zhucgys where 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">
+				usercenter = #usercenter#
+			</isNotNull>
+			<isNotNull property="masterfanhs" prepend=" and ">
+				masterfanhs = #masterfanhs#
+			</isNotNull>
+			<isNotNull property="slavefanhs" prepend=" and ">
+				slavefanhs = #slavefanhs#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 保存 -->
+	<insert id="insertZhucgys">
+		insert into ${dbSchemal3}ckx_zhucgys(usercenter,masterfanhs,slavefanhs,creator,create_time,editor,edit_time)values(#usercenter#,#masterfanhs#,#slavefanhs#,#creator#,sysdate,#editor#,sysdate)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="deleteZhucgys" parameterClass="com.athena.ckx.entity.xuqjs.Zhucgys">
+		delete from ${dbSchemal3}ckx_zhucgys where usercenter = #usercenter#  and slavefanhs = #slavefanhs#
+	</delete>
+	
+	<!-- 更新 -->
+	<update id="updateZhucgys" parameterClass="com.athena.ckx.entity.xuqjs.Zhucgys">
+		update ${dbSchemal3}ckx_zhucgys 
+		set slavefanhs = #slavefanhs#,
+			editor=#editor#,
+			edit_time=sysdate
+		where usercenter = #usercenter#  and masterfanhs = #masterfanhs#
+	</update>
+		
+	<!-- 查询该从承运商是否存在 -->
+	<select id="checkSlavefanhs" resultClass="java.lang.String">
+		select count(masterfanhs) as count from ${dbSchemal3}ckx_zhucgys where 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">
+				usercenter = #usercenter#
+			</isNotNull>
+			<isNotNull property="slavefanhs" prepend=" and ">
+				slavefanhs = #slavefanhs#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 校验主从承运商的是否存在，是否有效 -->
+	<select id="ckGongys" resultClass="java.lang.String">
+		select count(*) as count from ${dbSchemal3}ckx_gongys 
+			where biaos='1'
+			and usercenter = #usercenter#
+			and (GCBH = #masterfanhs# or GCBH = #slavefanhs#)
+	</select>
+	
+	
+</sqlMap>

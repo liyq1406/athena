@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_kac">
+
+	<!-- 陈鹏 chenp -->
+	
+	<!-- 等待区域-->
+		<!-- 查询 -->
+	<select id="queryDengdqy" parameterClass="com.athena.truck.entity.Dengdqy" resultClass="com.athena.truck.entity.Dengdqy">
+		select usercenter,quybh,quymc,dapzrxssj,shuaxsj,biaos,kacqyz,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_dengdqy
+		where 1=1 
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="quybh"><![CDATA[quybh = #quybh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,quybh
+	</select>
+	
+				<!-- 查询区域编号-->
+	<select id="queryQuybhqc" parameterClass="com.athena.truck.entity.Dengdqy" resultClass="com.athena.truck.entity.Dengdqy">
+		select  quybh
+		from ${dbSchemal3}ckx_dengdqy
+		where 1=1 and biaos = '1'
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			</dynamic>
+			order by quybh
+	</select>
+	
+	
+		<!-- 失效-->
+	<update id="deleteDengdqy" parameterClass="com.athena.truck.entity.Dengdqy">
+		update ${dbSchemal3}ckx_dengdqy
+		set <![CDATA[biaos = #biaos#,editor=#editor#,edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		where <![CDATA[usercenter = #usercenter# and  quybh = #quybh#]]>
+	</update>
+	
+		<!-- 增加 -->
+	<insert id="insertDengdqy" parameterClass="com.athena.truck.entity.Dengdqy">
+		insert into ${dbSchemal3}ckx_dengdqy(usercenter,quybh,quymc,dapzrxssj,shuaxsj,biaos,kacqyz,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter# , #quybh# , #quymc# ,#dapzrxssj#,#shuaxsj#,'1' ,#kacqyz#, #creator# , to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ]]>)
+	</insert>
+	
+	
+		<!-- 修改 -->
+	<update id="updateDengdqy" parameterClass="com.athena.truck.entity.Dengdqy">
+		update ${dbSchemal3}ckx_dengdqy 
+		set <![CDATA[quymc = #quymc# ,
+		dapzrxssj = #dapzrxssj#,
+		shuaxsj = #shuaxsj#,
+		biaos = #biaos# ,
+		kacqyz = #kacqyz#,
+		editor = #editor# ,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+        where  <![CDATA[usercenter = #usercenter# and  quybh = #quybh#]]>
+	</update>
+	
+		<!-- 根据用户中心取区域编号 -->
+	<select id="queryQuybh" parameterClass="com.athena.truck.entity.Dengdqy" resultClass="com.athena.truck.entity.Dengdqy">
+		select quybh
+		from ${dbSchemal3}ckx_dengdqy
+		where 1=1 
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,quybh
+	</select>
+	
+	<!--根据用户权限组，授权用户中心，查询对应的区域编号 -->
+	<select id="querySQQy" parameterClass="java.util.HashMap" resultClass="com.athena.truck.entity.Dengdqy">
+    select 
+      qy.quybh 
+		from ${dbSchemal3}SYS_QY_GROUP qy inner join ${dbSchemal3}sys_post p on qy.post_id = p.post_code and p.biaos = '1'
+	inner join ${dbSchemal3}ckx_dengdqy d on qy.usercenter = d.usercenter and qy.quybh = d.quybh 
+    where qy.usercenter in (select ru.usercenter from ${dbSchemal3}sys_r_post_usercenter ru where ru.post_code = #post_code#)
+     and p.post_code =  #post_code#  and qy.usercenter = #usercenter# order by qy.quybh
+	</select>
+	
+	<!-- 查询用户中心下的默认流程 -->
+	<select id="morenLiuc" parameterClass="com.athena.truck.entity.Dengdqy" resultClass="com.athena.truck.entity.Liucdy">
+		select liucbh,liucmc,leix,biaozsj,liucbs
+		from ${dbSchemal3}ckx_liucdy
+		where 
+		usercenter = #usercenter# and quybh = 'DEF' and daztbh = 'DEF'	
+	</select>
+	
+	<!-- 新增大站台默认流程chenp 20150323 -->		
+	<insert id="insertLiucdys" parameterClass="com.athena.truck.entity.Liucdy">
+		<![CDATA[
+		insert into ${dbSchemal3}ckx_liucdy( usercenter,quybh,daztbh,liucbh,
+		liucmc,leix,biaozsj,liucbs,biaos,creator,create_time,editor,edit_time)
+		values
+		(#usercenter# ,#quybh#,#daztbh#,#liucbh#,#liucmc#,#leix#,
+		#biaozsj#,#liucbs#,#biaos#,#creator# ,sysdate,#editor#,sysdate )]]>
+	</insert>
+</sqlMap>

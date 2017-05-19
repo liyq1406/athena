@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- 事务提醒  hj 2013-3-7 -->
+	
+	<!-- 更新状态 -->
+	<update id="updateCkxShiwtx" parameterClass="com.athena.ckx.entity.xuqjs.CkxShiwtx">
+		update ${dbSchemal3}ckx_shiwtx 
+		set zhuangt = #zhuangt#,	     
+		      jiejsj = to_timestamp(#jiejsj#,'yyyy-MM-dd HH24:mi:ss:ff3')
+	    where  zhuangt = 0 
+	    <dynamic>   
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="tixlx"><![CDATA[tixlx = #tixlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="guanjz1"><![CDATA[guanjz1 = #guanjz1#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="guanjz2"><![CDATA[guanjz2 = #guanjz2#]]></isNotEmpty>
+		</dynamic>
+	    
+	   
+	</update>
+</sqlMap>

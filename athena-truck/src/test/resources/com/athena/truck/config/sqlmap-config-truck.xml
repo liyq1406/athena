@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+
+	<properties resource="com/athena/truck/config/sqlmap.properties" />
+
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="10"
+		maxTransactions="5" useStatementNamespaces="true" />
+		
+		
+		<!-- 陈鹏 -->
+		
+		<!-- 等待区域-大站台  chenp -->
+		<sqlMap resource="com/athena/truck/entity/dengdqy.xml"/>
+
+</sqlMapConfig>

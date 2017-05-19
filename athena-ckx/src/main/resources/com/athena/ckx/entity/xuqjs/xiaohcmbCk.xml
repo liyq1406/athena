@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	小火车运输时刻模板
+	@author denggq
+	@date 2012-4-11
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryXiaohcmbkz" parameterClass="com.athena.ckx.entity.xuqjs.XiaohcmbCk" resultClass="com.athena.ckx.entity.xuqjs.XiaohcmbCk">
+	select mb.usercenter,mb.chanx,mb.liush,mb.xiaohcbh,mb.tangc,mb.qislsh
+	,kz.jieslsh
+	,mb.emonbhlsh,mb.emonsxlsh,mb.smonbhlsh,mb.smonsxlsh,mb.beihsj,mb.flag,mb.zhuangt
+	 from  ${dbSchemal3}ck_xiaohcmb mb 
+	 inner join ${dbSchemal3}ck_xiaohcmbkz kz 
+	 on mb.usercenter=kz.usercenter and mb.chanx = kz.chanx 
+	        and mb.xiaohcbh = kz.xiaohcbh and mb.tangc = kz.dangqtc
+	        and mb.beihsj is null 
+	        and mb.flag='0'
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[kz.usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chanx" prepend="and">
+	    		<![CDATA[kz.chanx = #chanx#]]> 
+	    	</isNotEmpty>	    
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[kz.xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="tangc" prepend="and">
+	    		<![CDATA[mb.tangc = #tangc#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by mb.usercenter,mb.chanx,mb.liush,mb.xiaohcbh
+	</select>
+	
+	<insert id="addXiaohcmcByChanx" parameterClass="com.athena.ckx.entity.xuqjs.XiaohcmbCk">
+	insert into ${dbSchemal3}ck_xiaohcmb 
+	(usercenter,chanx,liush,xiaohcbh,tangc,qislsh,jieslsh,emonbhlsh,emonsxlsh,smonbhlsh,smonsxlsh,
+	    beihsj,flag,zhuangt,creator,create_time,editor,edit_time,beiz1,beiz2,beiz3,beiz4,beiz5,beiz6,beiz7,xiaohcrq)
+	values(#usercenter#,#chanx#,#liush#,#xiaohcbh#,#tangc#,#qislsh#,#jieslsh#,#emonbhlsh#,#emonsxlsh#,#smonbhlsh#,#smonsxlsh#,
+	to_date(#beihsj#,'yyyy-MM-dd'),#flag#,#zhuangt#,#creator#,sysdate,#editor#,sysdate,#beiz1#,#beiz2#,#beiz3#,#beiz4#,#beiz5#,#beiz6#,#beiz7#,#xiaohcrq#)
+	</insert>
+	
+	<insert id="addXXiaohcmcByChanx" parameterClass="com.athena.ckx.entity.xuqjs.XiaohcmbCk">
+	insert into ${dbSchemal5}ck_xiaohcmb 
+	(usercenter,chanx,liush,xiaohcbh,tangc,qislsh,jieslsh,emonbhlsh,emonsxlsh,smonbhlsh,smonsxlsh,
+	    beihsj,flag,zhuangt,creator,create_time,editor,edit_time,beiz1,beiz2,beiz3,beiz4,beiz5,beiz6,beiz7,xiaohcrq)
+	values(#usercenter#,#chanx#,#liush#,#xiaohcbh#,#tangc#,#qislsh#,#jieslsh#,#emonbhlsh#,#emonsxlsh#,#smonbhlsh#,#smonsxlsh#,
+	to_date(#beihsj#,'yyyy-MM-dd'),#flag#,#zhuangt#,#creator#,sysdate,#editor#,sysdate,#beiz1#,#beiz2#,#beiz3#,#beiz4#,#beiz5#,#beiz6#,#beiz7#,#xiaohcrq#)
+	</insert>
+	
+	<delete id="removeXiaohcmbCk" parameterClass="com.athena.ckx.entity.xuqjs.XiaohcmbCk">
+		delete from ${dbSchemal3}ck_xiaohcmb 
+		where flag='0' and beihsj is null 
+		<dynamic prepend="">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chanx" prepend="and">
+	    		<![CDATA[chanx = #chanx#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="liush" prepend="and">
+	    		<![CDATA[liush > $liush$]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+	<select id="queryGongyxhdChess"  resultClass="java.util.HashMap">
+		select cf.xiaohd XIAOHD,gyxhd.chessl||'' CHESSL from (
+			select  c.xiaohd 
+			from ${dbSchemal3}ddbh_caifjg_cs c 
+			left join ${dbSchemal3}ckx_xiaohc x 
+			on x.usercenter = c.usercenter and x.shengcxbh = c.chanx and x.xiaohcbh = c.xiaohcbh
+			where c.flag='0' 
+			group by c.xiaohd
+		) cf 
+		inner join ${dbSchemal3}ckx_gongyxhd gyxhd 
+		on gyxhd.gongyxhd = cf.xiaohd and gyxhd.biaos='1'
+	</select>
+	
+<!-- 	查询到小火车的最大的流水号，生成下一个流水 -->
+	<select id="getXMaxLiushByXiaohc"  resultClass="java.lang.String">
+		select nvl(max(liush),0) 
+		from ${dbSchemal5}ck_xiaohcmb 
+		where usercenter=#usercenter# and chanx=#chanx# 
+		and xiaohcbh = #xiaohcbh#
+	</select>
+	
+	<select id="getMaxLiushByXiaohc"  resultClass="java.lang.String">
+		select nvl(max(liush),0) 
+		from ${dbSchemal3}ck_xiaohcmb 
+		where usercenter=#usercenter# and chanx=#chanx# 
+		and xiaohcbh = #xiaohcbh# and flag='1' and beihsj is not null 
+	</select>
+	
+	<select id="queryCaifjg_CS"  resultClass="java.util.HashMap">
+		select  c.usercenter,c.ofh,c.zhongzlxh,c.lingjbh,c.xiaohd,c.chanx 
+		from ${dbSchemal3}ddbh_caifjg_cs c
+       where 
+       		c.usercenter=#usercenter#
+       	    and c.chanx=#shengcxbh#
+       	    and c.xiaohcbh=#xiaohcbh#
+       	    and c.flag = '0'
+	</select>
+	<update id="updateXiaohdPyl" parameterClass="java.lang.String">
+		update ${dbSchemal3}ddbh_caifjg_cs jg set (jg.xiaohdpyl,jg.xiaohcbh) = (
+	          select nvl(g.chessl,jg.xiaohdpyl)-x.pianycws,x.xiaohcbh 
+	          from ${dbSchemal3}ckx_gongyxhd g 
+	          inner join ${dbSchemal3}ckx_lingjxhd ljxhd
+	          on g.gongyxhd = ljxhd.xiaohdbh          and ljxhd.xiaohcbh is not null          and g.biaos ='1'
+	          inner join ${dbSchemal3}ckx_xiaohc x
+	          on x.usercenter = ljxhd.usercenter and x.shengcxbh = ljxhd.shengcxbh and x.xiaohcbh = ljxhd.xiaohcbh
+	          where ljxhd.usercenter = jg.usercenter and ljxhd.shengcxbh = jg.chanx and ljxhd.xiaohdbh = jg.xiaohd and ljxhd.lingjbh = jg.lingjbh
+        )
+        ,editor = #editor#
+        ,edit_time = sysdate
+	    where  jg.flag='0'
+	    and  not exists (select 1 from ${dbSchemal3}ckx_gongyxhd  t1   where t1.gongyxhd=jg.xiaohd
+	          and   t1.shengcxbh=jg.chanx         
+	        <![CDATA[  and t1.biaos<>'1' ]]>
+	     )
+		
+	</update>
+	
+	<insert id="addXiaohcmbMax" parameterClass="com.athena.ckx.entity.xuqjs.XiaohcmbCk">
+	insert into ${dbSchemal3}CK_XIAOHCMB_MAX 
+	select
+		usercenter, 
+		chanx, 
+		liush, 
+		xiaohcbh, 
+		tangc, 
+		qislsh, 
+		jieslsh, 
+		emonsxlsh, 
+		smonsxlsh, 
+		emonbhlsh, 
+		smonbhlsh, 
+		beihsj, 
+		flag, 
+		zhuangt, 
+		creator, 
+		create_time, 
+		editor, 
+		edit_time, 
+		beiz1, 
+		beiz2, 
+		beiz3, 
+		beiz4, 
+		beiz5, 
+		beiz6, 
+		beiz7, 
+		emonzclsh, 
+		smonzclsh, 
+		dangqzcxh, 
+		shangxsj
+	from ${dbSchemal3}ck_xiaohcmb where flag='0' and beihsj is null  and usercenter = #usercenter# 
+	and chanx = #chanx# and xiaohcbh = #xiaohcbh# and liush > $liush$ and smonbhlsh =999999999
+	</insert>
+
+	<select id="queryXiaohcmbAndMax"  resultClass="java.util.HashMap">
+		select xm.smonbhlsh, xm.smonsxlsh,xm.usercenter,xm.chanx ,xm.xiaohcbh ,  xm.tangc, xm.liush
+		  from ${dbSchemal3}ck_xiaohcmb_max xm ,${dbSchemal3}ck_xiaohcmb  xb
+		 where xm.usercenter = xb.usercenter  and xm.chanx = xb.chanx  and xm.xiaohcbh = xb.xiaohcbh and xm.tangc = xb.tangc  and xm.liush = xb.liush
+		   and xb.flag='0' and xb.beihsj is null 
+	</select>
+	
+	<delete id="deleteXiaohcmbMax" parameterClass="java.util.Map">
+		delete from ${dbSchemal3}ck_xiaohcmb_max xb where xb.usercenter = #usercenter# and  xb.chanx = #shengcxbh# 
+	</delete>
+	
+	<update id="updateXiaohcmbMaxSmon" parameterClass="java.util.Map">
+		update ${dbSchemal3}ck_xiaohcmb  xb set xb.smonbhlsh = #SMONBHLSH#,xb.smonsxlsh = #SMONSXLSH#,xb.edit_time =  sysdate
+	<![CDATA[  	where xb.usercenter = #USERCENTER# and  xb.chanx = #CHANX# and  xb.xiaohcbh =#XIAOHCBH# and  xb.tangc = #TANGC# and xb.liush = #LIUSH#
+			]]>
+	</update>
+	<!-- 	查询到小火车 模板的最大的日期 -->
+	<select id="queryMaxrq"  resultClass="java.lang.String">
+		select to_char(max(to_date(xiaohcrq,'yyyy-MM-dd')),'yyyy-MM-dd')
+		from ${dbSchemal5}ck_xiaohcmb 
+		where usercenter=#usercenter# and chanx=#shengcxbh# and xiaohcbh=#xiaohcbh#
+	</select>
+	<!-- in_daxpcsl查出日期和上线量 20160823 by CSY -->
+	<select id="queryDaxpcsl"  resultClass="com.athena.ckx.entity.xuqjs.Daxpcsl">
+		select usercenter,daxxh,to_char(riq,'yyyy-MM-dd') riq,decode(sign(jihsxl-jihxxl),1,jihsxl,jihxxl) as jihsxl
+		from ${dbSchemal5}in_daxpcsl
+		where
+			1 = 1
+			and decode(sign(jihsxl - jihxxl), 1, jihsxl, jihxxl) > 0
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				daxxh =
+				#shengcxbh#
+			</isNotEmpty>	
+			<isNotEmpty prepend=" and " property="riq">
+				riq <![CDATA[>=]]>
+				to_date(#riq#,'yyyy-MM-dd')
+			</isNotEmpty>			
+		</dynamic>
+		and riq is not null
+		order by riq
+	</select>
+	<!-- in_clddxx九天排查计划查出日期和上线量 20160823 by CSY -->
+	<select id="queryDaxpcslClddxx"  resultClass="com.athena.ckx.entity.xuqjs.Daxpcsl">
+		 select usercenter, rq as riq, chej || zzx as daxxh, sxl as jihsxl
+  		 from 
+	  		 (select usercenter, to_char(jtrq, 'YYYY-MM-DD') rq, zzx, count(1) sxl
+	          from ${dbSchemal5}in_jtpcjh
+	          group by to_char(jtrq, 'YYYY-MM-DD'), zzx,usercenter
+	          ) t1,
+	       	 (select #usercenter# || '2' chej
+	          from dual
+	          union
+	          select #usercenter# || '3' chej
+	          from dual
+	          union
+	          select #usercenter# || '5' chej from dual
+	          ) t2
+	     where
+			1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				chej||zzx =
+				#shengcxbh#
+			</isNotEmpty>	
+			<isNotEmpty prepend=" and " property="riq">
+				to_date(rq,'yyyy-MM-dd') <![CDATA[>=]]>
+				to_date(#riq#,'yyyy-MM-dd')
+			</isNotEmpty>		
+		</dynamic>
+		and rq is not null
+		order by to_date(rq,'yyyy-MM-dd')
+	</select>
+	
+	<!-- ckx_fenzxpcsl查出日期和上线量 20160823 by CSY -->
+	<select id="queryCkxFenzxpcsl"  resultClass="com.athena.ckx.entity.xuqjs.Daxpcsl">
+		select usercenter,fenzxh as daxxh,to_char(riq,'yyyy-MM-dd') riq,decode(sign(jihsxl-jihxxl),1,jihsxl,jihxxl) as jihsxl
+		from ${dbSchemal5}ckx_fenzxpcsl
+		where
+			1 = 1
+			and decode(sign(jihsxl - jihxxl), 1, jihsxl, jihxxl) > 0
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				fenzxh =
+				#shengcxbh#
+			</isNotEmpty>	
+			<isNotEmpty prepend=" and " property="riq">
+				riq <![CDATA[>=]]>
+				to_date(#riq#,'yyyy-MM-dd')
+			</isNotEmpty>			
+		</dynamic>
+		and riq is not null
+		order by riq
+	</select>
+	
+	<!-- xqjs_fenzxpcjh 分装线排查计划查出日期和上线量 20160823 by CSY 取上线量大于0的   mantis:0012847 20160829 by CSY 分总成号取不为0000000000的 20160909不过滤了 -->
+	<select id="queryXqjsFenzxpcjh"  resultClass="com.athena.ckx.entity.xuqjs.Daxpcsl">
+		 select usercenter, rq as riq, fenzxh as daxxh, sxl as jihsxl
+  		 from 
+	  		 (select usercenter, to_char(yujsxrq, 'YYYY-MM-DD') rq, fenzxh, count(1) sxl
+	          from ${dbSchemal5}xqjs_fenzxpcjh
+	          group by to_char(yujsxrq, 'YYYY-MM-DD'), fenzxh,usercenter
+	          )
+	     where
+			1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				fenzxh =
+				#shengcxbh#
+			</isNotEmpty>	
+			<isNotEmpty prepend=" and " property="riq">
+				to_date(rq,'yyyy-MM-dd') <![CDATA[>=]]>
+				to_date(#riq#,'yyyy-MM-dd')
+			</isNotEmpty>		
+		</dynamic>
+		and rq is not null
+		order by to_date(rq,'yyyy-MM-dd')
+	</select>
+	<!-- 	查询最大的结束流水号，生成下一个流水 -->
+	<select id="getMaxJieslshByXiaohc"  resultClass="java.lang.String">
+		select max(jieslsh) 
+		from ${dbSchemal5}ck_xiaohcmb 
+		where usercenter=#usercenter# and chanx=#chanx# 
+		and xiaohcbh = #xiaohcbh#
+	</select>
+	
+	<select id="queryXiaohcList" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohc" resultClass="com.athena.ckx.entity.xuqjs.Xiaohc">
+		select x.usercenter,x.shengcxbh,x.xiaohcbh,x.xiaohcmc,x.biaos 
+		,x.creator,to_char(x.create_time,'yyyy-MM-dd') create_time
+		,x.editor,to_char(x.edit_time,'yyyy-MM-dd') edit_time
+		,x.pianycws,x.xunhcss,x.beihtqcss,x.shangxtqcss
+		,to_char(x.jianglcssxr,'yyyy-MM-dd') jianglcssxr
+		,x.jianglpycws,x.jianglxhcss,x.jianglbhtqcss,x.jianglsxtqcss		
+		from ${dbSchemal5}ckx_xiaohc x		
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[x.usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[x.shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>	
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[x.biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xunhcss" prepend="and">
+	    		<![CDATA[x.xunhcss > $xunhcss$]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by x.usercenter,x.shengcxbh,x.xiaohcbh
+	</select>
+	
+<!-- 	查询根据用户中心，产线分组 -->
+	<select id="xiaohc_GroupByChanx" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohc" resultClass="com.athena.ckx.entity.xuqjs.Xiaohc">
+		select distinct usercenter,shengcxbh		           
+		from ${dbSchemal5}ckx_xiaohc 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>	    
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xunhcss" prepend="and">
+	    		<![CDATA[xunhcss > $xunhcss$]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,shengcxbh
+	</select>
+	
+	<select id="getDdbhShengcx" parameterClass="com.athena.ckx.entity.xuqjs.Shengcx" resultClass="com.athena.ckx.entity.xuqjs.Shengcx">
+		select usercenter,shengcxbh,shengcjp,weilscjp,to_char(qiehsj,'yyyy-MM-dd') as qiehsj,chults,anqkctsmrz,biaos,chews,kongcss
+		from ${dbSchemal5}ckx_shengcx
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!-- 查询上次多要的上线量 -->
+	<select id="queryXiaohcmbyyByParam" resultClass="com.athena.ckx.entity.xuqjs.Xiaohcmbyy">
+		select 
+			usercenter, 
+			chanx, 
+			xiaohcbh, 
+			yingy, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time
+		from ${dbSchemal5}ck_xiaohcmbyy
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="chanx"><![CDATA[chanx = #chanx#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohcbh"><![CDATA[xiaohcbh = #xiaohcbh#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!-- 插入上次多的要货量 -->
+	<insert id="insertXiaohcmbyy" >
+		<![CDATA[
+		insert into ${dbSchemal5}ck_xiaohcmbyy(
+			usercenter, 
+			chanx, 
+			xiaohcbh, 
+			yingy, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time
+			)
+		values(
+			#usercenter#, 
+			#chanx#, 
+			#xiaohcbh#, 
+			$yingy$, 
+			#creator#, 
+			sysdate, 
+			#creator#, 
+			sysdate
+		)]]>
+	</insert>
+	
+	<!-- 更新记录数量 -->
+	<update id="updateXiaohcmbyyByParam" >
+		update
+		${dbSchemal5}ck_xiaohcmbyy
+		set
+			yingy=$yingy$,
+			editor=#editor#,
+			edit_time=sysdate
+		where
+			1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				chanx =
+				#chanx#
+			</isNotEmpty>					
+			<isNotEmpty prepend=" and " property="xiaohcbh">
+				xiaohcbh =
+				#xiaohcbh#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	<!-- 查询ddbh_clvjh_zjb,ddbh_pcjh_zjb -->
+	<select id="getClvjhPcjh" resultClass="com.athena.ckx.entity.xuqjs.Clvjhzjb">
+		(select 
+			usercenter, 			
+			shengcxbh, 
+			to_char(shangxsj,'yyyy-MM-dd') shangxsj, 			
+			min(liush) liush		
+		from ${dbSchemal5}ddbh_clvjh_zjb
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+			</dynamic>
+			group by usercenter,shengcxbh,shangxsj
+		)
+		union all
+		(select 
+			usercenter,
+			shengcxbh, 
+			to_char(shangxsj,'yyyy-MM-dd') shangxsj, 		
+			min(liush) liush			
+		from ${dbSchemal5}ddbh_pcjh_zjb
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+			</dynamic>
+			group by usercenter,shengcxbh,shangxsj
+		)
+	</select>
+	
+	
+	
+	<!-- 查询ck_xiaohcmb-->
+	<select id="queryXiaohcmbOflkcs" resultClass="com.athena.ckx.entity.transTime.CkxCsChushlk">
+		SELECT T1.USERCENTER,T1.SHENGCXBH,T1.XIAOHCBH,T1.XIAOHCMC,NVL(T1.PIANYCWS,0) PIANYCWS,NVL(T1.XUNHCSS,0) XUNHCSS,NVL(T1.BEIHTQCSS,0) BEIHTQCSS,NVL(T1.SHANGXTQCSS,0) SHANGXTQCSS,T1.JIANGLCSSXR,NVL(T1.JIANGLPYCWS,0) JIANGLPYCWS,NVL(T1.JIANGLXHCSS,0) JIANGLXHCSS,NVL(T1.JIANGLBHTQCSS,0) JIANGLBHTQCSS,NVL(T1.JIANGLSXTQCSS,0) JIANGLSXTQCSS,T2.DANGQTC,T2.ZHENGCLSH 
+		FROM ${dbSchemal3}CKX_XIAOHC T1,${dbSchemal3}CK_XIAOHCMBKZ T2  
+		where 
+		T1.USERCENTER=T2.USERCENTER AND T1.SHENGCXBH=T2.CHANX and T1.XIAOHCBH=T2.XIAOHCBH 
+		and T1.BIAOS='1' and T1.USERCENTER=#usercenter# and T1.SHENGCXBH=#shengcxbh# 
+		<dynamic>
+			<isNotEmpty property="xiaohcbh" prepend="and">
+	    		T1.xiaohcbh = #xiaohcbh#
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcmc" prepend="and">
+	    		T1.xiaohcmc = #xiaohcmc#
+	    	</isNotEmpty>
+    	 </dynamic>
+    	 order by T1.USERCENTER,T1.SHENGCXBH,T1.XIAOHCBH
+	</select>
+	
+	<!-- 查询上次多要的上线量 -->
+	<select id="queryShangxd" resultClass="java.lang.String">
+		select 
+			shangxd			
+		from ${dbSchemal3}ck_guodsz
+		where 
+			usercenter=#usercenter# and chejcx=#chanx#
+	</select>
+	
+	<!-- 根据zongzlsh查询zhengcxh -->
+	<select id="queryZhengcxh" resultClass="java.lang.String">
+		select 
+			zhengcxh 
+		from ${dbSchemal3}ck_zhengcgd
+		where 
+			usercenter=#usercenter# and shengcx=#chanx# and wuld=#wuld# and zongzlsh=#zongzlsh#
+	</select>
+	
+	<!-- 更新ck_xiaohcmbkz表 -->
+	<update id="updateXiaohcmbKzOflkcs" >
+		update
+		${dbSchemal3}ck_xiaohcmbkz
+		set
+			zhengclsh=#zongzlsh#,
+			jieslsh=#zhengcxh#,
+			editor=#editor#,
+			edit_time=sysdate
+		where
+			usercenter = #usercenter# and chanx = #chanx# and xiaohcbh = #xiaohcbh# 
+	</update>
+	
+	
+	
+	<!-- 小火车模板拉空重算 -->
+	<update id="updateXiaohcmbOflkcs" >
+		update
+		${dbSchemal3}ck_xiaohcmb
+		set
+			flag=0,
+			smonsxlsh='999999999',
+			smonbhlsh='999999999',
+			beihsj=null,
+			beiz1=null, 
+			beiz2=null, 
+			beiz3=null, 
+			beiz4=null, 
+			beiz5=null, 
+			beiz6=null, 
+			beiz7=null, 
+			emonzclsh=null, 
+			smonzclsh=null, 
+			dangqzcxh=null, 
+			shangxsj=null,
+			editor=#editor#,
+			edit_time=sysdate
+		where
+			usercenter = #usercenter# and chanx = #chanx# and xiaohcbh = #xiaohcbh# 
+			and liush <![CDATA[>=]]> (select max(liush) from ${dbSchemal3}ck_xiaohcmb where usercenter = #usercenter# and chanx = #chanx# and xiaohcbh = #xiaohcbh# and qislsh <![CDATA[<=]]> #zhengcxh# and jieslsh <![CDATA[>=]]> #zhengcxh# ) 
+			and liush <![CDATA[<=]]> (select max(liush) from ${dbSchemal3}ck_xiaohcmb where usercenter = #usercenter# and chanx = #chanx# and xiaohcbh = #xiaohcbh# and smonbhlsh <![CDATA[<=]]> #zhengcxh#) 
+	</update>
+	
+	<!-- 查询chaifts -->
+	<select id="queryChaifts" resultClass="java.lang.String">
+		(select 
+			chaifts			
+		from ${dbSchemal5}ckx_dax
+		where 
+			usercenter=#usercenter# and daxxh=#shengcxbh# and biaos='1'
+		)
+		union
+		(select 
+			t1.chaifts			
+		from ${dbSchemal5}ckx_dax t1,${dbSchemal5}ckx_fenzx t2
+		where 
+			t1.daxxh = t2.daxxh and t2.usercenter=#usercenter# and t2.fenzxh=#shengcxbh# and t2.biaos='1'
+		)
+	</select>
+	
+	<!-- 查询ck_zhengcgd,ck_guodsz对应的最大结束流水号 -->
+	<select id="getZhengcgdMaxlsh" resultClass="java.lang.String">
+		select  max(zhengcxh) 
+		from 
+		${dbSchemal3}ck_zhengcgd t1,${dbSchemal3}ck_guodsz t2 
+		where 
+			t1.usercenter=t2.usercenter and t1.shengcx=t2.chejcx and t1.wuld=t2.shangxd 
+			and t1.shengcx=#shengcxbh# and t1.usercenter=#usercenter#
+			group by shengcx
+	</select>
+	<!-- 查询ckx_xitcsdy获取小火车修正时间 -->
+	<select id="getXiuzrq" resultClass="java.lang.String">
+		select 
+			beiz 
+		from 
+		${dbSchemal3}ckx_xitcsdy
+		where 
+			zidbm=#shengcxbh# and zidlx='XHCXZSZ'
+	</select>
+	
+	<!-- 查询ck_xiaohcmb获取从计算时间起以生产的小火车趟次 -->
+	<select id="getYistcs" resultClass="java.lang.Integer">
+		select 
+			count(1) as ystcs
+		from 
+		${dbSchemal5}ck_xiaohcmb
+		where 
+			usercenter=#usercenter# and chanx=#shengcxbh# and xiaohcbh=#xiaohcbh# and xiaohcrq  <![CDATA[>=]]> #riq#
+	</select>
+	
+	<!-- 查询ck_xiaohcmb获取从计算时间起最小的起始流水号 -->
+	<select id="getKaislsh" resultClass="java.lang.String">
+		select 
+			min(qislsh)
+		from 
+		${dbSchemal5}ck_xiaohcmb
+		where 
+			usercenter=#usercenter# and chanx=#shengcxbh# and xiaohcbh=#xiaohcbh# and xiaohcrq  <![CDATA[>=]]> #riq#
+	</select>
+</sqlMap>

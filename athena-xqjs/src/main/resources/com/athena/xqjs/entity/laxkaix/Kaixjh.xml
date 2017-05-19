@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="kaixjh">
+
+	<resultMap class="com.athena.xqjs.entity.laxkaix.Kaixjh" id="Kaixjh">
+		<result column="KAIXJHH" property="kaixjhh" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="BANC" property="banc" />
+		<result column="SUANFCL" property="suanfcl" />
+		<result column="KAIXJX" property="kaixjx" />
+		<result column="ANQKC" property="anqkc" />
+		<result column="SHENGXZT" property="shengxzt" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="EDITOR" property="editor" />
+		<result column="EDIT_TIME" property="editTime" />
+		<result column="JIHY" property="jihy"/>
+	</resultMap>
+	<select id="getSumlingjsl" resultClass="java.util.HashMap">
+		 select 
+		 MAOXQ_.XUQBC,MAOXQMX_.CHANX,
+		 MAOXQMX_.lingjbh,sum(MAOXQMX_.xuqsl) as sumXuqsl
+		 FROM ${dbSchemal1}XQJS_MAOXQ MAOXQ_ LEFT OUTER JOIN ${dbSchemal1}XQJS_MAOXQMX MAOXQMX_ 
+		 ON MAOXQ_.XUQBC=MAOXQMX_.XUQBC WHERE 1=1 AND MAOXQMX_.ACTIVE='1'
+		 <dynamic>
+		 	<isNotEmpty  prepend=" and "  property="usercenter">
+		 		USERCENTER = #usercenter#
+		 	</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqbc">
+				MAOXQ_.XUQBC = #xuqbc#
+		 	</isNotEmpty>
+		 </dynamic>
+		  group by MAOXQMX_.lingjbh,MAOXQMX_.CHANX,MAOXQ_.XUQBC
+	</select>
+	<!-- 获取零件计划员代码 -->
+	<select id="getLingjlist"   parameterClass="com.athena.xqjs.entity.common.Lingj" resultClass="java.util.HashMap">
+                 select USERCENTER,LINGJBH,JIHY 
+                        from ${dbSchemal3}CKX_LINGJ
+                        where 1=1
+           <dynamic>
+				  <isNotEmpty prepend=" and " property="usercenter">USERCENTER = #usercenter#</isNotEmpty>
+		   </dynamic>
+    </select>
+    <!-- 获取各TC集装箱零件信息 -->
+	<select id="getTCLingjList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT
+		TC_.TCNO,
+		TC_.QIYSJ,
+		TC_.MUDD,
+		TC_.ZUISWLD,
+		TC_.ZUIXYJDDSJ,
+		TC_.LAXZDDDSJ,
+		UABQ_.LINGJBH,
+		sum(UABQ_.LINGJSL) as SUMLINGJSL,
+		LINGJ_.JIHY
+		FROM ${dbSchemal1}XQJS_TC TC_
+		LEFT OUTER JOIN ${dbSchemal1}CK_DAOHTZD DHTZD_ ON TC_.UTNO = DHTZD_.UTH
+		LEFT OUTER JOIN ${dbSchemal1}CK_UABQ UABQ_ ON DHTZD_.USERCENTER =
+		UABQ_.USERCENTER AND DHTZD_.UTH = UABQ_.Uth
+		INNER JOIN ${dbSchemal3}CKX_LINGJ LINGJ_ ON UABQ_.USERCENTER = LINGJ_.USERCENTER AND UABQ_.LINGJBH = LINGJ_.LINGJBH
+		where 1=1 AND TCZT = '1' and DHTZD_.ZHUANGT = 2
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">DHTZD_.USERCENTER =
+				#usercenter#</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbhs">(UABQ_.lingjbh in $lingjbhs$)</isNotEmpty>
+		</dynamic>
+		GROUP BY
+		TC_.TCNO,TC_.QIYSJ,TC_.MUDD,TC_.ZUISWLD,TC_.ZUIXYJDDSJ,TC_.LAXZDDDSJ,UABQ_.LINGJBH,LINGJ_.JIHY
+	</select>
+	<!-- 获取开箱界限时间内的所有预计能开的零件数量 -->
+	<select id="getYddhljsl" resultClass="java.util.HashMap">
+		SELECT
+		UABQ_.LINGJBH,
+		SUM(UABQ_.LINGJSL) as SUMLINGJSL
+		FROM ${dbSchemal1}XQJS_TC TC_
+		INNER JOIN ${dbSchemal1}CK_DAOHTZD DAOHTZD_
+		ON TC_.UTNO = DAOHTZD_.UTH AND TC_.TCNO = DAOHTZD_.TCH
+		INNER JOIN ${dbSchemal1}CK_UABQ UABQ_
+		ON DAOHTZD_.UTH=UABQ_.UTH AND DAOHTZD_.USERCENTER = UABQ_.USERCENTER
+		WHERE TC_.TCZT = '1' AND UABQ_.BAOZZT NOT IN ('5','6')
+		<dynamic>
+			 <isNotEmpty prepend=" and " property="kaixzdsj">TC_.KAIXZDSJ &lt;= to_date( #kaixzdsj#,'yyyy-MM-dd')</isNotEmpty>
+		</dynamic>
+		group by UABQ_.LINGJBH
+	</select>
+	<!-- 查询指定用户中心的库存中所有零件的库存之量的和 -->
+	<select id="getAllLjkc" resultClass="java.util.HashMap">
+		SELECT
+		LINGJBH,
+		SUM(KUCSL) as SUMLINGJSL
+		FROM ${dbSchemal1}xqjs_ziykzb WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				USERCENTER =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ziyhqrq">
+				ziyhqrq =to_date(#ziyhqrq#,'yyyy-MM-dd')
+			</isNotEmpty>
+		</dynamic>
+		group by LINGJBH
+	</select>
+	<!-- 查询所有零件的替代件 -->
+	<select id="getAllTdj" resultClass="java.util.HashMap">
+		SELECT
+		LINGJBH,
+		TIDLJH FROM ${dbSchemal3}CKX_TIDJ WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">USERCENTER =
+				#usercenter#</isNotEmpty>
+		</dynamic>
+	</select>
+	<insert id="insertKaixjh" parameterClass="com.athena.xqjs.entity.laxkaix.Kaixjh">
+		INSERT INTO ${dbSchemal1}XQJS_KAIXJH(
+		KAIXJHH,
+		USERCENTER,
+		BANC,
+		SUANFCL,
+		KAIXJX,
+		ANQKC,
+		SHENGXZT,
+		CREATOR,
+		CREATE_TIME,
+		JIHY
+		) VALUES(
+		#kaixjhh#,
+		#usercenter#,
+		#banc#,
+		#suanfcl#,
+		#kaixjx#,
+		#anqkc#,
+		#shengxzt#,
+		#creator#,
+		to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),
+		#jihy#
+		)
+  </insert>
+	<update id="updateKaxjh" parameterClass="com.athena.xqjs.entity.laxkaix.Kaixjh">
+		UPDATE ${dbSchemal1}XQJS_KAIXJH
+		SET SHENGXZT = #shengxzt#,
+		EDITOR=#editor#,
+		EDIT_TIME=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		WHERE KAIXJHH = #kaixjhh# AND USERCENTER = #usercenter#
+  </update>
+	<select id="selectKaixjhKeytc" parameterClass="java.util.HashMap"  resultClass="java.util.HashMap">
+		SELECT  
+		keytclj_.USERCENTER,
+		keytclj_.TCNO,
+		keytclj_.QIYSJ,
+		keytclj_.WULD
+		FROM ${dbSchemal1}XQJS_LINS_KEYTCLJ keytclj_ 
+		INNER JOIN ${dbSchemal1}XQJS_LINS_KEYTC keytc_ ON
+		keytc_.USERCENTER = keytclj_.USERCENTER AND keytclj_.jihydm = keytc_.jihydm AND
+		keytclj_.tcno = keytc_.tcno
+		<isEqual compareValue="1" property="suanfcl">
+			ORDER BY keytc_.tcmyd desc
+		</isEqual>
+		<isEqual compareValue="2" property="suanfcl">
+			ORDER BY keytc_.ZHIXSJ desc
+		</isEqual>
+  </select>
+	<select id="getKeytcBySuanfcl" resultClass="java.util.HashMap">
+		select USERCENTER,JIHYDM,TCNO
+		FROM ${dbSchemal1}XQJS_LINS_KEYTC WHERE 1=1
+		AND TCZT = '1'
+		<isEqual compareValue="1" property="suanfcl">
+			ORDER BY TCMYD DESC
+		</isEqual>
+		<isEqual compareValue="2" property="suanfcl">
+			ORDER BY ZHIXSJ DESC
+		</isEqual>
+	</select>
+	<select id="queryKaixjh" resultMap="Kaixjh">
+		SELECT KAIXJHH,USERCENTER,
+		BANC,
+		SUANFCL,
+		KAIXJX,
+		ANQKC,
+		SHENGXZT,
+		CREATOR,
+		to_char(CREATE_TIME,'yyyy-MM-dd  hh24:mi:ss') AS CREATE_TIME,
+		EDITOR,
+		EDIT_TIME,
+		JIHY FROM ${dbSchemal1}XQJS_KAIXJH
+		WHERE 1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="anqkc">ANQKC = #anqkc#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="kaixjx">KAIXJX = #kaixjx#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengxzt">SHENGXZT = #shengxzt#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="suanfcl">SUANFCL = #suanfcl#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy">JIHY = #jihy#
+			</isNotEmpty>
+		</dynamic>
+		order by KAIXJHH DESC
+
+  </select>
+  <select id="getKaixjhh"  parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+  	select max(kaixjhh) as KAIXJHH from ${dbSchemal1}XQJS_KAIXJH
+		WHERE  
+		1 =1 
+
+		<isNotEmpty prepend="  and " property="kaixjhh">
+			KAIXJHH like
+			'%'||#kaixjhh#||'%'
+		</isNotEmpty>
+	</select>
+
+	<!-- 更新拉箱计划状态 -->
+	<update id="changeZtKaixjh" parameterClass="com.athena.xqjs.entity.laxkaix.Kaixjh">
+		UPDATE
+		${dbSchemal1}XQJS_KAIXJH SET SHENGXZT = #shengxzt#,
+		EDITOR = #editor#,
+		EDIT_TIME = to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		WHERE
+		USERCENTER=#usercenter# and KAIXJHH= #kaixjhh#
+	</update>
+	
+	<select id="getMaxgzrsj"  resultClass="java.util.HashMap">
+		SELECT RIQ AS MAXGONGZR 
+		FROM ${dbSchemal1}CKX_CALENDAR_VERSION WHERE BANC = #rilbc# AND SHIFGZR=1   
+		AND TO_DATE(RIQ,'YYYY-MM-DD') &lt;=TO_DATE(#currentDate#,'YYYY-MM-DD') ORDER BY TO_DATE(RIQ,'YYYY-MM-DD')   DESC 
+	</select>
+	
+</sqlMap>

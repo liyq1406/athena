@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<select id="queryLixd" parameterClass="com.athena.ckx.entity.xuqjs.Lixd" resultClass="com.athena.ckx.entity.xuqjs.Lixd">
+		select usercenter,xianh,lixd,duiyxhd,biaos,creator,create_time,editor,edit_time,leix from
+		(
+		select l.usercenter,l.xianh,l.lixd,l.duiyxhd,l.biaos,l.creator,l.create_time,l.editor,l.edit_time,
+		decode(l.xianh, d.daxxh, '1', f.fenzxh, '2', '3') as leix
+		from ${dbSchemal3}ckx_lixd l
+		left join ${dbSchemal3}ckx_dax d on l.usercenter = d.usercenter and l.xianh = d.daxxh and d.biaos = '1'
+		left join ${dbSchemal3}ckx_fenzx f on l.usercenter = f.usercenter and l.xianh = f.fenzxh and f.biaos = '1'
+		)
+		where 1=1 and leix != '3'
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xianh"><![CDATA[xianh = #xianh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lixd"><![CDATA[lixd = #lixd#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="leix"><![CDATA[leix = #leix#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="duiyxhd"><![CDATA[duiyxhd = #duiyxhd#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,xianh,lixd
+	</select>
+	
+	<select id="getLixd" parameterClass="com.athena.ckx.entity.xuqjs.Lixd" resultClass="com.athena.ckx.entity.xuqjs.Lixd">
+		select usercenter,xianh,lixd,duiyxhd,biaos,creator,create_time,editor,edit_time from ${dbSchemal3}ckx_lixd
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xianh"><![CDATA[xianh = #xianh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lixd"><![CDATA[lixd = #lixd#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<insert id="insertLixd" parameterClass="com.athena.ckx.entity.xuqjs.Lixd">
+		insert into ${dbSchemal3}ckx_lixd(usercenter,xianh,lixd,duiyxhd,biaos,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter#,#xianh#,#lixd#,#duiyxhd#,#biaos#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]> )
+	</insert>
+	
+	<update id="updateLixd" parameterClass="com.athena.ckx.entity.xuqjs.Lixd">
+		update ${dbSchemal3}ckx_lixd set 
+		duiyxhd = #duiyxhd# ,
+		biaos = #biaos# ,
+		editor = #editor# ,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  usercenter = #usercenter# and  xianh = #xianh# and  lixd = #lixd#
+	</update>
+	
+	<select id="getChanxLeix" parameterClass="com.athena.ckx.entity.xuqjs.Lixd" resultClass="java.util.HashMap">
+		select s.shengcxbh, d.daxxh, f.fenzxh
+		from ${dbSchemal3}ckx_shengcx s
+		left join ${dbSchemal3}ckx_dax d on s.usercenter = d.usercenter and s.shengcxbh = d.daxxh and d.biaos = '1'
+		left join ${dbSchemal3}ckx_fenzx f on s.usercenter = f.usercenter and s.shengcxbh = f.fenzxh and f.biaos = '1'
+		where s.usercenter = #usercenter# and s.shengcxbh = #xianh# and s.biaos = '1'
+	</select>
+	
+	<select id="getCountLixd" parameterClass="com.athena.ckx.entity.xuqjs.Lixd" resultClass="java.lang.String">
+		select count(1)
+		from ${dbSchemal3}ckx_lixd
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+	    		<isNotEmpty prepend=" and " property="lixd"><![CDATA[lixd = #lixd#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+</sqlMap>

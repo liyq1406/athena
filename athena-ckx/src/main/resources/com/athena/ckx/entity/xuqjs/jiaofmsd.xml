@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!--交付码设定   denggq  2012-4-6 -->
+	<!-- 查询数据 -->
+	<select id="queryJiaofmsd" parameterClass="com.athena.ckx.entity.xuqjs.Jiaofmsd" resultClass="com.athena.ckx.entity.xuqjs.Jiaofmsd">
+		select usercenter,jiaofm,zhouxh,xingqxh,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_jiaofmsd
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiaofm"><![CDATA[jiaofm = #jiaofm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhouxh"><![CDATA[zhouxh = #zhouxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xingqxh"><![CDATA[xingqxh = #xingqxh#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,jiaofm,zhouxh,xingqxh
+	</select>
+	
+	<!-- 单数据数据 -->
+	<select id="getJiaofmsd" parameterClass="com.athena.ckx.entity.xuqjs.Jiaofmsd" resultClass="com.athena.ckx.entity.xuqjs.Jiaofmsd">
+		select usercenter,jiaofm,zhouxh,xingqxh
+		from ${dbSchemal3}ckx_jiaofmsd
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="jiaofm"><![CDATA[jiaofm = #jiaofm#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="zhouxh"><![CDATA[zhouxh = #zhouxh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xingqxh"><![CDATA[xingqxh = #xingqxh#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!-- 插入数据 -->
+	<insert id="insertJiaofmsd" parameterClass="com.athena.ckx.entity.xuqjs.Jiaofmsd">
+		insert into ${dbSchemal3}ckx_jiaofmsd(usercenter,jiaofm,zhouxh,xingqxh,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter# , #jiaofm# , #zhouxh# , #xingqxh# , #creator# ,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')  ]]> )
+	</insert>
+	
+	<!-- 修改数据 -->
+	<update id="updateJiaofmsd" parameterClass="com.athena.ckx.entity.xuqjs.Jiaofmsd">
+		update ${dbSchemal3}ckx_jiaofmsd 
+		set usercenter = #usercenter#,
+			jiaofm = #jiaofm#,
+			zhouxh = #zhouxh#,
+			xingqxh = #xingqxh#,
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  <![CDATA[usercenter = #usercenter# and  jiaofm = #jiaofm# and zhouxh = #zhouxh# and xingqxh = #xingqxh#]]> 
+	</update>
+	
+	<!-- 物理删除 -->
+	<update id="deleteJiaofmsd" parameterClass="com.athena.ckx.entity.xuqjs.Jiaofmsd">
+		delete from ${dbSchemal3}ckx_jiaofmsd where
+		<dynamic prepend=" "> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiaofm"><![CDATA[jiaofm = #jiaofm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhouxh"><![CDATA[zhouxh = #zhouxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xingqxh"><![CDATA[xingqxh = #xingqxh#]]></isNotEmpty>
+		</dynamic>
+	</update>
+	
+</sqlMap>

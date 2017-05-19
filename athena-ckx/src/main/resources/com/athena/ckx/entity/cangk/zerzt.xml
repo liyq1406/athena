@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- 用户中心  wangyu2014-2-18 -->
+
+	<!-- 多数据查询 -->
+	<select id="queryZerzt" parameterClass="com.athena.ckx.entity.cangk.Zerzt" resultClass="com.athena.ckx.entity.cangk.Zerzt">
+		select usercenter,zrztdm,zrztmc,zrztlx,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_zrzt
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zrztdm"><![CDATA[zrztdm=#zrztdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zrztlx"><![CDATA[zrztlx = #zrztlx#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter
+	</select>
+	
+	
+	<!-- 单数据查询 -->
+	<select id="getZerzt" parameterClass="com.athena.ckx.entity.cangk.Zerzt" resultClass="com.athena.ckx.entity.cangk.Zerzt">
+		select usercenter,zrztdm,zrztmc,zrztlx
+		from ${dbSchemal3}ckx_zrzt
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zrztdm"><![CDATA[zrztdm=#zrztdm#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 插入数据 -->
+	<insert id="insertZerzt" parameterClass="com.athena.ckx.entity.cangk.Zerzt">
+		insert into ${dbSchemal3}ckx_zrzt (usercenter,zrztdm,zrztmc,zrztlx,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter#,#zrztdm#,#zrztmc#,#zrztlx#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+	</insert>
+	
+	
+	<!-- 更新数据 -->
+	<update id="updateZerzt" parameterClass="com.athena.ckx.entity.cangk.Zerzt">
+		update ${dbSchemal3}ckx_zrzt 
+		set zrztmc = #zrztmc#,
+		    zrztlx = #zrztlx#,
+			editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+	    where  <![CDATA[usercenter = #usercenter# and zrztdm = #zrztdm#]]> 
+	</update>
+	
+	
+	<!-- 删除数据 -->
+	<delete id="deleteZerzt" parameterClass="com.athena.ckx.entity.cangk.Zerzt">
+		delete  from ${dbSchemal3}ckx_zrzt where
+		<dynamic prepend=" ">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="zrztdm" prepend="and">
+	    		<![CDATA[zrztdm = #zrztdm#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+</sqlMap>

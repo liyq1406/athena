@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="hlorder">
+
+	<resultMap class="com.athena.xqjs.entity.ilorder.Maoxq" id="Maoxq">
+		<result column="BEIZ" property="beiz" />
+		<result column="XUQCFSJ" property="xuqcfsj" />
+		<result column="SHENGXBZ" property="shengxbz" />
+		<result column="XUQBC" property="xuqbc" />
+		<result column="XUQLY" property="xuqly" />
+	</resultMap>
+
+	<select id="queryMaoxq" resultClass="com.athena.xqjs.entity.ilorder.Maoxq">
+		select
+		xuqbc,
+		beiz,
+		to_char(xuqcfsj,'yyyy-MM-dd HH24:mi:ss') XUQCFSJ,
+		shengxbz,
+		xuqly
+		from
+		${dbSchemal1}xqjs_maoxq
+		where
+		active='1'
+		ORDER BY XUQCFSJ DESC,XUQBC DESC
+	</select>
+	
+	<select id="queryMaoxqXqly" resultClass="com.athena.xqjs.entity.ilorder.Maoxq">
+	select
+	    distinct
+		xuqly 
+	from 
+		${dbSchemal1}xqjs_maoxq 
+	where 
+		active='1'
+	</select>
+	
+	<select id="queryOneMaoxq" resultClass="com.athena.xqjs.entity.ilorder.Maoxq">
+	select
+	    t.XUQBC,
+	    t.XUQCFSJ,
+	    t.XUQLY,
+	    t.BEIZ,
+	    t1.ZIDMC as xuqlymc
+	from 
+		${dbSchemal1}xqjs_maoxq t
+		left join ${dbSchemal3}CKX_XITCSDY t1 on t.XUQLY = t1.ZIDBM AND  t1.zidlx=#zidlx#
+	where 
+		XUQBC=#xuqbc#
+
+	</select>
+	<select id="queryMaoxqList" resultClass="com.athena.xqjs.entity.ilorder.Maoxq">
+	select
+	    t.XUQBC,
+	    t.XUQCFSJ,
+	    t.XUQLY,
+	    t.BEIZ,
+	    t1.ZIDMC as xuqlymc
+	from 
+		${dbSchemal1}xqjs_maoxq t
+		left join ${dbSchemal3}CKX_XITCSDY t1 on t.XUQLY = t1.ZIDBM AND  t1.zidlx=#zidlx#  
+	where 1=1 and t.USERCENTER =#usercenter#
+	<dynamic>
+			<isNotEmpty prepend="  and " property="xuqly">xuqly = #xuqly#
+			</isNotEmpty>
+	</dynamic>
+    order by t.XUQBC desc
+	</select>
+	
+	<delete id="deleteMaoxqById" parameterClass="com.athena.xqjs.entity.ilorder.Maoxq">
+		delete from ${dbSchemal1}XQJS_maoxq where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="banc">BANC = #banc#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+
+	<delete id="deleteMaoxq" parameterClass="com.athena.xqjs.entity.ilorder.Maoxq">
+		delete from ${dbSchemal1}XQJS_maoxq 
+		where 1=1
+	</delete>
+	<update id="updateMaoxq" parameterClass="java.util.Map">
+		update ${dbSchemal1}XQJS_maoxq xq 
+		set xq.shengxbz = '1' 
+		where xq.xuqbc = #xuqbc#
+	</update>
+	
+	
+	<select id="checkXiaohblVJ" resultClass="com.athena.xqjs.entity.common.Xiaohblzjb" >
+		select t.usercenter, t.lingjbh, t.chanx Shengcxbh, x.xiaohbl
+  		from ${dbSchemal1}XQJS_MAOXQHZJ_tmp t, ${dbSchemal1}XQJS_XIAOHBLZJB_TMP x
+ 		where t.lingjbh = x.lingjbh
+   		and t.usercenter = x.usercenter
+   		and t.chanx = x.shengcxbh and t.usercenter=#usercenter#
+	</select>
+	
+	<insert id="insertXhblVJ" parameterClass="com.athena.xqjs.entity.common.Xiaohblzjb">
+		insert into ${dbSchemal1}xqjs_xiaohblzjb_TMP
+			(
+				lingjbh,
+				shengcxbh,
+				xiaohbl,
+				usercenter 
+			)
+			values(
+				#lingjbh#,
+				#shengcxbh#,
+				#xiaohbl#,
+				#usercenter#
+			)
+	</insert>
+	
+	
+	<!-- xss_12947 -->
+	<select id="queryXhblVJ"  resultClass="com.athena.xqjs.entity.common.Xiaohblzjb" parameterClass="java.util.Map">
+		select usercenter, lingjbh,  xiaohbl ,shengcxbh
+		  from (select xm.usercenter,
+		               xm.chanx as shengcxbh,
+		               xm.lingjbh,
+		               sum(t.xiaohbl) as xiaohbl
+		          from  (select 
+		 zp.usercenter,
+		 zp.lingjbh,
+		 zp.chanx,
+		 lj.waibms,
+	  lj.fenpqh
+	 from ${dbSchemal1}xqjs_maoxqhzj_tmp zp left join ${dbSchemal3}ckx_wullj lj 
+	 on zp.usercenter = lj.usercenter and zp.lingjbh = lj.lingjbh and zp.zhizlx = lj.zhizlx and zp.chanx = lj.shengcxbh
+	 where  zp.usercenter=#usercenter# group by zp.usercenter , zp.lingjbh , zp.chanx,lj.waibms,lj.fenpqh) xm  
+	 left join ${dbSchemal3}CKX_LINGJXHD t 
+	 on xm.usercenter = t.usercenter and xm.chanx = t.shengcxbh and xm.lingjbh = t.lingjbh AND  xm.fenpqh = t.fenpqbh  and t.biaos ='1'
+	 group by xm.usercenter, xm.chanx, xm.lingjbh) bl
+	 where xiaohbl &lt;&gt; 1 or xiaohbl is null
+	</select>
+	
+	<delete id="clearZjbVJ" parameterClass="java.util.Map">
+		delete  from  ${dbSchemal3}xqjs_xiaohblzjb_TMP where USERCENTER=#usercenter#
+	</delete>
+	
+	<!-- xss_ 0013089 -->
+	<update id="updateDingdJsz">
+		update 
+			${dbSchemal1}xqjs_dingd 
+		set 
+			dingdzt = #state#,active = '1',dingdsxczr = #creator#,dingdsxsj = create_time
+		where 
+			dingdzt = 'A'
+			<dynamic>
+			<isNotNull prepend=" and " property="dingdjssj">
+				dingdjssj = to_date(#dingdjssj#,'yyyy-MM-dd hh24:mi:ss') 
+			</isNotNull>
+			<isNotNull prepend=" and " property="creator">
+				creator = #creator# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+				usercenter = #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="dingdlx">
+					dingdlx in ($dingdlx$) 
+			</isNotNull>
+			<isNotNull prepend=" and " property="chullx">
+					chullx = #chullx# 
+			</isNotNull>
+			</dynamic>
+	</update>
+	
+	<delete id="deleteDingdLjJsz">
+		delete  
+			${dbSchemal1}xqjs_dingdlj 
+		where 
+			dingdh in 
+			(select dingdh from ${dbSchemal1}xqjs_dingd 
+				where 
+			dingdzt = 'A' 
+			<dynamic>
+			<isNotNull prepend=" and " property="creator">
+					creator = #creator# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+					usercenter = #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="dingdlx">
+					dingdlx in ($dingdlx$) 
+			</isNotNull>)
+			</dynamic>
+	</delete>
+	
+	<delete id="deleteDingdJsz">
+		delete   
+			${dbSchemal1}xqjs_dingd where dingdzt = 'A'
+			<dynamic>
+				<isNotNull prepend=" and " property="creator">
+					creator = #creator# 
+				</isNotNull>
+				<isNotNull prepend=" and " property="active">
+					active = #active# 
+				</isNotNull>
+				<isNotNull prepend=" and " property="usercenter">
+					usercenter = #usercenter# 
+			</isNotNull>
+				<isNotNull prepend=" and " property="dingdlx">
+						dingdlx in ($dingdlx$) 
+				</isNotNull>
+			</dynamic>
+	</delete>
+	
+	<!-- 清空计算中的订单明细数据     modify hzg 2015.7.9  dingdzt由A改为2  , 2015.7.14还原成A -->
+	<delete id="deleteDingdMxJsz">
+		delete   
+			${dbSchemal1}xqjs_dingdmx where
+			 dingdh in 
+			(select dingdh from ${dbSchemal1}xqjs_dingd 
+				where 
+			dingdzt = 'A' 
+			<dynamic>
+			<isNotNull prepend=" and " property="creator">
+					creator = #creator# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+					usercenter = #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="dingdlx">
+					dingdlx in ($dingdlx$) 
+			</isNotNull>)
+			</dynamic>
+	</delete>
+	
+</sqlMap>

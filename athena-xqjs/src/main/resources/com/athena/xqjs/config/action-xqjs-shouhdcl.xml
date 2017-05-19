@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft><!-- 资源跟踪报警action配置文件 -->
+	<package name="shouhdcl" extend="toft-default" namespace="/shouhdcl">
+		<!-- 初始页面 -->
+	    <action name="initShouhdcl" class="shouhdclAction" method="initShouhdcl">
+	    	<result name="shouhdcl">/WEB-INF/pages/xqjs/shouhdcl/shouhdclsh.jsp</result>
+	    </action>
+	    
+	    <!-- 查询收货待处理 -->
+	    <action name="queryShouhdcl" class="shouhdclAction" method="queryShouhdcl">
+	    </action>
+	    
+	    <!-- 收货待处理审核/拒绝列表页面 --><!-- 141216 xh 10600 -->
+	    <action name="initShouhdclshlb" class="shouhdclAction" method="initShouhdclshlb">
+	    	<result name="shenh">/WEB-INF/pages/xqjs/shouhdcl/shouhdclshlb.jsp</result>
+	    	<result name="juj">/WEB-INF/pages/xqjs/shouhdcl/shouhdcljuj.jsp</result>
+	    </action>
+	    
+	    <!-- 查询收货待处理 -->
+	    <action name="queryShouhdclshlb" class="shouhdclAction" method="queryShouhdclshlb">
+	    </action>
+	    
+	    <!-- 审核 -->
+	    <action name="shenH" class="shouhdclAction" method="shenH">
+	    </action>
+	    
+	    <!-- 指定要货令初始化页面 -->
+	    <action name="initZhidyhl" class="shouhdclAction" method="initZhidyhl">
+	    	<result name="zhidyhl">/WEB-INF/pages/xqjs/shouhdcl/zhidyhl.jsp</result>
+	    </action>
+	    
+	    <!-- 查询要货令列表 -->
+	    <action name="queryYaohl" class="shouhdclAction" method="queryYaohl">
+	    </action>
+	    
+	    <!-- 指定要货令 -->
+	    <action name="zhiDyhl" class="shouhdclAction" method="zhiDyhl">
+	    	<result name="shouhdclshlb">/WEB-INF/pages/xqjs/shouhdcl/shouhdclshlb.jsp</result>
+	    </action>
+	    
+	    <!-- 批量指定要货令 -->
+	    <action name="piLzdyhl" class="shouhdclAction" method="piLzdyhl">
+	    </action>
+	    
+	    <!-- 校验要货令 -->
+	    <action name="checkYhl" class="shouhdclAction" method="checkYhl">
+	    </action>
+	    
+	    <!-- 创建临时订单 -->
+	    <action name="saveLinsdd" class="shouhdclAction" method="saveLinsdd">
+	    </action>
+	    
+	    <!--xss 0011223 校验拒收跟踪单和消耗点的仓库编号 -->
+	    <action name="checkLinsdd" class="shouhdclAction" method="checkLinsdd">
+	    </action>
+	    
+	     <!-- 更新拒收跟踪单 -->
+	    <action name="updateJusgzd" class="shouhdclAction" method="updateJusgzd">
+	    </action>
+	    
+		<!-- 收货待处理回退初始页面 -->
+	    <action name="initShouhdclht" class="shouhdclhtAction" method="initShouhdclht">
+	    	<result name="shouhdclht">/WEB-INF/pages/xqjs/shouhdcl/shouhdclht.jsp</result>
+	    </action>
+	    <!-- 收货待处理回退查询处理 -->
+	    <action name="queryShouhdclht" class="shouhdclhtAction" method="queryShouhdclht"></action>
+	    <!-- 收货待处理回退 -->
+	    <action name="shouhdclhuit" class="shouhdclhtAction" method="shouhdclhtUpdate"></action>
+	</package>
+</toft>

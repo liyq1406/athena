@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="carry">
+
+	<select id="getCkxXianbDingh" resultClass="com.athena.ckx.entity.carry.CkxXianbDingh">
+		select 
+		usercenter,lingjbh,xianbk,qid,zick,qidlx,mos,jianglms,jianglmssxsj,shengxbs,creator,create_Time,editor,edit_Time
+		from ${dbSchemal3}ckx_xianb_dingh where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xianbck">xianbk = #xianbck#</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+
+	<!-- 插入记录 -->
+	<insert id="insertCkxXianbDingh" parameterClass="com.athena.ckx.entity.carry.CkxXianbDingh">insert into
+		${dbSchemal3}ckx_xianb_dingh (usercenter,lingjbh,xianbk,qid,zick,qidlx,mos,jianglms,jianglmssxsj,shengxbs,creator,create_Time,editor,edit_Time,xianbkZick)
+		values(
+			#usercenter#,
+			#lingjbh#,
+			#xianbck#,
+			#qid#,
+			#zick#,
+			#qidlx#,
+			#mos#,
+			#jianglms#,
+			#jianglmssxsj#,1
+			,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'),#xianbkZick#)
+	</insert>
+	       
+	       
+	       
+	       <!-- 修改主键 -->
+	<update id="updateCkxXianbDinghForID" parameterClass="com.athena.ckx.entity.carry.CkxXianbDingh">
+		update ${dbSchemal3}ckx_xianb_dingh set 
+		qid=#qid#,
+		zick=#zick#,
+		qidlx=#qidlx#,
+		xianbk = #tempId#,
+		mos=#mos#,
+		xianbkZick = #xianbkZick#,
+		jianglms=#jianglms#,
+		jianglmssxsj=#jianglmssxsj#,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xianbck">xianbk = #xianbck#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	
+	
+	<update id="updateCkxXianbDingh" parameterClass="com.athena.ckx.entity.carry.CkxXianbDingh">
+		update ${dbSchemal3}ckx_xianb_dingh set 
+		qid=#qid#,
+		qidlx=#qidlx#,
+		mos=#mos#,
+		jianglms=#jianglms#,
+		jianglmssxsj=#jianglmssxsj#,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xianbck">xianbk = #xianbck#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deleteCkxXianbDingh"  parameterClass="com.athena.ckx.entity.carry.CkxXianbDingh" >
+		delete from ${dbSchemal3}ckx_xianb_dingh 
+		where 
+		     usercenter = #usercenter#
+			and lingjbh = #lingjbh#
+			and xianbk = #xianbck#
+		
+	
+	</delete>
+</sqlMap>

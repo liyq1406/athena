@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="Nianxb">
+
+	<resultMap class="com.athena.xqjs.entity.common.Nianxb" id="Nianxb">
+		<result column="NIANF" property="nianf" />
+		<result column="NIANX" property="nianx" />
+	</resultMap>
+
+	<select id="queryNianx" parameterClass="com.athena.xqjs.entity.common.Nianxb"
+		resultClass="com.athena.xqjs.entity.common.Nianxb">
+<!--		SELECT
+		nianf,
+		nianx
+		FROM
+		${dbSchemal3}ckx_nianx
+		WHERE
+		nianf=#nianf#
+-->
+		select
+            c.usercenter as usercenter ,
+            c.zidbm as nianx,
+            c.zidmc as nianf
+        from 
+            ${dbSchemal3}CKX_XITCSDY c
+        where 
+            1=1
+        <dynamic>
+           
+            <isNotEmpty prepend=" and " property="nianf">
+                zidmc = #nianf#
+            </isNotEmpty>
+        </dynamic>
+  	</select>
+
+</sqlMap>

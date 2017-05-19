@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="jlmxq">
+	<!-- 主页面 JL毛需求查询 mantis:0012854 JL按需毛需求界面字段问题 by CSY 20161221 -->
+	<select id="queryJLMaoxq" parameterClass="com.athena.xqjs.entity.maoxq.JLMaoxq"
+		resultClass="com.athena.xqjs.entity.maoxq.JLMaoxq">
+        select c.usercenter,decode(c.hanzbs,1,'总装',2,'焊装','') hanzbs,c.lingjbh,c.danw,c.xiaohd,c.xiaohcbh
+        ,c.tangc,c.xiaohcrq,decode(c.xuqly,1,'CLV',2,'SPPV','') xuqly,c.chejh,c.chanx,
+        c.xiaohxs,c.creator,c.create_time,c.editor,c.edit_time from ${dbSchemal1}xqjs_anxmaoxq_jl c
+		where
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter">
+                 <![CDATA[c.usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="chanx">
+                 <![CDATA[c.chanx = #chanx#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="lingjbh">
+                 <![CDATA[c.lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="xiaohd">
+                 <![CDATA[c.xiaohd = #xiaohd#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohcrqFrom">
+				<![CDATA[to_date(c.xiaohcrq,'yyyy-MM-dd') >= to_date(#xiaohcrqFrom#,'yyyy-MM-dd') ]]> 
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohcrqTo">
+				<![CDATA[to_date(c.xiaohcrq,'yyyy-MM-dd') <= to_date(#xiaohcrqTo#,'yyyy-MM-dd')  ]]> 
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="tangc">
+                <![CDATA[c.tangc = #tangc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="xuqly">
+                <![CDATA[c.xuqly = #xuqly#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="xiaohcbh">
+                <![CDATA[c.xiaohcbh = #xiaohcbh#]]>
+			</isNotEmpty>
+		</dynamic>
+		order by c.usercenter,c.lingjbh,c.xiaohd,c.xiaohcrq,c.xiaohcbh,c.tangc 
+	</select>
+
+</sqlMap>

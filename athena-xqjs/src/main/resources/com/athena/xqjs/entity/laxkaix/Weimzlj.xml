@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="weimzlj">
+
+	<resultMap class="com.athena.xqjs.entity.laxkaix.Weimzlj" id="Weimzlj">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="JIHNO" property="jihNo" />
+		<result column="LINGJH" property="lingjh" />
+		<result column="MUDD" property="mudd" />
+		<result column="WEIMZSL" property="weimzsl" />
+		<result column="DUANDSJ" property="duandsj" />
+		<result column="CANGKKC" property="cangkkc" />
+		<result column="ZHONGXQKC" property="zhongxqkc" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="EDITOR" property="editor" />
+		<result column="EDIT_TIME" property="editTime" />
+	</resultMap>
+	<insert id="insertWeimzlj" parameterClass="com.athena.xqjs.entity.laxkaix.Weimzlj">
+		INSERT INTO
+		${dbSchemal1}XQJS_WEIMZLJ(
+		USERCENTER,
+		JIHNO,
+		LINGJH,
+		MUDD,
+		WEIMZSL,
+		<dynamic>
+		<isNotEmpty property="duandsj">
+		DUANDSJ,
+		</isNotEmpty>
+		</dynamic>
+		CANGKKC,
+		ZHONGXQKC,
+		CREATOR,
+		CREATE_TIME
+		) VALUES(
+		#usercenter#,
+		#jihNo#,
+		#lingjh#,
+		#mudd#,
+		#weimzsl#,
+		<dynamic>
+		<isNotEmpty property="duandsj">
+		to_date(#duandsj#,'yyyy-MM-dd HH24:mi:ss'),
+		</isNotEmpty>
+		</dynamic>
+		#cangkkc#,
+		#zhongxqkc#,
+		#creator#,
+		to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss')
+		)
+	</insert>
+	<select id="queryLaxjhWeimzlj" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.laxkaix.WeimzljBean">
+		select
+		wmzlj_.USERCENTER,
+		wmzlj_.JIHNO,
+		wmzlj_.LINGJH,
+		wmzlj_.WEIMZSL,
+		wmzlj_.CANGKKC,
+		wmzlj_.ZHONGXQKC,
+		lingj_.ZHONGWMC,
+		lingj_.JIHY
+		from ${dbSchemal1}XQJS_WEIMZLJ wmzlj_
+		inner join ${dbSchemal3}CKX_LINGJ lingj_ ON wmzlj_.LINGJH = lingj_.LINGJBH
+		AND wmzlj_.USERCENTER = lingj_.USERCENTER
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend=" AND " property="jihNo"> JIHNO = #jihNo#</isNotEmpty>
+		</dynamic>
+		
+	</select>
+</sqlMap>

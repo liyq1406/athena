@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- V4_025 -->
+<sqlMap namespace="yhl">
+
+	<!-- 按照查询条件查询外部要货令 -->
+	<select id="queryYaohl" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		select
+		a.chansyy,
+		a.zhongzyy,
+		a.yuanyhlh,
+		A.yaohlh,
+		A.dingdh,
+		A.usercenter,
+		A.lingjbh,
+		A.gongysdm,
+		A.yaohllx,
+		A.cangkbh,
+		A.zickbh,
+		A.mudd,
+		A.keh,
+		A.yaohsl,
+		A.baozxh,
+		to_char(A.faysj,'yyyy-mm-dd HH24:mi:ss')as faysj,
+		to_char(A.zuiwsj,'yyyy-mm-dd HH24:mi:ss')as zuiwsj,
+		to_char(A.zuizsj, 'yyyy-mm-dd HH24:mi:ss') as zuizsj,
+		to_char(A.shijfysj,'yyyy-mm-dd HH24:mi:ss')as shijfysj,
+		to_char(A.xiughyjjfsj,'yyyy-mm-dd HH24:mi:ss')as xiughyjjfsj,
+		to_char(A.jiaofj ,'yyyy-mm-dd HH24:mi:ss') as jiaofj,
+		A.yaohlzt as yaohlzt,
+		A.editor,
+		to_char(A.edit_time,'yyyy-mm-dd HH24:mi:ss') as edit_time,
+		to_char(A.yaohlscsj,'yyyy-mm-dd HH24:mi:ss') as yaohlscsj,
+		A.beiz ,
+		L.jihy as jihyz,
+		A.fahd,
+		
+       case when
+	   A.yaohlzt&lt;&gt;'05' and   nvl(A.xiughyjjfsj,A.zuiwsj)&lt;to_date(to_char(nvl(A.jiaofj,sysdate), 'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss') 
+	   then  '0'
+	   when
+	   A.yaohlzt&lt;&gt;'05' and A.yaohlzt = '00' and nvl(A.xiughyjjfsj,A.zuiwsj)&gt;=to_date(to_char(nvl(A.jiaofj,sysdate), 'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss')
+	   and nvl(A.xiughyjjfsj,A.zuizsj)&lt;=to_date(to_char(nvl(A.jiaofj,sysdate), 'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss') 
+	   then  '2'
+	   when
+	   A.yaohlzt&lt;&gt;'05' and A.yaohlzt = '00' and nvl(A.xiughyjjfsj,A.zuizsj)&gt;to_date(to_char(nvl(A.jiaofj,sysdate), 'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss') 
+	   then  '1' else
+	   null
+	   end as jiaofzt,
+       decode(A.yaohlzt,'00',A.daijfsl,'05',A.daijfsl,'08',A.daijfsl,'') daijfsl,
+       decode(A.shifpz,'1','是','0','否','') shifpz,
+       decode(A.shiflsk,'1','是','0','否','') shiflsk,
+       case when (A.yaohllx = 'R1' OR A.yaohllx='CD') then chanx 
+       else d.xianh end  as chanx,
+		A.Chengysdm,
+		to_char(A.yuanzuizsj,'yyyy-mm-dd HH24:mi:ss')as yuanzuizsj,
+		to_char(A.yuanzuiwsj,'yyyy-mm-dd HH24:mi:ss')as yuanzuiwsj
+		from ${dbSchemal1}ck_yaohl A
+		left join ${dbSchemal3}ckx_lingj L
+		 on(A.usercenter = L.usercenter and A.lingjbh = L.lingjbh)
+		left join ${dbSchemal3}ckx_cangk  d
+		on (A.cangkbh = d.cangkbh and A.usercenter = d.usercenter )
+		where
+			A.usercenter=#usercenter#
+			$yaohlzt$
+			$jiaofzt$
+			$shiftt$
+		<dynamic>
+		    <isEqual   property="sj" compareValue="0">
+		            <isNotEmpty prepend=" and " property="qssj">faysj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">faysj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		    <isEqual   property="sj" compareValue="1">
+		            <isNotEmpty prepend=" and " property="qssj">shijfysj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">shijfysj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		    <isEqual   property="sj" compareValue="2">
+		            <isNotEmpty prepend=" and " property="qssj">zuiwsj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">zuiwsj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		     <isEqual   property="sj" compareValue="3">
+		            <isNotEmpty prepend=" and " property="qssj">jiaofj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">jiaofj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+			<isNotEmpty prepend=" and " property="jihyz"> L.jihy=#jihyz#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohlh"> A.yaohlh=#yaohlh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"> A.lingjbh=#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"> A.gongysdm=#gongysdm#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahd"> A.fahd = #fahd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd"> A.mudd= #mudd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="keh"> A.keh=#keh#
+			</isNotEmpty>
+            <isNotEmpty prepend=" and " property="currtime"> A.zuiwsj&lt;to_date(#currtime#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohllx"> A.yaohllx =#yaohllx#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"> A.chengysdm=#chengysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh"> A.dingdh=#dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shifpz"> A.shifpz=#shifpz#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shiflsk"> A.shiflsk=#shiflsk#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx"> decode(A.muddlx,1,a.chanx,d.xianh) = #chanx#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY yaohlscsj desc, yaohlh asc
+	</select>
+	
+	<!-- 按照查询条件查询统计外部要货令 -->
+	<select id="countExpYaohl" parameterClass="java.util.Map" resultClass="java.math.BigDecimal">
+		select
+		count(A.yaohlh)
+		from ${dbSchemal1}ck_yaohl A
+		left join ${dbSchemal3}ckx_lingj L
+		 on(A.usercenter = L.usercenter and A.lingjbh = L.lingjbh)
+		left join ${dbSchemal3}ckx_cangk  d
+		 on (A.cangkbh = d.cangkbh and A.usercenter = d.usercenter )
+		where 
+			A.usercenter=#usercenter#
+			$shij$
+			$yaohlzt$
+			$jiaofzt$
+		<dynamic>
+		 <isEqual   property="sj" compareValue="0">
+		            <isNotEmpty prepend=" and " property="qssj">faysj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">faysj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		    <isEqual   property="sj" compareValue="1">
+		            <isNotEmpty prepend=" and " property="qssj">shijfysj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">shijfysj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		    <isEqual   property="sj" compareValue="2">
+		            <isNotEmpty prepend=" and " property="qssj">zuiwsj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">zuiwsj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		     <isEqual   property="sj" compareValue="3">
+		            <isNotEmpty prepend=" and " property="qssj">jiaofj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">jiaofj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+			<isNotEmpty prepend=" and " property="jihyz"> L.jihy=#jihyz#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohlh"> A.yaohlh=#yaohlh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"> A.lingjbh=#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"> A.gongysdm=#gongysdm#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahd"> A.fahd = #fahd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd"> A.mudd= #mudd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="keh"> A.keh=#keh#
+			</isNotEmpty>
+            <isNotEmpty prepend=" and " property="currtime"> A.zuiwsj&lt;to_date(#currtime#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohllx"> A.yaohllx =#yaohllx#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"> A.chengysdm=#chengysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh"> A.dingdh=#dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shifpz"> A.shifpz=#shifpz#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shiflsk"> A.shiflsk=#shiflsk#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx"> decode(A.muddlx,1,a.chanx,d.xianh) = #chanx#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 按照查询条件查询外部要货令 -->
+	<select id="queryExpYaohl" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		select
+		A.yaohlh,
+		A.dingdh,
+		A.usercenter,
+		A.lingjbh,
+		A.gongysdm,
+		A.yaohllx,
+		A.cangkbh,
+		A.zickbh,
+		A.mudd,
+		A.keh,
+		A.yaohsl,
+		A.baozxh,
+		to_char(A.faysj,'yyyy-mm-dd HH24:mi:ss')as faysj,
+		to_char(A.zuiwsj,'yyyy-mm-dd HH24:mi:ss')as zuiwsj,
+		to_char(A.shijfysj,'yyyy-mm-dd HH24:mi:ss')as shijfysj,
+		to_char(A.xiughyjjfsj,'yyyy-mm-dd HH24:mi:ss')as xiughyjjfsj,
+		to_char(A.jiaofj ,'yyyy-mm-dd HH24:mi:ss') as jiaofj,
+		(select zidmc
+          from ${dbSchemal3}ckx_xitcsdy zd
+          where    zd.zidlx = 'YHLZT'
+               and zd.zidbm = A.yaohlzt)  as yaohlzt,
+		A.editor,
+		to_char(A.edit_time,'yyyy-mm-dd HH24:mi:ss') as edit_time,
+		to_char(A.yaohlscsj,'yyyy-mm-dd HH24:mi:ss') as yaohlscsj,
+		A.beiz ,
+		L.jihy as jihyz,
+		A.fahd,
+	   case when
+	   A.yaohlzt&lt;&gt;'05' and   nvl(A.xiughyjjfsj,A.zuiwsj)&lt;to_date(to_char(nvl(A.jiaofj,sysdate), 'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss') 
+	   then  '0'
+	   when
+	   A.yaohlzt&lt;&gt;'05' and A.yaohlzt = '00' and nvl(A.xiughyjjfsj,A.zuiwsj)&gt;=to_date(to_char(nvl(A.jiaofj,sysdate), 'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss')
+	   and nvl(A.xiughyjjfsj,A.zuizsj)&lt;=to_date(to_char(nvl(A.jiaofj,sysdate), 'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss') 
+	   then  '2'
+	   when
+	   A.yaohlzt&lt;&gt;'05' and A.yaohlzt = '00' and nvl(A.xiughyjjfsj,A.zuizsj)&gt;to_date(to_char(nvl(A.jiaofj,sysdate), 'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss') 
+	   then  '1' else
+	   null
+	   end as jiaofzt,
+	   decode(A.yaohlzt,'00',A.daijfsl,'05',A.daijfsl,'08',A.daijfsl,'') daijfsl,
+	   decode(A.shifpz,'1','是','0','否','') shifpz,
+       decode(A.shiflsk,'1','是','0','否','') shiflsk,
+       case when (A.yaohllx = 'R1' OR A.yaohllx='CD') then chanx 
+       else d.xianh end  as chanx,
+	   A.Chengysdm,
+	   to_char(A.yuanzuizsj,'yyyy-mm-dd HH24:mi:ss')as yuanzuizsj,
+	   to_char(A.yuanzuiwsj,'yyyy-mm-dd HH24:mi:ss')as yuanzuiwsj
+	   from ${dbSchemal1}ck_yaohl A
+	   left join ${dbSchemal3}ckx_lingj L
+		 on(A.usercenter = L.usercenter and A.lingjbh = L.lingjbh)
+		left join ${dbSchemal3}ckx_cangk  d
+		on (A.cangkbh = d.cangkbh and A.usercenter = d.usercenter )
+		where 
+			A.usercenter=#usercenter#
+			$shij$
+			$yaohlzt$
+			$jiaofzt$
+			$shiftt$
+		<dynamic>
+		 <isEqual   property="sj" compareValue="0">
+		            <isNotEmpty prepend=" and " property="qssj">faysj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">faysj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		    <isEqual   property="sj" compareValue="1">
+		            <isNotEmpty prepend=" and " property="qssj">shijfysj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">shijfysj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		    <isEqual   property="sj" compareValue="2">
+		            <isNotEmpty prepend=" and " property="qssj">zuiwsj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">zuiwsj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		     <isEqual   property="sj" compareValue="3">
+		            <isNotEmpty prepend=" and " property="qssj">jiaofj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">jiaofj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+			<isNotEmpty prepend=" and " property="jihyz"> L.jihy=#jihyz#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohlh"> A.yaohlh=#yaohlh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"> A.lingjbh=#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"> A.gongysdm=#gongysdm#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahd"> A.fahd = #fahd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd"> A.mudd= #mudd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="keh"> A.keh=#keh#
+			</isNotEmpty>
+            <isNotEmpty prepend=" and " property="currtime">  A.zuiwsj&lt;to_date(#currtime#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohllx"> A.yaohllx =#yaohllx#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"> A.chengysdm=#chengysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh"> A.dingdh=#dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shifpz"> A.shifpz=#shifpz#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shiflsk"> A.shiflsk=#shiflsk#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx"> decode(A.muddlx,1,a.chanx,d.xianh) = #chanx#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+
+	<!-- 按照查询条件查询内部要货令 -->
+	<select id="queryYaohlN" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.yaohl.Yaonbhl" remapResults="true">
+		select
+		a.chansyy,
+		a.zhongzyy,
+		a.yuanyhlh,
+		A.yaohlh,
+		A.dingdh,
+		A.usercenter,
+		A.lingjbh,
+		A.gongysdm,
+		A.baozxh,
+		A.yaohllx,
+		A.cangkbh,
+		A.zickbh,
+		A.mudd,
+		A.keh,
+		A.beiz ,
+		A.yaohsl,
+		<dynamic>
+			<isNotEqual compareValue="CD" property="yaohllx">
+			<isNotEqual compareValue="MD" property="yaohllx">
+				to_char(A.faysj,'yyyy-mm-dd HH24:mi:ss') as faysj,
+			</isNotEqual>
+			</isNotEqual>
+		</dynamic>
+		to_char(A.zuiwsj,'yyyy-mm-dd HH24:mi:ss')as zuiwsj,
+		to_char(A.jiaofj ,'yyyy-mm-dd HH24:mi:ss') as jiaofj,
+		null xiughyjjfsj,
+		(select zidmc
+          from ${dbSchemal3}ckx_xitcsdy zd
+          where    zd.zidlx = 'YHLZT'
+               and zd.zidbm = A.yaohlzt)  as yaohlzt,
+		A.editor,
+		to_char(A.edit_time,'yyyy-mm-dd HH24:mi:ss') as edit_time,
+		A.daijfsl,
+        A.shifpz,
+		l.jihy as jihyz
+		from
+		${dbSchemal1}ck_yaonbhl A
+		left join 
+		${dbSchemal3}ckx_lingj l
+		on(
+		   l.usercenter=A.usercenter
+		and 
+		   l.lingjbh=A.lingjbh
+         )
+		where
+		 A.usercenter=#usercenter#
+         $yaohlzt$
+		<dynamic>
+		    <isEqual   property="sj" compareValue="0">
+		            <isNotEmpty prepend=" and " property="qssj">faysj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">faysj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		    <isEqual   property="sj" compareValue="1">
+		            <isNotEmpty prepend=" and " property="qssj">shijfysj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">shijfysj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		    <isEqual   property="sj" compareValue="2">
+		            <isNotEmpty prepend=" and " property="qssj">zuiwsj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">zuiwsj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		     <isEqual   property="sj" compareValue="3">
+		            <isNotEmpty prepend=" and " property="qssj">jiaofj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">jiaofj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+			<isNotEmpty prepend=" and " property="yaohlh"> A.yaohlh=#yaohlh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"> A.lingjbh=#lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="keh">  $keh$</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"> A.cangkbh=#cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohllx"> A.yaohllx =#yaohllx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh"> A.dingdh=#dingdh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd"> A.mudd=#mudd#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shifpz"> A.shifpz=#shifpz#</isNotEmpty>
+		</dynamic>
+		ORDER BY 
+		<dynamic>
+			<isNotEqual compareValue="CD" property="yaohllx">
+			<isNotEqual compareValue="MD" property="yaohllx">
+				faysj asc,
+			</isNotEqual>
+			</isNotEqual>
+		</dynamic>
+		yaohlh asc
+	</select>
+
+   <!-- 按照查询条件查统计询内部要货令 -->
+	<select id="countYaohlN" parameterClass="java.util.Map"
+		resultClass="java.math.BigDecimal">
+		select
+		count(A.yaohlh)
+		from
+		${dbSchemal1}ck_yaonbhl A
+		left join 
+		${dbSchemal3}ckx_lingj l
+		on(
+		   l.usercenter=A.usercenter
+		and 
+		   l.lingjbh=A.lingjbh
+         )
+		where
+		 A.usercenter=#usercenter#
+			$shij$
+			$yaohlzt$
+		<dynamic>
+		    <isEqual   property="sj" compareValue="0">
+		            <isNotEmpty prepend=" and " property="qssj">faysj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">faysj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		    <isEqual   property="sj" compareValue="1">
+		            <isNotEmpty prepend=" and " property="qssj">shijfysj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">shijfysj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		    <isEqual   property="sj" compareValue="2">
+		            <isNotEmpty prepend=" and " property="qssj">zuiwsj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">zuiwsj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+		     <isEqual   property="sj" compareValue="3">
+		            <isNotEmpty prepend=" and " property="qssj">jiaofj &gt;= to_date(#qssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		            <isNotEmpty prepend=" and " property="jssj">jiaofj &lt;= to_date(#jssj#,'yyyy-mm-dd HH24:mi:ss')</isNotEmpty>
+		    </isEqual>
+			<isNotEmpty prepend=" and " property="yaohlh"> A.yaohlh=#yaohlh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"> A.lingjbh=#lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="keh">$keh$</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"> A.cangkbh=#cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohllx"> A.yaohllx =#yaohllx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh"> A.dingdh=#dingdh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd"> A.mudd=#mudd#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shifpz"> A.shifpz=#shifpz#</isNotEmpty>
+		</dynamic>
+		ORDER BY faysj asc
+	</select>
+
+
+
+	<!-- 修改外部要货令状态 -->
+	<update id="updateYhl" parameterClass="java.util.Map">
+		update
+		${dbSchemal1}ck_yaohl
+			set	yaohlzt= '05'
+		<dynamic >
+			<isNotEmpty property="beiz" prepend=",">
+				beiz= #beiz#
+			</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				editor= #neweditor#
+			</isNotEmpty>
+			<isNotEmpty property="edit_time" prepend=",">
+				edit_time=to_timestamp(#edittime#,'YYYY-MM-DD HH24:MI:SS:ff3')
+			</isNotEmpty>
+		</dynamic>
+		where 1=1
+		<dynamic>
+		        <isNotEmpty prepend=" and " property="yaohlh">yaohlh= #yaohlh#</isNotEmpty>   
+		        <isNotEmpty prepend=" and " property="usercenter">usercenter= #usercenter#</isNotEmpty>   
+		        <isNotEmpty prepend=" and " property="editor">editor= #editor#</isNotEmpty>   
+		        <isNotEmpty prepend=" and " property="edit_time">to_char(edit_time,'YYYY-MM-DD HH24:MI:SS:ff3')=#edit_time#</isNotEmpty>   
+		</dynamic> 
+	</update>
+
+	<!-- 修改内部要货令状态 -->
+	<update id="updateYhlN" parameterClass="java.util.Map">
+		update
+		${dbSchemal1}ck_yaonbhl
+			set	yaohlzt= '05'
+		<dynamic>
+			<isNotEmpty property="beiz" prepend=",">
+				beiz= #beiz#
+			</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				editor= #neweditor#
+			</isNotEmpty>
+			<isNotEmpty property="edit_time" prepend=",">
+				edit_time=to_timestamp(#edittime#,'YYYY-MM-DD HH24:MI:SS:ff3')
+			</isNotEmpty>
+		</dynamic>
+		where 1=1
+		<dynamic>
+		        <isNotEmpty prepend=" and " property="yaohlh">yaohlh= #yaohlh#</isNotEmpty>   
+		        <isNotEmpty prepend=" and " property="usercenter">usercenter= #usercenter#</isNotEmpty>   
+		        <isNotEmpty prepend=" and " property="editor">editor= #editor#</isNotEmpty>   
+		        <isNotEmpty prepend=" and " property="edit_time">to_char(edit_time,'YYYY-MM-DD HH24:MI:SS:ff3')=#edit_time#</isNotEmpty>   
+		</dynamic> 
+	</update>
+
+	<!-- 修改订单明细的 订单累计 -->
+	<update id="updateDingdmx" parameterClass="java.util.Map">
+		update
+		${dbSchemal1}xqjs_dingdmx d
+		set
+		yizzl= yizzl+#yaohsl#,
+		editor =#editor#,
+		edit_time=to_timestamp(#edittime#,'YYYY-MM-DD HH24:MI:SS:ff3')
+		where <![CDATA[ d.dingdh=#dingdh#
+        and     d.id =#dingdmxid#
+		         ]]>
+
+	</update>
+
+	<!-- 修改订单零件的 订单累计 -->
+	<update id="updateDingdlj" parameterClass="java.util.Map">
+		update
+		${dbSchemal1}xqjs_dingdlj d
+		set
+		zhongzlj= zhongzlj+#yaohsl#,
+		editor =#neweditor#,
+		edit_time=to_timestamp(#edittime#,'YYYY-MM-DD HH24:MI:SS:ff3')
+		where <![CDATA[ d.dingdh=#dingdh#
+                  and     d.lingjbh=#lingjbh#
+                  and     d.gongysdm=#gongysdm#
+		          and     cangkdm=#cangkbh#
+		  ]]>
+
+	</update>
+	<!-- 修改参考系零件仓库设置 -->
+	<update id="updateLingjck" parameterClass="java.util.Map">
+		update
+		${dbSchemal3}ckx_lingjck
+		set dingdzzzl=dingdzzzl+#yaohsl#,
+		editor
+		=#neweditor#,
+		edit_time=to_timestamp(#edittime#,'YYYY-MM-DD HH24:MI:SS:ff3')
+		where usercenter=#usercenter#
+		and lingjbh=#lingjbh#
+		and
+		cangkbh=#cangkbh#
+</update>
+
+	<!-- 查询零件 -->
+	<select id="queryLingj" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.common.Lingj">
+		select
+		lingjbh,
+		usercenter
+		from ${dbSchemal3}ckx_Lingj
+		where
+		lingjbh=#lingjbh#
+		and usercenter=#usercenter#
+</select>
+
+<!-- 查询要货令信息 -->
+	<select id="queryYaohlxx" parameterClass="java.lang.String"
+		resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		select
+		lingjbh,
+		usercenter,
+		yaohlh
+		from ${dbSchemal3}ck_yaohl
+		where
+		yaohlzt='01'
+		and $yhlh$
+</select>
+
+<!-- 删除要货令批量终止表中的数据 -->
+<delete id="deleteYaohlzz" parameterClass="java.lang.String">
+		delete  from ${dbSchemal3}ck_yaohl_zhongz where editor=#editor#
+</delete>
+<!-- 要货令批量终止表中插入数据 -->
+<insert id="insertYaohlzz" parameterClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		insert into ${dbSchemal1}ck_yaohl_zhongz( 
+		usercenter,
+		lingjbh,
+		yaohlh,
+		zhuangt,
+		creator,
+		create_time,
+		editor,
+		edit_time
+		)
+		values(
+		#usercenter#,
+		#lingjbh#,
+		#yaohlh#,
+		'0',
+		#creator#,
+		to_timestamp(#create_time#,'YYYY-MM-DD HH24:MI:SS:ff3'),
+		#editor#,
+		to_timestamp(#edit_time#,'YYYY-MM-DD HH24:MI:SS:ff3')
+		)
+</insert>
+ <!-- 按照查询条件查批量终止要货令 -->
+	<select id="queryYaohlzz" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		select
+		usercenter,
+		yaohlh,
+		lingjbh,
+		zhuangt
+		from
+		${dbSchemal1}ck_yaohl_zhongz A
+		where  A.creator=#creator#
+		<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh"> A.lingjbh=#lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">A.usercenter=#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohlh"> A.yaohlh=#yaohlh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhuangt"> A.zhuangt =#zhuangt#</isNotEmpty>
+		</dynamic>
+		ORDER BY zhuangt asc
+	</select>
+  <!-- 根据用户删除要货令调整表中的数据 -->
+  <delete id="deleteYaohltz" parameterClass="java.lang.String">
+ 		delete  from ${dbSchemal3}ck_yaohldr where caozr=#editor#
+  </delete>
+  <!-- 将需要调整的要货令信息插入到要货令导入表中 -->
+ <insert id="insertYaohldr" parameterClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		insert into ${dbSchemal1}ck_yaohldr( 
+		usercenter,
+		yaohlh,
+		zuiwsj,
+		caozr,
+		creator,
+		create_time
+		)
+		values(
+		#usercenter#,
+		#yaohlh#,
+		to_date(#zuiwsj#,'YYYY-MM-DD HH24:MI:SS'),
+		#editor#,
+		#editor#,
+		to_timestamp(#create_time#,'YYYY-MM-DD HH24:MI:SS:ff3')
+		)
+</insert>
+<!-- 判断导入的要货令信息是否存在且状态为1,2 -->
+<select id="queryYaohldrxx"  resultClass="com.athena.xqjs.entity.yaohl.Yaohl" parameterClass="java.lang.String">
+select usercenter,yaohlh from ${dbSchemal1}ck_yaohldr d where not exists (select y.usercenter,y.yaohlh from ${dbSchemal1}ck_yaohl y where d.usercenter=y.usercenter 
+and d.yaohlh=y.yaohlh and  ( y.yaohlzt='01' or y.yaohlzt='02') ) and d.caozr=#editor# 
+</select>
+ <!--查询要货令导入表中的数据 -->
+<select id="queryYaohldr" resultClass="com.athena.xqjs.entity.yaohl.Yaohl" parameterClass="java.lang.String">
+select usercenter,yaohlh,to_char(zuiwsj,'yyyy-mm-dd hh24:mi:ss') zuiwsj from ${dbSchemal1}ck_yaohldr d where d.caozr=#editor#
+</select> 
+<!-- 将要货令导入表中数据更新到要货令中 -->
+<update id="updateYaohl" parameterClass="com.athena.xqjs.entity.yaohl.Yaohl" >
+			update ${dbSchemal0}ck_yaohl
+				set editor = #editor#,				
+				edit_time =sysdate,
+				yuanzuizsj  = ( case when  yuanzuizsj is null then zuizsj else yuanzuizsj end ) , 
+				yuanzuiwsj  = ( case when  yuanzuiwsj is null then zuiwsj else yuanzuiwsj end ) ,
+				faysj=faysj+(to_date(#zuiwsj#,'yyyy-mm-dd hh24:mi:ss') - zuiwsj),
+				zuizsj=zuizsj+(to_date(#zuiwsj#,'yyyy-mm-dd hh24:mi:ss') - zuiwsj),
+				zuiwsj=to_date(#zuiwsj#,'yyyy-mm-dd hh24:mi:ss')
+				where usercenter=#usercenter#
+				and   yaohlh=#yaohlh#
+                and   (yaohlzt='01' or yaohlzt='02' )	
+ </update>
+ 
+ <!-- V4_023 -->
+ <select id="queryPlcjlsk" resultClass="com.athena.xqjs.entity.yaohl.Plcjlsk" parameterClass="java.util.Map">
+	    select
+	    liush,
+		usercenter,
+		xunhbm,
+		shiffsgys,
+		yaohsl,
+		zuiwjfsj,
+		gongysdm,
+		biaos,
+		creator,
+		create_time,
+		shibyy
+		from ${dbSchemal1}ck_pilcjlsk A
+		where  A.creator=#creator#
+		and    A.usercenter=#usercenter#
+		<dynamic>
+			<isNotEmpty prepend=" and " property="xunhbm"> A.xunhbm=#xunhbm#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"> A.biaos=#biaos#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="createTimefrom">  <![CDATA[a.create_time between to_date(#createTimefrom#,'yyyy-MM-dd hh24:mi:ss') and to_date(#createTimeto#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+		</dynamic>
+		ORDER BY liush asc
+</select> 
+  <!-- 将需要创建的临时卡信息插入到临时卡导入表中 -->
+ <insert id="insertPlcjlskdr" parameterClass="com.athena.xqjs.entity.yaohl.Plcjlsk">
+		insert into ${dbSchemal1}ck_Pilcjlsk( 
+		liush,
+		usercenter,
+		xunhbm,
+		shiffsgys,
+		yaohsl,
+		zuiwjfsj,
+		gongysdm,
+		biaos,
+		creator,
+		create_time
+		)
+		values(
+		#liush#,
+		#usercenter#,
+		#xunhbm#,
+		#shiffsgys#,
+		#yaohsl#,
+		to_date(#zuiwjfsj#,'YYYY-MM-DD HH24:MI:SS'),
+		#gongysdm#,
+		'0',
+		#creator#,
+		sysdate
+		)
+</insert>
+
+ <!-- V4_023 -->
+ <select id="queryLiush" resultClass="java.lang.Long">
+	select ${dbSchemal1}lsk_seqno.nextval from dual
+</select> 
+
+ <delete id="deletelsk" parameterClass="com.athena.xqjs.entity.yaohl.Plcjlsk">
+	delete from ${dbSchemal1}ck_Pilcjlsk 
+	  where usercenter=#usercenter# and liush=#liush#
+</delete> 
+ <!-- 12940 -->
+ <select id="querylsk" parameterClass="com.athena.xqjs.entity.yaohl.Plcjlsk" resultClass="com.athena.xqjs.entity.yaohl.Plcjlsk">
+	select xunhbm from ${dbSchemal1}ck_Pilcjlsk 
+		where liush =#liush# and usercenter=#usercenter#
+		and biaos in ('0','3')
+</select> 
+
+</sqlMap>

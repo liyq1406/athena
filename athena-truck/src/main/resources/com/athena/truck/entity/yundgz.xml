@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="kac_yundgz">
+	<!-- 李汇 -->
+	
+	<resultMap class="com.athena.truck.entity.Yund" id="yund">
+		<result column="usercenter" property="usercenter" />
+		<result column="yundh" property="yundh" />
+		
+		<result column="quybh" property="quybh" />
+		<result column="daztbh" property="daztbh" />
+		<result column="kach" property="kach" />
+		<result column="shengbsj" property="shengbsj" />
+		<result column="rucsj" property="rucsj" />
+		<result column="chucsj" property="chucsj" />
+		<result column="flag" property="flag" />
+		<result column="zhuangt" property="zhuangt" />
+		<result column="zhuangtmc" property="zhuangtmc" />
+		<result column="jijbs" property="jijbs" />
+		
+		<result column="blh" property="blh" />
+		<result column="uth" property="uth" />
+		<result column="zuizsj" property="zuizsj" />
+		<result column="zuiwsj" property="zuiwsj" />
+		<result column="cangkbh" property="cangkbh" />
+		<result column="xiehzt" property="xiehzt" />
+		<result column="chengysdm" property="chengysdm" />
+		
+		<result column="beiz" property="beiz" />
+		<result column="beiz1" property="beiz1" />
+		<result column="beiz2" property="beiz2" />
+		<result column="beiz3" property="beiz3" />
+		<result column="creator" property="creator" />
+		<result column="create_time" property="createTime" />
+		<result column="editor" property="editor" />
+		<result column="edit_time" property="editTime" />
+		
+		<result column="biaozsj" property="biaozsj" />
+	</resultMap>
+
+	<!--根据用户权限组，授权用户中心，查询对应的区域编号 -->
+	<select id="queryYundgzDengdqy" parameterClass="java.util.HashMap" resultClass="com.athena.truck.entity.Dengdqy">
+    select 
+      qy.quybh 
+		from ${dbSchemal3}SYS_QY_GROUP qy inner join ${dbSchemal3}sys_post p on qy.post_id = p.post_code and p.biaos = '1'
+	inner join ${dbSchemal3}ckx_dengdqy d on qy.usercenter = d.usercenter and qy.quybh = d.quybh and d.biaos = '1' 
+    where qy.usercenter in (select ru.usercenter from ${dbSchemal3}sys_r_post_usercenter ru where ru.post_code = #post_code#)
+     and p.post_code =  #post_code#  and qy.usercenter = #usercenter# order by qy.quybh
+	</select>
+	
+	<!--根据区域查询大站台编号 -->
+	<select id="queryYundgzDazt" parameterClass="java.util.HashMap" resultClass="com.athena.truck.entity.Shijdzt">
+     select d.daztbh,d.daztmc  from ${dbSchemal3}ckx_dazt d where d.usercenter = #usercenter# and d.quybh = #quybh# and d.biaos = '1' order by d.daztbh
+	</select>
+	
+	<!--根据区域流程定义 -->
+	<select id="queryYundgzZhuangt" parameterClass="java.util.HashMap" resultClass="com.athena.truck.entity.Liucdy">
+      select l.liucbh, l.liucbh||' '||l.liucmc liucmc from ${dbSchemal3}ckx_liucdy l where l.usercenter = #usercenter# and l.quybh = #quybh# and l.daztbh = #daztbh# and l.biaos = '1'
+       order by l.liucbh
+	</select>
+	
+		<!-- 查询特定的流程定义（申报） -->
+	<select id="queryYundgz" parameterClass="java.util.HashMap" resultClass="com.athena.truck.entity.Yund">
+		select yd.usercenter,yd.yundh,yd.quybh,yd.daztbh,yd.kach,to_char(yd.shengbsj,'yyyy-MM-dd hh24:mi:ss') shengbsj, to_char(yd.zhunrsj,'yyyy-MM-dd hh24:mi:ss') zhunrsj,
+    to_char(yd.rucsj,'yyyy-MM-dd hh24:mi:ss') rucsj,to_char(yd.chucsj,'yyyy-MM-dd hh24:mi:ss')  chucsj,yd.flag,yd.zhuangt,yd.zhuangtmc,
+    yd.jijbs,yd.beiz,yd.beiz1,yd.beiz2,yd.beiz3,yd.tiqpdbs,to_char(yd.create_time,'yyyy-MM-dd hh24:mi:ss') createTime ,  yd.edit_time ,mx.chengysdm,g.gongsmc
+		from ${dbSchemal3}kc_yund yd 
+		left join 
+  		(select * from (select t.usercenter,t.yundh,t.chengysdm,t.zuiwsj,
+                         rank() over (partition by yundh order by zuiwsj,blh) rk  from ${dbSchemal3}kc_yundmx t ) aa  where rk='1') mx 
+                               on yd.usercenter=mx.usercenter and yd.yundh=mx.yundh
+           left join ${dbSchemal3}ckx_gongys g on mx.chengysdm=g.gcbh and mx.usercenter=g.usercenter 
+		where 1=1 
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[yd.usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="quybh"><![CDATA[yd.quybh = #quybh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="daztbh"><![CDATA[yd.daztbh = #daztbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="yundh"><![CDATA[yd.yundh = #yundh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="kach"><![CDATA[yd.kach = #kach#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[mx.chengysdm = #chengysdm#]]></isNotEmpty>
+				<isEqual prepend=" and " property="jijbs" compareValue="0">
+				( jijbs = '0' or jijbs is null )
+				</isEqual>
+				<isEqual prepend=" and " property="jijbs" compareValue="1">
+				jijbs = #jijbs#
+				</isEqual>
+				<isNotEmpty prepend=" and " property="qssj"><![CDATA[yd.create_time>=to_date(#qssj#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="jssj"><![CDATA[yd.create_time<=to_date(#jssj#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="zhuangt"><![CDATA[yd.zhuangt = #zhuangt#]]></isNotEmpty>
+			</dynamic>
+			order by yd.usercenter,yd.create_time desc
+	</select>
+	
+	<!-- 查询特定的流程定义（申报） -->
+	<select id="queryYundgzmx" parameterClass="java.util.HashMap" resultClass="com.athena.truck.entity.Yund">
+		select mx.usercenter,mx.yundh,mx.blh, to_char(mx.zuiwsj,'yyyy-MM-dd hh24:mi:ss')  zuiwsj ,mx.chengysdm,mx.xiehzt,y.daztbh,mx.uth,
+ 		cd.zhuangt daohzt ,(select count(*) from ${dbSchemal3}ck_uabq ua where ua.usercenter = mx.usercenter and ua.uth=mx.uth)  uasl from ${dbSchemal3}kc_yundmx mx 
+ 		inner join ${dbSchemal3}kc_yund y on mx.usercenter = y.usercenter and mx.yundh = y.yundh 
+ 		left join ${dbSchemal3}ck_daohtzd cd on mx.usercenter = cd.usercenter and mx.uth=cd.uth where 1=1 
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[mx.usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="yundh"><![CDATA[mx.yundh = #yundh#]]></isNotEmpty>
+			</dynamic>
+			order by mx.usercenter,mx.yundh , mx.uth
+	</select>
+	
+	<select id="queryYundCheck" parameterClass="com.athena.truck.entity.Yund" resultClass="com.athena.truck.entity.Yund">
+		select yd.usercenter,yd.yundh,yd.quybh,yd.daztbh,yd.kach,to_char(yd.shengbsj,'yyyy-MM-dd hh24:mi:ss') shengbsj,
+    	to_char(yd.rucsj,'yyyy-MM-dd hh24:mi:ss') rucsj,to_char(yd.zhunrsj,'yyyy-MM-dd hh24:mi:ss') zhunrsj,to_char(yd.chucsj,'yyyy-MM-dd hh24:mi:ss')  chucsj,yd.flag,yd.zhuangt,yd.zhuangtmc,
+    	yd.jijbs,yd.beiz,yd.beiz1,yd.beiz2,yd.beiz3,yd.tiqpdbs,to_char(yd.create_time,'yyyy-MM-dd hh24:mi:ss') createTime , to_char(yd.edit_time,'yyyy-MM-dd hh24:mi:ss') editTime  ,d.biaozsj   
+		from ${dbSchemal3}kc_yund yd left join ${dbSchemal3}ckx_liucdy d on yd.usercenter = d.usercenter and yd.quybh = d.quybh and yd.daztbh = d.daztbh and yd.zhuangt=d.liucbh where 1=1  
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[yd.usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="yundh"><![CDATA[yd.yundh = #yundh#]]></isNotEmpty>
+			</dynamic>
+			order by yd.usercenter,yd.yundh
+	</select>
+	
+	<update id="updateYundTiqpd" parameterClass="com.athena.truck.entity.Yund">
+		update ${dbSchemal3}kc_yund 
+		set tiqpdbs = '1' ,
+		editor = #editor# ,
+		edit_time = sysdate
+        where  usercenter = #usercenter# and  yundh = #yundh# 
+	</update>
+	
+	<update id="updateYundJijqr" parameterClass="com.athena.truck.entity.Yund">
+		update ${dbSchemal3}kc_yund 
+		set jijbs = '1' ,
+		editor = #editor# ,
+		edit_time =sysdate
+        where  usercenter = #usercenter# and  yundh = #yundh# 
+	</update>
+	
+	<!-- 删除运单明细 -->
+	<delete id="deleteYundmx" parameterClass="com.athena.truck.entity.Yund">
+		delete from ${dbSchemal3}kc_yundmx 
+		where usercenter = #usercenter# and  yundh = #yundh# 
+	</delete>
+	
+	<!-- 删除运单 mantis:0013039 by CSY 更新运单时，需要更新修改人和修改时间 -->
+	<delete id="deleteYund" parameterClass="com.athena.truck.entity.Yund">
+		update ${dbSchemal3}kc_yund 
+		set zhuangt = #zhuangt#,
+			zhuangtmc = #zhuangtmc#,
+       		editor    = #editor#,
+       		edit_time = SYSDATE
+		where usercenter = #usercenter# and  yundh = #yundh# 
+	</delete>
+	
+	<!-- 删除车辆排队 -->
+	<delete id="deleteChelpd" parameterClass="com.athena.truck.entity.Yund">
+		delete from ${dbSchemal3}kc_chelpd 
+		where usercenter = #usercenter# and  yundh = #yundh# and kach = #kach# and paidzt = '0'
+	</delete>
+	
+	
+	<insert id="insertChurcls" parameterClass="com.athena.truck.entity.Yund">
+		insert into ${dbSchemal3}kc_churcls(usercenter, quybh, daztbh, yundh, liucbh, kach, chewbh, beiz, operator, operate_time, operate_type, biaozsj, lastoperate_time, chengysbh, rongqc, jijbs, tiqpdbs)
+		values(#usercenter#, #quybh#, #daztbh#, #yundh#, #zhuangt#, #kach#, '', '', #beiz1#, sysdate, #beiz3#, #biaozsj#, to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss'), '', '', #jijbs#, #tiqpdbs#)
+	</insert>
+	
+	<!-- 当运单状态为2时，需要将排队的数据 排队属性设置到原排队属性中，将 排队属性修改为4， -->
+	<update id="updateChelpdBs" parameterClass="com.athena.truck.entity.Yund">
+		UPDATE ${dbSchemal3}kc_chelpd d SET D.YUANPDSX = D.PAIDSX,D.PAIDSX = '4' ,editor = #editor# ,
+		edit_time = sysdate where d.yundh = #yundh# and d.usercenter = #usercenter# 
+	</update>
+	
+	<!--卡车入厂操作 -->
+	<delete id="updateYundrc" parameterClass="com.athena.truck.entity.Yund">
+		update ${dbSchemal3}kc_yund 
+		set rucsj=sysdate,
+		 editor = #editor# ,
+		 edit_time=sysdate  
+		where usercenter = #usercenter# and  yundh = #yundh# 
+		and kach=#kach#  and zhuangt='3' and rucsj=zhunrsj
+	</delete>
+</sqlMap>

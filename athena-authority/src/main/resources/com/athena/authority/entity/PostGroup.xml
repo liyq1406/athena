@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.PostGroup" id="PostGroup">
+		<result column="DATA_ID" property="dataId" />
+		<result column="POST_GROUP_NAME" property="postGroupName" />
+		<result column="POST_ATTR_NAME" property="postAttrName" />
+		<result column="MENDER" property="mender" />
+		<result column="MODIFY_TIME" property="modifyTime" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="BIAOS" property="biaos" />
+		<result column="IS_ADMIN" property="isAdmin" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="POST_GROUP_ID" property="postGroupId" />
+	</resultMap>
+	
+	<select id="queryPostGroup" resultMap="PostGroup">select 
+		DATA_ID,
+		POST_GROUP_NAME,
+		POST_ATTR_NAME,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		IS_ADMIN,
+		USERCENTER,
+		POST_GROUP_ID
+		 from ${dbSchemal0}SYS_POST_GROUP where 1=1
+		 <dynamic>
+			<isNotEmpty prepend="  and " property="postGroupName">POST_GROUP_NAME like '%'||#postGroupName#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY USERCENTER,POST_GROUP_ID
+	</select>
+	<select id="listAllPostGroup" resultMap="PostGroup">select 
+		DATA_ID,
+		POST_GROUP_ID||'('||POST_GROUP_NAME ||')' as POST_GROUP_NAME,
+		POST_ATTR_NAME,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		IS_ADMIN,
+		USERCENTER,
+		POST_GROUP_ID
+		 from ${dbSchemal0}SYS_POST_GROUP where 1=1
+		ORDER BY USERCENTER,POST_GROUP_ID
+	</select>
+	
+	<select id="getAllPostGroup" resultClass="com.athena.util.cache.CacheValue">
+		select POST_GROUP_ID as key,POST_GROUP_NAME as value, 0 as usercenter
+		from ${dbSchemal0}SYS_POST_GROUP
+	</select>
+	
+	<select id="getPostGroup" resultMap="PostGroup">select 
+		DATA_ID,
+		POST_GROUP_NAME,
+		POST_ATTR_NAME,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		USERCENTER,
+		IS_ADMIN,POST_GROUP_ID from ${dbSchemal0}SYS_POST_GROUP where POST_GROUP_ID=#postGroupId# 
+	</select>
+	
+	<select id="countPostGroup" resultClass="java.lang.Integer">
+		select count(*) from ${dbSchemal0}SYS_POST where POST_GROUP_ID=#postGroupId# 
+	</select>
+	
+	<insert id="insertPostGroup" parameterClass="com.athena.authority.entity.PostGroup">insert into
+		${dbSchemal0}SYS_POST_GROUP 
+		(DATA_ID,POST_GROUP_NAME,POST_ATTR_NAME,CREATOR,CREATE_TIME,BIAOS,IS_ADMIN,USERCENTER,POST_GROUP_ID)
+		values
+		(#dataId#,#postGroupName#,#postAttrName#,#creator#,to_date(#createTime#,'YYYY-MM-DD HH24:MI:SS'),#biaos#,#isAdmin#,#usercenter#,#postGroupId#)
+	</insert>
+	
+	<update id="updatePostGroup" parameterClass="com.athena.authority.entity.PostGroup">
+		update ${dbSchemal0}SYS_POST_GROUP set 
+		DATA_ID = #dataId#,
+		POST_GROUP_NAME = #postGroupName#,
+		POST_ATTR_NAME = #postAttrName#,
+		MENDER = #mender#,
+		MODIFY_TIME = to_date(#modifyTime#,'YYYY-MM-DD HH24:MI:SS'),
+		BIAOS = #biaos#,
+		IS_ADMIN = #isAdmin#
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="postGroupId">POST_GROUP_ID = #postGroupId#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deletePostGroup" parameterClass="java.util.HashMap">
+		delete from ${dbSchemal0}SYS_POST_GROUP where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="postGroupId">POST_GROUP_ID = #postGroupId#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+<!-- 根据角色ID查找授权信息 -->
+	<select id="getAuthorized" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select FUNC_ID,USERCENTER from ${dbSchemal0}sys_r_post_auth where POST_GROUP_ID=#postGroupId#
+	</select>
+	
+	<!-- 根据角色ID删除授权信息 -->
+	<delete id="clearAuthorized">
+		delete from ${dbSchemal0}sys_r_post_auth where POST_GROUP_ID=#postGroupId#
+	</delete>
+	<!-- 保存角色菜单和按钮 -->
+	<update id="saveAuthorized">
+		insert  into ${dbSchemal0}sys_r_post_auth(POST_GROUP_ID,FUNC_ID) values(#postGroupId#,#funcId#) 
+	</update>
+	<select id="validateOnly"  parameterClass="com.athena.authority.entity.PostGroup" resultClass="int">
+		SELECT COUNT(*) as COUNT FROM ${dbSchemal0}SYS_POST_GROUP WHERE POST_GROUP_ID = #postGroupId# 
+	</select>
+	<select id="getUsercenterByLoginName"  parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT distinct r_post_auth_.usercenter FROM SYS_USER user_ 
+		left outer join sys_r_user_post r_user_post_ on  user_.id = r_user_post_.user_id 
+		left outer join sys_post post_ on r_user_post_.post_code = post_.post_code and r_user_post_.usercenter = post_.usercenter 
+		left outer join sys_r_post_auth r_post_auth_ ON  post_.post_group_id = r_post_auth_.post_group_id and post_.usercenter = r_post_auth_.usercenter 
+		WHERE LOGINNAME=#loginname#
+	</select>
+	
+	
+</sqlMap>

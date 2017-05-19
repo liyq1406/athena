@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="axlsOrder">
+
+	<!-- 查询ckx_usercenter -->
+	<select id="getAllUsercenter" resultClass="com.athena.xqjs.entity.userCenter.UserCenter">
+		SELECT U.USERCENTER
+		  FROM ${dbSchemal1}CKX_USERCENTER U
+		 WHERE U.BIAOS = '1'
+		 ORDER BY U.USERCENTER ASC
+	</select>
+	<!-- 查询ckx_lingj -->
+	<select id="getAllLingj" parameterClass="java.lang.String" resultClass="com.athena.xqjs.entity.common.Lingj">
+		SELECT L.USERCENTER, L.LINGJBH, L.DANW, L.DINGHCJ, L.JIHY, L.ZHONGWMC
+		  FROM ${dbSchemal1}CKX_LINGJ L
+		 WHERE L.BIAOS = '1'
+		   AND L.LINGJBH IN ($str$)
+		 ORDER BY L.USERCENTER, L.LINGJBH
+	</select>
+	<!-- 查询ckx_gongys -->
+	<select id="getAllGongys" resultClass="com.athena.xqjs.entity.common.Gongys">
+		SELECT G.USERCENTER, G.GCBH, G.GONGHLX, G.GONGSMC, G.LEIX
+		  FROM ${dbSchemal1}CKX_GONGYS G
+		 WHERE G.BIAOS = '1'
+		 ORDER BY G.USERCENTER, G.GCBH
+	</select>
+	<!-- 查询ckx_lingjgys -->
+	<select id="getAllLingjgys" parameterClass="java.lang.String" resultClass="com.athena.xqjs.entity.common.LingjGongys">
+		SELECT G.USERCENTER,
+		       G.GONGYSBH,
+		       G.LINGJBH,
+		       G.GONGYFE,
+		       G.UABZLX,
+		       G.UAUCGS,
+		       G.UCBZLX,
+		       G.UCRL
+		  FROM ${dbSchemal1}CKX_LINGJGYS G
+		 WHERE G.BIAOS = '1'
+		 AND G.LINGJBH IN ($str$)
+		 ORDER BY G.USERCENTER, G.GONGYSBH, G.LINGJBH
+	</select>
+	<!-- 查询ckx_wullj -->
+	<select id="getAllWullj" parameterClass="java.lang.String" resultClass="com.athena.xqjs.entity.common.Wullj">
+		SELECT W.USERCENTER,
+		       W.FENPQH,
+		       W.LINGJBH,
+		       W.GONGYSBH,
+		       W.SHENGCXBH,
+		       W.LUJBH,
+		       W.LUJMC,
+		       W.FAHD,
+		       W.WAIBMS,
+		       W.WJIANGLMS,
+		       W.WSHENGXSJ,
+		       W.GONGYFE,
+		       W.ZHIDGYS,
+		       W.JIAOFM,
+		       W.BEIHZQ,
+		       W.YUNSZQ,
+		       W.GCBH,
+		       W.XIEHZTBH,
+		       W.SONGHPC,
+		       W.BEIHSJC,
+		       W.MUDD,
+		       W.DINGHCK,
+		       W.MOS2,
+		       W.JIANGLMS2,
+		       W.SHENGXSJ2,
+		       W.CANGKSHPC2,
+		       W.CANGKSHSJ2,
+		       W.CANGKFHSJ2,
+		       W.BEIHSJ2,
+		       W.IBEIHSJ2,
+		       W.PBEIHSJ2,
+		       W.XIANBCK,
+		       W.MOS,
+		       W.JIANGLMS,
+		       W.SHENGXSJ,
+		       W.CANGKSHPC,
+		       W.CANGKSHSJ,
+		       W.CANGKFHSJ,
+		       W.BEIHSJ,
+		       W.IBEIHSJ,
+		       W.PBEIHSJ,
+		       W.ZHIZLX,
+		       W.GONGYSLX,
+		       W.DINGHCKLX,
+		       W.WULGYYZ2,
+		       W.WULGYYZ1,
+		       W.WULGYYZ,
+		       W.FENZXH
+		  FROM ${dbSchemal1}CKX_WULLJ W
+		 WHERE (W.WAIBMS IN ('C1', 'CV', 'CD')
+		    OR W.MOS2 IN ('M1', 'MV', 'MD'))
+		    AND W.LINGJBH IN ($str$)
+		 ORDER BY W.USERCENTER, W.FENPQH, W.LINGJBH, W.GONGYSBH
+	</select>
+	<!-- 查询ckx_lingjck -->
+	<select id="getAllLingjck" parameterClass="java.lang.String" resultClass="com.athena.xqjs.entity.kanbyhl.Lingjck">
+		SELECT C.USERCENTER,
+		       C.LINGJBH,
+		       C.CANGKBH,
+		       C.ZICKBH,
+		       C.USBZLX,
+		       C.USBZRL,
+		       C.UCLX,
+		       C.UCRL
+		  FROM ${dbSchemal1}CKX_LINGJCK C
+		 WHERE C.LINGJBH IN ($str$)
+		 ORDER BY C.USERCENTER, C.LINGJBH, C.CANGKBH, C.ZICKBH
+	</select>
+	<!-- 查询ckx_lingjxhd -->
+	<select id="getAllLingjxhd" parameterClass="java.lang.String" resultClass="com.athena.xqjs.entity.common.Lingjxhd">
+		SELECT X.USERCENTER,
+		       X.LINGJBH,
+		       X.XIAOHDBH,
+		       X.XIAOHCBH,
+		       X.FENPQBH,
+		       X.SHENGXR,
+		       X.JIESR,
+		       X.XIANBYHLX,
+		       X.XIAOHCCXBH,
+		       X.SHENGCXBH
+		  FROM ${dbSchemal1}CKX_LINGJXHD X
+		 WHERE X.BIAOS = '1'
+		   AND X.LINGJBH IN ($str$)
+		 ORDER BY X.USERCENTER, X.LINGJBH, X.XIAOHDBH
+	</select>
+	<!-- 查询ckx_xiehzt -->
+	<select id="getAllXiehzt" resultClass="com.athena.xqjs.entity.common.Xiehzt">
+		SELECT X.USERCENTER, X.XIEHZTBH, X.YUNXTQDHSJ
+		  FROM ${dbSchemal1}CKX_XIEHZT X
+		 WHERE X.BIAOS = '1'
+		 ORDER BY X.USERCENTER, X.XIEHZTBH
+	</select>
+    
+</sqlMap>

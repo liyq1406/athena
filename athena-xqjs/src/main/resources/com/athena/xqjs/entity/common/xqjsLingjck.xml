@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+
+	<select id="queryLingjck" resultClass="com.athena.xqjs.entity.kanbyhl.Lingjck">
+		SELECT
+			USERCENTER,
+			LINGJBH,
+			CANGKBH,
+			ZICKBH,
+			ANQKCTS,
+			ANQKCSL,
+			ZUIDKCSL,
+			DINGDBDZL,
+			YIJFZL,
+			XITTZZ,
+			DANQKBH,
+			DANQKW,
+			ZUIDSX,
+			ZUIXXX,
+			JISTZZ,
+			ZUIXQDL,
+			SHIFXLH,
+			BEIYKBH,
+			DINGZKW,
+			UCLX,
+			UCRL,
+			XIEHZTBH,
+			ZUIDKCTS,
+			DINGDZZZL,
+			USBZLX,
+			USBZRL,
+			FIFO,
+			ZIDFHBZ
+		from ${dbSchemal3}ckx_lingjck
+		WHERE
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh =#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="cangkbh">
+				cangkbh = #cangkbh#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+</sqlMap>

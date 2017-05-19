@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="dfpvdiaobl" extend="toft-default" namespace="/dfpvdiaobl">
+		<!-- DFPV调拨令申请 -->
+		<action name="diaobsq" class="dfpvDiaobsqAction" method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/dfpvdiaobl/diaobsq.jsp</result>
+		</action>
+		<!-- 调拨申请页面模板下载 -->
+		<action name="mubanxiazai" class="dfpvDiaobsqAction" method="expMuban"></action>
+		<!-- 调拨申请页面错误数据下载 -->
+		<action name="errdownLoad" class="dfpvDiaobsqAction" method="errdownLoad"></action>
+		<!-- 调拨令申请 回显零件名称 -->
+		<action name="getlingjmc" class="dfpvDiaobsqAction" method="getLingjmc">
+		</action>
+		<!-- 调拨令申请 点击打印 -->
+		<action name="sqprint" class="dfpvDiaobsqAction" method="initPrint">
+			<result name="success">/WEB-INF/pages/xqjs/dfpvdiaobl/sqprint.jsp</result>
+		</action>
+		<action name="print" class="dfpvDiaobsqAction" method="print">
+		</action>
+		<!-- 调拨令申请 新增 -->
+		<action name="insert" class="dfpvDiaobsqAction" method="save">
+		</action>
+		<!-- 导入操作 -->
+		<action name="upload" class="dfpvDiaobsqAction" method="uploadDiaobsq">
+		</action>
+		<!-- 初始化调拨令申请查询 -->
+		<action name="initSq" class="dfpvDiaobsqOperationAction" method="initQuery">
+			<result name="init">/WEB-INF/pages/xqjs/dfpvdiaobl/diaoblquery.jsp</result>
+		</action>
+		<!-- 取消操作 -->
+		<action name="docancle" class="dfpvDiaobsqOperationAction" method="docancle">
+		</action>
+		<!-- 导出操作 -->
+		<action name="download" class="dfpvDiaobsqOperationAction" method="downloadDiaobsq">
+		</action>
+		<!-- 调拨令申请查询 增删改页面 -->
+		<action name="initEdit" class="dfpvDiaobsqOperationAction" method="initEdit">
+			<result name="success">/WEB-INF/pages/xqjs/dfpvdiaobl/diaobsq_edit.jsp</result>
+			<!--已生效 -->
+			<result name="sqysx">/WEB-INF/pages/xqjs/dfpvdiaobl/diaobsq_qrsx.jsp</result>
+			
+			<!-- 调拨流水确认
+			<result name="diaoblsqr">/WEB-INF/pages/xqjs/dfpvdiaobl/diaoblsqr.jsp</result>
+			 -->
+		</action>
+		<!--查询 增删改页面 -->
+		<action name="searchsqmx" class="dfpvDiaobsqOperationAction"
+			method="searchsqmx">
+		</action>
+		<!--调拨令申请查询 -增加 操作 -->
+		<action name="add" class="dfpvDiaobsqOperationAction" method="save">
+		</action>
+		<!--调拨令申请查询 -修改操作 -->
+		<action name="update" class="dfpvDiaobsqOperationAction" method="update">
+		</action>
+		<!--调拨令申请查询 -删除 操作 -->
+		<action name="delete" class="dfpvDiaobsqOperationAction" method="delete">
+		</action>
+		<!-- 调拨审核主页面查询 -->
+		<action name="select" class="dfpvDiaobsqOperationAction" method="querySq">
+		</action>
+		<!-- 初始化调拨令审核页面 -->
+		<action name="initDiaoblSh" class="dfpvDiaoblShAction" method="init">
+			<result name="initSh">/WEB-INF/pages/xqjs/dfpvdiaobl/diaobsh.jsp</result>
+		</action>
+		<!-- 查询调拨申请 -->
+		<action name="searchDiaobSq" class="dfpvDiaoblShAction" method="searchDiaobSq">
+		</action>
+		<!-- 查询调拨申请明细 -->
+		<action name="initDiaobSqMx" class="dfpvDiaoblShAction" method="initDiaobSqMx">
+			<result name="dbsqmx">/WEB-INF/pages/xqjs/dfpvdiaobl/diaobdshqr.jsp</result>
+			<result name="dbsqzz">/WEB-INF/pages/xqjs/dfpvdiaobl/diaobdshzz.jsp</result>
+		</action>
+		<!-- 查询调拨申请明细 -->
+		<action name="searchDiaobSqMx" class="dfpvDiaoblShAction" method="searchDiaobSqMx">
+		</action>
+		<!-- 查询调拨单明细 -->
+		<action name="searchDiaobdMx" class="dfpvDiaoblShAction" method="searchDiaobdMx">
+		</action>
+		<!-- 查询终止调拨申请明细 -->
+		<action name="searchZzDiaobSqMx" class="dfpvDiaoblShAction" method="searchZzDiaobSqMx">
+		</action>
+		<!-- 查询终止调拨单明细 -->
+		<action name="searchZzDiaobdMx" class="dfpvDiaoblShAction" method="searchZzDiaobdMx">
+		</action>
+		<action name="dodiaobsm" class="dfpvDiaoblShAction" method="dodiaobsm">
+		</action>
+		<!-- 调拨令审核确认 -->
+		<action name="diaoblQr" class="dfpvDiaoblShAction" method="diaoblQr">
+		</action>
+		<!-- 调拨令拒绝 -->
+		<action name="diaoblJj" class="dfpvDiaoblShAction" method="diaoblJj">
+		</action>
+		<!-- 调拨令生效 -->
+		<action name="diaoblSx" class="dfpvDiaoblShAction" method="diaoblSx">
+		</action>
+		<!-- 调拨令生效后打印 -->
+		<action name="sxprint" class="dfpvDiaoblShAction" method="cangkprint">
+		</action>
+		<!-- 调拨令差异打印 -->
+		<action name="cyprint" class="dfpvDiaoblShAction" method="chayiprint">
+		</action>
+		<!-- 调拨令按零件终止 -->
+		<action name="ljzz" class="dfpvDiaoblShAction" method="ljzz">
+		</action>
+		<!-- 调拨令按零件终止 -->
+		<action name="ljckzz" class="dfpvDiaoblShAction" method="ljckzz">
+		</action>
+		
+		<action name="getKcsl" class="dfpvDiaobsqAction" method="getKcsl">
+		</action>
+		<!--校验零件制造路线是否存在 -->
+		<action name="querylucz" class="dfpvDiaobsqAction" method="querylucz"></action>
+	
+		<!-- 库存数量 -->
+		<action name="getKcsl" class="dfpvDiaobsqAction" method="getKcsl"></action>
+		
+		<!-- 调拨流水查询页面 -->
+		<action name="diaoblsqrym" class="dfpvDiaobsqOperationAction" method="initQuery">
+			<result name="init">/WEB-INF/pages/xqjs/dfpvdiaobl/diaoblsquery.jsp</result>
+		</action>
+		
+		
+	</package>
+</toft>

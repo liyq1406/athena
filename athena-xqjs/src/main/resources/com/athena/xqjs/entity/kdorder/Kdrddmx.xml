@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kdorder">
+
+<select id="queryUsercenterByDingdmx" resultClass="java.lang.String">
+		select
+		distinct
+		USERCENTER
+		from
+		${dbSchemal1}xqjs_dingdmx
+		where
+		 dingdh = #dingdh#
+	</select>
+
+<insert id="insertKdrddmx" parameterClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+		insert into
+		${dbSchemal1}XQJS_DINGDMX_KDR
+		(
+		ID,
+		xiaohch,
+		shid,
+		YUGSFQZ,
+		FAHD,
+		LUJDM,
+		SHUL,
+		UABZUCLX,
+		xiehd,
+		LINGJBH,
+		YAOHQSRQ,
+		usbaozlx,
+		ZUIHWHSJ,
+		DINGHCJ,
+		UABZUCRL,
+		YAOHJSRQ,
+		YIJFL,
+		XIEHZT,
+		xiaohccxh,
+		usbaozrl,
+		zuiwdhsj,
+		UABZUCSL,
+		xiaohcsxsj,
+		GONGYSLX,
+		xiaohsj,
+		ZUIHWHR,
+		JIAOFRQ,
+		LEIX,
+		USERCENTER,
+		zuizdhsj,
+		ZHUANGT,
+		xianbyhlx,
+		DANW,
+		FAYRQ,
+		GONGHLX,
+		xiaohcbhsj,
+		UABZLX,
+		JISSL,
+		DINGDH,
+		GONGYSDM,
+		JIHYZ,
+		CANGKDM,
+		active,
+		tangc,
+		creator,create_time,editor,edit_time,
+		xiaohd,
+		gcbh
+		)
+		values(
+		${dbSchemal1}XQJS_DINGDMX_SEQ.nextval,
+		#xiaohch#,
+		<dynamic>
+			<isNull property="shid">null,</isNull>
+			<isNotNull property="shid">to_date(#shid#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>	
+		<dynamic>
+			<isNull property="yugsfqz">null,</isNull>
+			<isNotNull property="yugsfqz">#yugsfqz#,</isNotNull>
+		</dynamic>
+		#fahd#,
+		#lujdm#,
+		#shul#,
+		#uabzuclx#,
+		#xiehd#,
+		#lingjbh#,
+		<dynamic>
+			<isNull property="yaohqsrq">null,</isNull>
+			<isNotNull property="yaohqsrq">to_date(substr(#yaohqsrq#,1,10),'yyyy-mm-dd'),</isNotNull>
+		</dynamic>
+		<dynamic>
+			<isNull property="usbaozlx">null,</isNull>
+			<isNotNull property="usbaozlx">#usbaozlx#,</isNotNull>
+		</dynamic>
+		<dynamic>
+			<isNull property="zuihwhsj">null,</isNull>
+			<isNotNull property="zuihwhsj">to_date(#zuihwhsj#,'yyyy-MM-dd HH24:mi:ss'),</isNotNull>
+		</dynamic>
+		#dinghcj#,
+		#uabzucrl#,
+		decode(#yaohjsrq#,'null',null,to_date(substr(#yaohjsrq#,1,10),'yyyy-mm-dd')),
+		<dynamic>
+			<isNull property="yijfl">null,</isNull>
+			<isNotNull property="yijfl">#yijfl#,</isNotNull>
+		</dynamic>
+		#xiehzt#,
+		#xiaohccxh#,
+		#usbaozrl#,
+		<dynamic>
+			<isNull property="zuiwdhsj">null,</isNull>
+			<isNotNull property="zuiwdhsj">to_date(#zuiwdhsj#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>
+		#uabzucsl#,
+		#xiaohcsxsj# ,
+		<dynamic>
+			<isNull property="gongyslx">null,</isNull>
+			<isNotNull property="gongyslx">#gongyslx#,</isNotNull>
+       </dynamic>
+       <dynamic>	
+			<isNull property="xiaohsj">null,</isNull>
+			<isNotNull property="xiaohsj">to_date(#xiaohsj#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>
+		#zuihwhr#,
+		decode(#jiaofrq#,'null',null,to_date(substr(#jiaofrq#,1,10),'yyyy-mm-dd')),
+		<dynamic>
+		   <isNull property="leix">null,</isNull>
+			<isNotNull property="leix">#leix#,</isNotNull>
+		</dynamic>
+		#usercenter#,
+		<dynamic>
+			<isNull property="zuizdhsj">null,</isNull>
+			<isNotNull property="zuizdhsj">to_date(#zuizdhsj#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>
+		#zhuangt#,
+		<dynamic>
+			<isNull property="xianbyhlx">null,</isNull>
+			<isNotNull property="xianbyhlx">#xianbyhlx#,</isNotNull>
+		</dynamic>
+		#danw#,
+		decode(#fayrq#,'null',null,to_date(substr(#fayrq#,1,10),'yyyy-mm-dd')),
+		#gonghlx#,
+		#xiaohcbhsj#,
+		#uabzlx#,
+		<dynamic>
+			<isNull property="jissl">null,</isNull>
+			<isNotNull property="jissl">#jissl#,</isNotNull>
+		</dynamic>
+		#dingdh#,
+		#gongysdm#,
+		#jihyz#,
+		<dynamic>
+			<isNull property="cangkdm">null,</isNull>
+			<isNotNull property="cangkdm">substr(#cangkdm#,0,3),</isNotNull>
+		</dynamic>
+		#active#,
+		<dynamic>
+			<isNull property="tangc">null,</isNull>
+			<isNotNull property="tangc">#tangc#,</isNotNull>
+		</dynamic>
+		#creator#,
+		to_timestamp(#create_time#, 'yyyy-mm-dd HH24:mi:ss:FF3'),
+		#editor#,
+		to_timestamp(#edit_time#, 'yyyy-mm-dd HH24:mi:ss:FF3'),
+		#xiaohd#,
+		#gcbh#
+		)
+	</insert>
+	
+	
+	<update id="updateKdrddmxZt" parameterClass="java.util.Map">
+		update ${dbSchemal1}XQJS_DINGDMX_KDR set
+		ZHUANGT=#zhuangt#
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdh">DINGDH = #dingdh#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	<delete id="deleteAllKdrddmx">
+	truncate table ${dbSchemal1}XQJS_DINGDMX_KDR
+	</delete>
+	
+	<!-- 查询KD件平分规则表 -->
+	<select id="queryKdbzfpgz" resultClass="com.athena.xqjs.entity.kdorder.Kdbzfpgz">
+	select shengybzgs,xingq1,xingq2,xingq3,xingq4,xingq5 from ${dbSchemal3}xqjs_kdbzfpgz
+	</select>
+	</sqlMap>

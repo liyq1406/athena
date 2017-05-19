@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!--   denggq 2012-5-3 -->
+	
+	<!-- 多数据查询 -->
+	<select id="queryCmj" parameterClass="com.athena.ckx.entity.xuqjs.Cmj" resultClass="com.athena.ckx.entity.xuqjs.Cmj">
+		select usercenter,chanxck,lingjbh,gongyzq,jisrq,cmj,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_cmj
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanxck"><![CDATA[chanxck = #chanxck#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongyzq"><![CDATA[gongyzq = #gongyzq#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,chanxck,lingjbh,gongyzq
+	</select>
+	
+	<!-- 插入临时表按产线归集（总量）-->
+	<insert id="insertTempCmj" parameterClass="com.athena.ckx.entity.xuqjs.Cmj">
+		insert into ${dbSchemal3}ckx_temp_cmj(usercenter,chanxck,lingjbh,gongyzq,cmj)
+	    select a.usercenter,a.chanx as chanxck,a.lingjbh,a.xuqsszq as gongyzq,sum(a.xuqsl) as cmj 
+	    from ${dbSchemal3}xqjs_maoxqmx a, ${dbSchemal3}xqjs_maoxq b
+	    where a.xuqbc = b.xuqbc and b.xuqly in ('DIP', 'BJP', 'WXP', 'ZCP', 'CYP')  and b.shijscmj = '1' and a.xuqsszq = (
+	    	select nianzq from ${dbSchemal3}ckx_calendar_version where biaos = '1' and usercenter = a.usercenter and riq = #jisrq# and banc = (
+	        	select rilbc  from ${dbSchemal3}ckx_calendar_group where usercenter = a.usercenter and appobj = a.chanx))
+	    group by a.usercenter, a.chanx, a.lingjbh, a.xuqsszq
+	     
+	    union
+	     
+	    select a.usercenter,a.chanx as chanxck,a.lingjbh,a.xuqsszq as gongyzq,sum(a.xuqsl) as cmj
+	    from ${dbSchemal3}xqjs_maoxqmx a, ${dbSchemal3}xqjs_maoxq b
+	    where a.xuqbc = b.xuqbc and b.xuqly in ('DIP', 'BJP', 'WXP', 'ZCP', 'CYP')  and b.shijscmj = '1' and a.xuqsszq = (
+	    	select nianzq+1 from ${dbSchemal3}ckx_calendar_version where biaos = '1' and usercenter = a.usercenter and riq = #jisrq# and banc = (
+	        	select rilbc  from ${dbSchemal3}ckx_calendar_group where usercenter = a.usercenter and appobj = a.chanx))
+	    group by a.usercenter, a.chanx, a.lingjbh, a.xuqsszq
+	</insert>
+	
+	<!-- 插入数据 按产线归集-->
+	<insert id="insertCmjByChanx" parameterClass="com.athena.ckx.entity.xuqjs.Cmj">
+		insert into ${dbSchemal3}ckx_cmj (usercenter,chanxck,lingjbh,gongyzq,cmj,jisrq,creator,create_time,editor,edit_time)
+		
+		select usercenter,
+		 	chanxck,
+		 	lingjbh,
+		 	gongyzq,
+		    round(cmj/(
+		    	select count(shifgzr) from ${dbSchemal3}ckx_calendar_version  
+		        where shifgzr = '1' and biaos = '1' and usercenter = a.usercenter and nianzq = a.gongyzq  and banc = (
+		             select rilbc  from ${dbSchemal3}ckx_calendar_group where usercenter = a.usercenter and appobj = a.chanxck)  
+		         	 group by usercenter,banc),3) as cmj,
+		    #jisrq# as jisrq, 
+		    #creator# as creator,
+		    sysdate as create_time, 
+		    #editor# as editor,
+		    sysdate as edit_time
+		from ${dbSchemal3}ckx_temp_cmj a
+		
+	</insert>
+	
+	
+	<!-- 插入数据 按仓库归集-->
+	<insert id="insertCmjByCangk" parameterClass="com.athena.ckx.entity.xuqjs.Cmj">
+		insert into ${dbSchemal3}ckx_cmj (usercenter,chanxck,lingjbh,gongyzq,cmj,jisrq,creator,create_time,editor,edit_time)
+		
+		select usercenter , 
+				dinghck as chanxck ,
+				lingjbh , 
+				gongyzq ,
+				round(sum(cmj2)/(	select count(shifgzr) from ${dbSchemal3}ckx_calendar_version  
+		         		   	where shifgzr = '1' and biaos = '1' and usercenter = t.usercenter and nianzq = t.gongyzq  and banc = (
+		             			select rilbc  from ${dbSchemal3}ckx_calendar_group where usercenter = t.usercenter and appobj = t.dinghck)  
+		         		   	group by usercenter,banc) ,3) as cmj ,
+		       #jisrq# as jisrq ,
+		       #creator# as creator ,
+		       sysdate as create_time , 
+		       #editor# as editor ,
+		       sysdate as edit_time from (
+			        select usercenter, lingjbh, gongyzq,sum(cmj1) cmj2 ,dinghck from (
+			                  select c.usercenter, c.lingjbh, c.gongyzq, c.fenpqbh, cmj*g.gongyfe cmj1, g.gongysbh , w.dinghck, w.xianbck
+			                  from (
+			                      select a.usercenter, a.lingjbh, a.fenpqbh,b.gongyzq,sum(a.xiaohbl*b.cmj) as cmj
+			                      from ${dbSchemal3}ckx_lingjxhd a,${dbSchemal3}ckx_temp_cmj b
+			                      where  a.usercenter=b.usercenter and a.lingjbh=b.lingjbh and a.shengcxbh=b.chanxck and a.biaos = '1'
+			                      group by a.usercenter, a.lingjbh, a.fenpqbh, b.gongyzq
+			                  ) c inner join  ${dbSchemal3}ckx_lingjgys  g
+			                  on c.usercenter=g.usercenter and c.lingjbh=g.lingjbh
+			                  inner join ${dbSchemal3}ckx_wullj w 
+			                  on c.usercenter=w.usercenter and c.fenpqbh=w.fenpqh and c.lingjbh=w.lingjbh and g.gongysbh=w.gongysbh
+			         
+			        ) t1 
+			        group by  usercenter, lingjbh,gongyzq ,dinghck
+			        having  dinghck is not null 
+			        
+			        union all
+			        
+			        select usercenter, lingjbh, gongyzq,sum(cmj),xianbck from (
+			                  select c.usercenter, c.lingjbh, c.gongyzq,c.fenpqbh,cmj*g.gongyfe cmj  ,g.gongysbh,w.dinghck,w.xianbck from (
+				                    select a.usercenter, a.lingjbh, a.fenpqbh,b.gongyzq,sum(a.xiaohbl*b.cmj) as cmj
+				                    from ${dbSchemal3}ckx_lingjxhd a,${dbSchemal3}ckx_temp_cmj b
+				                    where  a.usercenter=b.usercenter and a.lingjbh=b.lingjbh and a.shengcxbh=b.chanxck and a.biaos = '1' 
+				                    group by a.usercenter, a.lingjbh, a.fenpqbh,b.gongyzq
+			                  ) c inner join  ${dbSchemal3}ckx_lingjgys  g
+			                  on c.usercenter=g.usercenter and c.lingjbh=g.lingjbh
+			                  inner join ${dbSchemal3}ckx_wullj w 
+			                  on c.usercenter=w.usercenter and c.fenpqbh=w.fenpqh and c.lingjbh=w.lingjbh and g.gongysbh=w.gongysbh
+			        ) t2 
+			        group by  usercenter, lingjbh,gongyzq ,xianbck
+		 	) t
+		 	group by usercenter, lingjbh,gongyzq ,dinghck
+	</insert>
+	
+	<!-- 更新零件仓库安全库存数量  最大库存数量 -->
+	<update id="updateLingjckKucl" parameterClass="com.athena.ckx.entity.xuqjs.Cmj">
+		update ${dbSchemal3}ckx_lingjck a 
+		set editor = #editor#,
+       		edit_time = sysdate,
+			(anqkcsl,zuidkcsl) = (
+		     	<!--0007485 更新零件仓库安全库存数量  最大库存数量  如果安全库存天数为0或为空，则安全库存数量不变 -->
+		     select
+             ceil(decode(nvl(round(b.cmj*a.anqkcts,3),0),0,a.anqkcsl,round(b.cmj*a.anqkcts,3)))
+            ,ceil(decode(nvl(round(b.cmj*a.zuidkcts,3),0),0,a.zuidkcsl,
+                                    round(b.cmj*a.zuidkcts,3)))      
+		    from ${dbSchemal3}ckx_cmj b
+		    where b.usercenter = a.usercenter
+		    and b.lingjbh = a.lingjbh
+		    and b.chanxck = a.cangkbh
+		    and b.gongyzq = (select min(gongyzq) from ${dbSchemal3}ckx_cmj))
+		    
+		where  exists (select 1
+		　　from  ${dbSchemal3}ckx_cmj c 
+		    where c.usercenter = a.usercenter
+		    and c.lingjbh = a.lingjbh
+		    and c.chanxck = a.cangkbh
+		    and c.gongyzq = (select min(gongyzq) from ${dbSchemal3}ckx_cmj)
+		　　)
+	</update>
+	
+	<!-- 更新零件消耗安全库存数量  最大库存数量 -->
+	<update id="updateLingjxhdKucl" parameterClass="com.athena.ckx.entity.xuqjs.Cmj">
+		update ${dbSchemal3}ckx_lingjxhd a 
+		set editor = #editor#,
+       		edit_time = sysdate,
+			anqkcs = (
+			    select ceil(round(b.cmj*a.xiaohbl*a.anqkcts,3)) from ${dbSchemal3}ckx_cmj b
+			    where b.usercenter = a.usercenter
+			    and b.lingjbh = a.lingjbh
+			    and b.chanxck = a.shengcxbh
+			    and b.gongyzq = (select min(gongyzq) from ${dbSchemal3}ckx_cmj))
+		    
+		where  exists (select 1
+		　　from  ${dbSchemal3}ckx_cmj c 
+		    where c.usercenter = a.usercenter
+		    and c.lingjbh = a.lingjbh
+		    and c.chanxck = a.shengcxbh
+		    and c.gongyzq = (select min(gongyzq) from ${dbSchemal3}ckx_cmj)
+		    and nvl(round(c.cmj*a.xiaohbl*a.anqkcts,3),0)>0 　　
+		　　)
+	</update>
+	
+	<!-- 清空数据 -->
+	<delete id="deleteCmj" parameterClass="com.athena.ckx.entity.xuqjs.Cmj">
+		truncate table ${dbSchemal3}ckx_cmj
+	</delete>
+	
+	<!-- 清空临时表数据 -->
+	<delete id="deleteTempCmj" parameterClass="com.athena.ckx.entity.xuqjs.Cmj">
+		truncate table ${dbSchemal3}ckx_temp_cmj
+	</delete>
+</sqlMap>

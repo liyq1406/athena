@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+ 
+<!-- 
+	按需最大要货量
+	@author huxy
+	@date 2015-12-09  11976
+ -->
+<sqlMap namespace="ts_ckx">
+ <select id="queryZuidyhl" parameterClass="com.athena.ckx.entity.cangk.Anxzdyhl" resultClass="com.athena.ckx.entity.cangk.Anxzdyhl">
+	select t.usercenter,t.lingjbh,t.ckxhd,t.zuidyhl,t.biaodsl
+    from ${dbSchemal3}ckx_lingjzdyhl t 
+    where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[t.usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjbh" prepend="and">
+	    		<![CDATA[t.lingjbh = #lingjbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="ckxhd" prepend="and">
+	    		<![CDATA[t.ckxhd = #ckxhd#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by t.lingjbh,t.ckxhd
+	</select>
+	
+	<insert id="insert_anxzdyhl" parameterClass="com.athena.ckx.entity.cangk.Anxzdyhl">
+		insert into ${dbSchemal3}ckx_lingjzdyhl(usercenter,lingjbh,ckxhd,zuidyhl,creator,create_time,editor,edit_time)values(#usercenter#,#lingjbh#,#ckxhd#,to_number(#zuidyhl#),#creator#,sysdate,#editor#,sysdate)
+	</insert>
+	
+	<update id="update_anxzdyhl" parameterClass="com.athena.ckx.entity.cangk.Anxzdyhl">
+		update ${dbSchemal3}ckx_lingjzdyhl 
+			set zuidyhl = to_number(#zuidyhl#),
+			biaodsl = '',
+			editor=#editor#,
+			edit_time=sysdate
+		where usercenter = #usercenter#  and lingjbh = #lingjbh# and ckxhd=#ckxhd#
+	</update>
+	
+	<delete id="delete_anxzdyhl" parameterClass="com.athena.ckx.entity.cangk.Anxzdyhl">
+		delete ${dbSchemal3}ckx_lingjzdyhl 
+			where usercenter = #usercenter#  
+			and lingjbh = #lingjbh# 
+			and ckxhd=#ckxhd#
+	</delete>
+	
+	<!-- huxy_V4_041 13161-->
+	 <select id="query_yhlsz" parameterClass="java.util.Map" resultClass="com.athena.ckx.entity.cangk.Anxyhlbbcssz">
+		select t.usercenter,t.gongc,t.chanx,nvl(t.jihsl,0),t.yaohllx,t.creator,t.create_time
+   		 from ${dbSchemal3}ckx_anxjccssz t 
+   		 where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[t.usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="gongc" prepend="and">
+	    		<![CDATA[t.gongc = #gongc#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chanx" prepend="and">
+	    		<![CDATA[t.chanx = #chanx#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by t.usercenter,t.gongc,t.chanx
+	</select>
+	
+	<insert id="insert_anxyhlbbcssz" parameterClass="com.athena.ckx.entity.cangk.Anxyhlbbcssz">
+		insert into ${dbSchemal3}ckx_anxjccssz(usercenter,gongc,chanx,jihsl,yaohllx,creator,create_time,editor,edit_time)values(#usercenter#,#gongc#,#chanx#,to_number(#jihsl#),#yaohllx#,#creator#,sysdate,#editor#,sysdate)
+	</insert>
+	
+	<update id="update_anxyhlbbcssz" parameterClass="com.athena.ckx.entity.cangk.Anxyhlbbcssz">
+		update ${dbSchemal3}ckx_anxjccssz 
+			set jihsl = to_number(#jihsl#),
+			yaohllx = #yaohllx#,
+			editor=#editor#,
+			edit_time=sysdate
+		where usercenter = #usercenter#  
+		and gongc = #gongc# 
+		and chanx=#chanx#
+	</update>
+	
+	<delete id="delete_anxyhlbbcssz" parameterClass="com.athena.ckx.entity.cangk.Anxyhlbbcssz">
+		delete ${dbSchemal3}ckx_anxjccssz 
+			where usercenter = #usercenter#  
+			and gongc = #gongc# 
+			and chanx = #chanx#
+	</delete>
+	
+	<select id="queryAnxyhllx" parameterClass="java.util.Map" resultClass="com.athena.ckx.entity.cangk.Anxyhlbbcssz">
+		select yaohllx from ${dbSchemal3}ck_yaohl where yaohllx not in ('SY','R1','R2') group by yaohllx			
+	</select>
+	
+	<select id="queryGongcbm" parameterClass="java.util.Map" resultClass="java.lang.String">
+		select zidbm from 	${dbSchemal3}ckx_xitcsdy t
+		   where t.zidlx='GC' 
+		<dynamic>
+			<isNotEmpty property="beiz" prepend="and">
+	    		<![CDATA[t.beiz = #beiz#]]> 
+	    	</isNotEmpty>
+			<isNotEmpty property="zidmc" prepend="and">
+	    		<![CDATA[t.zidmc = #zidmc#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    group by zidbm
+	</select>
+	
+	<select id="query_Gongc"  parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		select distinct(a.gongc)as KEY,b.zidmc  as VALUE
+			from ${dbSchemal3}ckx_cangk a,${dbSchemal3}ckx_xitcsdy b
+		  where a.usercenter = b.beiz
+		  and   trim(a.gongc) = b.zidbm
+		  and  b.zidlx='GC'
+		  and  a.usercenter=#usercenter#
+		  order by a.gongc
+	</select>
+	
+</sqlMap>
+
+

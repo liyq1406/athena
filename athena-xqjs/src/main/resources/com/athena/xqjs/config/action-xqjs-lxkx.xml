@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="laxjh" extend="toft-default" namespace="/laxjh">
+		<action name="laxjssz" class="laxjhAction" method="execute">
+			<result name="select">/WEB-INF/pages/xqjs/laxjh/laxjssz.jsp</result>
+		</action>
+		<action name="queryLaxjs" class="laxjhAction" method="query" />
+		<action name="executeLingjbj" class="laxjhAction" method="executeLingjbj" />
+		<!-- 拉箱零件报警页面 -->
+		<action name="selectLingjbj" class="laxjhAction" method="selectLingjbj">
+			<result name="select">/WEB-INF/pages/xqjs/laxjh/lingjbaojin.jsp</result>
+		</action>
+		<action name="queryLingjbj" class="laxjhAction" method="queryLingjbj" />
+		<action name="delLingjbj" class="laxjhAction" method="delLingjbj" />
+		
+		<action name="jsLaxjh" class="laxjhAction" method="jsLaxjh"></action>
+		<action name="queryLaxjh" class="laxjhAction" method="queryLaxjh">
+			<result name="select">/WEB-INF/pages/xqjs/laxjh/laxjh.jsp</result>
+		</action>
+		<action name="executeLaxjh" class="laxjhAction" method="executeLaxjh" />
+		<action name="editLinsxuq" class="laxjhAction" method="editLinsxuq"></action>
+		<action name="saveLinsXuq" class="laxjhAction" method="saveLinsXuq"></action>
+		<action name="selectLaxjhmx" class="laxjhAction" method="selectLaxjhmx">
+			<result name="select">/WEB-INF/pages/xqjs/laxjh/laxjhmx.jsp</result>
+		</action>
+		<action name="queryLaxjhmx" class="laxjhAction" method="queryLaxjhmx">
+		</action>
+		<action name="queryLaxjhWeimzlj" class="laxjhAction" method="queryLaxjhWeimzlj"></action>
+		<action name="editLaxjhmx" class="laxjhAction" method="editLaxjhmx"></action>
+		<action name="saveLaxjhmx" class="laxjhAction" method="saveLaxjhmx"></action>
+		<action name="sxLaxjh" class="laxjhAction" method="sxLaxjh"></action>
+		<action name="qxLaxjh" class="laxjhAction" method="qxLaxjh"></action>
+		<action name="laxjhDownLoadFile" class="laxjhAction" method="laxjhDownLoadFile"></action>
+		
+		<action name="kaixjssz" class="kaixjhAction" method="execute">
+			<result name="select">/WEB-INF/pages/xqjs/laxjh/kaixjssz.jsp</result>
+		</action>
+		<action name="queryKaixjs" class="kaixjhAction" method="query" />
+		<action name="executeKaixLingjbj" class="kaixjhAction" method="executeLingjbj" />
+		<!-- 开箱零件报警页面 -->
+		<action name="selectKaixLingjbj" class="kaixjhAction" method="selectLingjbj">
+			<result name="select">/WEB-INF/pages/xqjs/laxjh/kaixlingjbaojin.jsp</result>
+		</action>
+		<action name="queryKaixLingjbj" class="kaixjhAction" method="queryLingjbj" />
+		<action name="jsKaixjh" class="kaixjhAction" method="jsKaixjh"></action>
+		<action name="queryKaixjh" class="kaixjhAction" method="queryKaixjh">
+			<result name="select">/WEB-INF/pages/xqjs/laxjh/kaixjh.jsp</result>
+		</action>
+		<action name="executeKaixjh" class="kaixjhAction" method="executeKaixjh" />
+		<action name="editKaixLinsxuq" class="kaixjhAction" method="editKaixLinsxuq"></action>
+		<action name="saveKaixLinsXuq" class="kaixjhAction" method="saveKaixLinsXuq"></action>
+		<action name="selectKaixjhmx" class="kaixjhAction" method="selectKaixjhmx">
+			<result name="select">/WEB-INF/pages/xqjs/laxjh/kaixjhmx.jsp</result>
+		</action>
+		<action name="queryKaixjhmx" class="kaixjhAction" method="queryKaixjhmx">
+		</action>
+		<action name="queryKaixjhWeimzlj" class="kaixjhAction" method="queryKaixjhWeimzlj"></action>
+		<action name="editKaixjhmx" class="kaixjhAction" method="editKaixjhmx"></action>
+		<action name="saveKaixjhmx" class="kaixjhAction" method="saveKaixjhmx"></action>
+		<action name="sxKaixjh" class="kaixjhAction" method="sxKaixjh"></action>
+		<action name="qxKaixjh" class="kaixjhAction" method="qxKaixjh"></action>
+		<action name="kaixjhDownLoadFile" class="kaixjhAction" method="kaixjhDownLoadFile"></action>
+		<action name="getLingjh" class="laxjhAction" method="getLingjh"></action>
+		<action name="getTcId" class="laxjhAction" method="getTcId"></action>
+		<action name="validateLingjh" class="laxjhAction" method="validateLingjh"></action>
+		<action name="validateLinsxuqLingjh" class="laxjhAction" method="validateLinsxuqLingjh"></action>
+		<action name="validateLaxjhmxTcNo" class="laxjhAction" method="validateLaxjhmxTcNo"></action>
+		<action name="validateKaixjhmxTcNo" class="kaixjhAction" method="validateKaixjhmxTcNo"></action>
+		<action name="queryKdys" class="kdysAction" method="execute">
+			<result name="select">/WEB-INF/pages/xqjs/kdys/kdys.jsp</result>
+		</action>
+		<action name="listKayunLujdm" class="laxjhAction" method="listKayunLujdm"></action>
+	</package>
+</toft>

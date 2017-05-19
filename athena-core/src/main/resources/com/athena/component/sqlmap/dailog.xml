@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="dailog">
+	
+	<insert id="correctlog_insert" parameterClass="com.athena.util.athenalog.SysLog">
+		insert into SYS_LOG(
+		CID,USERCENTER,OPERATORS,OPERATORS_IP,TRANS_CONTENT,
+		TRANS_DESC,TRANS_URL,CFLAG,CLEVEL,CREATE_TIME,MODULE_NAME,PROCESS_NAME)
+		values(
+		#cid#,#usercenter#,#operators#,#operators_ip#,#trans_content#,
+		#trans_desc#,#trans_url#,#cflag#,#clevel#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),
+		#module_name#,#process_name#
+		)
+		
+	</insert>
+	
+	
+	<insert id="errorlog_insert" parameterClass="com.athena.util.athenalog.SysLog">
+		insert into SYS_LOG(
+		CID,USERCENTER,OPERATORS,OPERATORS_IP,TRANS_CONTENT,
+		TRANS_DESC,TRANS_URL,CFLAG,CLEVEL,CREATE_TIME,
+		CCLASS,CEXCEPTION,MODULE_NAME,PROCESS_NAME)
+		values(
+		#cid#,#usercenter#,#operators#,#operators_ip#,#trans_content#,
+		#trans_desc#,#trans_url#,#cflag#,#clevel#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),
+		#cclass#,#cexception#,#module_name#,#process_name#
+		)
+		
+	</insert>
+ 	
+</sqlMap>

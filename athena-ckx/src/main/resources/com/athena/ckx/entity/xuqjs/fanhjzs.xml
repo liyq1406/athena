@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+	返还记账商
+	@author xss
+	@date 2015-3-27
+	0010495
+-->
+<sqlMap namespace="fanhjzs">
+	
+	<!-- 查询主从供应商 -->
+	<select id="queryFanhjzs" resultClass="com.athena.ckx.entity.xuqjs.Fanhjzs">
+		select * from ${dbSchemal3}ckx_fanhjzs where 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">
+				usercenter = #usercenter#
+			</isNotNull>
+			<isNotNull property="fanhs" prepend=" and ">
+				fanhs = #fanhs#
+			</isNotNull>
+			<isNotNull property="jizgys" prepend=" and ">
+				jizgys = #jizgys#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 保存 -->
+	<insert id="insertFanhjzs" parameterClass="com.athena.ckx.entity.xuqjs.Fanhjzs">
+		insert into ${dbSchemal3}ckx_fanhjzs(usercenter,fanhs,jizgys,creator,create_time,editor,edit_time)values(#usercenter#,#fanhs#,#jizgys#,#creator#,sysdate,#editor#,sysdate)
+	</insert>
+	
+	
+	<!-- 删除-->
+		<delete id="deleteFanhjzs" parameterClass="com.athena.ckx.entity.xuqjs.Fanhjzs">
+			delete from ${dbSchemal3}ckx_fanhjzs where usercenter = #usercenter#  and jizgys = #jizgys#
+	</delete>
+	
+		
+	<!-- 更新 -->
+	<update id="updateFanhjzs" parameterClass="com.athena.ckx.entity.xuqjs.Fanhjzs">
+		update ${dbSchemal3}ckx_fanhjzs 
+		set fanhs = #fanhs#,
+			editor=#editor#,
+			edit_time=sysdate
+		where usercenter = #usercenter#  and jizgys = #jizgys#
+	</update>
+		
+		
+	<!-- 查询用户中心 -->
+	<select id="queryfhusercenter" resultClass="java.util.HashMap">
+		select usercenter from ${dbSchemal3}ckx_rongqjz t where t.shifgys='1'
+	</select>
+	
+	<!-- 查询该返还/记账商是否存在 -->
+	<select id="checkfanhs" resultClass="java.lang.String">
+		select count(*) as count from ${dbSchemal3}ckx_fanhjzs 
+			where usercenter = #usercenter#
+			and	(fanhs = #fanhs# and jizgys= #jizgys#)	
+	</select>
+	
+	<!-- 校验返还/记账商是否存在，是否有效 -->
+	<select id="ckGongys" resultClass="java.lang.String">
+		select count(*) as count from ${dbSchemal3}ckx_gongys 
+			where biaos='1'
+			 and usercenter = #usercenter#
+			 and (GCBH = #fanhs# or GCBH = #jizgys#)
+	</select>
+	
+		<!-- huxy_11348 校验记账方式是否为承运商 -->
+	<select id="isChengys" resultClass="java.lang.String">
+		select shifgys  from ${dbSchemal3}ckx_rongqjz
+			where  usercenter = #usercenter#
+	</select>
+	
+</sqlMap>

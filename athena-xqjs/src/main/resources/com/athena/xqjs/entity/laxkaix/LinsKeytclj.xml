@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="linskeytclj">
+
+	<resultMap class="com.athena.xqjs.entity.laxkaix.LinsKeytclj"
+		id="LinsKeytclj">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="JIHYDM" property="jihydm" />
+		<result column="TCNO" property="tcNo" />
+		<result column="QIYSJ" property="qiysj" />
+		<result column="MUDD" property="mudd" />
+		<result column="LINGJH" property="lingjh" />
+		<result column="LINGJSL" property="lingjsl" />
+		<result column="WULD" property="wuld" />
+		<result column="YUJDDSL" property="yujddsl" />
+		<result column="LINGJMYD" property="lingjmyd" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="EDITOR" property="editor" />
+		<result column="EDIT_TIME" property="editTime" />
+	</resultMap>
+	<select id="selectKeyTclj" parameterClass="java.util.HashMap"
+		resultMap="LinsKeytclj">
+		SELECT
+		keytclj_.USERCENTER,
+		keytclj_.JIHYDM,
+		keytclj_.TCNO,
+		keytclj_.QIYSJ,
+		keytclj_.MUDD,
+		keytclj_.LINGJH,
+		keytclj_.LINGJSL,
+		keytclj_.WULD,
+		keytclj_.YUJDDSL,
+		keytclj_.LINGJMYD,
+		keytclj_.CREATOR,
+		keytclj_.CREATE_TIME,
+		keytclj_.EDITOR,
+		keytclj_.EDIT_TIME
+		FROM
+		${dbSchemal1}XQJS_LINS_KEYTCLJ keytclj_
+		INNER join ${dbSchemal1}XQJS_LINS_KEYTC keytc_ ON
+		keytclj_.usercenter = keytc_.usercenter
+		and keytclj_.JIHYDM = keytc_.jihydm
+		and keytclj_.TCNO = keytc_.TCNO WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter">
+				keytclj_.USERCENTER=#usercenter#
+			</isNotEmpty>
+		</dynamic>
+		<isEqual compareValue="1" property="suanfcl">
+				ORDER BY keytc_.TCMYD DESC
+		</isEqual>
+		<isEqual compareValue="2" property="suanfcl">
+				ORDER BY keytc_.ZHIXSJ DESC
+		</isEqual>
+	</select>
+	<insert id="insertKeytclj" parameterClass="com.athena.xqjs.entity.laxkaix.LinsKeytclj">
+		INSERT INTO
+		${dbSchemal1}XQJS_LINS_KEYTCLJ(
+		USERCENTER,
+		JIHYDM,
+		TCNO,
+		QIYSJ,
+		LINGJH,
+		LINGJSL,
+		WULD,
+		YUJDDSL,
+		CREATOR,
+		CREATE_TIME
+		) VALUES(
+		#usercenter#,
+		#jihydm#,
+		#tcNo#,
+		to_date(#qiysj#,'yyyy-MM-dd HH24:mi:ss'),
+		#lingjh#,
+		#lingjsl#,
+		#wuld#,
+		to_date(#yujddsl#,'yyyy-MM-dd HH24:mi:ss'),
+		#creator#,
+		to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss')
+		)
+	</insert>
+	<update id="updateKeytclj" parameterClass="com.athena.xqjs.entity.laxkaix.LinsKeytclj">
+		UPDATE
+		${dbSchemal1}XQJS_LINS_KEYTCLJ SET
+		YUJDDSL = #yujddsl#,
+		LINGJMYD =
+		#lingjmyd#,
+		EDITOR = #editor#,
+		EDIT_TIME =
+		to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		WHERE USERCENTER =
+		#usercenter# and JIHYDM = #jihydm# and TCNO = #tcNo# AND LINGJH =
+		#lingjh#
+	</update>
+	<delete id="deleteLinsKeytclj">
+		DELETE FROM ${dbSchemal1}XQJS_LINS_KEYTCLJ WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="AND" property="usercenter">
+				USERCENTER =
+				#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

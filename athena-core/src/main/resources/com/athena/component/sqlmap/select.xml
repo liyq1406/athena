@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="select">
+
+	<!-- 查询所有用户中心   hj 2011-11-2-->
+   <select id="queryUserCenterMap"  resultClass="com.athena.util.cache.CacheValue" >
+	select usercenter as key, centername as value, 0 as usercenter
+	from ${dbSchemal3}ckx_usercenter 
+	where  <![CDATA[biaos='1']]>
+   </select>
+
+</sqlMap>

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	
+	<package name="cangk" namespace="/cangk"  extend="toft-default" >
+        <!-- 仓库  -->                   
+    	<action name="cangk" class="cangkAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/cangk.jsp</result>
+    	</action>
+    	<action name="queryCangk" class="cangkAction" method="query"/>
+    	<action name="getCangk" class="cangkAction" method="get"/>
+    	<action name="listCangk" class="cangkAction" method="list"/>
+    	<action name="listCangkByUserCenter" class="cangkAction" method="listByUserCenter"/>
+    	<action name="removeCangk" class="cangkAction" method="remove"/>
+   		<action name="saveZicks" class="cangkAction" method="saveZicks"/>
+   		<action name="downloadCangk" class="cangkAction" method="download"/><!-- 导出仓库与子仓库 -->
+   		<!-- 工厂 hanwu 20150720  --> 
+   		<action name="queryGongc" class="cangkAction" method="queryGongc"/>
+   		
+   		<!-- 设置单据 -->
+   		<action name="printStrogdict" class="printStrogdictAction" method="query"/>
+		<action name="savesPrintStrogdict" class="printStrogdictAction" method="saves"/>
+   		
+   		<!-- 子仓库  -->	
+    	<action name="queryZick" class="zickAction" method="query"/>
+    	<action name="getZick" class="zickAction" method="get"/>
+    	<action name="removeZick" class="zickAction" method="remove"/>
+    	
+    	<!-- 成品库计划员组 -->
+    	<action name="chengpkJihyz" class="chengpkJihyzAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/chengpk_jihyz.jsp</result>
+    	</action>
+    	<action name="queryChengpkJihyz" class="chengpkJihyzAction" method="query"/>
+    	<action name="getChengpkJihyz" class="chengpkJihyzAction" method="get"/>
+    	<action name="listChengpkJihyz" class="chengpkJihyzAction" method="list"/>
+    	<action name="removeChengpkJihyz" class="chengpkJihyzAction" method="remove"/>
+   		<action name="saveChengpkJihyz" class="chengpkJihyzAction" method="save"/>
+   		
+    	<!-- 发货站台 -->
+    	<action name="fahzt" class="fahztAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/fahzt.jsp</result>
+    	</action>
+    	<action name="queryFahzt" class="fahztAction" method="query"/>
+    	<action name="saveFahzt" class="fahztAction" method="save"/>
+    	<action name="getFahzt" class="fahztAction" method="get"/>
+    	<action name="listFahzt" class="fahztAction" method="list"/>
+    	<action name="removeFahzt" class="fahztAction" method="remove"/>
+    	
+    	<!-- 卸货站台 -->
+    	<action name="xiehzt" class="xiehztAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/xiehzt.jsp</result>
+    	</action>
+    	<action name="queryXiehzt" class="xiehztAction" method="query"/>
+    	<action name="queryZsd" class="xiehztAction" method="queryZsd"/>
+    	<action name="saveXiehzt" class="xiehztAction" method="save"/>
+    	<action name="getXiehzt" class="xiehztAction" method="get"/>
+    	<action name="listXiehzt" class="xiehztAction" method="list"/>
+    	<action name="removeXiehzt" class="xiehztAction" method="remove"/>
+   		<action name="getDaztbhCount" class="xiehztAction" method="getDaztbhCount"/><!-- 查询大站台编号 hzg 2015.1.27 -->
+    	
+    	<!-- 库位等级 -->
+    	<action name="kuwdj" class="kuwdjAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/kuwdj.jsp</result>
+    	</action>
+    	<action name="queryKuwdj" class="kuwdjAction" method="query"/>
+    	<action name="saveKuwdj" class="kuwdjAction" method="save"/>
+    	<action name="getKuwdj" class="kuwdjAction" method="get"/>
+    	<action name="listKuwdj" class="kuwdjAction" method="list"/>
+    	<action name="removeKuwdj" class="kuwdjAction" method="remove"/>
+    	
+    	<!-- 库位等级与包装  -->
+    	<action name="kuwdjBaoz" class="kuwdjBaozAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/kuwdj_baoz.jsp</result>
+    	</action>
+    	<action name="kuwdjBaozBybaoz" class="kuwdjBaozAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/kuwdj_baoz.jsp</result>
+    	</action>
+    	<action name="queryKuwdjBaoz" class="kuwdjBaozAction" method="query"/>
+    	<action name="saveKuwdjBaoz" class="kuwdjBaozAction" method="save"/>
+    	<action name="saveKuwdjBaozs" class="kuwdjBaozAction" method="saves"/>
+    	<action name="getKuwdjBaoz" class="kuwdjBaozAction" method="get"/>
+    	<action name="listKuwdjBaoz" class="kuwdjBaozAction" method="list"/>
+    	<action name="removeKuwdjBaoz" class="kuwdjBaozAction" method="remove"/>
+    	<action name="downloadKuwdjbz" class="kuwdjBaozAction" method="download"/><!-- 导出库位等级与包装 -->
+    	
+    	<!-- 客户操作码  -->                   
+    	<action name="kehczm" class="kehczmAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/kehczm.jsp</result>
+    	</action>
+    	<action name="queryKehczm" class="kehczmAction" method="query"/>
+    	<action name="saveKehczm" class="kehczmAction" method="save"/>
+    	<action name="getKehczm" class="kehczmAction" method="get"/>
+    	<action name="removeKehczm" class="kehczmAction" method="remove"/>
+   		<action name="saveDanjdys" class="kehczmAction" method="saveDanjdys"/>
+   		
+   		<!-- 单据打印  -->	
+    	<action name="queryDanjdy" class="danjdyAction" method="query"/>
+    	<action name="listDanjdy" class="danjdyAction" method="list"/>
+    	<action name="saveDanjdy" class="danjdyAction" method="save"/>
+    	<action name="getDanjdy" class="danjdyAction" method="get"/>
+    	<action name="removeDanjdy" class="danjdyAction" method="remove"/>
+    	
+    	<!-- 空容器场 -->
+    	<action name="rongqc" class="rongqcAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/rongqc.jsp</result>
+    	</action>
+    	<action name="queryRongqc" class="rongqcAction" method="query"/>
+    	<action name="saveRongqc" class="rongqcAction" method="save"/>
+    	<action name="addRqc" class="rongqcAction" method="addRqc"/>
+    	<action name="getRongqc" class="rongqcAction" method="get"/>
+    	<action name="listRongqc" class="rongqcAction" method="list"/>
+    	<action name="removeRongqc" class="rongqcAction" method="remove"/>
+    	<action name="removeRongqcs" class="rongqcAction" method="removes"/>
+    	
+    	<!-- 空容器场 -->
+    	<action name="xingzysts" class="xingzystsAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/xingzysts.jsp</result>
+    	</action>
+    	<action name="queryXingzysts" class="xingzystsAction" method="query"/>
+    	<action name="saveXingzysts" class="xingzystsAction" method="save"/>
+    	<action name="getXingzysts" class="xingzystsAction" method="get"/>
+    	<action name="listXingzysts" class="xingzystsAction" method="list"/>
+    	<action name="removeXingzysts" class="xingzystsAction" method="remove"/>
+    	
+    	<!-- 零件类型验收比例设置 -->
+    	<action name="yansblsz" class="yansblszAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/yansblsz.jsp</result>
+    	</action>
+    	<action name="queryYansblsz" class="yansblszAction" method="query"/>
+    	<action name="saveYansblsz" class="yansblszAction" method="save"/>
+    	<action name="getYansblsz" class="yansblszAction" method="get"/>
+    	<action name="listYansblsz" class="yansblszAction" method="list"/>
+    	<action name="removeYansblsz" class="yansblszAction" method="remove"/>
+    	
+    	<!-- 零件类型验收项 -->
+    	<action name="yansxlj" class="yansxljAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/yansxlj.jsp</result>
+    	</action>
+    	<action name="queryYansxlj" class="yansxljAction" method="query"/>
+    	<action name="saveYansxlj" class="yansxljAction" method="save"/>
+    	<action name="getYansxlj" class="yansxljAction" method="get"/>
+    	<action name="listYansxlj" class="yansxljAction" method="list"/>
+    	<action name="removeYansxlj" class="yansxljAction" method="remove"/>
+    	
+    	
+    	<!-- 零件验收比例设置 -->
+    	<action name="yansbllj" class="yansblljAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/yansbllj.jsp</result>
+    	</action>
+    	<action name="queryYansbllj" class="yansblljAction" method="query"/>
+    	<action name="saveYansbllj" class="yansblljAction" method="save"/>
+    	<action name="getYansbllj" class="yansblljAction" method="get"/>
+    	<action name="listYansbllj" class="yansblljAction" method="list"/>
+    	<action name="removeYansbllj" class="yansblljAction" method="remove"/>
+    	
+    	<action name="addYansblljByGongys" class="yansblljAction" method="addYansblljByGongys"/><!-- 增加一个供应商的零件的验收项 -->
+    	<action name="deletesYansbllj" class="yansblljAction" method="deletes"/><!-- 多选删除 -->
+    	<action name="commitYansblsz" class="yansblljAction" method="commit"/><!-- 根据模板生成数据 -->
+    	
+    	<!-- 库位 -->
+    	<action name="kuw" class="kuwAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/kuw.jsp</result>
+    	</action>
+    	<action name="queryKuw" class="kuwAction" method="query"/>
+    	<action name="insertKuw" class="kuwAction" method="insertKuw"/>
+    	<action name="getKuw" class="kuwAction" method="get"/>
+    	<action name="listKuw" class="kuwAction" method="list"/>
+    	<action name="removeKuw" class="kuwAction" method="remove"/>
+    	<action name="updateKuw" class="kuwAction" method="updatekw"/>
+    	<action name="queryKuwdjbh" class="kuwAction" method="kuwlist"/>
+    	<action name="updateKuwdjbh" class="kuwAction" method="kuwupdate"/>
+    	<action name="updatekwztjied" class="kuwAction" method="kwztjied"/>
+    	<action name="updatekuwztdongj" class="kuwAction" method="kuwztdongj"/>
+    	<action name="downloadKuw" class="kuwAction" method="download"/><!-- 导出库位 -->
+    	
+    	<!-- 消耗点-容器区  wangyu 20121210-->
+    	<action name="rongqcxhd" class="rongqcxhdAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/rongqcxhd.jsp</result>
+    	</action>
+    	<action name="queryRongqcxhd" class="rongqcxhdAction" method="query"/>
+    	<action name="queryWeipz" class="rongqcxhdAction" method="querywpz"/>
+   		<action name="saveRongqcxhd" class="rongqcxhdAction" method="save"/>
+   		<action name="addRongqc" class="rongqcxhdAction" method="addRongqcxhd"/>
+   		<action name="getRongqcxhd" class="rongqcxhdAction" method="get"/>
+   		<action name="listRongqcxhd" class="rongqcxhdAction" method="list"/>
+   		<action name="removeRongqcxhd" class="rongqcxhdAction" method="remove"/> 
+   		
+   		<!-- 物理点容器关系  wangyu 20121210-->
+    	<action name="wuldrqgx" class="wuldrqgxAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/wuldrqgx.jsp</result>
+    	</action>
+    	<action name="queryWuldrqgx" class="wuldrqgxAction" method="query"/>
+   		<action name="saveWuldrqgx" class="wuldrqgxAction" method="save"/>
+   		<action name="addWuldrqgx" class="wuldrqgxAction" method="addWuldrqgx"/>
+   		<action name="getWuldrqgx" class="wuldrqgxAction" method="get"/>
+   		<action name="listWuldrqgx" class="wuldrqgxAction" method="list"/>
+   		<action name="removeWuldrqgx" class="wuldrqgxAction" method="remove"/> 
+   		
+   		<!--  库存快照资源设置 wangyu 20130730-->
+    	<action name="kuckzzysz" class="kuckzzyszAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/kuckzzysz.jsp</result>
+    	</action>
+    	<action name="queryKuckzzysz" class="kuckzzyszAction" method="query"/>
+   		<action name="saveKuckzzysz" class="kuckzzyszAction" method="save"/>
+   		<action name="editKuckzzysz" class="kuckzzyszAction" method="editKuckzzysz"/>
+   		<action name="getKuckzzysz" class="kuckzzyszAction" method="get"/>
+   		<action name="listKuckzzysz" class="kuckzzyszAction" method="list"/>
+   		<action name="removeKuckzzysz" class="kuckzzyszAction" method="remove"/> 
+   		
+   		<!--  责任主体 wangyu 20140219-->
+    	<action name="zerzt" class="zerztAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/zerzt.jsp</result>
+    	</action>
+    	<action name="queryZerzt" class="zerztAction" method="query"/>
+   		<action name="saveZerzt" class="zerztAction" method="save"/>
+   		<action name="editZerzt" class="zerztAction" method="editKuckzzysz"/>
+   		<action name="getZerzt" class="zerztAction" method="get"/>
+   		<action name="listZerzt" class="zerztAction" method="list"/>
+   		<action name="removeZerzt" class="zerztAction" method="remove"/> 
+   		
+   		
+   		<!--  按需最大要货量  huxy 11976-->
+    	<action name="anxzdyhl" class="anxzdyhlAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/zuidyhl.jsp</result>
+    	</action>
+    	<action name="queryZuidyhl" class="anxzdyhlAction" method="query"/>
+    	<action name="saveZuidyhl" class="anxzdyhlAction" method="save"/>
+    	
+    	 <!-- 按需要货令统计报表参数设置  huxy_V4_041-->
+    	<action name="anxyhltjbbcszs" class="anxzdyhlAction" method="anxyhltjbbcszs">
+    		<result name="select">/WEB-INF/pages/ckx/cangk/anxyhlbbjccssz.jsp</result>
+    	</action>
+    	<action name="queryAnxtjbbsel" class="anxzdyhlAction" method="queryAnxtjbbsel"/>
+    	<action name="queryAnyhllx" class="anxzdyhlAction" method="queryAnxyhllx"/>
+    	<action name="queryFactoryByUsercenter" class="anxzdyhlAction" method="queryFactoryByUsercenter"/>
+    	<action name="addAnxyhlbbSz" class="anxzdyhlAction" method="addAnxyhlbbSz"/>
+    	<action name="eidtAnxyhlbbSz" class="anxzdyhlAction" method="eidtAnxyhlbbSz"/>
+    	<action name="deleteAnxyhlbbSz" class="anxzdyhlAction" method="deleteAnxyhlbbSz"/>
+    </package>
+	
+</toft>

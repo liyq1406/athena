@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- ibatis数据库操作配置文件 -->
+<sqlMap namespace="inLog">
+
+   <!-- 插入主日志SQL配置 -->
+   <insert id="insertFileInfo" parameterClass="java.util.Map">
+   		<![CDATA[
+			insert into in_file_log 
+				(SID,INBH,FILE_NAME, file_begintime,file_endtime, insert_num, update_num,error_num, file_satus,YUNXKSSJ)
+			values(
+				#SID#,#INBH#,#fileName#,
+				to_date(#file_begintime#,'yyyy-MM-dd hh24:Mi:ss'),
+				to_date(#file_endtime#,'yyyy-MM-dd hh24:Mi:ss'),
+				#insert_num#,#update_num#,#error_num#,
+				#file_satus#,sysdate)
+		]]>
+   </insert>
+   
+    <!-- 插入错误日志SQL配置-->
+   <insert id="insertErrorFileInfo" parameterClass="java.util.Map">
+   		<![CDATA[
+			insert into in_errorfile 
+				(EID,INBH,SID,FILE_ERRORINFO,ERROR_DATE,YUNXKSSJ)
+			values(
+				#EID#,#INBH#,#SID#,substr(#file_errorinfo#,0,700),#error_date#,sysdate)
+		]]>
+   </insert>
+   
+   
+</sqlMap>
+

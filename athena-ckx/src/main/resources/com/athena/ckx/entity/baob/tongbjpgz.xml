@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- hj -->
+	<!-- 同步集配跟踪-->
+	<select id="querytongbjpgz" parameterClass="com.athena.ckx.entity.baob.Tongbjpgz" resultClass="com.athena.ckx.entity.baob.Tongbjpgz">
+					select tbjpd.usercenter,
+			       tbjpd.yaohlh,
+			       tbjpd.lingjxh,
+			       tbjpd.zhengclsh,
+			       tbjpd.weiz,
+			       tbjpd.lingjbh,
+			       tbjpd.lingjmc,
+			        to_char(tbjpd.zhengcsxsj,'yyyy-MM-dd hh24:mi:ss') zhengcsxsj,
+			       tbjpd.gongysdm,
+			       tbjpd.gongysmc,
+			       tbjpd.lingjsl,
+			       tbjpd.danw,
+			       tbjpd.xiaohd,
+			        decode(yhl.yaohlx,'','集配',yhl.yaohlx) as yaohlx,
+			       yhl.baozxh,
+			       yhl.yaohsl,
+			       yhl.chengysdm,      
+			       yhl.yaohllx,
+			       yhl.zuiwsj,
+			       yhl.xiehd,
+			       yhl.mudd,
+			       yhl.cangkbh,
+			       yhl.zickbh,
+			       yhl.peislb,
+			       yhl.keh,
+			       yhl.tongblshqj,
+			       yhl.yaohlzt,
+			       yhl.yaohlscsj
+			      
+			  from ${dbSchemal3}ck_tongbjpd tbjpd
+			  left join (select yaonbhl.yaohlh,yaonbhl.baozxh,yaonbhl.yaohsl,'' chengysdm,yaonbhl.YAOHLLX,yaonbhl.zuiwsj,yaonbhl.xiehd,yaonbhl.mudd,yaonbhl.cangkbh,yaonbhl.zickbh,yaonbhl.peislb,yaonbhl.keh,yaonbhl.tongblshqj,decode(yaonbhl.yaohlzt,'00','LIV','01','EXP','02','RES','03','EDI','04','RET','05','FIN','07','CRE','08','BLO','09','未表达','66','已装车') yaohlzt,yaonbhl.yaohlscsj,'内部' yaohlx
+			             from ${dbSchemal3}ck_yaonbhl yaonbhl 
+			              <![CDATA[where yaonbhl.yaohlzt<>'06']]>
+			             union
+			             select yaohl.yaohlh ,yaohl.baozxh,yaohl.yaohsl,yaohl.chengysdm,yaohl.YAOHLLX,yaohl.zuiwsj,yaohl.xiehd,yaohl.mudd,yaohl.cangkbh,yaohl.zickbh,yaohl.peislb,yaohl.keh,yaohl.tongblshqj,decode(yaohl.yaohlzt,'00','LIV','01','EXP','02','ENC','03','TRS','05','FIN','07','CRE','08','BLO','09','未表达') yaohlzt,yaohl.yaohlscsj,'外部' yaohlx
+			             from ${dbSchemal3}CK_yaohl yaohl  
+			            ) yhl on tbjpd.yaohlh=yhl.yaohlh
+			where 1=1
+			<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[tbjpd.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohlh"><![CDATA[tbjpd.yaohlh = #yaohlh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[tbjpd.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[tbjpd.gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zuiwsj_from">  <![CDATA[yhl.zuiwsj between to_date(#zuiwsj_from#,'yyyy-MM-dd hh24:mi:ss') and to_date(#zuiwsj_to#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[yhl.chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[yhl.cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="peislb"><![CDATA[yhl.peislb = #peislb#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="keh"><![CDATA[yhl.keh = #keh#]]></isNotEmpty>
+		</dynamic>
+		order by yhl.zuiwsj desc,tbjpd.yaohlh desc,tbjpd.weiz desc
+	</select>
+	
+	
+</sqlMap>

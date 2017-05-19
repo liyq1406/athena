@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="anx">
+	<select id="queryListAllAnxjscszjb" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+			select 
+					usercenter ,
+					lingjbh,
+					anqkcs ,
+					xianbllkc ,
+					yifyhlzl ,
+					jiaofzl ,
+					zhongzzl ,
+					gongysbh ,
+					chej,
+					liush,
+					xianh,
+					xiaohd,
+					shul,
+					danw,
+					zhizlx,
+					xiaohsj,
+					chaifsj,
+					xqly,
+					lujbh ,
+					lujmc ,
+					fahd ,
+					zhidgys ,
+					jiaofm ,
+					beihzq ,
+					yunszq ,
+					gcbh ,
+					xiehztbh ,
+					songhpc ,
+					mudd ,
+					dinghck ,
+					mos2 ,
+					cangkshpc2 ,
+					cangkshsj2 ,
+					cangkfhsj2 ,
+					beihsj2 ,
+					ibeihsj2 ,
+					pbeihsj2 ,
+					xianbck ,
+					mos ,
+					cangkshpc ,
+					cangkshsj ,
+					cangkfhsj ,
+					beihsj ,
+					ibeihsj ,
+					pbeihsj ,
+					shengcxbh ,
+					beihsjc ,
+					zhizlx,
+					jianglms2,
+					shengxsj2,
+					jianglms ,
+					shengxsj,
+					gysucbzlx ,
+					gysucrl ,
+					gysuabzlx ,
+					gysuaucgs ,
+					ckusbzlx ,
+					ckusbzrl ,
+					ckuclx ,
+					ckucrl
+			from 
+			      	${dbSchemal1}xqjs_anxjscszjb
+	</select>
+	
+	
+	<select id="queryListAnxjscszjb" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb" parameterClass="java.util.Map">
+			select 
+					usercenter ,
+					lingjbh,
+					anqkcs ,
+					xianbllkc ,
+					yifyhlzl ,
+					jiaofzl ,
+					zhongzzl ,
+					gongysbh ,
+					chej,
+					liush,
+					xianh,
+					xiaohd,
+					shul,
+					danw,
+					zhizlx,
+					xiaohsj,
+					chaifsj,
+					xqly,
+					lujbh ,
+					lujmc ,
+					fahd ,
+					zhidgys ,
+					jiaofm ,
+					beihzq ,
+					yunszq ,
+					gcbh ,
+					xiehztbh ,
+					songhpc ,
+					mudd ,
+					dinghck ,
+					mos2 ,
+					cangkshpc2 ,
+					cangkshsj2 ,
+					cangkfhsj2 ,
+					beihsj2 ,
+					ibeihsj2 ,
+					pbeihsj2 ,
+					xianbck ,
+					mos ,
+					cangkshpc ,
+					cangkshsj ,
+					cangkfhsj ,
+					beihsj ,
+					ibeihsj ,
+					pbeihsj ,
+					shengcxbh ,
+					beihsjc ,
+					zhizlx,
+					jianglms2,
+					shengxsj2,
+					jianglms ,
+					shengxsj,
+					gysucbzlx ,
+					gysucrl ,
+					gysuabzlx ,
+					gysuaucgs ,
+					ckusbzlx ,
+					ckusbzrl ,
+					ckuclx ,
+					ckucrl,
+					gongysfe,
+					xiaohcbh
+			from 
+			      	${dbSchemal1}xqjs_anxjscszjb t 
+			where 
+				1=1 
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+					lingjbh = #lingjbh#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohd">
+					xiaohd = #xiaohd#
+				</isNotEmpty>
+				<isNotNull prepend=" and " property="mos">
+					(mos = #mos# or mos2 = #mos2#)
+				</isNotNull>
+			</dynamic>
+			order by 
+			      	xiaohsj
+	</select>
+	
+	<!-- 查询C1M1模式消耗按仓库汇总 -->
+	<select id="queryListAnxjscszjbC1M1" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb" parameterClass="java.util.Map">
+			select 
+					usercenter ,
+					lingjbh,
+          max(anqkcs) as anqkcs,
+          max(xianbllkc) as xianbllkc,
+          max(yifyhlzl) as yifyhlzl,
+          max(jiaofzl) as jiaofzl,
+          max(zhongzzl) as zhongzzl,
+          max(gongysbh) as gongysbh,
+          max(chej) as chej,
+          max(liush) as liush,
+          max(xianh) as xianh,
+          max(xiaohd) as xiaohd,
+          sum(shul) as shul,
+          max(danw) as danw,
+          max(zhizlx) as zhizlx,
+          xiaohsj,
+          max(chaifsj) as chaifsj,
+          max(xqly) as xqly,
+          max(lujbh) as lujbh,
+          max(lujmc) as lujmc,
+          max(fahd ) as fahd,
+          max(zhidgys) as zhidgys,
+          max(jiaofm) as jiaofm,
+          max(beihzq) as beihzq,
+          max(yunszq) as yunszq,
+          max(gcbh ) as gcbh,
+          max(xiehztbh) as xiehztbh,
+          max(songhpc) as songhpc,
+          max(mudd ) as mudd,
+          max(dinghck) as dinghck,
+          max(mos2 ) as mos2,
+          max(cangkshpc2) as cangkshpc2,
+          max(cangkshsj2) as cangkshsj2,
+          max(cangkfhsj2) as cangkfhsj2,
+          max(beihsj2 ) as beihsj2,
+          max(ibeihsj2) as ibeihsj2,
+          max(pbeihsj2) as pbeihsj2,
+          xianbck ,
+          max(mos ) as mos,
+          max(cangkshpc) as cangkshpc,
+          max(cangkshsj) as cangkshsj,
+          max(cangkfhsj) as cangkfhsj,
+          max(beihsj) as beihsj,
+          max(ibeihsj) as ibeihsj,
+          max(pbeihsj) as pbeihsj,
+          max(shengcxbh) as shengcxbh,
+          max(beihsjc) as beihsjc,
+          max(zhizlx) as zhizlx,
+          max(jianglms2) as jianglms2,
+          max(shengxsj2) as shengxsj2,
+          max(jianglms) as jianglms,
+          max(shengxsj) as shengxsj,
+          max(gysucbzlx) as gysucbzlx,
+          max(gysucrl) as gysucrl,
+          max(gysuabzlx) as gysuabzlx,
+          max(gysuaucgs) as gysuaucgs,
+          max(ckusbzlx) as ckusbzlx,
+          max(ckusbzrl) as ckusbzrl,
+          max(ckuclx ) as ckuclx,
+          max(ckucrl) as ckucrl,
+          max(gongysfe) as gongysfe,
+          max(xiaohcbh) as xiaohcbh
+      from 
+            ${dbSchemal1}xqjs_anxjscszjb t 
+      where 
+        1 = 1 
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+					lingjbh = #lingjbh#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="xianbck">
+					xianbck = #xianbck#
+				</isNotEmpty>
+				<isNotNull prepend=" and " property="mos">
+					(mos = #mos# or mos2 = #mos2#)
+				</isNotNull>
+			</dynamic>
+			  group by usercenter,lingjbh,xianbck,xiaohsj
+			order by 
+			      	xiaohsj
+	</select>
+
+	
+	<select id="queryAnxjscszjbForAnx" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+			select 
+	          distinct 
+	          usercenter ,
+	          lingjbh,
+	          xiaohd  
+	      	from 
+	              ${dbSchemal1}xqjs_anxjscszjb t 
+	        where 
+	        mos = #mos# or mos2 = #mos2#  
+	</select>
+	
+	<!-- C1M1模式按线边库汇总 -->
+	<select id="queryAnxjscszjbForAnxC1M1" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+			select 
+	          distinct 
+	          usercenter ,
+	          lingjbh,
+	          xianbck  
+	      	from 
+	              ${dbSchemal1}xqjs_anxjscszjb t 
+	        where 
+	        mos = #mos# or mos2 = #mos2#  
+	</select>
+	
+	<insert id="insertAnxjscszjb" parameterClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+		insert into ${dbSchemal1}xqjs_anxjscszjb(
+			usercenter ,
+			lingjbh,
+			anqkcs ,
+			xianbllkc ,
+			yifyhlzl ,
+			jiaofzl ,
+			zhongzzl ,
+			gongysbh ,
+			chej,
+			liush,
+			xianh,
+			xiaohd,
+			shul,
+			danw,
+			xiaohsj,
+			chaifsj,
+			xqly,
+			lujbh ,
+			lujmc ,
+			fahd ,
+			zhidgys ,
+			jiaofm ,
+			beihzq ,
+			yunszq ,
+			gcbh ,
+			xiehztbh ,
+			songhpc ,
+			mudd ,
+			dinghck ,
+			mos2 ,
+			cangkshpc2 ,
+			cangkshsj2 ,
+			cangkfhsj2 ,
+			beihsj2 ,
+			ibeihsj2 ,
+			pbeihsj2 ,
+			xianbck ,
+			mos ,
+			cangkshpc ,
+			cangkshsj ,
+			cangkfhsj ,
+			beihsj ,
+			ibeihsj ,
+			pbeihsj ,
+			shengcxbh ,
+			beihsjc ,
+			zhizlx,
+			jianglms2,
+			shengxsj2,
+			jianglms ,
+			shengxsj,
+			gysucbzlx ,
+			gysucrl ,
+			gysuabzlx ,
+			gysuaucgs ,
+			ckusbzlx ,
+			ckusbzrl ,
+			ckuclx ,
+			ckucrl ,
+			gongysfe
+			)
+			values
+			(
+			#usercenter# ,
+			#lingjbh#,
+			#anqkcs# ,
+			#xianbllkc# ,
+			#yifyhlzl# ,
+			#jiaofzl# ,
+			#zhongzzl# ,
+			#gongysbh# ,
+			#chej#,
+			#liush#,
+			#xianh#,
+			#xiaohd#,
+			#shul#,
+			#danw#,
+			#xiaohsj#,
+			#chaifsj#,
+			#xqly#,
+			#lujbh# ,
+			#lujmc# ,
+			#fahd# ,
+			#zhidgys# ,
+			#jiaofm# ,
+			#beihzq# ,
+			#yunszq# ,
+			#gcbh# ,
+			#xiehztbh# ,
+			#songhpc# ,
+			#mudd# ,
+			#dinghck# ,
+			#mos2# ,
+			#cangkshpc2# ,
+			#cangkshsj2# ,
+			#cangkfhsj2# ,
+			#beihsj2# ,
+			#ibeihsj2# ,
+			#pbeihsj2# ,
+			#xianbck# ,
+			#mos# ,
+			#cangkshpc# ,
+			#cangkshsj# ,
+			#cangkfhsj# ,
+			#beihsj# ,
+			#ibeihsj# ,
+			#pbeihsj# ,
+			#shengcxbh# ,
+			#beihsjc# ,
+			#zhizlx#,
+			#jianglms2#,
+			#shengxsj2#,
+			#jianglms# ,
+			#shengxsj#,
+			#gysucbzlx# ,
+			#gysucrl# ,
+			#gysuabzlx# ,
+			#gysuaucgs# ,
+			#ckusbzlx# ,
+			#ckusbzrl# ,
+			#ckuclx# ,
+			#ckucrl#,
+			#gongysfe#
+			)
+	</insert>
+	
+	
+	<delete id="deleteAllMessages" parameterClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+		truncate table  
+			${dbSchemal1}xqjs_anxjscszjb 
+	</delete>
+	
+</sqlMap>

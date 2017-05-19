@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+ targetNamespace="http://www.athena.come/exchange-config"
+ xmlns:tns="http://www.athena.come/exchange-config" elementFormDefault="qualified">
+
+    <element name="exchange-configs" type="tns:exchangeConfigs">
+    	<annotation>
+    		<documentation>数据交换配置根节点</documentation>
+    	</annotation></element>
+    
+    <complexType name="exchangeConfigs">
+    	<sequence>
+    		<element name="exchange-config-group"
+    			type="tns:exchangeConfigGroup" minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="exchangeConfig">
+    	<annotation>
+    		<documentation>数据交换配置项</documentation>
+    	</annotation>
+    	<sequence>
+    		<element name="reader" type="tns:readerConfig" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    		<element name="writer" type="tns:writerConfig" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    		<element name="field" type="tns:field" minOccurs="1"
+    			maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    	<attribute name="id" type="string" use="required"></attribute>
+    	<attribute name="caption" type="string"></attribute>
+    	<attribute name="timer" type="string"></attribute>
+    </complexType>
+    
+    <complexType name="readerConfig">
+    	<sequence>
+    		<element name="database" type="tns:database" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    	</sequence>
+    	<attribute name="class" type="string"></attribute>
+    	<attribute name="filePath" type="string"></attribute>
+    	<attribute name="split" type="string"></attribute>
+    	<attribute name="sql" type="string"></attribute>
+    </complexType>
+    
+
+    <complexType name="database">
+    	<attribute name="url" type="string" use="required"></attribute>
+    	<attribute name="username" type="string" use="required"></attribute>
+    	<attribute name="password" type="string" use="required"></attribute>
+    	<attribute name="driver" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="writerConfig">
+    	<sequence>
+    		<element name="database" type="tns:database" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    	</sequence>
+    	<attribute name="class" type="string"></attribute>
+    	<attribute name="table" type="string"></attribute>
+    	<attribute name="idKeys" type="string"></attribute>
+    </complexType>
+
+    <complexType name="field">
+    	<attribute name="name" type="string" use="required"></attribute>
+    	<attribute name="caption" type="string"></attribute>
+    	<attribute name="length" type="string" use="required"></attribute>
+    	<attribute name="type">
+    		<simpleType>
+    			<restriction base="string">
+    				<enumeration value="number"></enumeration>
+    				<enumeration value="string"></enumeration>
+    				<enumeration value="date"></enumeration>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="format" type="string"></attribute>
+    </complexType>
+
+    <complexType name="exchangeConfigGroup">
+    	<sequence>
+    		<element name="exchangeConfig" type="tns:exchangeConfig"></element>
+    	</sequence>
+    	<attribute name="writer" type="string"></attribute>
+    	<attribute name="reader" type="string"></attribute>
+    </complexType>
+</schema>

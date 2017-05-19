@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="kdorder" extend="toft-default" namespace="/kdorder">
+
+
+		<!-- 李明 start -->
+
+		<!--订单定义: 单击订单定义进入到页面 -->
+		<action name="forwardDingd" class="kdOrderAction" method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/kdorder/kdOrderDefinition.jsp</result>
+		</action>
+
+		<!--订单定义: 单击查询按钮根据条件查询 -->
+		<action name="queryKDorder" class="kdOrderAction" method="queryListDingd" />
+
+		<!--订单定义: 单击删除按钮根据条件删除数据 -->
+		<action name="deleteKDorder" class="kdOrderAction" method="deleteDingd" />
+
+		<!--订单定义: 单击修改按钮修改数据 -->
+		<action name="updateKDorder" class="kdOrderAction" method="upDateDingd" />
+
+		<!--订单定义: 单击插入按钮插入数据 -->
+		<action name="insertKDorderNormal" class="kdOrderAction"
+			method="insertDingdNormal" />
+		<!--订单定义: 单击插入特殊订单按钮插入数据 -->
+		<action name="insertKDorderSpecial" class="kdOrderAction"
+			method="insertDingdSpecial" />
+			
+		<!--订单零件: 爱信不匹配装箱规则-->
+		<action name="axunMatch" class="kdOrderAction" method="axunMatch" />
+			
+		<!--订单定义: 供应商列表下拉框-->
+		<action name="getGysList" class="kdOrderAction" method="getGysList" />	
+		<action name="getGysGroup" class="kdOrderAction" method="getGysGroup" />	
+		<action name="kdDingdDownLoadFile" class="kdOrderAction" method="kdDingdDownLoadFile" />	
+		<action name="kdDingdDetailDownload" class="kdOrderAction" method="kdDingdDetailDownload" />	
+		
+		
+			
+		<!--订单生效及修改: 单击订单生效及修改进入到页面 -->
+		<action name="forwardUpdateKdorder" class="kdOrderAction" method="executeUpdate">
+			<result name="success">/WEB-INF/pages/xqjs/kdorder/kdOrderUpdateAndEffect.jsp</result>
+		</action>
+		<!--订单生效及修改: 单击查询按钮根据条件查询 -->
+		<action name="queryKDorderForShengx" class="kdOrderAction" method="queryListDingdForShengx" />
+		<!--订单生效及修改: 单击查询按钮根据条件查询KD -->
+		<action name="queryKDorderForKd" class="kdOrderAction" method="queryListDingdljForMap" />
+		<!--订单生效及修改: 单击查询按钮根据条件查询 
+		<action name="detailCheck" class="kdOrderAction" method="queryDetailCheck">
+			<result name="kdorder">/WEB-INF/pages/xqjs/kdorder/kdOrderDetailEffect.jsp</result>
+		</action>
+		-->
+		<!--订单生效及修改: 单击查询按钮根据条件查询订单行 -->
+		<action name="kdOrderLine" class="kdOrderAction" method="queryDetailOrderLine">
+			<result name="success">/WEB-INF/pages/xqjs/kdorder/kdOrderLine.jsp</result>
+		</action>
+		<action name="queryOrderLine" class="kdOrderAction" method="queryOrderLine" />
+		<!--订单生效及修改: 插入kd订单 -->
+		<action name="insertKDorder_1" class="kdOrderAction" method="insertDingdlj"/>
+		<!--订单生效及修改: 修改订单 -->
+		<action name="updateKd_sx" class="kdOrderAction" method="upDateDingdlj"/>
+		<!--订单生效及修改: 获取包装容量 -->
+		<action name="getrl" class="kdOrderAction" method="getRongl" />
+		
+		<!--订单生效及修改: 更新明细后更新零件 -->
+		<action name="doUpdateDingdlj" class="kdOrderAction" method="doUpdateDingdlj" />
+		<action name="sumOrderParts" class="kdOrderAction" method="sumOrderParts" />
+		<!--订单生效及修改: 不匹配装箱规则新增 -->
+		<action name="addBppMx" class="kdOrderAction" method="addBppMx" />
+		<action name="checkAddmx" class="kdOrderAction" method="checkAddmx" />
+		<!--订单生效及修改: 爱信订单不匹配装箱规则页面初始化-->
+		<action name="initUnMatchPage" class="kdOrderAction" method="initUnMatchPage">
+			<result name="success">/WEB-INF/pages/xqjs/kdorder/aixbppddmx.jsp</result>
+		</action>
+		<!--订单生效及修改: 发送订单 -->
+		<action name="sendOrder" class="kdOrderAction" method="sendOrder" />
+
+       <action name="upDateDingdmx" class="kdOrderAction" method="upDateDingdmx" />
+       <action name="getLikeGys" class="kdOrderAction" method="getLikeGys" />
+		<!-- 李明 end -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<!-- 陈骏 start -->
+		<action name="forwardMulubidui" class="mulubiduiAction" method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/kdorder/kdMulubidui.jsp</result>
+		</action>
+
+		<action name="insertMulu" class="mulubiduiAction" method="insertMulu" />
+
+		<action name="MuluCompared" class="mulubiduiAction" method="MuluCompared" />
+		<action name="muluDownLoadFile" class="mulubiduiAction" method="muluDownLoadFile" />
+		<action name="queryMuluRes" class="mulubiduiAction" method="queryMuluRes" />
+		<action name="kdCalculate" class="kdOrderAction" method="kdCalculate" />
+		<action name="checkValue" class="kdOrderAction" method="checkValue" />
+		<action name="executeKDZiykzb" class="kdOrderAction" method="executeKDZiykzb" />
+		<!-- kd订单待生效 /生效/拒绝 -->
+		<action name="updateDaStatus" class="kdOrderAction" method="updateDaStatus" />
+		<!-- 周期模式中间表导出-->
+		<action name="kdhzDownLoadFile" class="kdOrderAction" method="kdhzDownLoadFile"/>
+		<action name="changeStats" class="kdOrderAction" method="changeStats"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<!-- 陈骏 end -->
+		
+		
+		
+		<!-- 王凌 start -->
+		<!-- 初始化订单修改 -->
+		<action name="initAixdd" class="aixddAction" method="initAixdd">
+			<result name="aixdd">/WEB-INF/pages/xqjs/kdorder/aixdd.jsp</result>
+			<result name="kdorder">/WEB-INF/pages/xqjs/kdorder/kdOrderDetailEffect.jsp</result>
+		</action>
+		<!-- 初始定义装箱规则 -->
+		<action name="initDyzxgz" class="aixddAction" method="initDyzxgz">
+			<result name="dingyzxgz">/WEB-INF/pages/xqjs/kdorder/dingyzxgz.jsp</result>
+		</action>
+		<!-- 初始化装箱方案查询 -->
+		<action name="initZxfncx" class="aixddAction" method="initZxfncx">
+			<result name="zhuangxfncx">/WEB-INF/pages/xqjs/kdorder/zhuangxfncx.jsp</result>
+		</action>
+		<!-- 定义装箱规则 -->
+		<action name="queryZxgz" class="aixddAction" method="queryZxgz">
+		</action>
+		<!-- 查询装箱规则明细 -->
+		<action name="queryZxgzMx" class="aixddAction" method="queryZxgzMx">
+		</action>
+		<!-- 定义装箱规则 -->
+		<action name="dingYzxgz" class="aixddAction" method="dingYzxgz">
+		</action>
+		<!-- 删除装箱规则 -->
+		<action name="removeZxgz" class="aixddAction" method="removeZxgz">
+		</action>
+		<!-- 查询订单明细 -->
+		<action name="queryDingdmx" class="aixddAction" method="queryDingdmx">
+		</action>
+		<!-- 查询订单零件 -->
+		<action name="queryDingdlj" class="aixddAction" method="queryDingdlj">
+		</action>
+		<!-- 匹配装箱规则 -->
+		<action name="piPzxgz" class="aixddAction" method="piPzxgz">
+			<result name="aixddppjg">/WEB-INF/pages/xqjs/kdorder/aixddppjg.jsp</result>
+		</action>
+		<!-- 查询爱信订单匹配规则结果 -->
+		<action name="queryAixddppgzjg" class="aixddAction" method="queryAixddppgzjg">
+		</action>
+		<!-- 保存爱信订单匹配规则结果 -->
+		<action name="saveAixddppgzjg" class="aixddAction" method="saveAixddppgzjg"></action>
+		
+		<!-- 得到所属用户中心 -->
+		<action name="getUserCenter" class="aixddAction" method="getUserCenter"></action>
+
+	<!-- 王凌 end -->
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 李智 start -->
+	<action name="executeDingdh" class="kdOrderJisAction" method="executeDingdh"/>
+	<action name="executeMaoxqXqly" class="kdOrderJisAction" method="executeMaoxqXqly"/>
+	<action name="querySessionMaoxq" class="kdOrderJisAction" method="querySessionMaoxq"/>
+	<action name="getZhizlxByDingd" class="kdOrderJisAction" method="getZhizlxByDingd"/>
+	
+	<!-- kd件订单计算初始页面 lizhi -->
+	<action name="executeDingdJs" class="kdOrderJisAction" method="execute">
+		<result name="success">/WEB-INF/pages/xqjs/kdorder/KdOrderJs.jsp</result>
+	</action>
+		
+	<!-- kd件订单计算查询列表 lizhi -->
+	<action name="queryListKdMaoxq" class="kdOrderJisAction" method="queryListKdMaoxq"/>
+	
+	<!-- Kd件订单零件终止初始页面 lizhi -->
+	<action name="dingdljListExecute" class="kdOrderLingjZzAction" method="execute">
+		<result name="success">/WEB-INF/pages/xqjs/kdorder/dingdljZzList.jsp</result>
+	</action>
+		
+	<!-- Kd件订单零件终止页面查询订单零件列表 lizhi -->
+	<action name="queryDingdljByParam" class="kdOrderLingjZzAction" method="queryDingdljByParam"/>
+		
+	<!-- Kd件订单零件终止lizhi -->
+	<action name="dingdljZz" class="kdOrderLingjZzAction" method="dingdljZz"/>
+	
+	<!-- Kd件订单行终止初始页面 lizhi -->
+	<action name="dingdhListExecute" class="kdOrderMingxZzAction" method="execute">
+		<result name="success">/WEB-INF/pages/xqjs/kdorder/dingdhZzList.jsp</result>
+	</action>
+		
+	<!-- Kd件订单行终止页面查询订单明细列表 lizhi -->
+	<action name="queryDingdmxByParam" class="kdOrderMingxZzAction" method="queryDingdmxByParam"/>
+		
+	<!-- Kd件订单行终止lizhi -->
+	<action name="dingdmxZz" class="kdOrderMingxZzAction" method="dingdmxZz"/>
+			
+	<!-- Il件订单分析初始页面lizhi -->
+	<action name="dingdFenxiExecute" class="kdOrderFenxiAction" method="execute">
+		<result name="success">/WEB-INF/pages/xqjs/kdorder/dingdFenxi.jsp</result>
+	</action>
+		
+	<!--Kd件订单分析页面查询订单列表 lizhi -->
+	<action name="queryListDingd" class="kdOrderFenxiAction" method="queryListDingd"/>
+		
+	<!-- Kd件订单分析页面查询毛需求列表 lizhi -->
+	<action name="queryListNiandyg" class="kdOrderFenxiAction" method="queryListNiandyg"/>
+		
+	<!-- 跳到比较结果页面lizhi -->
+	<action name="toBijiaoResult" class="kdOrderFenxiAction" method="toBijiaoResult">
+		<result name="success">/WEB-INF/pages/xqjs/kdorder/dingdFenxiResult.jsp</result>
+	</action>
+		
+	<!-- 比较结果页面 lizhi -->
+	<action name="bijiao" class="kdOrderFenxiAction" method="bijiao"/>	
+	<!-- 李智 end -->
+	<action name="dingdFxExport" class="kdOrderFenxiAction" method="dingdFxExport"/>	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--聂士元   start-->
+	<action name="impKdAqkcInit" class="impAqkcAction" method="impKdAqkcInit">
+		<result name="success">/WEB-INF/pages/xqjs/kdorder/impAqkc.jsp</result>
+	</action>
+	
+	<action name="queryKdAqkc" class="impAqkcAction" method="queryKdAqkc"/>
+	
+	<action name="updateAqkc" class="impAqkcAction" method="updateAqkc"/>
+	
+	<action name="impUpdateKc" class="impAqkcAction" method="impUpdateKc"/>
+	
+	<action name="expExc" class="impAqkcAction" method="expExc"/>
+	
+	<!--聂士元   end  -->
+    
+    
+    <!--袁修瑞   start-->
+    <action name="readyExpExc" class="impAqkcAction" method="readyExpExc"/>
+    <!--袁修瑞   end  -->
+    
+    
+    <!-- xss-0011533 -->
+    <action name="lingjddcx" class="dingdljcxAction" method="execute" >
+    	<result name="success">/WEB-INF/pages/xqjs/kdorder/dingdljcx.jsp</result>
+	</action>	
+	<action name="queryListDingdlj" class="dingdljcxAction" method="queryListDingdlj"/>
+	
+	<!-- xss-v4_014 -->
+	<action name="downloadKdorderMob" class="mulubiduiAction" method="downloadKdorderMob"/>
+	    	
+    
+    
+	</package>
+</toft>

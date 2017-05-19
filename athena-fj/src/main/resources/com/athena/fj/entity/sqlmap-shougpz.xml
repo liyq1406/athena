@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- ibatis数据库操作配置文件 -->
+<sqlMap namespace="shougpz">
+<!-- 手工配载要货令归集  hzg 2012-2-20 -->
+	<select id="queryYaohlOfkh" parameterClass="java.util.Map"  resultClass="java.util.HashMap">
+		<![CDATA[select 
+		yhl.YAOHLH,
+		yhl.LINGJBH,
+		yhl.BAOZXH,
+		yhl.YAOHSL,
+		yhl.XIEHD,
+		to_char(yhl.JIAOFJ,'yyyy-MM-dd hh24:mi') as JIAOFJ,
+		to_char(yhl.FAYSJ,'yyyy-MM-dd hh24:mi') as FAYSJ
+		FROM ${dbSchemal4}CK_YAONBHL yhl where 1=1 and usercenter = #usercenter#]]>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="keh"><![CDATA[keh = #kehbm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="kaissj"><![CDATA[faysj >= to_date(#kaissj#,'yyyy-MM-dd hh24:mi')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiessj"><![CDATA[faysj <= to_date(#jiessj#,'yyyy-MM-dd hh24:mi')]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[and  shifpz='1' and suodpz='0' AND YAOHLZT  in ('01','04')]]>
+	</select>
+
+
+<!-- *****************BY WANGCHONG   date :2012-02-25***************************** -->
+	<!-- 
+	配载发交:${dbSchemal2}
+	参考系:${dbSchemal3}
+	仓库:${dbSchemal4}
+	 -->
+	
+	<!-- 车辆资源 -->
+	<select id="queryCelZY" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[ 
+		
+			SELECT YS.USERCENTER,
+				   YS.YUNSSBH,
+				   YS.CHEXBH,
+				   TO_CHAR(YS.ZUIDSL)     SHUL,
+				   TO_CHAR(YS.ZUIDSL)     ZUIDSL,
+				   '0'             SYSL
+			 FROM ${dbSchemal3}CKX_CHEX_YUNSS YS
+			WHERE YS.USERCENTER = #UC#	
+					      
+				 ]]>
+	</select>
+	
+	
+	<!-- 根据供应商和客户  by 王冲 -->
+	<select id="queryGYSKEH" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[ 
+				SELECT CK.KEH
+				  FROM ${dbSchemal4}CK_YAONBHL CK
+				  JOIN ${dbSchemal3}CKX_PEIZBZBH PH
+				    ON PH.BAOZLX = CK.BAOZXH
+				  JOIN (SELECT CP.KEHBH
+				          FROM ${dbSchemal3}CKX_KEH_CHENGPK CP
+				         WHERE CP.USERCENTER = #UC#
+				           AND CP.YUNSLXBH =  #LXZBH#
+				         GROUP BY CP.KEHBH) TMP
+				    ON TMP.KEHBH = CK.KEH
+				 WHERE CK.USERCENTER = #UC#
+				   AND CK.SHIFPZ = '1'
+				   AND CK.SUODPZ = '0'
+				   and ck.YAOHLZT  in ('01','04') 
+				   GROUP BY  CK.KEH
+	    		]]>
+	</select>
+	
+	<!-- 路线组  by 王冲 -->
+	<select id="queryck" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[ 
+				SELECT 
+				       CPK.CANGKBH
+				  FROM ${dbSchemal3}CKX_KEH_CHENGPK CPK
+				 WHERE CPK.YUNSLXBH = #LXZBH#
+				   AND USERCENTER = #UC#
+				 GROUP BY   CANGKBH
+				]]>
+	</select>
+	
+	
+	
+	<!-- 归集客户要货令中对应的策略组  by 王冲 -->
+	<select id="queryCelZ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[ 
+				SELECT PZ.CELBH,
+				       PB.BAOZZBH,
+				       TO_CHAR(PB.BAOZSL) BAOZSL,
+				       PZ.CHEXBH,
+				       PZ.YOUXJ,
+				       TO_CHAR(BZ.BAOZBSJS) BAOZBSJS,
+				       CL.CHEXMC
+				  FROM ${dbSchemal3}CKX_PEIZCL PZ
+				  JOIN (select * from ${dbSchemal3}CKX_CHEX where biaos='1') CL
+				    ON CL.CHEXBH = PZ.CHEXBH
+				  JOIN ${dbSchemal3}CKX_PEIZCLZB PB
+				    ON PB.CELBH = PZ.CELBH
+				   AND PB.USERCENTER = #UC#
+				  JOIN (select * from ${dbSchemal3}CKX_PEIZBZ where biaos='1') BZ
+				    ON PB.BAOZZBH = BZ.BAOZZBH
+				   AND PZ.USERCENTER = PB.USERCENTER
+				 WHERE PZ.USERCENTER = #UC# AND PZ.CELBH=#PZBH# 
+				   AND EXISTS (SELECT 1
+				          FROM (SELECT PB.CELBH
+				                  FROM ${dbSchemal3}CKX_PEIZCLZB PB
+				                  JOIN (SELECT PE.BAOZZBH
+				                         FROM ${dbSchemal4}CK_YAONBHL CK
+				                         JOIN ${dbSchemal3}CKX_PEIZBZBH PE
+				                           ON PE.BAOZLX = CK.BAOZXH
+				                         JOIN (SELECT CP.KEHBH
+				                                FROM ${dbSchemal3}CKX_KEH_CHENGPK CP
+				                               WHERE CP.USERCENTER = #UC#
+				                                 AND CP.YUNSLXBH = #LXZBH#
+				                               GROUP BY CP.KEHBH) TMP
+				                           ON TMP.KEHBH = CK.KEH
+				                        WHERE CK.USERCENTER = #UC#
+				                          AND SHIFPZ = '1'
+				                          AND SUODPZ = '0'
+				                          AND YAOHLZT  in ('01','04') 
+				                          AND CK.KEH = #KEH#
+				                        GROUP BY PE.BAOZZBH) TMP
+				                    ON TMP.BAOZZBH = PB.BAOZZBH) TT
+				         WHERE TT.CELBH = PZ.CELBH)
+				 ORDER BY PZ.YOUXJ
+	   		 ]]>
+	</select>	
+	
+	 <!-- 归集要贷令号  by 王冲 -->
+	<select id="queryYHL" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[ 
+				SELECT CK.BAOZXH,
+				       PH.BAOZZBH,
+				       CK.YAOHLH,
+				       CK.LINGJBH,
+				       CK.CANGKBH NEIBGYS_CANGKBH,
+				       TO_CHAR(CK.YAOHSL) YAOHSL
+				  FROM ${dbSchemal4}CK_YAONBHL CK
+				  JOIN ${dbSchemal3}CKX_PEIZBZBH PH
+				    ON PH.BAOZLX = CK.BAOZXH AND CK.CANGKBH=#CKBH# 
+				  JOIN (SELECT CP.KEHBH
+				          FROM ${dbSchemal3}CKX_KEH_CHENGPK CP
+				         WHERE CP.USERCENTER = #UC#
+				           AND CP.YUNSLXBH = #LXZBH#
+				         GROUP BY CP.KEHBH) TMP
+				    ON TMP.KEHBH = CK.KEH
+				 WHERE CK.USERCENTER = #UC#
+				   AND CK.SHIFPZ = '1'
+				   AND CK.SUODPZ = '0'
+				   AND CK.YAOHLZT  in ('01','04') 
+				   AND CK.KEH = #KEH#
+		           order by CK.FAYSJ
+		 ]]>
+		
+	</select>
+	
+	
+	
+	<!-- 归集客户要货令中对应的策略组  by hzg 2012-3-30 -->
+	<select id="queryPeizcl" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[ 
+				SELECT PZ.CELBH,
+				       PZ.CELMC,
+				       CL.CHEXBH
+				  FROM ${dbSchemal3}CKX_PEIZCL PZ
+				  JOIN (select * from ${dbSchemal3}CKX_CHEX where biaos='1') CL
+				    ON CL.CHEXBH = PZ.CHEXBH
+				  JOIN ${dbSchemal3}CKX_PEIZCLZB PB
+				    ON PB.CELBH = PZ.CELBH
+				   AND PB.USERCENTER = #UC#
+				  JOIN (select * from ${dbSchemal3}CKX_PEIZBZ where biaos='1') BZ
+				    ON PB.BAOZZBH = BZ.BAOZZBH
+				   AND PZ.USERCENTER = PB.USERCENTER
+				 WHERE PZ.USERCENTER = #UC#  
+		]]>
+		<dynamic>
+		    <isNotEmpty prepend=" AND " property="chexbh"><![CDATA[CL.CHEXBH = #chexbh#]]></isNotEmpty>
+		    <isNotEmpty prepend=" AND " property="celbh"><![CDATA[PZ.CELBH = #celbh#]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[ 
+				   AND EXISTS (SELECT 1
+				          FROM (SELECT PB.CELBH
+				                  FROM ${dbSchemal3}CKX_PEIZCLZB PB
+				                  JOIN (SELECT PE.BAOZZBH
+				                         FROM ${dbSchemal4}CK_YAONBHL CK
+				                         JOIN ${dbSchemal3}CKX_PEIZBZBH PE
+				                           ON PE.BAOZLX = CK.BAOZXH
+				                         JOIN (SELECT CP.KEHBH
+				                                FROM ${dbSchemal3}CKX_KEH_CHENGPK CP
+				                               WHERE CP.USERCENTER = #UC#
+				                                 AND CP.YUNSLXBH = #lxzbh#
+				                               GROUP BY CP.KEHBH) TMP
+				                           ON TMP.KEHBH = CK.KEH
+				                        WHERE CK.USERCENTER = #UC#
+				                          AND SHIFPZ = '1'
+				                          AND SUODPZ = '0' 
+				                          AND YAOHLZT  in ('01','04')
+				                        GROUP BY PE.BAOZZBH) TMP
+				                    ON TMP.BAOZZBH = PB.BAOZZBH) TT
+				         WHERE TT.CELBH = PZ.CELBH)
+				  GROUP BY PZ.CELBH ,PZ.CELMC, CL.CHEXBH 
+	   		 ]]>
+	</select>
+	
+	
+</sqlMap>
+

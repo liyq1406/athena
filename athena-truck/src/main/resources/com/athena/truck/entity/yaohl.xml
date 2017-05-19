@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 要货令批量整体提前/延误 -->
+<sqlMap namespace="yaohltz">
+	<!-- 要货令查询 --> 
+	 <select id="queryYaohlxx"  parameterClass="com.athena.truck.entity.Yaohltzcx" resultClass="com.athena.truck.entity.Yaohl">
+		select usercenter,
+		       yaohlh,
+		       lingjbh,
+		       zuizsj,
+		       zuiwsj,
+		       faysj,
+		       cangkbh,
+		       xiehd,
+		       yaohllx,
+		       yaohlzt,
+		       chengysdm,
+		       mudd,
+		       editor,
+		       edit_time
+		  from ${dbSchemal0}ck_yaohl 
+		 where usercenter=#usercenter#
+		 and   zuiwsj between to_date(#tiaozkssj#, 'yyyy-mm-dd HH24:mi:ss') and
+               to_date(#tiaozjssj#, 'yyyy-mm-dd HH24:mi:ss')
+         <dynamic>
+         	<isNotEmpty property="chengysbh" prepend="and"> chengysdm=#chengysbh# </isNotEmpty>
+         	<isNotEmpty property="yaohllx" prepend="and"> yaohllx=#yaohllx# </isNotEmpty>
+         	<isNotEmpty property="xiehzt" prepend="and"> xiehd=#xiehzt# </isNotEmpty>
+         	<isNotEmpty property="yaohlzt" prepend="and"> yaohlzt=#yaohlzt# </isNotEmpty>
+         	<isEmpty property="yaohlzt"  >
+         				and   ( yaohlzt = '01' or yaohlzt = '02' )
+         	</isEmpty>
+         	<isEmpty property="xiehzt" >
+	         	<isNotEmpty property="xiehztbz" prepend="and" >
+	         	 xiehd in  ( select xiehztbh from  ${dbSchemal0}ckx_xiehzt where biaos='1' and usercenter=#usercenter# and xiehztbzh=#xiehztbz# and  daztbh=#daztbh# )
+	         	</isNotEmpty>
+	         	<isEmpty property="xiehztbz" prepend="and">
+	         	 xiehd in  ( select xiehztbh from  ${dbSchemal0}ckx_xiehzt where biaos='1' and usercenter=#usercenter# and daztbh=#daztbh# )
+	         	</isEmpty>
+         	</isEmpty>
+         </dynamic>
+	   order by usercenter,yaohlh
+	</select>
+	
+ <!-- 修改要货令信息 -->
+ <update id="updateYaohl" parameterClass="com.athena.truck.entity.Yaohltzcx" >
+			update ${dbSchemal0}ck_yaohl
+				set editor = #operator#,				
+				edit_time =sysdate,
+				yuanzuizsj  = ( case when  yuanzuizsj is null then zuizsj else yuanzuizsj end ) , 
+				yuanzuiwsj  = ( case when  yuanzuiwsj is null then zuiwsj else yuanzuiwsj end ) ,
+				<!-- yuanzuizsj=zuizsj,
+				yuanzuiwsj=zuiwsj, -->
+				faysj=faysj+#tiaozsj#/24,
+				zuizsj=zuizsj+#tiaozsj#/24,
+				zuiwsj=zuiwsj+#tiaozsj#/24
+				where usercenter=#usercenter#
+				and   zuiwsj between to_date(#tiaozkssj#, 'yyyy-mm-dd HH24:mi:ss') and
+                to_date(#tiaozjssj#, 'yyyy-mm-dd HH24:mi:ss')
+			 <dynamic>
+				<isNotEmpty property="xiehzt" prepend=" and " > xiehd=#xiehzt# </isNotEmpty>
+				<isNotEmpty property="chengysbh" prepend="and"> chengysdm=#chengysbh# </isNotEmpty>
+				<isNotEmpty property="yaohllx" prepend="and"> yaohllx=#yaohllx# </isNotEmpty>
+				<isNotEmpty property="yaohlzt" prepend="and"> yaohlzt=#yaohlzt# </isNotEmpty>
+	         	<isEmpty property="yaohlzt"  >
+	         				and   ( yaohlzt = '01' or yaohlzt = '02' )
+	         	</isEmpty>
+				<isEmpty property="xiehzt" >
+		         	<isNotEmpty property="xiehztbz" prepend="and" >
+		         	 xiehd in  ( select xiehztbh from  ${dbSchemal0}ckx_xiehzt where biaos='1' and usercenter=#usercenter# and xiehztbzh=#xiehztbz#  and  daztbh=#daztbh# )
+		         	</isNotEmpty>
+		         	<isEmpty property="xiehztbz" prepend="and">
+		         	 xiehd in  ( select xiehztbh from  ${dbSchemal0}ckx_xiehzt where biaos='1' and usercenter=#usercenter# and daztbh=#daztbh# )
+		         	</isEmpty>
+         	   </isEmpty>
+			 </dynamic>
+				
+ </update>
+ 
+ <!-- 要货令调整表中添加数据 -->
+ <insert id="insertYaohlzt" parameterClass="com.athena.truck.entity.Yaohltzcx">
+ insert into 
+		${dbSchemal0}kc_yaohltz (usercenter,
+			       daztbh,
+			       xiehzt,
+			       xiehztbz,
+			       chengysbh,
+			       tiaozkssj,
+			       tiaozjssj,
+			       tiaozgs,
+			       tiaozsj,
+			       operator,
+			       operate_time,
+			       yaohllx,
+			       yaohlzt)
+		values(
+			#usercenter#,
+			#daztbh#,
+			#xiehzt#,
+			#xiehztbz#,
+			#chengysbh#,
+			to_date(#tiaozkssj#,'yyyy-mm-dd HH24:mi:ss'),
+			to_date(#tiaozjssj#,'yyyy-mm-dd HH24:mi:ss'),
+			#tiaozgs#,
+		    #tiaozsj#,
+			#operator#,
+			sysdate,
+			#yaohllx#,
+			#yaohlzt#)
+ </insert>
+ 
+ <!-- 查询卸货站台 -->
+ <select id="queryXiehzt" resultClass="java.util.HashMap" parameterClass="java.util.Map">
+ select xiehztbh from  ${dbSchemal0}ckx_xiehzt where usercenter=#usercenter# and biaos=1 and daztbh=#daztbh#
+ </select>
+ <!--查询卸货站台编组  -->
+ <select id="queryXiehztbz" resultClass="java.util.HashMap" parameterClass="java.util.Map">
+ select xiehztbzh from  ${dbSchemal0}ckx_xiehztbz where usercenter=#usercenter# and biaos=1 
+ </select>
+</sqlMap>

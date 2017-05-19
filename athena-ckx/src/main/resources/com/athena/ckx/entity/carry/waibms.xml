@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="carry">
+	<select id="qureyCkxWaibms" resultClass="com.athena.ckx.entity.carry.CkxWaibms">
+		select usercenter,lingjbh,fenpqh,mos,zhidgys,jianglms,shengxsj,creator,create_Time,editor,edit_Time
+		from ${dbSchemal3}ckx_waibms
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">fenpqh = #fenpqh#</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+
+	<!-- 插入记录 -->
+	<insert id="insertCkxWaibms" parameterClass="com.athena.ckx.entity.carry.CkxWaibms">insert into
+		${dbSchemal3}ckx_waibms (usercenter,lingjbh,fenpqh,mos,zhidgys,jianglms,shengxsj,creator,create_Time,editor,edit_Time)
+		values(
+			#usercenter#,
+			#lingjbh#,
+			#fenpqh#,
+			#mos#,
+			#zhidgys#,
+			#jianglms#,
+			#shengxsj#
+			,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<update id="updateCkxWaibms" parameterClass="com.athena.ckx.entity.carry.CkxWaibms">
+		update ${dbSchemal3}ckx_waibms set 
+		mos=#mos#,
+		fenpqh=#fenpqh#,
+		zhidgys=#zhidgys#,
+		jianglms=#jianglms#,
+		shengxsj=#shengxsj#,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">fenpqh = #fenpqh#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deleteCkxWaibms" parameterClass="com.athena.ckx.entity.carry.CkxWaibms">
+		delete from ${dbSchemal3}ckx_waibms where 
+		    usercenter = #usercenter#
+		   and 	lingjbh = #lingjbh#
+		   and fenpqh = #fenpqh#
+	</delete>
+</sqlMap>

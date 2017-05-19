@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_kac">
+
+	<!-- 叉车多 数据查询 -->
+	<select id="queryChac" parameterClass="com.athena.truck.entity.Chac" resultClass="com.athena.truck.entity.Chac">
+		select usercenter,chacbh,chacmc,daztbh,chacz,biaos
+		from ${dbSchemal3}ckx_chac
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chacbh" prepend="and">
+	    		<![CDATA[chacbh = #chacbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="quybh" prepend="and">
+	    		<![CDATA[quybh = #quybh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="daztbh" prepend="and">
+	    		<![CDATA[daztbh = #daztbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chacz" prepend="and">
+	    		<![CDATA[chacz = #chacz#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,chacbh
+	</select>
+	
+		<!--  获取叉车组管理员 -->
+	<select id="getChaczAthority" parameterClass="java.util.HashMap" resultClass="com.athena.truck.entity.Chac">
+		select  p.post_code AS chacz from ${dbSchemal3}sys_post  p  left join ${dbSchemal3}sys_r_post_usercenter u 
+		on p.post_code=u.post_code    
+		where   u.usercenter=#usercenter# and  p.dic_code = 'CHACGLY'
+		order by p.post_code
+	</select>
+	
+		<!--  获取有效叉车组管理员 -->
+	<select id="getYXChacz" parameterClass="java.util.HashMap" resultClass="com.athena.truck.entity.Chac">
+		select  p.post_code AS chacz from ${dbSchemal3}sys_post  p  left join ${dbSchemal3}sys_r_post_usercenter u 
+		on p.post_code=u.post_code    
+		where   u.usercenter=#usercenter# and  p.dic_code = 'CHACGLY'
+		 and p.biaos = '1' 
+  		 and p.post_code not in (
+ 		  select distinct c.chacz from ${dbSchemal3}ckx_chac  c )
+		order by p.post_code
+	</select>
+	
+		<!--叉车组的信息 -->
+	<select id="getChacxx" parameterClass="com.athena.truck.entity.Chac" resultClass="com.athena.truck.entity.Chac">
+		 select distinct c.chacz from ${dbSchemal3}ckx_chac  c 
+	</select>
+		
+		
+
+		<!-- 删除数据叉车车位关系表 -->
+	<delete id="deleteChaccw" parameterClass="com.athena.truck.entity.Chac">
+		delete from ${dbSchemal3}ckx_chac_chew
+		where
+		<dynamic prepend=" ">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="daztbh" prepend="and">
+	    		<![CDATA[daztbh = #daztbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chacbh" prepend="and">
+	    		<![CDATA[chacbh = #chacbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+	
+		<!-- 删除数据叉车信息 -->
+	<delete id="deleteChac" parameterClass="com.athena.truck.entity.Chac">
+		delete from ${dbSchemal3}ckx_chac 
+		where
+		<dynamic prepend=" ">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chacbh" prepend=" and ">
+	    		<![CDATA[chacbh = #chacbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="daztbh" prepend="and">
+	    		<![CDATA[daztbh = #daztbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+	
+	<!-- 车位多 数据查询 -->
+	<select id="queryChew" parameterClass="com.athena.truck.entity.Chew" resultClass="com.athena.truck.entity.Chew">
+		select a.usercenter,a.chacbh,a.daztbh,a.chewbh,b.chewsx
+		from ${dbSchemal3}ckx_chac_chew a,${dbSchemal3}ckx_chew b
+		where 1=1 and a.chewbh = b.chewbh and a.usercenter = b.usercenter and a.daztbh = b.daztbh
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[a.usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chacbh" prepend="and">
+	    		<![CDATA[a.chacbh = #chacbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="daztbh" prepend="and">
+	    		<![CDATA[a.daztbh = #daztbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by a.chewbh
+	</select>
+	
+	
+	<!-- 增加页面车位多数据查询 -->
+	<select id="queryChaccw" parameterClass="com.athena.truck.entity.Chew" resultClass="com.athena.truck.entity.Chew">
+		select chewbh,chewsx
+		from ${dbSchemal3}ckx_chew 
+		where 1=1 
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="daztbh" prepend="and">
+	    		<![CDATA[daztbh = #daztbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by chewbh
+	</select>
+	
+		<!-- 增加 -->
+	<insert id="insertChac" parameterClass="com.athena.truck.entity.Chac">
+		insert into ${dbSchemal3}ckx_chac(usercenter,quybh,daztbh,chacbh,chacmc,chacz,biaos,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter# , #quybh# , #daztbh# ,#chacbh# ,#chacmc#,#chacz#,'1', #creator# , to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ]]>)
+	</insert>
+	
+	<!-- 增加叉车车位关系 -->
+	<insert id="insertChaccw" parameterClass="com.athena.truck.entity.Chew">
+		insert into ${dbSchemal3}ckx_chac_chew(usercenter,quybh,daztbh,chacbh,chewbh,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter# , #quybh# , #daztbh# ,#chacbh# ,#chewbh#, #creator# , to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ]]>)
+	</insert>
+
+</sqlMap>

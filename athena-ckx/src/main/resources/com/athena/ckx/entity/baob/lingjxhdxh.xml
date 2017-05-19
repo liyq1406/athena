@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- hj -->
+	<!-- 零件-消耗点-循环-->
+	<select id="querylingjxhdxh" parameterClass="com.athena.ckx.entity.baob.Lingjxhdxh" resultClass="com.athena.ckx.entity.baob.Lingjxhdxh">
+		select ljxhd.usercenter,ljxhd.lingjbh,ljxhd.xiaohdbh,ljxhd.wulbh,
+       ljxhd.fenpqbh,ljxhd.shengcxbh,to_char(ljxhd.shengxr,'yyyy-MM-dd') shengxr,     
+       to_char(ljxhd.jiesr,'yyyy-MM-dd') jiesr,ljxhd.xiaohbl*100 xiaohbl,
+       ljxhd.tiqjsxhbl*100 tiqjsxhbl ,ljxhd.peislxbh,
+       decode(ljxhd.qianhcbs, '-1', '前车', '0', '当前车') qianhcbz,
+       ljxhd.jipbzwz,decode(ljxhd.pdsbz, '1', '同步', '2', '集配', '3', '按需') pdsbz,
+       ljxhd.guanlybh,ljxhd.gongysbh,ljxhd.shunxglbz,ljxhd.zidfhbz,
+       ljxhd.xianbyhlx,ljxhd.yancsxbz,ljxhd.beihdbz,ljxhd.xiaohcbh,
+       ljxhd.xiaohccxbh,ljxhd.yuanxhdbh,ljxhd.anqkcts,ljxhd.anqkcs,
+       ljxhd.ceng,ljxhd.xianbllkc,ljxhd.yifyhlzl,ljxhd.jiaofzl,ljxhd.zhongzzl,
+       ljxhd.xittzz,decode(ljxhd.biaos,'1','有效','0','无效','新建') biaos,
+       wllj.mos gonghms,
+       kb.xunhbm,
+       decode(kb.gonghms, 'RD', kb.ucrl, 'RM', kb.ucrl, kb.umljsl) as baozrl,
+       kb.cmj,kb.jisxhgm, kb.dangqxhgm,
+       decode(kb.dangqxhgm,
+              0,
+              null,
+              ceil((kb.jisxhgm - kb.dangqxhgm) / kb.dangqxhgm * 100)) as bianhfd,
+       decode(kb.shengxzt, '1', '已生效', '0', '未生效') shengxzt,
+       decode(kb.DONGJJDZT, '1', '正常', '0', '已冻结') dongjjdzt,
+       kb.zuidyhl
+ 		from ${dbSchemal3}ckx_lingjxhd ljxhd
+ 		
+ 		left join ${dbSchemal3}xqjs_kanbxhgm kb 
+ 		on kb.usercenter = ljxhd.usercenter and kb.lingjbh = ljxhd.lingjbh 
+         and kb.xiaohd = ljxhd.xiaohdbh <![CDATA[and kb.shengxzt <> '2']]>
+       
+		 left join ${dbSchemal3}ckx_shengcx_xianb wllj on wllj.usercenter=ljxhd.usercenter and wllj.fenpqh=ljxhd.fenpqbh and wllj.lingjbh=ljxhd.lingjbh
+		  ,${dbSchemal3}ckx_usercenter uc
+		 where 1=1
+		    and uc.usercenter = ljxhd.usercenter
+		   and uc.biaos = '1'
+			<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[ljxhd.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[ljxhd.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohdbh"><![CDATA[ljxhd.xiaohdbh = #xiaohdbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqbh"><![CDATA[ljxhd.fenpqbh = #fenpqbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[ljxhd.shengcxbh = #shengcxbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[ljxhd.biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghms"><![CDATA[wllj.mos = #gonghms#]]></isNotEmpty>
+		</dynamic>
+		order by ljxhd.usercenter,ljxhd.lingjbh,ljxhd.xiaohdbh,ljxhd.fenpqbh,ljxhd.shengcxbh,kb.gonghms
+	</select> 
+		<!-- 零件-消耗点-循环-->
+		<select id="querylingjxhdxhRep" parameterClass="com.athena.ckx.entity.baob.Lingjxhdxh" resultClass="com.athena.ckx.entity.baob.Lingjxhdxh">
+		select 
+			USERCENTER  ,  LINGJBH    ,  XIAOHDBH   ,  WULBH      ,  FENPQBH    ,  SHENGCXBH  ,  SHENGXR    ,
+			  JIESR      ,  XIAOHBL    ,  TIQJSXHBL  ,  PEISLXBH   ,  QIANHCBS   ,  JIPBZWZ    ,  PDSBZ      ,  GUANLYBH   ,
+			  GONGYSBH   ,  SHUNXGLBZ  ,  ZIDFHBZ    ,  XIANBYHLX  ,  YANCSXBZ   ,  BEIHDBZ    ,  XIAOHCBH   ,  XIAOHCCXBH ,
+			  YUANXHDBH  ,  ANQKCTS    ,  ANQKCS     ,  CENG       ,  XIANBLLKC  ,  YIFYHLZL   ,  JIAOFZL    ,  ZHONGZZL   ,
+			  XITTZZ     ,  BIAOS      ,  gonghms    ,  xunhbm     ,  baozrl     ,  cmj        ,  jisxhgm    ,  dangqxhgm  ,
+			  bianhfd    ,  shengxzt   ,  dongjjdzt  ,  zuidyhl
+	 from ${dbSchemal6}rep_lingjxhdxh
+		where 1=1
+			<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohdbh"><![CDATA[xiaohdbh = #xiaohdbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqbh"><![CDATA[fenpqbh = #fenpqbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = decode(#biaos#,'1','有效','0','无效')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghms"><![CDATA[gonghms = #gonghms#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,lingjbh,xiaohdbh,fenpqbh,shengcxbh,gonghms
+	</select>
+	<delete id="truncateLingjxhdxh">
+	       truncate table ${dbSchemal6}rep_lingjxhdxh
+	</delete>
+	<insert id="addlingjxhdxh">
+	insert into ${dbSchemal3}rep_lingjxhdxh (USERCENTER  ,  LINGJBH    ,  XIAOHDBH   ,  WULBH      ,  FENPQBH    ,  SHENGCXBH  ,  SHENGXR    ,
+           JIESR      ,  XIAOHBL    ,  TIQJSXHBL  ,  PEISLXBH   ,  QIANHCBS   ,  JIPBZWZ    ,  PDSBZ      ,  GUANLYBH   ,
+           GONGYSBH   ,  SHUNXGLBZ  ,  ZIDFHBZ    ,  XIANBYHLX  ,  YANCSXBZ   ,  BEIHDBZ    ,  XIAOHCBH   ,  XIAOHCCXBH ,
+           YUANXHDBH  ,  ANQKCTS    ,  ANQKCS     ,  CENG       ,  XIANBLLKC  ,  YIFYHLZL   ,  JIAOFZL    ,  ZHONGZZL   ,
+           XITTZZ     ,  BIAOS      ,  gonghms    ,  xunhbm     ,  baozrl     ,  cmj        ,  jisxhgm    ,  dangqxhgm  ,
+           bianhfd    ,  shengxzt   ,  dongjjdzt  ,  zuidyhl    )
+    select ljxhd.usercenter, ljxhd.lingjbh,ljxhd.xiaohdbh, ljxhd.wulbh,       ljxhd.fenpqbh,       ljxhd.shengcxbh,       to_char(ljxhd.shengxr,'yyyy-MM-dd') shengxr,     
+       to_char(ljxhd.jiesr,'yyyy-MM-dd') jiesr,       ljxhd.xiaohbl*100 xiaohbl,       ljxhd.tiqjsxhbl*100 tiqjsxhbl ,       ljxhd.peislxbh,       decode(ljxhd.qianhcbs, '-1', '前车', '0', '当前车') qianhcbz,
+       ljxhd.jipbzwz,       decode(ljxhd.pdsbz, '1', '同步', '2', '集配', '3', '按需') pdsbz,       ljxhd.guanlybh,
+       ljxhd.gongysbh,       ljxhd.shunxglbz,       ljxhd.zidfhbz,       ljxhd.xianbyhlx,       ljxhd.yancsxbz,       ljxhd.beihdbz,       ljxhd.xiaohcbh,       ljxhd.xiaohccxbh,
+       ljxhd.yuanxhdbh,       ljxhd.anqkcts,       ljxhd.anqkcs,       ljxhd.ceng,       ljxhd.xianbllkc,       ljxhd.yifyhlzl,       ljxhd.jiaofzl,       ljxhd.zhongzzl,
+       ljxhd.xittzz,        decode(ljxhd.biaos,'1','有效','0','无效') biaos,      
+<!--         kb.gonghms, 0007034    -->    w.mos,
+           kb.xunhbm,       decode(kb.gonghms, 'RD', kb.ucrl, 'RM', kb.ucrl, kb.umljsl) as baozrl,
+       kb.cmj,       kb.jisxhgm,       kb.dangqxhgm,       decode(kb.dangqxhgm,0,null, ceil((kb.jisxhgm - kb.dangqxhgm) / kb.dangqxhgm * 100)) as bianhfd,
+       decode(kb.shengxzt, '1', '已生效', '0', '未生效') shengxzt,       decode(kb.DONGJJDZT, '1', '正常', '0', '已冻结') dongjjdzt,
+       kb.zuidyhl      
+  from ${dbSchemal3}ckx_lingjxhd ljxhd
+  <!--          0007034    -->
+  left join ${dbSchemal3}ckx_wullj w
+  on w.usercenter = ljxhd.usercenter
+  and w.lingjbh = ljxhd.lingjbh
+  and w.fenpqh = ljxhd.fenpqbh
+  left join ${dbSchemal3}xqjs_kanbxhgm kb
+    on kb.usercenter = ljxhd.usercenter
+   and kb.lingjbh = ljxhd.lingjbh
+   and kb.xiaohd = ljxhd.xiaohdbh
+   <![CDATA[  and kb.shengxzt <> '1']]>
+ inner join ${dbSchemal3}ckx_usercenter uc
+    on uc.usercenter = ljxhd.usercenter
+   and uc.biaos = '1'
+	
+	</insert>	
+	
+</sqlMap>

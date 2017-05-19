@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	卸货站台
+	@author denggq
+	@date 2012-1-16
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryXiehzt" parameterClass="com.athena.ckx.entity.cangk.Xiehzt" resultClass="com.athena.ckx.entity.cangk.Xiehzt">
+		select usercenter,xiehztbh as xiehztbhq,substr(xiehztbh,5,2) xiehztbh,xiehztbzh,xiehztmc,daztbh,yunxtqdhsj,shjgsj,cangkbh,tongsjdcs,gongcbm,chulsj,biaos ,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_xiehzt 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiehztbh" prepend="and">
+	    		<![CDATA[xiehztbh = #xiehztbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="daztbh" prepend="and">
+	    		<![CDATA[daztbh = #daztbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiehztbzh" prepend="and">
+	    		<![CDATA[xiehztbzh = #xiehztbzh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiehztmc" prepend="and">
+	    		<![CDATA[xiehztmc like '$xiehztmc$%']]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,xiehztbh
+	</select>
+	
+	<!-- 获取数量 -->
+<!-- 	<select id="getCountXiehzt" resultClass="java.lang.String"> -->
+<!-- 		select count(usercenter) from ${dbSchemal3}ckx_xiehzt  where 1=1 -->
+<!-- 		<dynamic> -->
+<!-- 			<isNotEmpty property="usercenter" prepend="and"> -->
+<!-- 	    		<![CDATA[usercenter = #usercenter#]]>  -->
+<!-- 	    	</isNotEmpty> -->
+<!-- 	    	<isNotEmpty property="xiehztbh" prepend="and"> -->
+<!-- 	    		<![CDATA[xiehztbh = #xiehztbh#]]>  -->
+<!-- 	    	</isNotEmpty> -->
+<!-- 	    	<isNotEmpty property="biaos" prepend="and"> -->
+<!-- 	    		<![CDATA[biaos = #biaos#]]>  -->
+<!-- 	    	</isNotEmpty> -->
+<!-- 	    </dynamic> -->
+<!-- 	</select> -->
+	
+	<select id="getCountXiehztbzhs" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_xiehzt  where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiehztbzh" prepend="and">
+	    		<![CDATA[xiehztbzh = #xiehztbzh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiehztbh" prepend="and">
+	    		<![CDATA[xiehztbh = #xiehztbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<!-- 卸货站台编组 数据查询 -->
+	<select id="queryXiehztbz" parameterClass="com.athena.ckx.entity.cangk.Xiehztbz" resultClass="com.athena.ckx.entity.cangk.Xiehztbz">
+		select usercenter,xiehztbzh,tongsjdcs,chulsj,biaos,wulgyyz
+		from ${dbSchemal3}ckx_xiehztbz 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="xiehztbzh" prepend="and">
+	    		<![CDATA[xiehztbzh = #xiehztbzh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="tongsjdcs" prepend="and">
+	    		<![CDATA[tongsjdcs = $tongsjdcs$]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chulsj" prepend="and">
+	    		<![CDATA[chulsj = $chulsj$]]> 
+	    	</isNotEmpty>	    	
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="wulgyyz" prepend="and">
+	    		<![CDATA[wulgyyz = #wulgyyz#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by xiehztbzh
+	</select>
+	<!-- 卸货站台编组 数据查询 -->
+	<select id="getXiehztbzByBh" parameterClass="java.lang.String" resultClass="com.athena.ckx.entity.cangk.Xiehztbz">
+		select usercenter,xiehztbzh,tongsjdcs,chulsj,biaos,wulgyyz
+		from ${dbSchemal3}ckx_xiehztbz 
+		where 1=1
+		<dynamic>			
+			<isNotEqual prepend=" and " compareValue=""><![CDATA[xiehztbzh = #xiehztbzh#]]> </isNotEqual>
+	    </dynamic>
+	    order by xiehztbzh
+	</select>
+	
+	<!-- 获取卸货站台编组数量 -->
+	<select id="getCountXiehztbz" resultClass="java.lang.String">
+		select count(xiehztbzh) from ${dbSchemal3}ckx_xiehztbz where 1=1
+		<dynamic>			
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiehztbzh" prepend="and">
+	    		<![CDATA[xiehztbzh = #xiehztbzh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	<!-- 比较处理时间 -->
+	<select id="getCountXiehztbzchulsj" resultClass="java.lang.String">
+		select chulsj	
+		from ${dbSchemal3}ckx_xiehztbz x
+		inner join (select gongzsj / sum(ches) clsj, xiehztbh
+		            from ${dbSchemal3}ckx_gongys_chengys_xiehzt t
+		            where usercenter = #usercenter#
+		             and xiehztbh = #xiehztbzh#
+		            group by xiehztbh, usercenter, gongzsj) g
+		 on x.xiehztbzh = g.xiehztbh
+		<![CDATA[ where chulsj >= g.clsj*tongsjdcs]]> 
+	</select>
+	<!-- 获取卸货站台数量 -->
+	<select id="getCountXiehzt" resultClass="java.lang.String">
+		select count(xiehztbh) from ${dbSchemal3}ckx_xiehzt where 1=1
+		<dynamic>			
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiehztbh" prepend="and">
+	    		<![CDATA[xiehztbh = #xiehztbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<select id="getXiehzt" resultClass="com.athena.ckx.entity.cangk.Xiehzt">
+		select usercenter,xiehztbh,xiehztmc,yunxtqdhsj,shjgsj,cangkbh,tongsjdcs,gongcbm,chulsj,biaos 
+		from ${dbSchemal3}ckx_xiehzt 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiehztbh" prepend="and">
+	    		<![CDATA[xiehztbh = #xiehztbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<insert id="insertXiehzt" parameterClass="com.athena.ckx.entity.cangk.Xiehzt">
+		insert into ${dbSchemal3}ckx_xiehzt(usercenter,xiehztbh,xiehztmc,daztbh,yunxtqdhsj,shjgsj,cangkbh,tongsjdcs,gongcbm,chulsj,biaos,creator,create_time,editor,edit_time,xiehztbzh)
+		values(#usercenter#,#xiehztbh#,#xiehztmc#,#daztbh#,#yunxtqdhsj#,#shjgsj#,#cangkbh#,#tongsjdcs#,#gongcbm#,#chulsj#,'1',#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),#xiehztbzh#)
+	</insert>
+	<!-- 卸货站台编组 数据录入 -->
+	<insert id="insertXiehztbz" parameterClass="com.athena.ckx.entity.cangk.Xiehztbz">
+		insert into ${dbSchemal3}ckx_xiehztbz(usercenter,xiehztbzh,tongsjdcs,chulsj,wulgyyz,biaos,creator,create_time,editor,edit_time)
+		values(#usercenter#,#xiehztbzh#,#tongsjdcs#,#chulsj#,#wulgyyz#,'1',#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	<update id="updateXiehzt" parameterClass="com.athena.ckx.entity.cangk.Xiehzt">
+		update ${dbSchemal3}ckx_xiehzt 
+		set xiehztmc = #xiehztmc#,
+		     daztbh = #daztbh#,
+			yunxtqdhsj = #yunxtqdhsj#,
+			shjgsj = #shjgsj# ,
+<!-- 			cangkbh = #cangkbh# , -->
+			gongcbm = #gongcbm# ,
+<!-- 			chulsj = #chulsj# , -->
+<!-- 			tongsjdcs = #tongsjdcs#, -->
+			usercenter=#usercenter#,
+			biaos = #biaos#,
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where <![CDATA[ xiehztbh = #xiehztbh#]]> 
+	</update>
+	<!-- 卸货站台编组 数据编辑 -->
+	<update id="updateXiehztbz" parameterClass="com.athena.ckx.entity.cangk.Xiehztbz">
+		update ${dbSchemal3}ckx_xiehztbz 
+		set	chulsj = #chulsj# ,
+		usercenter=#usercenter#,
+			tongsjdcs = #tongsjdcs#,
+			biaos = #biaos#,
+			wulgyyz = #wulgyyz#,
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where <![CDATA[ xiehztbzh = #xiehztbzh#]]> 
+	</update>
+	<delete id="deleteXiehzt" parameterClass="com.athena.ckx.entity.cangk.Xiehzt">
+		update ${dbSchemal3}ckx_xiehzt 
+		set <![CDATA[biaos = '0' , editor = #editor# , edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiehztbh" prepend="and">
+	    		<![CDATA[xiehztbh = #xiehztbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	<!-- 卸货站台编组 数据删除  逻辑删除-->
+	<delete id="deleteXiehztbz" parameterClass="com.athena.ckx.entity.cangk.Xiehztbz">
+		update ${dbSchemal3}ckx_xiehztbz 
+		set <![CDATA[biaos = '0' , editor = #editor# , edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		<dynamic prepend="where">
+			
+	    	<isNotEmpty property="xiehztbzh" prepend="and">
+	    		<![CDATA[xiehztbzh = #xiehztbzh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	<!-- hj 根据卸货站台查询工作时间 -->
+	<select id="getListCkxBiaozgzsj" parameterClass="java.lang.String" resultClass="com.athena.ckx.entity.cangk.Xiehzt">
+		select xiehztbh , gongzsj 
+		from ${dbSchemal3}ckx_xiehzt
+		where xiehztbh in $sqlId$		
+	</select>
+
+<!-- 大站台编号 hzg 2015.1.27-->
+	<select id="getDaztbhCount" parameterClass="com.athena.ckx.entity.cangk.Xiehzt" resultClass="java.lang.String" >
+		select count(1) dCount from ${dbSchemal3}ckx_dazt d
+		where biaos='1'  and d.usercenter = #usercenter# and d.daztbh=#daztbh#
+	</select>
+
+
+</sqlMap>

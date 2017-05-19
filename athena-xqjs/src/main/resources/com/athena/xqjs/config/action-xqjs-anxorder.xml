@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="anxorder" extend="toft-default" namespace="/anxorder">
+		<!-- 初始化资源录入初始化页面 -->
+		<action name="executeChushzylr" class="chushzylrAction" method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/anxorder/chushzylr.jsp</result>
+		</action>
+
+		<!-- 根据用户中心和零件编号查询生产线编号 -->
+		<action name="queryShengcxByParam" class="chushzylrAction"
+			method="queryShengcxByParam" />
+
+		<!-- 根据用户中心、零件编号和产线查询消耗点编号 -->
+		<action name="queryXiaohdByParam" class="chushzylrAction"
+			method="queryXiaohdByParam" />
+
+		<!--根据用户中心、零件编号、产线和消耗点查询继承的未交付量（已发要货令总量-交付总量-终止总量） -->
+		<action name="queryWeijfzlByParam" class="chushzylrAction"
+			method="queryWeijfzlByParam" />
+
+		<!--根据消耗点查询流水号 -->
+		<action name="queryLiushByXhd" class="chushzylrAction" method="queryLiushByXhd" />
+
+		<!--插入初始化资源 -->
+		<action name="addChushzyb" class="chushzylrAction" method="addChushzyb" />
+
+		<!-- 查询初始化资源 -->
+		<action name="queryChushzybByParam" class="chushzylrAction"
+			method="queryChushzybByParam" />
+
+		<!-- 删除初始化资源 -->
+		<action name="deleteChushzyb" class="chushzylrAction" method="deleteChushzyb" />
+
+		<!-- 保存初始化资源 -->
+		<action name="saveChushzyb" class="chushzylrAction" method="saveChushzyb" />
+
+		<!-- 打印初始化资源 -->
+		<action name="printChushzyb" class="chushzylrAction" method="printChushzyb" />
+		
+		<!-- 初始化提交计算页面 -->
+		<action name="executeChushtjJs" class="chushtjJsAction" method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/anxorder/chushtjJs.jsp</result>
+		</action>
+		<!-- 查询毛需求(按需初始化计算页面) -->
+		<action name="queryListMaoxq" class="chushtjJsAction" method="queryListMaoxq"/>
+		<!-- 计算毛需求(按需初始化计算页面) -->
+		<action name="calculateAnxOrder" class="chushtjJsAction" method="calculateAnxOrder"/>
+		
+		
+		<!--begin 新初始化计算页面 add by zbb 2015-12-10 -->
+		<!-- 初始化提交计算页面 -->
+		<action name="executeXincshtjJs" class="chushtjJsAction" method="executeXinax">
+			<result name="success">/WEB-INF/pages/xqjs/anxorder/xincshtjJs.jsp</result>
+		</action>		
+		<!-- 计算毛需求(按需初始化计算页面) -->
+		<action name="calculateXinaxOrder" class="chushtjJsAction" method="calculateXinaxOrder"/>
+		<!-- 通过用户中心查询模式列表 -->
+		<action name="queryMosbyUserCenter" class="chushtjJsAction" method="queryMosbyUserCenter"/>
+		<!--end 新初始化计算页面 add by zbb 2015-12-10 -->
+		
+		
+		<!-- 按需计算   lm -->
+		<action name="anxOrderCDMD" class="anxOrderAction" method="anxOrderCount"/>
+		<!-- 按需CDC 线边盘点修正   nsy -->
+		<action name="executeXbpd" class="chushtjJsAction" method="executeXbpd">
+			<result name="success">/WEB-INF/pages/xqjs/anxorder/xbcangkpd.jsp</result>
+		</action>
+		<action name="queryxbkpd" class="chushtjJsAction" method="queryxbkpd"/>
+		<!-- 增加异常待消耗 -->
+		<action name="addYicdxh" class="chushtjJsAction" method="addYicdxh"/>
+		<action name="checkLsh" class="chushtjJsAction" method="checkLsh"/>
+		<!--  毛需求明细导出-->
+		<action name="downLoadFilePd" class="chushtjJsAction" method="downLoadFilePd" />
+
+		
+		
+		
+		<!-- 盘点历史 -->
+		<!-- 初始化盘点历史页面 -->
+		<action name="initPandls" class="pandlsAction" method="initPandls">
+			<result name="success">/WEB-INF/pages/xqjs/anxorder/pandls.jsp</result>
+		</action>
+		<action name="queryPandls" class="pandlsAction" method="queryPandls"/>
+		
+		
+		<!-- 紧急件 -->
+		<action name="initEmergency" class="emergencyAction" method="initEmergency">
+			<result name="success">/WEB-INF/pages/xqjs/emergency/emergency.jsp</result>
+		</action>
+		<action name="queryEmergency" class="emergencyAction" method="queryEmergency"/>
+		<action name="unoperating" class="emergencyAction" method="unoperating" />
+		<action name="operating" class="emergencyAction" method="operating" />
+		<action name="reset" class="emergencyAction" method="reset" />
+		<action name="validateEmergencyGongys" class="emergencyAction" method="validateEmergencyGongys"/>
+		
+		
+		
+		<!-- 按需手动下发 zghe 2015.7.7 -->
+		<action name="anxHandSet" class="anxHandSetAction" method="initAnxHandset">
+			<result name="success">/WEB-INF/pages/xqjs/anxorder/anxHandSet.jsp</result>
+		</action>
+		<action name="queryAnxHandSet" class="anxHandSetAction" method="queryAnxHandSet"/>
+		<action name="saveAnxHandset" class="anxHandSetAction" method="saveAnxHandset"/>
+	</package>
+</toft>

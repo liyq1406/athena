@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+<select id="queryCkx_peizbz" resultClass="com.athena.ckx.entity.paicfj.Ckx_peizbz">
+   select baozzbh , baozzmc , baozbsjs, biaos
+   from ${dbSchemal3}ckx_peizbz
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="baozzbh"><![CDATA[baozzbh = #baozzbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozzmc"><![CDATA[baozzmc like #baozzmc#||'%']]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by baozzbh
+</select>
+<select id="getCkx_peizbz" resultClass="com.athena.ckx.entity.paicfj.Ckx_peizbz">
+   select baozzbh , baozzmc , baozbsjs, biaos
+   from ${dbSchemal3}ckx_peizbz
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="baozzbh"><![CDATA[baozzbh = #baozzbh#]]></isNotEmpty>
+	</dynamic>
+</select>
+<insert id="insertCkx_peizbz" parameterClass="com.athena.ckx.entity.paicfj.Ckx_peizbz">
+	insert into ${dbSchemal3}ckx_peizbz
+	(baozzbh , baozzmc , baozbsjs , biaos , creator , create_time , editor , edit_time)
+	values(<![CDATA[
+	 #baozzbh# , #baozzmc# , #baozbsjs# , '1' , #creator# , #create_time# ,
+	 #editor# , #edit_time# ]]> ) 
+	</insert>
+<update id="updateCkx_peizbz" parameterClass="com.athena.ckx.entity.paicfj.Ckx_peizbz">
+	update ${dbSchemal3}ckx_peizbz
+	 set
+       
+    		   <![CDATA[baozzmc = #baozzmc#]]> ,    	
+    		   <![CDATA[baozbsjs = #baozbsjs#]]> ,    	
+    		   <![CDATA[biaos = #biaos#]]> ,    	
+    		   <![CDATA[editor = #editor#]]> ,    	
+    		   <![CDATA[edit_time = #edit_time#]]> 
+    	
+	 where <![CDATA[baozzbh = #baozzbh# ]]> 
+	</update>
+
+	<update id="deleteCkx_peizbz" parameterClass="com.athena.ckx.entity.paicfj.Ckx_peizbz">
+	update ${dbSchemal3}ckx_peizbz  
+	set biaos='0' , editor = #editor# , edit_time = #edit_time#
+	where <![CDATA[baozzbh = #baozzbh# ]]>  
+	</update>
+<select id="queryCkx_peizbzbh" resultClass="com.athena.ckx.entity.paicfj.Ckx_peizbzbh">
+   select 
+   c.baozlx as baozlx , baozzbh , b.changd as changd ,b.gaod as gaod ,b.kuand as kuand ,b.caiz as caiz ,
+  b.baozzl as baozzl  ,b.zhedgd as zhedgd , b.duidcs as duidcs
+   from ${dbSchemal3}ckx_peizbzbh c left join ${dbSchemal3}ckx_baoz b on b.baozlx = c.baozlx
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="baozzbh"><![CDATA[c.baozzbh = #baozzbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozlx"><![CDATA[c.baozlx = #baozlx#]]></isNotEmpty>
+		</dynamic>
+</select>
+<select id="getCkx_peizbzbh" resultClass="com.athena.ckx.entity.paicfj.Ckx_peizbzbh">
+   select 
+   baozlx , baozzbh 
+   from ${dbSchemal3}ckx_peizbzbh 
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="baozzbh"><![CDATA[baozzbh = #baozzbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozlx"><![CDATA[baozlx = #baozlx#]]></isNotEmpty>
+		</dynamic>
+</select>
+<insert id="insertCkx_peizbzbh" parameterClass="com.athena.ckx.entity.paicfj.Ckx_peizbzbh">
+	insert into ${dbSchemal3}ckx_peizbzbh
+	(baozzbh , baozlx , creator , create_time , editor , edit_time)
+	values(<![CDATA[
+	 #baozzbh# , #baozlx# , #creator# , #create_time# , #editor# , #edit_time# ]]> ) 
+	</insert>
+
+	<delete id="deleteCkx_peizbzbh" parameterClass="com.athena.ckx.entity.paicfj.Ckx_peizbzbh">
+	delete ${dbSchemal3}ckx_peizbzbh  
+	where <![CDATA[baozzbh = #baozzbh# and baozlx = #baozlx#]]>  
+	</delete>
+	
+</sqlMap>

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="dfpvlingjqh">
+	
+	<!-- 查询零件切换数据 -->
+	<select id="queryLingjqh" resultClass="com.athena.ckx.entity.xuqjs.DFPVLingjqh">
+		SELECT a.banbh,
+		       a.touflwjh,
+		       a.qiehqslsh,
+		       a.chanx,
+		       a.lingjbh,
+		       a.xlingjbh,
+		       a.lingjmc,
+		       a.xlingjmc,
+		       a.yshul,
+		       a.xshul,
+		       a.ygongysdm,
+		       a.xgongysdm,
+		       to_char(a.ecom,'yyyy-MM-dd') ecom,
+		       to_char(a.shijqhrq,'yyyy-MM-dd') shijqhrq,
+		       a.shenbr,
+		       a.shenbyuany,
+		       a.creator,
+		       a.create_time,
+		       a.editor,
+		       a.edit_time,
+		       a.beiz1,
+		       a.beiz2,
+		       a.beiz3,
+		       a.active
+		  FROM ${dbSchemal5}DDBH_LINGJQH a
+		 WHERE 1 = 1
+		<dynamic>
+			<isNotNull property="banbh" prepend=" and ">banbh = #banbh#</isNotNull>
+			<isNotNull property="banbh2" prepend=" and ">banbh = #banbh2#</isNotNull>
+			<isNotNull property="ecom" prepend=" and ">ecom = to_date(#ecom#,'yyyy-MM-dd')</isNotNull>
+			<isNotNull property="qiehqslsh" prepend=" and ">qiehqslsh = #qiehqslsh#</isNotNull>
+			<isNotNull property="touflwjh" prepend=" and ">touflwjh = #touflwjh#</isNotNull>
+			<isNotNull property="shijqhrq" prepend=" and ">shijqhrq = to_date(#shijqhrq#,'yyyy-MM-dd')</isNotNull>
+			<isNotNull property="lingjbh" prepend=" and ">lingjbh = #lingjbh#</isNotNull>
+			<isNotNull property="xlingjbh" prepend=" and ">xlingjbh = #xlingjbh#</isNotNull>
+			<isNotNull property="chanx" prepend=" and ">chanx = #chanx#</isNotNull>
+			<isNotNull property="active" prepend=" and ">active = #active#</isNotNull>
+			<isNotNull property="leix" prepend=" and ">leix = #leix#</isNotNull>
+		</dynamic>
+		ORDER BY a.banbh DESC,
+   		a.active, a.touflwjh, a.chanx, a.lingjbh, a.xlingjbh ASC
+	</select>
+	
+	<!-- 查询车型/流水号 -->
+	<select id="queryLingjqhLCDV" resultClass="com.athena.ckx.entity.xuqjs.DFPVLingjqhLCDV">
+		SELECT a.banbh,
+			   a.tiaoj
+		  FROM ${dbSchemal5}DDBH_LINGJQH_LCDV a
+		 WHERE 1 = 1
+		<dynamic>
+			<isNotNull property="banbh" prepend=" and ">banbh = #banbh#</isNotNull>
+		</dynamic>
+		ORDER BY a.tiaoj
+	</select>
+	
+	<!-- 查询最近版本号 -->
+	<select id="queryZUIJBANBH" resultClass="java.lang.String">
+		SELECT X.BANBH FROM 
+		(SELECT DISTINCT L.BANBH FROM ${dbSchemal5}DDBH_LINGJQH L
+		ORDER BY L.BANBH DESC)X
+		WHERE ROWNUM &lt;= 10
+	</select>
+	
+	<!-- 失效 -->
+	<update id="updateLingjqhShix" parameterClass="com.athena.ckx.entity.xuqjs.DFPVLingjqh">
+		UPDATE ${dbSchemal5}DDBH_LINGJQH
+		   SET EDITOR    = #editor#,
+		       EDIT_TIME = to_date(#edit_time#, 'yyyy-MM-dd hh24:mi:ss'),
+		       ACTIVE    = '0'
+		 WHERE banbh = #banbh#
+		   <isNotEmpty prepend=" AND " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="lingjbh"><![CDATA[lingjbh IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="xlingjbh"><![CDATA[xlingjbh = #xlingjbh#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="xlingjbh"><![CDATA[xlingjbh IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="yshul"><![CDATA[yshul = #yshul#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="yshul"><![CDATA[yshul IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="xshul"><![CDATA[xshul = #xshul#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="xshul"><![CDATA[xshul IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="ygongysdm"><![CDATA[ygongysdm = REPLACE(#ygongysdm#,' ',' ')]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="ygongysdm"><![CDATA[ygongysdm IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="xgongysdm"><![CDATA[xgongysdm = REPLACE(#xgongysdm#,' ',' ')]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="xgongysdm"><![CDATA[xgongysdm IS NULL]]></isEmpty>
+		   AND chanx = #chanx#
+		   AND to_char(shijqhrq, 'yyyy-MM-dd') = #shijqhrq#
+		   AND touflwjh = #touflwjh#
+		   AND active != '0'
+		   AND active != '3'
+		<dynamic>
+			<isNotNull property="qiehqslsh" prepend=" and ">qiehqslsh = #qiehqslsh#</isNotNull>
+			<isNotNull property="ecom" prepend=" and ">ecom = to_date(#ecom#,'yyyy-MM-dd')</isNotNull>
+		</dynamic>
+	</update>
+		
+	<!-- 生效 -->
+	<update id="updateLingjqhShengx" parameterClass="com.athena.ckx.entity.xuqjs.DFPVLingjqh">
+		UPDATE ${dbSchemal5}DDBH_LINGJQH
+		   SET EDITOR    = #editor#,
+		       EDIT_TIME = to_date(#edit_time#, 'yyyy-MM-dd hh24:mi:ss'),
+		       ACTIVE    = '1'
+		 WHERE banbh = #banbh#
+		   <isNotEmpty prepend=" AND " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="lingjbh"><![CDATA[lingjbh IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="xlingjbh"><![CDATA[xlingjbh = #xlingjbh#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="xlingjbh"><![CDATA[xlingjbh IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="yshul"><![CDATA[yshul = #yshul#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="yshul"><![CDATA[yshul IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="xshul"><![CDATA[xshul = #xshul#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="xshul"><![CDATA[xshul IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="ygongysdm"><![CDATA[ygongysdm = REPLACE(#ygongysdm#,' ',' ')]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="ygongysdm"><![CDATA[ygongysdm IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="xgongysdm"><![CDATA[xgongysdm = REPLACE(#xgongysdm#,' ',' ')]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="xgongysdm"><![CDATA[xgongysdm IS NULL]]></isEmpty>
+		   AND chanx = #chanx#
+		   AND to_char(shijqhrq, 'yyyy-MM-dd') = #shijqhrq#
+		   AND touflwjh = #touflwjh#
+		   AND active = '2'
+		<dynamic>
+			<isNotNull property="qiehqslsh" prepend=" and ">qiehqslsh = #qiehqslsh#</isNotNull>
+			<isNotNull property="ecom" prepend=" and ">ecom = to_date(#ecom#,'yyyy-MM-dd')</isNotNull>
+		</dynamic>
+	</update>
+	
+	<!-- 批量插入零件切换明细表（车型） -->
+    <insert id="insertLingjqh_LCDV" parameterClass="map"> 
+		insert all 
+		<iterate conjunction=" " property="lingjList"> 
+			into ${dbSchemal5}DDBH_LINGJQH
+			(BANBH,TOUFLWJH,QIEHQSLSH,CHANX,LINGJBH,XLINGJBH,LINGJMC,XLINGJMC,YSHUL,XSHUL,YGONGYSDM,
+		     XGONGYSDM,ECOM,SHIJQHRQ,SHENBR,SHENBYUANY,CREATOR,EDITOR,ACTIVE,LEIX,CREATE_TIME,EDIT_TIME) 
+		    values 
+			( 
+				#lingjList[].bbh#, 
+                #lingjList[].touflwjh#, 
+                #lingjList[].zongzlsh#, 
+                #lingjList[].shengcx#,
+                #lingjList[].lingjbh1#, 
+                #lingjList[].lingjbh2#,
+                #lingjList[].lingjmc1#, 
+                #lingjList[].lingjmc2#,
+                #lingjList[].lingjsl1#, 
+                #lingjList[].lingjsl2#,
+                #lingjList[].gongys1#, 
+                #lingjList[].gongys2#,
+                to_date(#lingjList[].ecom#,'yyyy-MM-dd'), 
+                to_date(#lingjList[].shijqhrq#,'yyyy-MM-dd'),
+                #lingjList[].shenbr#, 
+                #lingjList[].yuany#,
+                #lingjList[].creator#, 
+                #lingjList[].editor#, 
+                '2', 
+                #lingjList[].leix#,
+                to_date(#lingjList[].create_time#,'yyyy-MM-dd HH24:mi:ss'),
+                to_date(#lingjList[].edit_time#,'yyyy-MM-dd HH24:mi:ss')
+			)    
+		</iterate> 
+		<iterate conjunction=" " property="pl"> 
+			into ${dbSchemal5}DDBH_LINGJQH_LCDV
+			(BANBH,TIAOJ,LEIX) 
+			values 
+			( 
+				#pl[].BANBH#,#pl[].LIUSH#,#pl[].LEIX# 
+			)    
+		</iterate> 
+		SELECT * FROM dual
+	</insert>
+	
+	<!-- 批量插入零件切换明细表（流水） -->
+    <insert id="insertLingjqhLS_LCDV" parameterClass="map"> 
+		insert all 
+		<iterate conjunction=" " property="lingjList"> 
+			into ${dbSchemal5}DDBH_LINGJQH
+			(BANBH,TOUFLWJH,CHANX,LINGJBH,XLINGJBH,LINGJMC,XLINGJMC,YSHUL,XSHUL,YGONGYSDM,
+		     XGONGYSDM,SHIJQHRQ,SHENBR,SHENBYUANY,CREATOR,EDITOR,ACTIVE,LEIX,CREATE_TIME,EDIT_TIME) 
+			values 
+			( 
+				#lingjList[].bbh#, 
+                #lingjList[].touflwjh#, 
+                #lingjList[].shengcx#,
+                #lingjList[].lingjbh1#, 
+                #lingjList[].lingjbh2#,
+                #lingjList[].lingjmc1#, 
+                #lingjList[].lingjmc2#,
+                #lingjList[].lingjsl1#, 
+                #lingjList[].lingjsl2#,
+                #lingjList[].gongys1#, 
+                #lingjList[].gongys2#,
+                to_date(#lingjList[].shijqhrq#,'yyyy-MM-dd'),
+                #lingjList[].shenbr#, 
+                #lingjList[].yuany#,
+                #lingjList[].creator#, 
+                #lingjList[].editor#, 
+                '2', 
+                #lingjList[].leix#,
+                to_date(#lingjList[].create_time#,'yyyy-MM-dd HH24:mi:ss'),
+                to_date(#lingjList[].edit_time#,'yyyy-MM-dd HH24:mi:ss') 
+			)    
+		</iterate> 
+		<iterate conjunction=" " property="pl"> 
+			into ${dbSchemal5}DDBH_LINGJQH_LCDV
+			(BANBH,TIAOJ,LEIX) 
+			values 
+			( 
+				#pl[].BANBH#,#pl[].LIUSH#,#pl[].LEIX# 
+			)    
+		</iterate> 
+		SELECT * FROM dual
+	</insert>
+	
+	
+	
+	
+	<!-- 查询版本号 -->
+	<select id="queryNweBBH" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT NVL((MAX(L.banbh)+1),'$bbhDate$'||'001') newBBH FROM
+		(SELECT MAX(A.banbh) banbh FROM ${dbSchemal5}ddbh_lingjqh A WHERE A.banbh LIKE '$bbhDate$%'
+		UNION ALL 
+		SELECT MAX(B.banbh) banbh FROM ${dbSchemal5}ddbh_lingjqh_LCDV B WHERE B.banbh LIKE '$bbhDate$%')L
+	</select>
+	
+	<!-- 查询BOM条数 -->
+	<select id="getCountOfBom" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT COUNT(1)
+		  FROM ${dbSchemal5}DDBH_LINGJQH L
+		 WHERE L.TOUFLWJH = #touflwjh#
+		   AND L.QIEHQSLSH = #zongzlsh#
+		   AND L.CHANX = #shengcx#
+		   <isNotEmpty prepend=" AND " property="lingjbh1"><![CDATA[L.LINGJBH = #lingjbh1#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="lingjbh1"><![CDATA[L.LINGJBH IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="lingjbh2"><![CDATA[L.XLINGJBH = #lingjbh2#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="lingjbh2"><![CDATA[L.XLINGJBH IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="gongys1"><![CDATA[L.YGONGYSDM = #gongys1#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="gongys1"><![CDATA[L.YGONGYSDM IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="gongys2"><![CDATA[L.XGONGYSDM = #gongys2#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="gongys2"><![CDATA[L.XGONGYSDM IS NULL]]></isEmpty>
+		   AND L.ECOM = to_date(#ecom#,'yyyy-MM-dd')
+		   AND L.SHIJQHRQ = to_date(#shijqhrq#,'yyyy-MM-dd')
+		   AND L.LEIX = 'A'
+		   AND L.ACTIVE IN ('1','2')
+	</select>
+	
+	<!-- 查询原供应商条数 -->
+	<select id="getCountOfYGYS" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT COUNT(1) FROM ${dbSchemal5}CKX_GONGYS G WHERE G.GCBH = #gongys1# AND G.BIAOS = '1'
+	</select>
+	
+	<!-- 查询新供应商条数 -->
+	<select id="getCountOfXGYS" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT COUNT(1) FROM ${dbSchemal5}CKX_GONGYS G WHERE G.GCBH = #gongys2# AND G.BIAOS = '1'
+	</select>
+	
+	<!-- 查询BOM预批量条数 -->
+	<select id="getCountOfBomYPL" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT COUNT(1)
+		  FROM ${dbSchemal5}DDBH_LINGJQH L
+		 WHERE L.TOUFLWJH = #touflwjh#
+		   AND L.CHANX = #shengcx#
+		   <isNotEmpty prepend=" AND " property="lingjbh1"><![CDATA[L.LINGJBH = #lingjbh1#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="lingjbh1"><![CDATA[L.LINGJBH IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="lingjbh2"><![CDATA[L.XLINGJBH = #lingjbh2#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="lingjbh2"><![CDATA[L.XLINGJBH IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="gongys1"><![CDATA[L.YGONGYSDM = #gongys1#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="gongys1"><![CDATA[L.YGONGYSDM IS NULL]]></isEmpty>
+    	   <isNotEmpty prepend=" AND " property="gongys2"><![CDATA[L.XGONGYSDM = #gongys2#]]></isNotEmpty>
+    	   <isEmpty prepend=" AND " property="gongys2"><![CDATA[L.XGONGYSDM IS NULL]]></isEmpty>
+		   AND L.SHIJQHRQ = to_date(#shijqhrq#,'yyyy-MM-dd')
+		   AND L.LEIX = 'B'
+		   AND L.ACTIVE IN ('1','2')
+	</select>
+	
+</sqlMap>

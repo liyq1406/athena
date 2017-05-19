@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kdorder">
+<delete id="deleteOneOfKDMaoxq" parameterClass="java.util.Map">
+		delete
+		from
+		${dbSchemal1}XQJS_KDMAOXQ
+		where
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">LINGJBH = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="chanx">CHANX = #chanx#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	<delete id="deleteAllOfKDMaoxq" >
+		truncate table
+		${dbSchemal1}XQJS_KDMAOXQ
+	</delete>
+	
+	<select id="checkXiaohblKDPP" resultClass="com.athena.xqjs.entity.common.Xiaohblzjb" >
+		select t.usercenter, t.lingjbh, t.chanx, x.xiaohbl
+  from ${dbSchemal1}XQJS_KDMAOXQ t, ${dbSchemal1}XQJS_XIAOHBLZJB x
+ where t.lingjbh = x.lingjbh
+   and t.usercenter = x.usercenter
+   and t.chanx = x.shengcxbh
+	</select>
+	
+	<select id="queryKDMaoxqmxObjectAll" 
+		parameterClass="java.util.Map">
+		insert into ${dbSchemal1}xqjs_kdmaoxq select * from ${dbSchemal1}xqjs_maoxqmx t 
+		where
+		1 = 1
+		<dynamic>
+			
+			<isNotEmpty prepend="  and " property="xuqbc">
+				t.xuqbc = #xuqbc#
+			</isNotEmpty>
+			</dynamic>
+			<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				t.usercenter =
+				#usercenter#
+			</isNotEmpty>
+			
+		</dynamic>
+
+	</select>
+	<insert id="insertKdmaoxq" parameterClass="com.athena.xqjs.entity.kdorder.Kdmaoxq">
+		insert into
+		${dbSchemal1}XQJS_KDMAOXQ
+		(
+		xuqbc,
+		usercenter,
+		shiycj,
+		chanx,
+		xuqz,
+		xuqrq,
+		lingjbh,
+		xuqsl,
+		danw,
+		zhizlx,
+		xuqsszq,
+	    CREATOR,
+	    CREATE_TIME,
+	    EDITOR,
+	    EDIT_TIME,
+	    ACTIVE,
+	    XUQKSRQ,
+	    XUQJSRQ,
+	    CANGKDM)
+		values
+		(
+		#xuqbc#,
+		#usercenter#,
+		#shiycj#,
+		#chanx#,
+		#xuqz#,
+		to_date(substr(#xuqrq#,1,10),'yyyy-MM-dd'),
+		#lingjbh#,
+		#xuqsl#,
+		#danw#,
+		#zhizlx#,
+		#xuqsszq#,
+	    #creator#,
+	    TO_TIMESTAMP(#create_time#,'yyyy-mm-dd hh24:mi:ss.ff'),
+	    #editor#,
+	    TO_TIMESTAMP(#edit_time#,'yyyy-mm-dd hh24:mi:ss.ff'),
+	    #active#,
+	    #xuqksrq#,
+	    #xuqjsrq#,
+	    #cangkdm#)
+	</insert>
+	
+	
+	<!-- 袁修瑞 -->
+	
+	<select id="queryKDMxqmxAndGysObjectAll" parameterClass="java.util.Map">
+		insert into ${dbSchemal1}xqjs_kdmxqhz
+		(id,xuqbc,usercenter,shiycj,chanx,xuqz,xuqrq,lingjbh,xuqsl,danw,zhizlx,xuqsszq,xuqksrq,xuqjsrq,cangkdm,gongysbh,ucbzlx,ucrl,uabzlx,uaucgs,gongyhth,gongyfe,gonghlx,beihzq,fayzq)
+		select res_.* from (
+		select distinct a.*,b.zhizlx as gonghlx,ceil(b.beihzq/30)*30 as beihzq,ceil(b.yunszq/7)*7 as fayzq 
+            from (select distinct m.id, m.xuqbc,m.usercenter,m.shiycj,m.chanx,m.xuqz,m.xuqrq,m.lingjbh,m.xuqsl,m.danw,m.zhizlx,
+                         m.xuqsszq,m.xuqksrq,m.xuqjsrq,m.cangkdm,l.gongysbh,l.ucbzlx,l.ucrl,l.uabzlx,l.uaucgs,l.gongyhth,l.gongyfe
+                       from ${dbSchemal1}xqjs_maoxqmx m left join (select l.usercenter,l.lingjbh, l.gongysbh,l.ucbzlx,l.ucrl,l.uabzlx,l.uaucgs,l.gongyhth,l.gongyfe from  ${dbSchemal1}ckx_lingjgys l,${dbSchemal1}ckx_gongys g where l.usercenter=g.usercenter and g.gcbh=l.gongysbh and g.gonghlx=#zhizlx# and g.biaos = '1' and l.biaos = '1') l 
+                       on m.usercenter = l.usercenter(+) and m.lingjbh = l.lingjbh(+)
+                  where 1= 1 and m.xuqbc=#xuqbc# and m.usercenter=#usercenter# and m.zhizlx=#zhizlx#) a 
+                left join  (select * from ${dbSchemal3}ckx_wullj where waibms = 'PP') b 
+                on a.usercenter = b.usercenter
+                and a.gongysbh = b.gongysbh
+                and a.lingjbh = b.lingjbh
+                and b.zhizlx=#zhizlx#
+                )res_
+                 left join (select * from ${dbSchemal3}ckx_lingj where biaos = '1' ) lj
+				   on  res_.usercenter = lj.usercenter
+				  and res_.lingjbh = lj.lingjbh
+				  where lj.anjmlxhd is not null
+	</select>
+	
+	<!-- 零件订单查询 xss-0011533 -->
+	<select id="queryAllKDDingdlj" parameterClass="com.athena.xqjs.entity.ilorder.Dingdlj"
+		resultClass="com.athena.xqjs.entity.ilorder.Dingdlj">
+		select
+		l.id ,
+		l.dingdh ,
+		l.lingjbh ,
+		l.gongysdm ,
+		l.usercenter,
+		l.dinghcj ,
+		nvl(l.p0sl,0) as p0sl ,
+		nvl(l.p1sl,0) as p1sl ,
+		nvl(l.p2sl,0) as p2sl ,
+		nvl(l.p3sl,0) as p3sl ,
+		nvl(l.p4sl,0) as p4sl ,
+		(l.uabzucsl *  l.uabzucrl)  as baozrl,  		
+		l.jihyz ,
+		l.lingjsx,
+		c.zhongwmc as lingjmc
+		from
+		${dbSchemal1}XQJS_dingdlj l
+		left join ckx_lingj c  on c.lingjbh = l.lingjbh and c.usercenter = l.usercenter
+		left join xqjs_dingd b on b.dingdh=l.dingdh
+		where
+		b.dingdlx in ('1','2','4')
+		and c.biaos='1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				l.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				l.usercenter
+				=#usercenter#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY
+		L.USERCENTER,
+		L.LINGJBH,
+		L.cangkdm
+	</select>
+	
+	</sqlMap>

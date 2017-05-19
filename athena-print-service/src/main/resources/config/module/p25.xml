@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 参数值为空或者0都代表无意义,解析程序不会拼接 -->
+<!-- taskHeight 任务高度   perPaperHeight 每页纸的高度     beginHeight 每页打印开始距纸张高度差  endHeight 每页打印结束距纸张高度差 -->
+<print-config taskHeight="0" perPaperHeight="288" beginHeight="6" endHeight="6" pageInfo="true">
+	
+	<!-- 区域 -->
+	<!-- id 区域编号,由1开始依次类推 , 对应数据库的区域字段 -->
+	<!-- type 区域内容样式  sheet 表单, grid 表格 -->
+	<!-- autoSr 当 type=grid的时候启用 -->
+	<area id="1" type="sheet" autoSr="17">
+		<!-- 数据 -->
+		<!-- parentid 父类id,对应区域id -->
+		<!-- key 键值,对应打印数据键值 -->
+		<!-- dataType 数据样式 TWOBYTE 汉字   BARCODE 条形码    C3/9;X1A;H7;DARK;20;38 BARCODE 只能跟着sheet类型  -->
+		<!-- font 字体及样式 -->
+		<!-- sr 行起始坐标 -->
+		<!-- sc 列起始坐标 -->
+		<!-- ve 打印数据的高度 -->
+		<!-- he 打印数据的宽度 -->
+		<data parentid="1" row="1"  key="1-1" dataType="TWOBYTE" font="F16;P8;"  sr="10" sc="250;" ve="0;" he="0;"  value="盘点单"/>
+		<data parentid="1" row="1" key="1-23" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="290;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="1" key="1-99" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="390;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="2" key="1-21" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="14;" ve="0;" he="0;"  value="用户名:"/>
+		<data parentid="1" row="2" key="1-22" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="58;" ve="0;" he="0;"  value="#replace"/>
+		<data parentid="1" row="2"  key="1-10" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="408;" ve="0;" he="0;"  value="打印时间:" />
+		<data parentid="1" row="2"  key="1-11" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="450;" ve="0;" he="0;" value="#replace" />
+		<data parentid="1" row="3"  key="1-2" dataType="TWOBYTE" font="F16;P8;"  sr="48" sc="14;" ve="0;" he="0;"  value="任务编号:"/>
+		<data parentid="1" row="3"  key="1-3" dataType="TWOBYTE" font="F16;P8;" sr="#sr" sc="64;"  ve="0;" he="0;" value="#replace" />
+		<data parentid="1" row="3"  key="1-4" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="125;" ve="0;" he="0;"  value="库存时间:" />
+		<data parentid="1" row="3"  key="1-5" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="175;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="3"  key="1-6" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="270;" ve="0;" he="0;" value="仓库:" />
+		<data parentid="1" row="3"  key="1-7" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="296;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="3"  key="1-8" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="350;"  ve="0;" he="0;" value="子仓库:"  />
+		<data parentid="1" row="3"  key="1-9" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="380;" ve="0;" he="0;" value="#replace" />
+		<data parentid="1" row="4"  key="1-12" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="14;" ve="0;" he="0;"  value="序号" />
+		<data parentid="1" row="4"  key="1-13" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="58;" ve="0;" he="0;" value="仓库地址" />
+		<data parentid="1" row="4"  key="1-14" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="130;" ve="0;" he="0;" value="US号"  />
+		<data parentid="1" row="4"  key="1-15" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="184;" ve="0;" he="0;" value="零件号" />
+		<data parentid="1" row="4"  key="1-16" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="296;" ve="0;" he="0;"  value="零件数量" />
+		<data parentid="1" row="4"  key="1-17" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="364;" ve="0;" he="0;" value="UC个数" />
+		<data parentid="1" row="4"  key="1-18" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="422;" ve="0;" he="0;"  value="入库日期" />
+		<data parentid="1" row="4"  key="1-19" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="494;" ve="0;" he="0;"  value="状态" />
+		<data parentid="1" row="4"  key="1-20" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="240;" ve="0;" he="0;"  value="供应商编码" />
+	</area>
+	<area id="2" type="grid" autoSr="15" >
+		<data parentid="2" row="1"  key="2-1" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="17;" ve="0;" he="0;"  value="#replace"/>
+		<data parentid="2" row="1"  key="2-2" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="60;" ve="0;" he="0;"  value="#replace"/>
+		<data parentid="2" row="1"  key="2-3" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="120;" ve="0;" he="0;"  value="#replace"/>
+		<data parentid="2" row="1"  key="2-4" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="180;" ve="0;" he="0;"  value="#replace"/>
+		<data parentid="2" row="1"  key="2-5" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="298;" ve="0;" he="0;"  value="#replace"/>
+		<data parentid="2" row="1"  key="2-6" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="370;" ve="0;" he="0;"  value="#replace"/>
+		<data parentid="2" row="1"  key="2-7" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="408;" ve="0;" he="0;"  value="#replace"/>
+		<data parentid="2" row="1"  key="2-8" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="494;" ve="0;" he="0;"  value="#replace"/>
+		<data parentid="2" row="1"  key="2-9" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="230;" ve="0;" he="0;"  value="#replace"/>
+	</area>	
+	<area id="3" type="sheet" autoSr="17">
+		<data parentid="3" row="0" key="3-1" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="350;" ve="0;" he="0;"  value="盘点人:"/>
+		<data parentid="3" row="0" key="3-2" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="390;" ve="0;" he="0;"  value="#replace"/>
+	</area>	
+</print-config>

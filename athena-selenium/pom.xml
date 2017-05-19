@@ -1,0 +1,117 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>selenium</artifactId>
+  <groupId>com.selenium</groupId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>selenium</name>
+  <url>http://maven.apache.org</url>
+   
+  <repositories> 
+		<repository>
+			<id>releases</id>
+			<url>http://10.26.218.194:8081/nexus/content/repositories/releases</url>
+		</repository>
+
+		<repository>
+			<id>snapshots</id>
+			<url>http://10.26.218.194:8081/nexus/content/repositories/snapshots</url>
+		</repository>
+
+		<repository>
+			<id>maven.central</id>
+			<url>http://10.26.218.194:8081/nexus/content/repositories/central</url>
+		</repository>
+
+	</repositories>
+
+  <properties>
+    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    	<junit.version>4.8.2</junit.version>
+    	<selenium-remote-control.version>2.22.0</selenium-remote-control.version>
+    	<maven.plugins.report.version>2.6</maven.plugins.report.version>
+    	<commons.net.version>2.2</commons.net.version>
+    	<com.jcraft.jsch>0.1.31</com.jcraft.jsch>
+    	<ch.ethz.ganymed.ganymed-ssh2>build210</ch.ethz.ganymed.ganymed-ssh2>
+  </properties>
+
+  <dependencies>
+  
+      <dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>${junit.version}</version>
+		<scope>compile</scope>
+	</dependency>
+     
+    <dependency>
+    	<groupId>org.seleniumhq.selenium</groupId>
+    	<artifactId>selenium-remote-control</artifactId>
+	    <version>${selenium-remote-control.version}</version>
+	    <scope>compile</scope>
+    </dependency> 
+    
+    <dependency>
+    	<groupId>org.apache.maven.plugins</groupId>
+    	<artifactId>maven-surefire-report-plugin</artifactId>
+	    <version>${maven.plugins.report.version}</version>
+	    <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+		<groupId>commons-net</groupId>
+		<artifactId>commons-net</artifactId>
+		<version>${commons.net.version}</version>
+		<scope>compile</scope>
+	</dependency>
+    
+    <dependency>
+		<groupId>com.jcraft</groupId>
+		<artifactId>jsch</artifactId>
+		<version>${com.jcraft.jsch}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>ch.ethz.ganymed</groupId>
+		<artifactId>ganymed-ssh2</artifactId>
+		<version>${ch.ethz.ganymed.ganymed-ssh2}</version>
+	</dependency>
+   
+    <dependency>
+    	<groupId>com.holmos</groupId>
+    	<artifactId>holmos-webtest</artifactId>
+    	<version>1.0.2u7</version>
+    </dependency>
+  </dependencies>
+  
+  <reporting>
+  	<plugins>
+  	
+  		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>2.0.2</version>
+			<configuration>
+				<source>1.6</source>
+				<target>1.6</target>
+				<encoding>utf-8</encoding>
+			</configuration>
+		</plugin>
+			
+  		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+	    	<artifactId>maven-surefire-report-plugin</artifactId>
+		    <version>${maven.plugins.report.version}</version>
+		    <configuration>
+		    	<outputName>SuiteAllTestResults</outputName>
+		    	<includes>
+		    		<include>SuiteAllTest.java</include>
+		    	</includes>
+		    </configuration>
+  		</plugin>
+  	</plugins>
+  </reporting>
+</project>

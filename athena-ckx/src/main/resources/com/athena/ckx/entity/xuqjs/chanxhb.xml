@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 产线合并 qizhongtao 2012-4-17 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryChanxhb" parameterClass="com.athena.ckx.entity.xuqjs.Chanxhb" resultClass="com.athena.ckx.entity.xuqjs.Chanxhb">
+			select  usercenter,yuancx,mubcx,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_chanxhb
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="yuancx"><![CDATA[yuancx=#yuancx#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="mubcx"><![CDATA[mubcx=#mubcx#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,yuancx
+		</select>
+		
+		<!--分页查询	 -->
+		<select id="getChanxhb" parameterClass="com.athena.ckx.entity.xuqjs.Chanxhb" resultClass="com.athena.ckx.entity.xuqjs.Chanxhb">
+			select  usercenter,yuancx,mubcx
+			from ${dbSchemal3}ckx_chanxhb
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="yuancx"><![CDATA[yuancx=#yuancx#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertChanxhb" parameterClass="com.athena.ckx.entity.xuqjs.Chanxhb" >
+			insert into ${dbSchemal3}ckx_chanxhb(usercenter,yuancx,mubcx,creator,create_time,editor,edit_time)
+			values(<![CDATA[#usercenter#,#yuancx#,#mubcx#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="updateChanxhb" parameterClass="com.athena.ckx.entity.xuqjs.Chanxhb">
+			update ${dbSchemal3}ckx_chanxhb
+			set mubcx = #mubcx#,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and yuancx = #yuancx# ]]>
+		</update>
+		
+		<!-- 删除数据 -->
+		<delete id="deleteChanxhb" parameterClass="com.athena.ckx.entity.xuqjs.Chanxhb">
+			delete from ${dbSchemal3}ckx_chanxhb where
+			<dynamic prepend=" ">
+				<isNotEmpty property="usercenter" prepend=" and "><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty property="yuancx" prepend=" and "><![CDATA[yuancx = #yuancx#]]></isNotEmpty>
+			</dynamic>
+		</delete>
+	
+</sqlMap>

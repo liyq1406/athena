@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="kanbyhlTest">
+
+	<!-- 查询需求明细表 -->
+	<select id="queryKanbxhgm" parameterClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm"
+		resultClass="com.athena.xqjs.entity.kanbyhl.Kanbxhgm">
+	<![CDATA[		select 
+                     *
+				from
+				      ${dbSchemal1}xqjs_kanbxhgm]]>
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="xunhbm">xunhbm = #xunhbm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+		order by
+		xunhbm
+	</select>
+
+	<select id="queryYicbj" parameterClass="java.util.Map"
+		resultClass="int">
+<![CDATA[	 select count(*) 
+	            from ${dbSchemal1}xqjs_yicbj t  
+				where  t.usercenter = #usercenter#
+				     and 
+				       t.lingjbh = #lingjbh#
+				     and 
+				       t.cuowlx =  #cuowlx#
+				     and 
+				       t.cuowxxxx = #cuowxxxx#
+				     and 
+				       t.jismk = #jismk#
+				     and 
+				       t. jihyz = #jihyz#
+				     and
+				       t.jihydm = #jihydm#  ]]>
+	</select>
+
+	<delete id="delYicbj" parameterClass="java.util.Map">
+	  <![CDATA[       delete   from ${dbSchemal1}xqjs_yicbj t  
+				where  t.usercenter = #usercenter#
+				     and 
+				       t.lingjbh = #lingjbh#
+				     and 
+				       t.cuowlx =  #cuowlx#
+				     and 
+				       t.cuowxxxx = #cuowxxxx#
+				     and 
+				       t.jismk = #jismk#
+				     and 
+				       t. jihyz = #jihyz#
+				     and
+				       t.jihydm = #jihydm#  
+	 
+	      ]]>
+
+	</delete>
+
+</sqlMap>

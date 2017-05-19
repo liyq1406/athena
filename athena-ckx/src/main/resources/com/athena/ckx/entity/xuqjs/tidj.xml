@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- 替代件  qizhongtao 2012-3-28 -->
+	
+	<!-- 分页查询 -->	
+	<select id="queryCkxTidj" parameterClass="com.athena.ckx.entity.xuqjs.CkxTidj" resultClass="com.athena.ckx.entity.xuqjs.CkxTidj">
+		select usercenter,lingjbh,tidljh,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_tidj
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="tidljh"><![CDATA[tidljh = #tidljh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zuh"><![CDATA[$zuh$]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,lingjbh
+	</select>
+	
+	<!-- 单数据查询 -->	
+	<select id="getCkxTidj" parameterClass="com.athena.ckx.entity.xuqjs.CkxTidj" resultClass="com.athena.ckx.entity.xuqjs.CkxTidj">
+		select usercenter,lingjbh,tidljh
+		from ${dbSchemal3}ckx_tidj
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="tidljh"><![CDATA[tidljh = #tidljh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 插入数据 -->
+	<insert id="insertCkxTidj" parameterClass="com.athena.ckx.entity.xuqjs.CkxTidj">
+		insert into ${dbSchemal3}ckx_tidj (usercenter,lingjbh,tidljh,creator,create_time,editor,edit_time)
+		values (<![CDATA[#usercenter#,#lingjbh#,#tidljh#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+	</insert>
+	
+	<update id="updateCkxTidj" parameterClass="com.athena.ckx.entity.xuqjs.CkxTidj">
+		update ${dbSchemal3}ckx_tidj 
+		set lingjbh = #lingjbh#,
+			tidljh = #tidljh#,
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        <dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="tidljh"><![CDATA[tidljh = #tidljh#]]></isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 删除数据 -->
+	<delete id="deleteCkxTidj" parameterClass="com.athena.ckx.entity.xuqjs.CkxTidj">
+		delete from ${dbSchemal3}ckx_tidj where
+		<dynamic prepend=" ">
+			<isNotEmpty prepend=" and " property="usercenter">
+				<![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="tidljh">
+				<![CDATA[tidljh = #tidljh#]]>
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+
+	
+</sqlMap>

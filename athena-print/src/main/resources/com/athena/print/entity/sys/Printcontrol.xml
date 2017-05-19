@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sys">
+
+	<!--查询权限的信息-->
+	<select id="queryPrintControl" resultClass="com.athena.print.entity.sys.PrintControl">
+		select usercenter,cangkbh,danjbh,jiaoym
+		from ${dbSchemal3}ckx_print_control 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+			usercenter =#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">
+			cangkbh =#cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjbh">
+			danjbh =#danjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiaoym">
+			jiaoym =#jiaoym#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<select id="queryPlt_trscode_j" resultClass="com.athena.print.entity.sys.Plttrscodej" parameterClass="java.util.Map">
+		select usercenter,trscode,trsname,trstype
+		from ${dbSchemal3}plt_trscode_j 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+			usercenter =#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="trscode">
+			trim(trscode) =#trscode#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<select id="queryCk_batctrl" resultClass="com.athena.print.entity.sys.Ckbatctrl" parameterClass="com.athena.print.entity.sys.Ckbatctrl">
+		select xuh,batcode,batname,batcn
+		from ${dbSchemal3}ck_batctrl 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="batcode">
+			batcode =#batcode#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!--插入一条数据-->
+	<insert id="insertPrintcontrol" parameterClass="com.athena.print.entity.sys.PrintControl">
+		insert into ${dbSchemal3}ckx_print_control 
+		(usercenter,cangkbh,danjbh,jiaoym,biaos,creator,create_time)
+		values(#usercenter#,#cangkbh#,#danjbh#,#jiaoym#,'1',#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<!--更新一条数据-->
+	<update id="updatePrintcontrol" parameterClass="com.athena.print.entity.sys.PrintControl">
+		update ${dbSchemal3}ckx_print_control  set 
+		cangkbh=#cangkbh#,
+		danjbh=#danjbh#,
+		jiaoym=#jiaoym#,
+		editor=#editor#,
+		edit_time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="danjbh">danjbh = #danjbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jiaoym">jiaoym = #jiaoym#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--删除一条数据-->
+	<delete id="deletePrintcontrol" parameterClass="com.athena.print.entity.sys.PrintControl">
+		update ${dbSchemal3}ckx_print_control
+		set <![CDATA[biaos = 0]]> 
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="cangkbh">cangkbh = #cangkbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="danjbh">danjbh = #danjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jiaoym">jiaoym = #jiaoym#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<!--删除一条数据-->
+	<delete id="deletePrintcontrols" parameterClass="com.athena.print.entity.sys.PrintControl">
+		delete from ckx_print_control
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="cangkbh">cangkbh = #cangkbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="danjbh">danjbh = #danjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jiaoym">jiaoym = #jiaoym#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CKX">
+
+	<resultMap class="com.athena.xqjs.entity.common.Gongys" id="Gongys">
+		<result column="usercenter" property="usercenter" />
+		<result column="gongsmc" property="gongsmc" />
+		<result column="chuanz" property="chuanz" />
+		<result column="neibgys_cangkbh" property="neibgysCangkbh" />
+		<result column="diz" property="diz" />
+		<result column="fayzq" property="fayzq" />
+		<result column="fayd" property="fayd" />
+		<result column="songhzdpc" property="songhzdpc" />
+		<result column="GONGHLX" property="gonghlx" />
+		<result column="leix" property="leix" />
+		<result column="dianh" property="dianh" />
+		<result column="youb" property="youb" />
+		<result column="gcbh" property="gcbh" />
+		<result column="lianxr" property="lianxr" />
+		<result column="kacbztj" property="kacbztj" />
+		<result column="beihzq" property="beihzq" />
+		<result column="songhzxpc" property="songhzxpc" />
+	</resultMap>
+
+	<select id="queryAllGongys" resultMap="Gongys" parameterClass="java.util.Map">
+		select
+		usercenter,
+		gongsmc,
+		chuanz,
+		neibgys_cangkbh,
+		diz,
+		fayzq,
+		songhzdpc,
+		gonghlx,
+		leix,
+		dianh,
+		youb,
+		gcbh,
+		lianxr,
+		kacbztj,
+		beihzq,
+		fayd,
+		songhzxpc
+		from
+		${dbSchemal3}ckx_gongys
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+		</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">
+				 <![CDATA[gcbh like '$gcbh$%']]>
+		</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghlx">
+				gonghlx=#gonghlx#
+		</isNotEmpty>
+			<isNotEmpty prepend=" and " property="leix">
+				leix=#leix#
+		</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="queryGongys" resultMap="Gongys" parameterClass="java.util.Map">
+		select
+		usercenter,
+		gongsmc,
+		chuanz,
+		neibgys_cangkbh,
+		diz,
+		fayzq,
+		songhzdpc,
+		gonghlx,
+		leix,
+		dianh,
+		youb,
+		gcbh,
+		lianxr,
+		kacbztj,
+		beihzq,
+		fayd,
+		neibyhzx,
+		songhzxpc
+		from
+		${dbSchemal3}ckx_gongys
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+		</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">
+				 gcbh = #gcbh#
+		</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghlx">
+				gonghlx=#gonghlx#
+		</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghlx1">
+				gonghlx=#gonghlx1#
+		</isNotEmpty>
+			<isNotEmpty prepend=" or " property="gonghlx2">
+				gonghlx=#gonghlx2#
+		</isNotEmpty>
+			<isNotEmpty prepend=" and " property="leix">
+				leix = #leix#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+    <select id="queryGongysByLxAndWaibu" resultClass="com.athena.xqjs.entity.common.Gongys" parameterClass="java.util.Map">
+	  select distinct  
+	         substr(g.gcbh,0,6)  as gcbh
+		from
+			${dbSchemal3}ckx_gongys g
+			where
+			1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+		</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghlx">
+				$gonghlx$
+		</isNotEmpty>
+			<isNotEmpty prepend=" and " property="leix">
+				leix = #leix#
+		</isNotEmpty>
+		</dynamic>
+	</select>
+    <select id="queryGongysByLx" resultClass="com.athena.xqjs.entity.common.Gongys" parameterClass="java.util.Map">
+	  select distinct  
+	         substr(g.gcbh,0,6)  as gcbh
+		from
+			${dbSchemal3}ckx_gongys g
+			where
+			1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+		</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghlx">
+				$gonghlx$
+		</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<select id="queryAnxGongys" resultClass="com.athena.xqjs.entity.common.Gongys">
+		select
+		gys.usercenter as usercenter,
+		gongsmc,
+		chuanz,
+		neibgys_cangkbh,
+		diz,
+		fayzq,
+		songhzdpc,
+		gonghlx,
+		leix,
+		dianh,
+		youb,
+		gys.gcbh as gcbh,
+		lianxr,
+		kacbztj,
+		beihzq,
+		fayd,
+		songhzxpc
+		from
+		${dbSchemal3}CKX_GONGYS gys,
+		(select xhd.usercenter as usercenter,xhd.gongysbh as gongysbh
+		from ${dbSchemal1}XQJS_ANXMAOXQ anx,${dbSchemal3}CKX_LINGJXHD xhd
+		where
+		anx.usercenter = xhd.usercenter
+		and
+		anx.xiaohd = xhd.xiaohdbh
+		and
+		anx.lingjbh = xhd.lingjbh
+		and
+		anx.usercenter=#usercenter#
+		anx.lingjbh = #lingjbh#)temp
+		where
+		temp.usercenter = gys.usercenter
+		and
+		temp.gongysbh = gys.gcbh  
+	</select>
+
+
+
+
+	<insert id="insertGongys" parameterClass="com.athena.xqjs.entity.common.Gongys">insert into
+		${dbSchemal3}ckx_gongys
+		(usercenter,gongsmc,chuanz,neibgys_cangkbh,diz,fayzq,songhzdpc,gonghlx,leix,dianh,youb,gcbh,lianxr,kacbztj,beihzq,songhzxpc)
+		values(
+		#usercenter#,
+		#gongsmc#,
+		#chuanz#,
+		#neibgysCangkbh#,
+		#diz#,
+		#fayzq#,
+		#songhzdpc#,
+		#gonghlx#,
+		#leix#,
+		#dianh#,
+		#youb#,
+		#gcbh#,
+		#lianxr#,
+		#kacbztj#,
+		#beihzq#,
+		#songhzxpc#)
+	</insert>
+
+	<update id="updateGongys" parameterClass="com.athena.xqjs.entity.common.Gongys">
+		update ${dbSchemal3}ckx_gongys set
+		usercenter=#usercenter#,
+		gongsmc=#gongsmc#,
+		chuanz=#chuanz#,
+		neibgys_cangkbh=#neibgysCangkbh#,
+		diz=#diz#,
+		fayzq=#fayzq#,
+		songhzdpc=#songhzdpc#,
+		gonghlx=#gonghlx#,
+		leix=#leix#,
+		dianh=#dianh#,
+		youb=#youb#,
+		gcbh=#gcbh#,
+		lianxr=#lianxr#,
+		kacbztj=#kacbztj#,
+		beihzq=#beihzq#,
+		songhzxpc=#songhzxpc# where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter =
+				#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<delete id="deleteGongys" parameterClass="com.athena.xqjs.entity.common.Gongys">
+		delete from ${dbSchemal3}ckx_gongys where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter =
+				#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

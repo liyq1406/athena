@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exchange-configs>
+	<!-- 
+		exchange-config-group[@reader]:组默认的数据输入格式
+		exchange-config-group[@writer]:组默认的数据输出格式
+	 -->
+	 <!-- 文本格式输入，数据库格式输出 -->
+	<exchange-config-group reader="txt" writer="db">
+		<!-- 
+		文本格式输入组配置说明
+			exchange-config[@timer]:定时调度时间表达式
+			reader[@filePath]:文件路径
+			reader[@split]:文本分隔符
+			
+			writer[@class]:数据输出类，可以继承本组的DataWriter，实现自定义的条件判定，扩展方法如下：
+				1.输出前：boolean before();
+				2.输出后：void after();
+				3.行记录解析前：boolean beforeRecord(int rowIndex,String line);
+				4.行记录解析后：void afterRecord(int rowIndex,Record record);
+				record.get('f004')
+				
+			writer[@table]：数据库表名
+			writer[@updateFields]:更新字段，使用，号分隔。
+			
+			field[@writerColumn]:输出列名称
+			field[@start]:起始位置
+			field[@length]:长度
+			field[@type]:数据类型
+			field[@format]:数据格式
+			field[@isUpdate]:是否更新，默认值true
+		 -->
+		<exchange-config id="interface_component" caption="零件">
+		<reader filePath="E:\\BN010.TXT" encoding="GBK" split="">
+		</reader>
+		<writer class="com.athena.ckx.module.exchange.ComponentDbDataWriter"
+		table="interface_component" datasourceId="1" idKeys="usercenter,lingjh">
+		</writer>
+		<field writerColumn="dinghcj" isUpdate="false" start="0" length="3"/>
+		<field writerColumn="usercenter" isUpdate="false" start="0" length="2"/>
+		<field writerColumn="lingjh" isUpdate="false" start="3" length="10"/>
+		<field writerColumn="kaisrq" start="13" length="6" type="date" format="yyMMdd"/>
+		<field writerColumn="jiesrq" start="19" length="6"/>
+		<field writerColumn="zhizcj"  start="25" length="3"/>
+		<field writerColumn="danw" start="28" length="2"/>
+		<field writerColumn="zhongwmc" start="30" length="20"/>
+		</exchange-config>
+		
+		<exchange-config id="interface_supplier" caption="供应商">
+		<reader filePath="E:\\23092003pndfio078.dat" encoding="GBK" split="">
+		</reader>
+		<writer class="com.athena.component.exchange.db.DbDataWriter"
+		table="interface_supplier" datasourceId="1" idKeys="usercenter,gongysbh">
+		</writer>
+		<field writerColumn="gongysbh" isUpdate="false" start="1" length="10"/>
+		<field writerColumn="usercenter" isUpdate="false" start="11" length="3"/>
+		<field writerColumn="gongsdm" start="14" length="12"/>
+		<field writerColumn="insee" start="26" length="4"/>
+		<field writerColumn="nic" start="30" length="5"/>
+		<field writerColumn="isoaddress" start="35" length="23"/>
+		<field writerColumn="gongsm" start="58" length="65"/>
+		<field writerColumn="dizx1" start="123" length="35"/>
+		<field writerColumn="dizx2" start="158" length="65"/>
+		<field writerColumn="dizx3" start="223" length="35"/>
+		<field writerColumn="dizx4" start="258" length="35"/>
+		<field writerColumn="guojdzbm" start="293" length="3"/>
+		<field writerColumn="guojm" start="296" length="35"/>
+		<field writerColumn="dianhhm" start="331" length="14"/>
+		<field writerColumn="chuanzhm" start="345" length="12"/>
+		<field writerColumn="danwm" start="357" length="35"/>
+		<field writerColumn="ming1" start="392" length="20"/>
+		<field writerColumn="ming2" start="412" length="20"/>
+		</exchange-config>
+		
+		<exchange-config id="interface_component_supplier" caption="零件供应商">
+		<reader filePath="E:\\bnp03.txt" encoding="GBK">
+		</reader>
+		<writer class="com.athena.ckx.module.exchange.ComSupDbDataWriter"
+		table="interface_component_supplier" datasourceId="1" 
+		idKeys="usercenter,lingjbh,gongysbh">
+		</writer>
+		<field writerColumn="lingjbh" isUpdate="false" start="1" length="10"/>
+		<field writerColumn="lingjmc" isUpdate="false" start="11" length="40"/>
+		<field writerColumn="usercenter" isUpdate="false" start="51" length="3"/>
+		<field writerColumn="caigz" start="54" length="7"/>
+		<field writerColumn="hetbh" start="61" length="8"/>
+		<field writerColumn="hetlx" isUpdate="false" start="69" length="4"/>
+		<field writerColumn="peie" isUpdate="false" start="73" length="3" type="number" format="#"/>
+		<field writerColumn="gongysdzm" isUpdate="false" start="76" length="3"/>
+		<field writerColumn="gongysbh" isUpdate="false" start="79" length="10"/>
+		<field writerColumn="youxqsr" isUpdate="false" start="89" length="8" type="date" format="yyyyMMdd"/>
+		</exchange-config>
+				
+		<exchange-config id="interface_gundmxq" caption="零件周期毛需求">
+		<reader filePath="E:\\BN040-毛需求信息.TXT" encoding="GBK"></reader>
+		<writer class="com.athena.ckx.module.exchange.GundmxqDbDataWriter"
+		table="interface_gundmxq" datasourceId="1" 
+		idKeys="userceter,lingjbh,zhizxl,kaisrq,jiesrq"></writer>
+		<field writerColumn="banc" isUpdate="false" start="0" length="0"/>
+		<field writerColumn="chaifrq" isUpdate="false" start="0" length="0"/>
+		<field writerColumn="userceter" isUpdate="false" start="0" length="3"/>
+		<field writerColumn="lingjbh" isUpdate="false" start="3" length="10"/>
+		<field writerColumn="shul" isUpdate="false" start="13" length="16" type="number" format="number(16,6)"/>
+		<field writerColumn="guanldw" isUpdate="false" start="29" length="2"/>
+		<field writerColumn="aievol" isUpdate="false" start="31" length="2"/>
+		<field writerColumn="natart" isUpdate="false" start="33" length="6"/>
+		<field writerColumn="typart" isUpdate="false" start="39" length="1"/>
+		<field writerColumn="typapp" isUpdate="false" start="40" length="1"/>
+		<field writerColumn="typach" isUpdate="false" start="41" length="1"/>
+		<field writerColumn="zhizxl" isUpdate="false" start="42" length="6"/>
+		<field writerColumn="kaisrq" isUpdate="false" start="48" length="8" type="date" format="yyyyMMdd"/>
+		<field writerColumn="jiesrq" isUpdate="false" start="56" length="8" type="date" format="yyyyMMdd"/>
+		<field writerColumn="ecdu_date" isUpdate="false" start="64" length="8" type="date" format="yyyyMMdd"/>
+		<field writerColumn="biaos" isUpdate="false" start="75" length="1"/>
+		<field writerColumn="xiacsj" isUpdate="false" start="76" length="8" type="date" format="yyyyMMdd"/>
+		<field writerColumn="tmp_out" start="84" length="9"/>
+		<field writerColumn="xianh" isUpdate="false" start="93" length="5"/>
+		<field writerColumn="filler" isUpdate="false" start="98" length="2"/>
+		</exchange-config>
+		
+		<exchange-config id="interface_fhtz" caption="发货通知">
+		<reader class="com.athena.ckx.module.exchange.FhtzReader" filePath="E:\\FilePolling.47316.DESADV.066345.txt" encoding="GBK"></reader>
+		<writer class="com.athena.ckx.module.exchange.FhtzDbDataWriter" datasourceId="1"
+		idKeys="T01A001"></writer>
+		<field writerColumn="T01A001" start="6" length="17"/>
+		<field writerColumn="T01B001" start="23" length="14"/>
+		<field writerColumn="D03B001" start="6" length="3"/>
+		<field writerColumn="D03D002" start="9" length="17"/>
+		<field writerColumn="D03FA01" start="26" length="14" type="number" format="number(14,3)"/>
+		<field writerColumn="D03FA02" start="40" length="3"/>
+		<field writerColumn="D03FA05" start="43" length="3"/>
+		<field writerColumn="D03FD03" start="46" length="14"/>
+		<field writerColumn="C18AB01" start="6" length="20"/>
+		<field writerColumn="C18B005" start="29" length="17"/>
+		<field writerColumn="C05AB01" start="6" length="20"/>
+		<field writerColumn="H02AB01" start="6" length="17"/>
+		<field writerColumn="C06AB01" start="6" length="20"/>
+		<field writerColumn="D04A001" start="6" length="17"/>
+		<field writerColumn="A02D001" start="12" length="14" type="number" format="number(13,3)"/>
+		<field writerColumn="A02D002" start="26" length="3"/>
+		<field writerColumn="B03AB01" start="6" length="17"/>
+		<field writerColumn="B03AB02" start="23" length="3"/>
+		<field writerColumn="A04A002" start="6" length="35"/>
+		<field writerColumn="A04B003" start="41" length="2" type="number" format="#"/>
+		<field writerColumn="A09AC01" start="6" length="17"/>
+		<field writerColumn="A01C009" start="6" length="3"/>
+		<field writerColumn="B04A001" start="6" length="17"/>
+		<field writerColumn="B05AB01" start="6" length="17"/>
+		<field writerColumn="B05AD01" start="23" length="9"/>
+		<field writerColumn="A07A001" start="6" length="17"/>
+		</exchange-config>
+		
+		<exchange-config id="in_kdwld" caption="KDYS">
+			<reader filePath="E:\\KDYSTOPAP20111107142000.txt" encoding="GBK"></reader>
+			<writer table="in_kdwld" class="com.athena.ckx.module.exchange.KdysDbDataWriter" datasourceId="1"
+			idKeys="id"></writer>
+			<field writerColumn="id" start="0" length="0" isUpdate="false"></field>
+			<field writerColumn="biaos" start="0" length="2" isUpdate="false"></field>
+			<field writerColumn="papdanh" start="2" length="20" isUpdate="false"></field>
+			<field writerColumn="papxiangh" start="22" length="20" isUpdate="false"></field>
+			<field writerColumn="kdysdanh" start="42" length="20" isUpdate="false"></field>
+			<field writerColumn="kdysxiangh" start="62" length="20" isUpdate="false"></field>
+			<field writerColumn="shij" start="82" length="10" type="date" format="yyyy-MM-dd"></field>
+		</exchange-config>
+	</exchange-config-group>
+	
+	<!-- 数据库格式输入，数据库格式输出 -->
+	<exchange-config-group reader="db"  writer="db"  timer="0 * * * * *">
+		<!-- 
+		数据库输入组配置说明
+			reader[@sql]:sql查询语句
+			reader[@split]:文本分隔符
+			
+			writer[@class]:数据输出类，接口方法：
+				1.输出前：boolean before(DataParserConfig dataParserConfig);
+				2.输出后：void after(DataParserConfig dataParserConfig);
+				3.行记录解析前：boolean beforeRecord(DataParserConfig dataParserConfig,int rowIndex,String line);
+				4.行记录解析后：void afterRecord(DataParserConfig dataParserConfig,int rowIndex,Record record);
+			writer[@table]：数据库表名
+			writer[@idKeys]:更新字段，使用，号分隔。
+			
+			field[@readerColumn]:输入列名称
+			field[@writerColumn]:输出列名称
+			field[@length]:长度
+			field[@type]:数据类型
+			field[@format]:数据格式
+		 -->	
+		<exchange-config id="ljgys" caption="零件供应商">
+		<reader sql="select * from lingjgys" datasourceId="1">
+		</reader>
+		<writer datasourceId="1" table="lingjgys2" idKeys="id">
+		</writer>
+		<field readerColumn="gongysdm" isUpdate="false" writerColumn="gongysdm" length="100"/>
+		<field readerColumn="lingjh" writerColumn="lingjh" length="100"/>
+		</exchange-config>
+	</exchange-config-group>
+</exchange-configs>

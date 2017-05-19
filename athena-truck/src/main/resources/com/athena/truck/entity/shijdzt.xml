@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_kac">
+
+	<!-- 陈鹏 chenp -->
+	
+	<!-- 实际大站台-->
+		<!-- 查询 -->
+	<select id="queryShijdzt" parameterClass="com.athena.truck.entity.Shijdzt" resultClass="com.athena.truck.entity.Shijdzt">
+		select usercenter,daztbh,daztmc,quybh,paidtqqsx,paidtqqxx,duiycmqy,kacwdbjsj,fangkbzsj,shenbtqsj,biaos,biaos as yuanbiaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_dazt
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="quybh"><![CDATA[quybh = #quybh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="daztbh"><![CDATA[daztbh = #daztbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="duiycmqy">duiycmqy like '%'||#duiycmqy#||'%'</isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,quybh,daztbh
+	</select>
+	
+		<!-- 实际大站台-->
+		<!-- 查询 -->
+	<select id="queryShijdztqc" parameterClass="com.athena.truck.entity.Shijdzt" resultClass="com.athena.truck.entity.Shijdzt">
+		select usercenter,daztbh,quybh
+		from ${dbSchemal3}ckx_dazt 
+		where 1=1 and biaos = '1'
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="quybh"><![CDATA[quybh = #quybh#]]></isNotEmpty>
+				
+			</dynamic>
+			order by usercenter,quybh,daztbh
+	</select>
+
+		<!-- 删除 -->
+	<delete id="deleteShijdzt" parameterClass="com.athena.truck.entity.Shijdzt">
+		update ${dbSchemal3}ckx_dazt
+		set <![CDATA[biaos = '0',editor=#editor#,edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		where <![CDATA[usercenter = #usercenter# and  quybh = #quybh# and daztbh = #daztbh#]]>
+	</delete>
+	
+		
+		<!-- 修改 -->
+	<update id="updateShijdzt" parameterClass="com.athena.truck.entity.Shijdzt">
+		update ${dbSchemal3}ckx_dazt
+		set 
+	    	daztmc = #daztmc#,
+	    	paidtqqsx = #paidtqqsx#,
+	    	paidtqqxx = #paidtqqxx#,
+	    	duiycmqy = #duiycmqy#,
+	    	kacwdbjsj = #kacwdbjsj#,
+	    	fangkbzsj = #fangkbzsj#,
+	    	biaos = #biaos#,
+	    	editor = #editor#,
+	    	edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),
+	    	shenbtqsj = #shenbtqsj#
+        where  <![CDATA[usercenter = #usercenter# and  quybh = #quybh# and daztbh = #daztbh#]]> 
+	</update>	
+	
+		<!-- 增加 -->
+	<insert id="insertShijdzt" parameterClass="com.athena.truck.entity.Shijdzt">
+		insert into ${dbSchemal3}ckx_dazt(usercenter,daztbh,daztmc,quybh,paidtqqsx,paidtqqxx,duiycmqy,kacwdbjsj,fangkbzsj,biaos,creator,create_time,editor,edit_time,shenbtqsj)
+		values(<![CDATA[#usercenter# , #daztbh# , #daztmc# , #quybh# ,#paidtqqsx#,#paidtqqxx#,#duiycmqy#,#kacwdbjsj#,#fangkbzsj#, '1' , #creator# ,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),#shenbtqsj#  ]]> )
+	</insert>
+	
+	<!--根据大站台编号来得到大站台信息 -->
+	<select id="getShijdzt"  resultClass="com.athena.truck.entity.Shijdzt">
+	select usercenter,daztbh,daztmc,quybh,paidtqqsx,paidtqqxx,duiycmqy,kacwdbjsj,fangkbzsj,shenbtqsj,biaos,biaos as yuanbiaos,creator,create_time,editor,edit_time
+	from ${dbSchemal3}ckx_dazt
+	where 1=1
+	<dynamic>
+			<isNotEmpty prepend="  and " property="daztbh">daztbh =#daztbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter=#usercenter#
+			</isNotEmpty>
+	</dynamic>	
+	</select>
+	
+	<!-- 查询有效的大站台编号 -->
+	<select id="queryShijdztbhh" parameterClass="com.athena.truck.entity.Shijdzt" resultClass="com.athena.truck.entity.Shijdzt">
+		select daztbh
+		from ${dbSchemal3}ckx_dazt
+		where 1=1 and biaos='1'
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="quybh"><![CDATA[quybh = #quybh#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,quybh,daztbh
+	</select>
+	
+	<!-- 查询大站台下是否有车位 -->
+	<select id="queryChewccccx" parameterClass="com.athena.truck.entity.Chew" resultClass="com.athena.truck.entity.Chew">
+		select usercenter,chewbh,chewmc,chewxh,daztbh,chewsx,chewzt,biaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_chew
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chewbh"><![CDATA[chewbh = #chewbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chewsx"><![CDATA[chewsx = #chewsx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="daztbh"><![CDATA[daztbh = #daztbh#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,chewbh
+	</select>
+	
+	<!-- 获取大站台对应的车位数量 by CSY 20170117 -->
+	<select id="countDztChew" parameterClass="com.athena.truck.entity.Shijdzt" resultClass="java.lang.Integer">
+		SELECT COUNT(1)
+		  FROM ${dbSchemal3}CKX_CHEW W
+		 WHERE W.USERCENTER = #usercenter#
+		   AND W.DAZTBH = #daztbh#
+		   AND W.BIAOS = '1'
+	</select>
+	
+	<!-- 获取大站台对应的卸货站台数量 by CSY 20170117 -->
+	<select id="countDztXiehzt" parameterClass="com.athena.truck.entity.Shijdzt" resultClass="java.lang.Integer">
+		SELECT COUNT(1)
+		  FROM ${dbSchemal3}CKX_XIEHZT X
+		 WHERE X.USERCENTER = #usercenter#
+		   AND X.DAZTBH = #daztbh#
+		   AND X.BIAOS = '1'
+	</select>
+	
+	<!-- 获取大站台对应的未处理运单数量 by CSY 20170117 -->
+	<select id="countDztYund" parameterClass="com.athena.truck.entity.Shijdzt" resultClass="java.lang.Integer">
+		SELECT COUNT(1)
+		  FROM ${dbSchemal3}KC_YUND Y
+		 WHERE Y.USERCENTER = #usercenter#
+		   AND Y.DAZTBH = #daztbh#
+		   AND Y.ZHUANGT IN ('1', '2', '3', '4', '5', '6', '7', '8')
+	</select>
+	
+	<!-- 删除大站台 by CSY 20170117 -->
+	<delete id="deleteDazt" parameterClass="com.athena.truck.entity.Shijdzt">
+		DELETE FROM ${dbSchemal3}CKX_DAZT D
+		 WHERE D.USERCENTER = #usercenter#
+		   AND D.DAZTBH = #daztbh#
+	</delete>
+	
+	<!-- 删除流程定义 by CSY 20170117 -->
+	<delete id="deleteDztLiucdy" parameterClass="com.athena.truck.entity.Shijdzt">
+		DELETE FROM ${dbSchemal3}CKX_LIUCDY L
+		 WHERE L.USERCENTER = #usercenter#
+		   AND L.DAZTBH = #daztbh#
+	</delete>
+	
+</sqlMap>

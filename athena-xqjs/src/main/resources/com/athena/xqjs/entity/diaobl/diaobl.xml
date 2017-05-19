@@ -1,0 +1,1348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="diaobl">
+	<!--调拨令申请 -->
+	<!--查询调拨单号是否成在，如果有查出最大的调拨单号 -->
+	<select id="querydiaobsqdh" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+	 <![CDATA[select  max(diaobsqdh)
+	 from ${dbSchemal1}xqjs_diaobsq ]]>
+		<dynamic prepend="where">
+			<isNotNull prepend="and">   
+                   <![CDATA[diaobsqdh like '$diaobsqdh$%']]>
+			</isNotNull>
+		</dynamic>
+	</select>
+
+
+
+
+	<!--根据登陆名去用户名称 及电话信息 -->
+	<select id="queryUserByLoginname" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+               <![CDATA[ select name,
+             loginname,
+             cellphone,
+             officephone,
+             familyphone 
+             ]]>
+             from (
+         <![CDATA[ select u.name,
+             u.loginname,
+             u.cellphone,
+             u.officephone,
+             u.familyphone 
+             ]]>
+		from ${dbSchemal3}sys_user u
+		where
+		u.loginname = #loginname#
+    order by id
+    )
+    where  rownum = 1
+	</select>
+
+
+
+
+	<!--根据制造路线、零件号查出对应的零件名称 -->
+	<select id="querylingjmc" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobsqmx">
+             <![CDATA[ select  distinct zhongwmc as lingjmc,
+                                        zhizlx   as lux , 
+                                        danw     as danw,   
+                                        jihy     as jihyz   
+              ]]>
+		from ${dbSchemal3}ckx_lingj
+		where
+		lingjbh = #lingjbh#
+		and
+		usercenter =
+		#usercenter#
+		<dynamic>
+			<isNotEmpty property="biaos" prepend=" and ">biaos = #biaos#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 调拨申请（插入调拨申请子表） 调拨申请查询增加操作 -->
+	<insert id="insertdiaobsqmx" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx">
+		<![CDATA[insert into ${dbSchemal1}xqjs_diaobsqmx(xuh,usercenter,diaobsqdh,lux,lingjbh,shenbsl,yaohsj,zhuangt,create_time,creator,edit_time,editor,active)
+		values(
+		    #xuh#,
+		    #usercenter#,
+		    #diaobsqdh#,
+		    #lux#,
+			#lingjbh#,
+			#shenbsl#,
+			to_date(#yaohsj#,'yyyy-MM-dd HH24:mi:ss'),
+			#zhuangt#,
+			to_timestamp(#create_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+			#creator#,
+			to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+			#editor#,
+			'1'
+		)]]>
+	</insert>
+
+	<!-- 插入调拨申请 -->
+	<insert id="insertdiaobsq" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsq">
+		<![CDATA[insert into  ${dbSchemal1}xqjs_diaobsq(usercenter,diaobsqdh,diaobsqsj,banc,huijkm,chengbzx,beiz,zhuangt,create_time,creator,edit_time,editor,active)
+		values(
+		    #usercenter#,
+		    #diaobsqdh#,
+			to_date(#diaobsqsj#,'yyyy-MM-dd HH24:mi:ss'),
+			#banc#,
+			#huijkm#,
+			#chengbzx#,
+			#beiz#,
+			#zhuangt#,
+			to_timestamp(#create_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+			#creator#,
+			to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+			#editor#,
+			'1'
+		)]]>
+	</insert>
+
+	<!--调拨令查询 -->
+	<!--主页面查询 （加调拨审核主页面查询） -->
+	<!-- xss_12960 -->
+	<select id="queryDiaobsq" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobsq">
+	   <![CDATA[select 
+	           diaobsqdh,
+	           to_char(diaobsqsj,'yyyy-mm-dd ')  as diaobsqsj,
+	           zhuangt,
+	           beiz,
+	           chengbzx,
+	           banc,
+	           creator,
+	           create_time,
+	           to_char(edit_time,'yyyy-mm-dd HH24:mi:ss:ff3') as edit_time,
+	           editor,
+	           usercenter
+	     from  ${dbSchemal1}xqjs_diaobsq  D
+	    ]]>
+
+		where exists (select mx.*,nvl(l.jihy, 'ILJ') from ${dbSchemal1}xqjs_diaobsqmx mx left join ${dbSchemal3}ckx_lingj l on mx.usercenter = l.usercenter and mx.lingjbh = l.lingjbh
+		where 1=1
+		and
+		d.diaobsqdh=mx.diaobsqdh
+		and 
+                  <![CDATA[D.zhuangt<>'22' ]]>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="jihy"><![CDATA[l.jihy = #jihy#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[D.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhuangt"><![CDATA[D.zhuangt = #zhuangt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqsj"><![CDATA[D.diaobsqsj = to_date(#diaobsqsj#,'yyyy-mm-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[D.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="creator"><![CDATA[D.creator = #creator#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengbzx"><![CDATA[D.chengbzx = #chengbzx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[l.lingjbh= #lingjbh#]]></isNotEmpty>
+			<isEmpty prepend=" and " property="zhuangt"><![CDATA[D.zhuangt <= #sh#]]></isEmpty>
+		</dynamic>
+		)
+
+		ORDER BY $order$ $sort$
+	</select>
+	
+	<!--调拨令查询 -->
+	<!--调拨审核主页面查询 -->
+	<!-- xss_12960 -->
+	<select id="queryDiaobsq_Sh" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobsq">
+	   <![CDATA[select 
+	           diaobsqdh,
+	           to_char(diaobsqsj,'yyyy-mm-dd ')  as diaobsqsj,
+	           zhuangt,
+	           beiz,
+	           chengbzx,
+	           banc,
+	           creator,
+	           create_time,
+	           to_char(edit_time,'yyyy-mm-dd HH24:mi:ss:ff3') as edit_time,
+	           editor,
+	           usercenter
+	     from  ${dbSchemal1}xqjs_diaobsq  D
+	    ]]>
+
+		where exists (select mx.*,l.jihy from ${dbSchemal1}xqjs_diaobsqmx mx , ${dbSchemal3}ckx_lingj l
+		where 1=1
+		and
+		d.diaobsqdh=mx.diaobsqdh
+		and d.usercenter = mx.usercenter
+        and l.usercenter = mx.usercenter
+        and l.lingjbh = mx.lingjbh
+		and 
+                  <![CDATA[D.zhuangt<>'22' ]]>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="jihy"><![CDATA[l.jihy = #jihy#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[D.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhuangt"><![CDATA[D.zhuangt = #zhuangt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqsj"><![CDATA[D.diaobsqsj = to_date(#diaobsqsj#,'yyyy-mm-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[D.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="creator"><![CDATA[D.creator = #creator#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengbzx"><![CDATA[D.chengbzx = #chengbzx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[l.lingjbh= #lingjbh#]]></isNotEmpty>
+			<isEmpty prepend=" and " property="zhuangt"><![CDATA[D.zhuangt <= #sh#]]></isEmpty>
+		</dynamic>
+		)
+
+		ORDER BY $order$ $sort$
+	</select>
+
+	<!--调拨查询主页面取消 更改调拨申请的状态 -->
+	<update id="updateCancle" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsq">
+		update ${dbSchemal1}xqjs_diaobsq
+		set
+		zhuangt = #newZhuangt#,
+		edit_time =
+		to_timestamp(#newEdit_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		editor =
+		#newEditor#
+		where 1 = 1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="edit_time"><![CDATA[edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor"><![CDATA[editor = #editor#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhuangt"><![CDATA[#zhuangt# between '00' and '22']]></isNotEmpty>
+		</dynamic>
+	</update>
+	<!--调拨令查询 点击主页面调拨申请单号进入增删改页面 （调拨令审核 申请明细查询） -->
+	<!-- xss_12960 -->
+	<select id="select_Diaobsqmx" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobsqmx">
+		select
+		b.xuh as xuh,
+		b.usercenter as usercenter,
+		b.diaobsqdh as
+		diaobsqdh,
+		b.lux as lux,
+		b.lingjbh as lingjbh,
+		to_char(b.yaohsj,'yyyy-mm-dd') as yaohsj,
+		c.zhongwmc as lingjmc,
+		b.shenbsl as shenbsl,
+		nvl(c.jihy ,'ILJ' ) as jihy,
+		b.zhuangt as zhuangt,
+		to_char(b.edit_time,'yyyy-mm-dd HH24:mi:ss:ff3') as edit_time,
+		b.editor as editor,
+		a.banc as banc,
+		to_char(a.diaobsqsj,'yyyy-mm-dd') as
+		diaobsqsj,
+		a.creator as creator,
+		a.huijkm as huijkm,
+		a.chengbzx as
+		chengbzx,
+		a.beiz as beiz
+		from ${dbSchemal1}xqjs_diaobsq a
+		join
+		${dbSchemal1}xqjs_diaobsqmx b
+		on(a.usercenter = b.usercenter and
+		a.diaobsqdh = b.diaobsqdh)
+		left join ${dbSchemal3}ckx_lingj c
+		on( b.lingjbh = c.lingjbh and b.usercenter = c.usercenter)
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[a.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy"><![CDATA[c.jihy = #jihy#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[b.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhuangt"><![CDATA[b.zhuangt = #zhuangt#]]></isNotEmpty>
+		</dynamic>
+		order by zhuangt,yaohsj,lingjbh
+	</select>
+
+	<!-- 调拨令查询 查询最大序号xuh -->
+	<select id="select_sqxuh" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="java.lang.Integer">
+		select max(xuh)
+		from ${dbSchemal1}xqjs_diaobsqmx
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 调拨令审核 查询最大序号xuh -->
+	<select id="select_shxuh" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx"
+		resultClass="java.lang.Integer">
+		select max(xuh)
+		from ${dbSchemal1}xqjs_diaobmx
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[lux = #lux#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 调拨申请明细中添加数据 <insert id="doinsert" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx" 
+		> <![CDATA[insert into diaobsqmx(xuh,usercenter,diaobsqdh,lux,lingjbh,shenbsl,create_time,creator,edit_time,editor) 
+		values( #xuh#, #usercenter#, #diaobsqdh#, #lux#, #lingjbh#, #shenbsl#, create_time, 
+		creator, edit_time, editor )]]> </insert> -->
+
+	<!-- 修改调拨申请明细中零件数量 -->
+	<update id="doupdate" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx">
+		update ${dbSchemal1}xqjs_diaobsqmx
+		<dynamic prepend="set">
+			<isNotEmpty property="shenbsl" prepend=",">
+    		   <![CDATA[shenbsl = #shenbsl#]]>
+			</isNotEmpty>
+			<isNotEmpty property="yaohsj" prepend=",">
+    		   <![CDATA[yaohsj = to_date(#yaohsj#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty property="newEdit_time" prepend=",">
+    		   <![CDATA[edit_time = to_timestamp(#newEdit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')]]>
+			</isNotEmpty>
+			<isNotEmpty property="newEditor" prepend=",">
+    		   <![CDATA[editor = #newEditor#]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[lux = #lux#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="edit_time"><![CDATA[edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor"><![CDATA[editor = #editor#]]></isNotEmpty>
+		</dynamic>
+	</update>
+
+	<!-- 修改调拨申请表的版次 -->
+	<update id="update_banc" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsq">
+		update ${dbSchemal1}xqjs_diaobsq
+		<dynamic prepend="set">
+			<isNotEmpty property="banc" prepend=",">
+    		   <![CDATA[banc= #banc#]]>
+			</isNotEmpty>
+		</dynamic>
+		where <![CDATA[diaobsqdh=#diaobsqdh# and usercenter=#usercenter#]]>
+	</update>
+
+
+	<!--(调拨令查询)删除调拨申请明细中的零件 -->
+	<delete id="deletediaobsqmx" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx">
+		delete from ${dbSchemal1}xqjs_diaobsqmx
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[lux = #lux#]]></isNotEmpty>
+		</dynamic>
+	</delete>
+
+	<!--调拨审核 调拨单确认 实批数量汇总 -->
+	<select id="sum_shipisl" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="java.math.BigDecimal">
+		select sum(shipsl) from ${dbSchemal1}xqjs_diaobmx
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[lux = #lux#]]></isNotEmpty>
+		</dynamic>
+		group by usercenter,diaobsqdh,lingjbh,lux
+	</select>
+	
+	<!--调拨审核 调拨单确认 实批数量汇总 -->
+	<!--20170218- xss -v4_018 -->
+	<select id="sum_shipisl_new" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx"
+		resultClass="java.math.BigDecimal">
+		select sum(shipsl) from ${dbSchemal1}xqjs_diaobmx
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[lux = #lux#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[cangkbh != #cangkbh#]]></isNotEmpty>
+			and zhuangt ='20'
+		</dynamic>
+		group by usercenter,diaobsqdh,lingjbh,lux
+	</select>
+	
+	
+	
+	<!-- 删除实批数量为0的数据  -->
+	<delete id="delete0Dbmx" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+	delete  from   ${dbSchemal1}xqjs_diaobmx 
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			and shipsl=0
+		</dynamic>
+	</delete>
+
+	<!--调拨审核 调拨单确认 查询调拨单号是否存在 <select id="diaobdh_exist" parameterClass="java.util.HashMap" 
+		resultClass="java.lang.String"> <![CDATA[ select max(diaobdh) from diaobsq 
+		]]> <dynamic prepend="where"> <isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh 
+		= #diaobsqdh#]]></isNotEmpty> <isNotEmpty prepend=" and " property="diaobdh"><![CDATA[diaobdh 
+		like '$diaobdh$%']]></isNotEmpty> </dynamic> </select> -->
+	<!-- 调拨单号的生成 -->
+	<select id="sel_dh" resultClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		select diaobdh,
+		cangkbh
+		from
+		(
+		select max(diaobsqdh) as diaobdh,
+		cangkbh
+		from ${dbSchemal1}xqjs_diaobmx
+		where diaobsqdh=#diaobsqdh#
+		group by cangkbh
+		order by cangkbh) x
+		where exists (
+		select cangkbh from
+		${dbSchemal1}xqjs_diaobmx m
+		where x.cangkbh = m.cangkbh
+		and m.usercenter
+		= #usercenter# and m.diaobsqdh = #diaobsqdh#
+		)
+	 </select>
+
+	<!--点击生效插入调拨单号 调拨明细 -->
+	<update id="insert_diaobdh" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		update ${dbSchemal1}xqjs_diaobmx
+		set
+		diaobdh = #diaobdh#,
+		EDIT_TIME =
+		to_timestamp(#newEdit_time#,'yyyy-mm-dd
+		HH24:mi:ss:ff3'),
+		EDITOR =
+		#newEditor#,
+		zhuangt = #zhuangt#
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[cangkbh = #cangkbh#]]></isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 生效时 将实批数量 记录异常消耗 0012554 -->
+	<insert id="insert_kucjscsb" parameterClass="com.athena.xqjs.entity.anxorder.Kucjscsb">
+		insert into ${dbSchemal1}xqjs_kucjscsb(usercenter,lingjbh,YICXHL,XIAOHD,create_time,creator , flag)
+		values(
+		    #usercenter#,
+			#lingjbh#,
+			#yicxhl#,
+			#xiaohd#,
+			sysdate,
+			#creator#,
+			'2'
+		)
+	</insert>
+	
+	<!-- 生效时 将实批数量 记录异常消耗 0012554 -->
+	<select id="query_diaobmx" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx" resultClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+	select  usercenter, shipsl, diaobdh,lingjbh,  cangkbh, zickbh , EDITOR , to_char(Edit_time,'yyyy-mm-dd HH24:mi:ss:ff3')
+		from ${dbSchemal1}xqjs_diaobmx 
+		where usercenter = #usercenter# 
+		  and diaobsqdh = #diaobsqdh#	
+		  and zhuangt = '30'
+	 </select>
+	
+	
+
+
+	<!--取数据库系统时间 -->
+	<select id="select_sysdate" resultClass="java.lang.String">
+	        <![CDATA[ select  to_char(systimestamp,'yyyy-mm-dd HH24:mi:ss:ff3')  from dual]]>
+	</select>
+
+	<!--调拨审核主页面(对已审核的进行生效操作) -->
+	<update id="update_diaobsqstate" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsq">
+		update ${dbSchemal1}xqjs_diaobsq set zhuangt = #newZhuangt#,
+		edit_time
+		= to_timestamp(#newEdit_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		editor =
+		#newEditor#
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="edit_time"><![CDATA[edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor"><![CDATA[editor = #editor#]]></isNotEmpty>
+		</dynamic>
+	</update>
+
+	<!-- 查询调拨申请表的状态 -->
+	<select id="queryState" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsq"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobsq">
+		select zhuangt,
+		to_char(edit_time,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		editor
+		from ${dbSchemal1}xqjs_diaobsq
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--调拨审核同意与拒绝 调拨单明细(查询调拨明细中是否存在该记录) -->
+	<select id="diaobmxExist" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		select
+		usercenter,
+		cangkbh,
+		lingjbh,
+		lux
+		from ${dbSchemal1}xqjs_diaobmx
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[lux = #lux#]]></isNotEmpty>
+		</dynamic>
+
+	</select>
+
+	<!--调拨审核同意与拒绝 调拨单明细(调拨明细存在该记录)  20170217-xss-0013188 -->
+	<!-- 汇总 仓库资源数据和调拨明细单中的数据 -->
+	<select id="queryDiaobshmx_exist" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobmx"> 
+		select 
+		'' as diaobsqdh, 
+		#lux# as lux,
+		a.lingjbh as lingjbh, 
+		a.usercenter as usercenter,
+		#shenbsl# as shipsl,
+		'0' as shifdbz,
+		to_char(current_date,'yyyy-mm-dd') as shengxsj,	 
+		current_date as edit_time,
+		'' as editor, 
+		a.zhongwmc as lingjmc,
+		b.cangkbh as cangkbh,
+		b.zickbh as zickbh,
+		b.uclx
+		as uclx,
+		b.ucrl as ucrl,
+		d.kucsl as kucsl,
+		'00' as zhuangt
+		from ${dbSchemal3}ckx_lingj a
+		join ${dbSchemal3}ckx_lingjck b
+		on(a.usercenter = b.usercenter and
+		a.lingjbh = b.lingjbh)
+		join ${dbSchemal1}xqjs_ziykzb d
+		on(b.usercenter =
+		d.usercenter and b.cangkbh = d.cangkdm and b.lingjbh = d.lingjbh and
+		d.ziyhqrq = to_date(#ziyhqrq#,'yyyy-mm-dd'))
+		where 
+		a.usercenter = #usercenter# 
+		and a.lingjbh = #lingjbh# 
+		and d.cangkdm  not in( select c.cangkbh
+     		from ${dbSchemal1}xqjs_diaobmx c
+    		where c.usercenter = #usercenter# 
+     		 and c.lingjbh = #lingjbh# 
+     		 and c.diaobsqdh = #diaobsqdh#
+      		 and c.zhuangt = '20'
+      	) 
+		union (
+				
+		select a.diaobsqdh as diaobsqdh,
+		a.lux as lux,
+		a.lingjbh as lingjbh,
+		a.usercenter as usercenter,
+		case when a.zhuangt ='10' then a.shenbsl else  a.shipsl end as shipsl ,
+		case when a.zhuangt ='10' then '0' else  a.shifdbz end as shifdbz ,
+		case when a.zhuangt ='10' then to_char(current_date,'yyyy-mm-dd') else  to_char(a.shengxsj,'yyyy-mm-dd') end as shengxsj ,
+		a.edit_time as edit_time,
+		a.editor as editor,
+		b.zhongwmc as lingjmc,
+		c.cangkbh as cangkbh,
+		c.zickbh as zickbh,
+		c.uclx as uclx,
+		c.ucrl as ucrl,
+		a.kucsl as kucsl,
+		a.zhuangt as zhuangt  
+		from
+		${dbSchemal1}xqjs_diaobmx a
+		join ${dbSchemal3}ckx_lingj b
+		on(
+		a.usercenter = b.usercenter and a.lingjbh = b.lingjbh)
+		join
+		${dbSchemal3}ckx_lingjck c
+		on(b.usercenter=c.usercenter and
+		b.lingjbh=c.lingjbh and a.cangkbh = c.cangkbh)
+		where
+		a.usercenter = #usercenter#
+		and a.diaobsqdh = #diaobsqdh#
+		and a.lingjbh = #lingjbh#
+		and a.lux = #lux#
+		and a.zhuangt ='20' 
+		)
+	</select>
+	<!-- 调拨单明细(调拨明细存在该记录) 过滤相同的仓库 -->
+	<select id="cangkmx" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		select t.lingjbh as lingjbh,
+		t.lux as lux,
+		t.usercenter as usercenter,
+		t.lingjmc as lingjmc,
+		t.cangkbh as cangkbh,
+		t.zickbh as zickbh,
+		t.uclx as
+		uclx,
+		t.ucrl as ucrl,
+		t.kucsl as kucsl
+		from (select a.lingjbh as lingjbh,
+		a.zhizlx as lux,
+		a.usercenter as usercenter,
+		a.zhongwmc as lingjmc,
+		b.cangkbh as cangkbh,
+		b.zickbh as zickbh,
+		b.uclx as uclx,
+		b.ucrl as ucrl,
+		d.kucsl as kucsl
+		from ${dbSchemal3}ckx_lingj a
+		join
+		${dbSchemal3}ckx_lingjck b
+		on (a.usercenter = b.usercenter and
+		a.lingjbh = b.lingjbh)
+		join ${dbSchemal1}xqjs_ziykzb d
+		on (b.usercenter
+		= d.usercenter and b.cangkbh = d.cangkdm and b.lingjbh = d.lingjbh and
+		d.ziyhqrq = to_date(#ziyhqrq#,'yyyy-mm-dd'))
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[a.zhizlx = #lux#]]></isNotEmpty>
+		</dynamic>
+		) t
+		where not exists
+		(select m.cangkbh
+		from (select a.diaobsqdh as
+		diaobsqdh,
+		a.lux as lux,
+		a.lingjbh as lingjbh,
+		a.usercenter as
+		usercenter,
+		a.shipsl as shipsl,
+		a.shifdbz as shifdbz,
+		to_char(a.shengxsj, 'yyyy-mm-dd') as shengxsj,
+		a.edit_time as
+		edit_time,
+		a.editor as editor,
+		b.zhongwmc as lingjmc,
+		c.cangkbh as
+		cangkbh,
+		c.zickbh as zickbh,
+		c.uclx as uclx,
+		c.ucrl as ucrl,
+		d.kucsl as
+		kucsl
+		from ${dbSchemal1}xqjs_diaobmx a
+		join ${dbSchemal3}ckx_lingj b
+		on
+		(a.usercenter = b.usercenter and a.lingjbh = b.lingjbh )
+		join
+		${dbSchemal3}ckx_lingjck c
+		on (b.usercenter = c.usercenter and
+		b.lingjbh = c.lingjbh and a.cangkbh = c.cangkbh)
+		join
+		${dbSchemal1}xqjs_ziykzb d
+		on (c.usercenter = d.usercenter and
+		c.cangkbh = d.cangkdm and c.lingjbh = d.lingjbh and d.ziyhqrq =
+		to_date(#ziyhqrq#,'yyyy-mm-dd'))
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[a.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[a.lux = #lux#]]></isNotEmpty>
+		</dynamic>
+		) m
+		where t.cangkbh = m.cangkbh
+		)
+
+	</select>
+
+	<!--调拨审核同意与拒绝 调拨单明细(调拨明细不存在该记录) 20170217-0013188-->
+	<select id="queryDiaobshmx_notexist" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		select a.lingjbh as lingjbh,
+		#lux# as lux,
+		#shenbsl# as shipsl,
+		to_char(current_date,'yyyy-mm-dd') as shengxsj,	 
+		'0' as shifdbz,
+		a.usercenter as usercenter,
+		a.zhongwmc as lingjmc,
+		b.cangkbh as cangkbh,
+		b.zickbh as zickbh,
+		b.uclx
+		as uclx,
+		b.ucrl as ucrl,
+		d.kucsl as kucsl,
+		'00' as zhuangt
+		from ${dbSchemal3}ckx_lingj a
+		join ${dbSchemal3}ckx_lingjck b
+		on(a.usercenter = b.usercenter and
+		a.lingjbh = b.lingjbh)
+		join ${dbSchemal1}xqjs_ziykzb d
+		on(b.usercenter =
+		d.usercenter and b.cangkbh = d.cangkdm and b.lingjbh = d.lingjbh and
+		d.ziyhqrq = to_date(#ziyhqrq#,'yyyy-mm-dd'))
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	<!--调拨审核同意与拒绝 调拨单明细(调拨明细不存在该记录已审过的实批数量为0的数据) -->
+	<select id="queryDiaobshmx_notexistsg" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		select a.lingjbh as lingjbh,
+		#lux# as lux,
+		a.usercenter as usercenter,
+		a.zhongwmc as lingjmc,
+		b.cangkbh as cangkbh,
+		b.zickbh as zickbh,
+		b.uclx
+		as uclx,
+		b.ucrl as ucrl,
+		d.kucsl as kucsl
+		from ${dbSchemal3}ckx_lingj a
+		join ${dbSchemal3}ckx_lingjck b
+		on(a.usercenter = b.usercenter and
+		a.lingjbh = b.lingjbh)
+		join ${dbSchemal1}xqjs_ziykzb d
+		on(b.usercenter =
+		d.usercenter and b.cangkbh = d.cangkdm and b.lingjbh = d.lingjbh and
+		d.ziyhqrq = to_date(#ziyhqrq#,'yyyy-mm-dd'))
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 调拨审核同意与拒绝 新增调拨明细 <insert id="doinsertOrupdate_diaobmx" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx"> 
+		insert into diaobsh(xuh,usercenter,diaobdh,cangkbh,zickbh,shengxsj,diaobsqdh,lingjbh,kucsl,shenbsl,shipsl,shifdbz,shifdcjf,create_time,creator,edit_time,editor) 
+		values( #xuh#, #diaobdh#, #cangkbh#, #zickbh#, #shengxsj#, #diaobsqdh#, #lingjbh#, 
+		#kucsl#, #shenbsl#, #shipsl#, #shifdbz#, #shifdcjf#, #create_time#, #creator#, 
+		#edit_time#, #editor# ) </insert> -->
+	<!--20170218-xss-v4_018 -->	
+	<statement id="doinsertOrupdate_diaobmx" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+	         <![CDATA[ merge  into ${dbSchemal1}xqjs_diaobmx  a
+	          using (select count(*) co from ${dbSchemal1}xqjs_diaobmx where usercenter = #usercenter# and cangkbh = #cangkbh# and  diaobsqdh = #diaobsqdh# and lingjbh = #lingjbh# and lux = #lux#) b
+	               on(b.co<>0)
+	          when matched then
+	               update  set
+	                       a.zickbh = #zickbh#,
+	                       a.shengxsj = to_date(#shengxsj#,'yyyy-mm-dd'),
+	                       a.kucsl = #kucsl#,
+	                       a.shenbsl = #shenbsl#,
+	                       a.shipsl = #shipsl#,
+	                       a.shifdbz = #shifdbz#,
+	                       a.shifdcjf = #shifdcjf#,
+	                       a.edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+	                       a.editor = #editor#,
+	                       a.zhuangt = '20'
+	                 where a.usercenter = #usercenter# and a.cangkbh = #cangkbh#  and  a.diaobsqdh = #diaobsqdh# and a.lingjbh = #lingjbh#  and a.lux = #lux#
+	           when not matched then
+	                insert (xuh,usercenter,cangkbh,zickbh,shengxsj,diaobsqdh,lingjbh,lux,kucsl,shenbsl,shipsl,shifdbz,shifdcjf,create_time,creator,edit_time,editor,zhuangt) 
+	                       values(#xuh#,#usercenter#,#cangkbh#,#zickbh#,to_date(#shengxsj#,'yyyy-mm-dd'),#diaobsqdh#,#lingjbh#,#lux#,#kucsl#,#shenbsl#,#shipsl#,#shifdbz#,#shifdcjf#,to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),#creator#,to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),#editor#, '20')]]>
+	</statement>
+
+	<!--调拨审核同意与拒绝按钮 改状态 -->
+	<update id="update_diaobsqmxstate" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx">
+		update ${dbSchemal1}xqjs_diaobsqmx
+		set zhuangt = #zhuangt#,
+		edit_time =
+		to_timestamp(#newEdit_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		editor =
+		#newEditor#,shipsl=#shipsl#,chayibz=#chayibz#
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[lux = #lux#]]></isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="editor"><![CDATA[editor = #editor#]]></isNotEmpty>
+		</dynamic>
+	</update>
+
+	<!--查询调拨申请明细表中的状态 -->
+	<select id="get_mxZhuangt" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="int">
+		select count(zhuangt) from ${dbSchemal1}xqjs_diaobsqmx
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="zhuangt"><![CDATA[zhuangt = #zhuangt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--查询调拨申请明细表中的状态 -->
+	<select id="get_mxZhuangtxiug" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="int">
+		select count(zhuangt) from ${dbSchemal1}xqjs_diaobsqmx
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="zhuangt"><![CDATA[zhuangt = #zhuangt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuh"><![CDATA[xuh = #xuh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 判断该计划员下的零件是否审批完成 -->
+	<select id="jihy_mxZhuangt" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsq"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobsqmx">
+		select m.zhuangt as zhuangt,
+		m.lingjbh as lingjbh
+		from
+		${dbSchemal1}xqjs_diaobsqmx m
+		join ${dbSchemal3}ckx_lingj l
+		on(m.usercenter = l.usercenter and m.lingjbh = l.lingjbh)
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[m.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[m.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy"><![CDATA[l.jihy = #jihy#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="jihymxZhuangtCount" resultClass="int">
+		select count(*)
+		from ${dbSchemal1}xqjs_diaobsqmx m
+		join
+		${dbSchemal3}ckx_lingj l
+		on(m.usercenter = l.usercenter and m.lingjbh =
+		l.lingjbh)
+		where m.zhuangt = #zhuangt#
+		<dynamic>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[m.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[m.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy"><![CDATA[l.jihy = #jihy#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--更新调拨申请主表中的状态 -->
+	<update id="updateDiaobdh_state" parameterClass="java.util.Map">
+		update
+		${dbSchemal1}xqjs_diaobsq
+		<dynamic prepend="set">
+			<isNotEmpty prepend="," property="zhuangt">
+				zhuangt = #zhuangt#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="beiz">
+				beiz = #beiz#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+		</dynamic>
+	</update>
+
+	<!-- 调拨审核终止 查询 -->
+	<select id="zhongzi_select" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsq"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobsqmx">
+		select
+		b.xuh as xuh,
+		b.usercenter as usercenter,
+		b.diaobsqdh as
+		diaobsqdh,
+		b.lux as lux,
+		b.lingjbh as lingjbh,
+		to_char(b.yaohsj,'yyyy-mm-dd') as yaohsj,
+		c.zhongwmc as lingjmc,
+		b.shenbsl as shenbsl,
+		c.jihy as jihy,
+		b.zhuangt as zhuangt,
+		to_char(b.edit_time,'yyyy-mm-dd HH24:mi:ss:ff3') as edit_time,
+		b.editor as editor,
+		a.banc as banc,
+		to_char(a.diaobsqsj,'yyyy-mm-dd') as
+		diaobsqsj,
+		a.creator as creator,
+		a.huijkm as huijkm,
+		a.chengbzx as
+		chengbzx,
+		a.beiz as beiz
+		from ${dbSchemal1}xqjs_diaobsq a
+		join
+		${dbSchemal1}xqjs_diaobsqmx b
+		on(a.usercenter = b.usercenter and
+		a.diaobsqdh = b.diaobsqdh)
+		join ${dbSchemal3}ckx_lingj c
+		on( b.lingjbh =
+		c.lingjbh and b.usercenter = c.usercenter)
+		where b.active = '1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[a.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy"><![CDATA[c.jihy = #jihy#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhuangt"><![CDATA[b.zhuangt = #zhuangt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[b.lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 调拨审核终止 执行数量汇总 -->
+	<select id="zhixsl_zhongzi" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="java.math.BigDecimal">
+		<!-- select sum(zhixsl) from ${dbSchemal1}xqjs_diaobmx -->
+		select sum(nb.jiaofzl)
+  from ${dbSchemal1}xqjs_diaobmx dbmx left join ${dbSchemal1}ck_yaonbhl nb on nb.dingdh = dbmx.diaobdh
+              and nb.lingjbh = dbmx.lingjbh
+              and nb.usercenter = dbmx.usercenter
+              and nb.cangkbh = dbmx.cangkbh
+              and nb.zickbh = dbmx.zickbh
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[dbmx.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[dbmx.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[dbmx.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[dbmx.lux = #lux#]]></isNotEmpty>
+		</dynamic>
+		group by dbmx.usercenter,dbmx.diaobsqdh,dbmx.lingjbh,dbmx.lux
+	</select>
+	
+	
+	<!-- 调拨审核终止 执行数量汇总 -->
+	<select id="zhixsl_zhongzick" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx"
+		resultClass="java.math.BigDecimal">
+		<!-- select sum(zhixsl) from ${dbSchemal1}xqjs_diaobmx -->
+		select sum((select sum(nb.jiaofzl) from ${dbSchemal1}ck_yaonbhl nb where		 nb.dingdh=dbmx.diaobdh and 	nb.lingjbh=dbmx.lingjbh
+			 									and nb.usercenter=dbmx.usercenter and  nb.cangkbh=dbmx.cangkbh and nb.zickbh=dbmx.zickbh)) 
+			 									from ${dbSchemal1}xqjs_diaobmx dbmx
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[dbmx.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[dbmx.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[dbmx.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[dbmx.lux = #lux#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobdh"><![CDATA[dbmx.diaobdh = #diaobdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[dbmx.cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zickbh"><![CDATA[dbmx.zickbh = #zickbh#]]></isNotEmpty>
+		</dynamic>
+		group by dbmx.usercenter,dbmx.diaobsqdh,dbmx.lingjbh,dbmx.lux
+	</select>
+	
+	<!-- 调拨审核未终止明细-->
+	<select id="query_zhongzi_diaobsqmx" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsq"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobsqmx">
+		select 
+		lux ,
+		lingjbh,
+		usercenter,
+		diaobsqdh,
+		EDITOR,
+		EDIT_TIME,shipsl,chayibz
+		from 
+		${dbSchemal1}xqjs_diaobsqmx
+		where 
+		  zhuangt != '60'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+	
+	
+	<!-- 调拨审核未终止明细-->
+	<select id="query_zhongzi_diaobmx" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		select 
+		lux ,
+		lingjbh,
+		usercenter,
+		diaobdh,
+		CANGKBH,
+		EDITOR,
+		EDIT_TIME
+		from 
+		${dbSchemal1}xqjs_diaobmx
+		where 
+		  zhuangt != '60'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[lux = #lux#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+
+	<!-- 调拨审核终止 查询明细 -->
+	<select id="zhongzimx_select" resultClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		select a.diaobsqdh as diaobsqdh,
+		a.lux as lux,
+		a.lingjbh as lingjbh,
+		a.usercenter as usercenter,
+		a.shipsl as shipsl,
+		a.zhixsl as zhixsl,
+		a.shifdbz as shifdbz,
+		a.diaobdh as diaobdh,
+		to_char(a.shengxsj,'yyyy-mm-dd') as shengxsj,
+		a.edit_time as edit_time,
+		a.editor as editor,
+		a.zhuangt as zhuangt,
+		b.zhongwmc as lingjmc,
+		c.cangkbh as cangkbh,
+		c.zickbh as zickbh,
+		c.uclx
+		as uclx,
+		c.ucrl as ucrl,
+		a.kucsl as kucsl
+		from ${dbSchemal1}xqjs_diaobmx
+		a
+		join ${dbSchemal3}ckx_lingj b
+		on( a.usercenter = b.usercenter and
+		a.lingjbh = b.lingjbh)
+		join ${dbSchemal3}ckx_lingjck c
+		on(b.usercenter=c.usercenter and b.lingjbh=c.lingjbh and a.cangkbh =
+		c.cangkbh)
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[a.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[a.lux = #lux#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 调拨明细查询 -->
+	<select id="read_diaobmx" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		select
+		m.xuh as xuh,
+		m.usercenter as usercenter,
+		m.cangkbh as cangkbh,
+		m.zickbh as zickbh,
+		to_char(m.shengxsj,'yyyy-mm-dd') as shengxsj,
+		m.diaobsqdh as diaobsqdh,
+		m.diaobdh as diaobdh,
+		m.lingjbh as lingjbh,
+		l.zhongwmc as lingjmc,
+		m.lux as lux,
+		m.kucsl as kucsl,
+		m.shenbsl as
+		shenbsl,
+		m.shipsl as shipsl,
+		m.shifdbz as shifdbz,
+		m.shifdcjf as
+		shifdcjf,
+		to_char(m.create_time,'yyyy-mm-dd HH24:mi:ss:ff3') as
+		create_time,
+		m.creator as creator,
+		to_char(m.edit_time,'yyyy-mm-dd
+		HH24:mi:ss:ff3') as edit_time,
+		m.editor as editor,
+		s.beiz as beiz,
+		s.creator as xqsqr,
+		s.chengbzx as chengbzx
+		from
+		${dbSchemal1}xqjs_diaobmx m
+		join ${dbSchemal3}ckx_lingj l
+		on(m.usercenter = l.usercenter and m.lingjbh = l.lingjbh)
+		join
+		${dbSchemal1}xqjs_diaobsq s
+		on(m.usercenter = s.usercenter and
+		m.diaobsqdh = s.diaobsqdh)
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[m.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[m.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[m.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[m.lux = #lux#]]></isNotEmpty>
+		</dynamic>
+		order by m.cangkbh
+	</select>
+
+<!-- 调拨申请差异明细查询 -->
+	<select id="read_diaobcymx" 
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobsqmx">
+		 select
+		m.xuh as xuh,
+		m.usercenter as usercenter,
+		to_char(m.yaohsj,'yyyy-mm-dd') as yaohsj,	 
+		to_char(m.create_time,'yyyy-mm-dd') as createtime,
+		m.diaobsqdh as diaobsqdh,
+		m.lingjbh as lingjbh,
+		l.zhongwmc as lingjmc,
+		m.lux as lux,
+		m.shenbsl as shenbsl,
+		m.shipsl as shipsl,
+		m.chayibz as chayibz
+		from
+		${dbSchemal1}xqjs_diaobsqmx m
+		join ${dbSchemal3}ckx_lingj l
+		on(m.usercenter = l.usercenter and m.lingjbh = l.lingjbh)
+		where  ((shipsl is not null and m.shenbsl &lt;&gt; m.shipsl )	 or (shipsl is null))
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[m.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[m.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+		</dynamic>
+		order by m.lingjbh
+	</select>
+	<!--调拨审核终止 点击终止按钮 -->
+	<update id="zhongzi_state" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		update ${dbSchemal1}xqjs_diaobmx set zhuangt = #zhuangt#
+		where <![CDATA[(zhuangt < '50' or zhuangt is null)]]>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[lux = #lux#]]></isNotEmpty>
+
+		</dynamic>
+	</update>
+
+
+		<!-- 修改内部要货令状态 -->
+	<update id="updateYhlNByDiaob" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		update
+		${dbSchemal1}ck_yaonbhl
+			set	yaohlzt= '05'
+		where 
+			YAOHLLB = '04'
+			AND 
+			YAOHLZT in ( '01','04' )
+		<dynamic>
+		    <isNotEmpty prepend=" and " property="usercenter">usercenter= #usercenter#</isNotEmpty>   
+			<isNotEmpty prepend=" and " property="diaobdh">dingdh= #diaobdh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh= #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">cangkbh= #cangkbh#</isNotEmpty>	
+		</dynamic> 
+	</update>
+
+	<!--调拨审核终止 点击终止按钮更新调拨申请明细 -->
+	<update id="update_Diaobsqmx_State" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		update ${dbSchemal1}xqjs_diaobsqmx set zhuangt = (select min(zhuangt) from ${dbSchemal1}xqjs_diaobmx where 
+		<![CDATA[ usercenter = #usercenter# and diaobsqdh = #diaobsqdh# and lingjbh = #lingjbh# 
+		) , editor = #editor# ,  edit_time =  to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3')  ]]>
+		where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+	</update>
+
+	<!--调拨审核终止 点击终止按钮更新调拨申请 -->
+	<update id="update_Diaobsq_State" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		update ${dbSchemal1}xqjs_diaobsq set zhuangt = (select min(zhuangt) from ${dbSchemal1}xqjs_diaobmx where 
+		<![CDATA[ usercenter = #usercenter# and diaobsqdh = #diaobsqdh#  
+		) , editor = #editor# ,  edit_time =  to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3')  ]]>
+		where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+		</dynamic>
+	</update>
+
+	<!--查询调拨申请 -->
+	<select id="test_selectDiaobsq" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsq"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobsq">
+		select
+		usercenter,
+		diaobsqdh,
+		to_char(diaobsqsj,'yyyy-mm-dd') as
+		diaobsqsj,
+		banc,
+		huijkm,
+		chengbzx,
+		beiz,
+		zhuangt,
+		to_char(create_time,'yyyy-mm-dd HH24:mi:ss:ff3') as create_time,
+		creator,
+		to_char(edit_time,'yyyy-mm-dd HH24:mi:ss:ff3') as edit_time,
+		editor
+		from
+		${dbSchemal1}xqjs_diaobsq
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[ usercenter = #usercenter# ]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[ diaobsqdh = #diaobsqdh# ]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<!--测试 调拨明细查询 -->
+	<statement id="test_selectDiaobmx" parameterClass="com.athena.xqjs.entity.diaobl.Diaobmx"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		select zhuangt
+		from ${dbSchemal1}xqjs_diaobmx
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[ usercenter = #usercenter# ]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[ cangkbh = #cangkbh# ]]></isNotEmpty>
+		</dynamic>
+	</statement>
+
+	<!--测试 调拨令申请明细查询 -->
+	<statement id="selectDiaobsqmx" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsqmx"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobsqmx">
+		select
+		xuh,
+		usercenter,
+		diaobsqdh,
+		lingjbh,
+		lux,
+		zhuangt,
+		shenbsl
+		from
+		${dbSchemal1}xqjs_diaobsqmx
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[ usercenter = #usercenter# ]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[ diaobsqdh = #diaobsqdh# ]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[ lingjbh = #lingjbh# ]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[ lux = #lux# ]]></isNotEmpty>
+		</dynamic>
+	</statement>
+
+
+
+	<select id="exportDiaob" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.diaobl.DiaobsqExport">
+		select 
+			sq.diaobsqdh,
+			sq.chengbzx,
+			to_char(sq.diaobsqsj , 'yyyy-mm-dd' ) as diaobsqsj,
+			sq.creator,
+			(	select zidmc from ${dbSchemal3}ckx_xitcsdy where zidlx='DBLZT' and zidbm = sq.zhuangt) AS ZHUANGT,
+			mx.lingjbh,
+			(select max(zhongwmc) from ${dbSchemal3}ckx_lingj where lingjbh = mx.lingjbh AND USERCENTER = MX.USERCENTER ) AS LINGJMC,
+			mx.shenbsl,
+			
+		    case when (select sum(shipsl) from ${dbSchemal1}xqjs_diaobmx where mx.diaobsqdh = diaobsqdh and mx.lingjbh = lingjbh) is null then 
+	           case when sq.zhuangt = '20' or sq.zhuangt = '30'  or  sq.zhuangt = '40' or sq.zhuangt = '50' or sq.zhuangt = '60'  then
+	              0
+	           else
+	              null
+	           end
+	        else
+	           (select sum(shipsl) from ${dbSchemal1}xqjs_diaobmx where mx.diaobsqdh = diaobsqdh and mx.lingjbh = lingjbh)
+	        end as SHIPSL,
+			
+			
+			mx.lux,
+			to_char(mx.yaohsj , 'yyyy-mm-dd' ) as yaohsj,
+			(select max(jihy) from ${dbSchemal1}ckx_lingj where lingjbh = mx.lingjbh AND USERCENTER = MX.USERCENTER) AS JIHY
+			from ${dbSchemal1}xqjs_diaobsq sq,${dbSchemal1}xqjs_diaobsqmx mx
+		where 
+			sq.diaobsqdh = mx.diaobsqdh 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="ids"><![CDATA[sq.diaobsqdh in ($ids$)]]></isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[sq.usercenter = #usercenter#]]></isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="creator"><![CDATA[sq.creator = #creator#]]></isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="chengbzx"><![CDATA[sq.chengbzx = #chengbzx#]]></isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="zhuangt"><![CDATA[sq.zhuangt = #zhuangt#]]></isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[sq.diaobsqdh = #diaobsqdh#]]></isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[sq.diaobsqdh in (select mm.diaobsqdh from  ${dbSchemal1}xqjs_diaobsqmx mm where mm.lingjbh = #lingjbh# )]]></isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="diaobsqsj"><![CDATA[to_char(sq.diaobsqsj,'yyyy-mm-dd') = #diaobsqsj#]]></isNotEmpty>
+		</dynamic>
+		order by      
+			 sq.diaobsqdh
+	</select>
+
+
+
+    <update id="diaobsm" >
+		update 
+			${dbSchemal1}xqjs_diaobsq sq 
+		set 
+			sq.zhuangt = '20' 
+		where 
+			sq.zhuangt = '10' 
+		and 
+			not exists (select
+						  mx.diaobsqdh 
+						from 
+						  ${dbSchemal1}xqjs_diaobsqmx mx 
+						where 
+							mx.zhuangt &lt; '20' 
+						and 
+							mx.diaobsqdh = sq.diaobsqdh and mx.usercenter = sq.usercenter)
+		
+	</update>
+	
+	
+<!-- wuyichao  2014/03/31 调拨导入验证 -->	
+	<select id="queryLingj" resultClass="com.athena.xqjs.entity.common.Lingj">
+		select
+		kaisrq,
+		dinghcj,
+		zhongwmc,
+		zongcldm,
+		lingjzl,
+		lingjlx,
+		lingjsx,
+		gongybm,
+		to_char(diycqysj,'yyyy-MM-dd') as diycqysj,
+		( select ZHIZLXX from ${dbSchemal3}ckx_zhizlxzh where ZHIZLXY =  lj.zhizlx and lj.usercenter = usercenter) as zhizlx,
+		danw,
+		anqm,
+		biaos,
+		fawmc,
+		jiesrq,
+		guanjljjb,
+		usercenter,
+		zhuangcxs,
+		lingjbh,
+		jihy
+		from
+			${dbSchemal3}ckx_lingj lj
+		where
+			1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">
+				biaos = #biaos#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="queryDinghlxs" resultClass="java.lang.String">
+		select zidbm 
+     	 from ${dbSchemal3}ckx_xitcsdy
+      where zidlx='DINGHLX'
+	</select>
+	
+	<select id="queryDinghlxzhs" resultClass="com.athena.xqjs.entity.common.Lingj">
+		select 
+		usercenter, 
+		lingjbh,
+		zhizlx,
+		dinghlx as dinghcj
+     	 from ${dbSchemal3}ckx_dinghlxzh
+     	 where
+			1=1
+     	 <dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+<!-- wuyichao  2014/03/31 调拨导入验证 -->	
+<!-- xh 2015/07/22 验证调拨申请的调拨路线是否存在 -->
+<select id="querylucz" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+ select count(*)
+    from ${dbSchemal3}ckx_lingjgys lg, ${dbSchemal3}ckx_gongys g
+   where lg.usercenter = g.usercenter
+     and lg.gongysbh = g.gcbh
+     and g.leix != 3
+     and lg.biaos = '1'
+     and g.biaos = '1'
+     and lg.lingjbh = #lingjbh#
+     and g.gonghlx = #lux#
+     and lg.usercenter=#usercenter#
+</select>
+</sqlMap>

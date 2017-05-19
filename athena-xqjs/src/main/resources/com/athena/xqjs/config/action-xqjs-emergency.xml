@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="emergency" extend="toft-default" namespace="/emergency">
+		
+	</package>
+</toft>

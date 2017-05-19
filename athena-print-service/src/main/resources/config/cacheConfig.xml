@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CacheConfig>
+	<component name="SelectMap" isEnabled="false" description="下拉框缓存组件" globName="glob_component_select" >
+<!-- 		<property sqlName="select.queryUserCenterMap" cacheName="queryUserCenterMap" description="用户中心" isEnabled="true" /> -->
+<!-- 		<property sqlName="authority.getAllPostGroup" cacheName="getAllPostGroup" description="用户组分类" isEnabled="true" /> -->
+<!-- 		<property sqlName="authority.getAllData" cacheName="getAllData" description="数据权限组" isEnabled="true" />	 -->
+		<!-- xu qiu ji suan -->
+<!-- 		<property sqlName="common.queryYclx" cacheName="queryYclx" description="异常类型" isEnabled="true"></property> -->
+<!-- 	   	<property sqlName="common.queryJsmk" cacheName="queryJsmk" description="计算类型" isEnabled="true"></property> -->
+<!-- 	   	<property sqlName="common.queryYhlsj" cacheName="queryYhlsj" description="时间" isEnabled="true"></property> -->
+<!-- 	   	<property sqlName="common.queryYhlddzt" cacheName="queryYhlddzt" description="到达状态" isEnabled="true"></property> -->
+<!-- 	   	<property sqlName="common.queryWghms" cacheName="queryWghms" description="外部供货模式" isEnabled="true"></property> -->
+<!-- 	   	<property sqlName="common.queryNghms" cacheName="queryNghms" description="内部供货模式" isEnabled="true"></property> -->
+<!-- 	   	<property sqlName="common.queryYhlzt" cacheName="queryYhlzt" description="要货令状态" isEnabled="true"></property> -->
+<!-- 		<property sqlName="common.queryDingdzt" cacheName="queryDingdzt" description="订单状态" isEnabled="true" /> -->
+<!-- 		<property sqlName="common.queryDingdlx" cacheName="queryDingdlx" description="订单类型" isEnabled="true" /> -->
+	</component>
+
+	<component name="PrintModule" isEnabled="true" description="打印模板缓存组件" globName="glob_component_print" >
+		<propertyModule path="/config/module/p1.xml" cacheName="p1" description="打印模板1" isEnabled="true" />
+		<propertyModule path="/config/module/p2.xml" cacheName="p2" description="打印模板2" isEnabled="true" />
+		<propertyModule path="/config/module/p3.xml" cacheName="p3" description="打印模板3" isEnabled="true" />
+		<propertyModule path="/config/module/p4.xml" cacheName="p4" description="打印模板4" isEnabled="true" />
+		<propertyModule path="/config/module/p5.xml" cacheName="p5" description="打印模板5" isEnabled="true" />
+		<propertyModule path="/config/module/p6.xml" cacheName="p6" description="打印模板6" isEnabled="true" />
+		<propertyModule path="/config/module/p7.xml" cacheName="p7" description="打印模板7" isEnabled="true" />
+		<propertyModule path="/config/module/p8.xml" cacheName="p8" description="打印模板8" isEnabled="true" />
+		<propertyModule path="/config/module/p9.xml" cacheName="p9" description="打印模板9" isEnabled="true" />
+		<propertyModule path="/config/module/p10.xml" cacheName="p10" description="打印模板10" isEnabled="true" />
+		<propertyModule path="/config/module/p11.xml" cacheName="p11" description="打印模板11" isEnabled="true" />
+		<propertyModule path="/config/module/p12.xml" cacheName="p12" description="打印模板12" isEnabled="true" />
+		<propertyModule path="/config/module/p13.xml" cacheName="p13" description="打印模板13" isEnabled="true" />
+		<propertyModule path="/config/module/p14.xml" cacheName="p14" description="打印模板14" isEnabled="true" />
+		<propertyModule path="/config/module/p15.xml" cacheName="p15" description="打印模板15" isEnabled="true" />
+		<propertyModule path="/config/module/p16.xml" cacheName="p16" description="打印模板16" isEnabled="true" />
+		<propertyModule path="/config/module/p17.xml" cacheName="p17" description="打印模板17" isEnabled="true" />
+		<propertyModule path="/config/module/p18.xml" cacheName="p18" description="打印模板18" isEnabled="true" />
+		<propertyModule path="/config/module/p19.xml" cacheName="p19" description="打印模板19" isEnabled="true" />
+		<propertyModule path="/config/module/p20.xml" cacheName="p20" description="打印模板20" isEnabled="true" />
+		<propertyModule path="/config/module/p21.xml" cacheName="p21" description="打印模板21" isEnabled="true" />
+		<propertyModule path="/config/module/p22.xml" cacheName="p22" description="打印模板22" isEnabled="true" />
+		<propertyModule path="/config/module/p23.xml" cacheName="p23" description="打印模板23" isEnabled="true" />
+		<propertyModule path="/config/module/p24.xml" cacheName="p24" description="打印模板24" isEnabled="true" />
+		<propertyModule path="/config/module/p25.xml" cacheName="p25" description="打印模板25" isEnabled="true" />
+		<propertyModule path="/config/module/p26.xml" cacheName="p26" description="打印模板26" isEnabled="true" />
+		<propertyModule path="/config/module/p27.xml" cacheName="p27" description="打印模板27" isEnabled="true" />
+		<propertyModule path="/config/module/p28.xml" cacheName="p28" description="打印模板28" isEnabled="true" />
+		<propertyModule path="/config/module/p29.xml" cacheName="p29" description="打印模板29" isEnabled="true" />
+		<propertyModule path="/config/module/p30.xml" cacheName="p30" description="打印模板30" isEnabled="true" />
+		<propertyModule path="/config/module/p31.xml" cacheName="p31" description="打印模板31" isEnabled="true" />
+		<propertyModule path="/config/module/p32.xml" cacheName="p32" description="打印模板32" isEnabled="true" />
+		<propertyModule path="/config/module/p33.xml" cacheName="p33" description="打印模板33" isEnabled="true" />
+		<propertyModule path="/config/module/p34.xml" cacheName="p34" description="打印模板34" isEnabled="true" />
+		<propertyModule path="/config/module/p35.xml" cacheName="p35" description="打印模板35" isEnabled="true" />
+		<propertyModule path="/config/module/p36.xml" cacheName="p36" description="打印模板36" isEnabled="true" />
+		<propertyModule path="/config/module/p37.xml" cacheName="p37" description="打印模板37" isEnabled="true" />
+		<propertyModule path="/config/module/p38.xml" cacheName="p38" description="打印模板38" isEnabled="true" />
+		<propertyModule path="/config/module/p39.xml" cacheName="p39" description="打印模板39" isEnabled="true" />
+		<propertyModule path="/config/module/p40.xml" cacheName="p40" description="打印模板40" isEnabled="true" />
+		<propertyModule path="/config/module/p41.xml" cacheName="p41" description="打印模板41" isEnabled="true" />
+		<propertyModule path="/config/module/p42.xml" cacheName="p42" description="打印模板42" isEnabled="true" />
+		<propertyModule path="/config/module/p43.xml" cacheName="p43" description="打印模板43" isEnabled="true" />
+		<propertyModule path="/config/module/p44.xml" cacheName="p44" description="打印模板44" isEnabled="true" />
+		<propertyModule path="/config/module/p45.xml" cacheName="p45" description="打印模板45" isEnabled="true" />
+		<propertyModule path="/config/module/p46.xml" cacheName="p46" description="打印模板46" isEnabled="true" />
+		<propertyModule path="/config/module/p47.xml" cacheName="p47" description="打印模板47" isEnabled="true" />
+		<propertyModule path="/config/module/p48.xml" cacheName="p48" description="打印模板48" isEnabled="true" />
+	</component>
+	
+</CacheConfig>

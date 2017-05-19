@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="time">
+	<!-- 条件查询中心日历集合 -->
+	<select id="queryZhongxrl" resultClass="com.athena.ckx.entity.time.Zhongxrl">
+	select 
+		xingq,
+		niany,
+		biaos,
+		ri,
+		nianzqzx,
+		shifjfr,
+		xis,
+		shifgzr,
+		usercenter,
+		nianz 
+	from ZHONGXRL 
+	where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="niany">niany = #niany#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ri">ri = #ri#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 根据主键获取中心日历对象 -->
+	<select id="getBean" parameterClass="com.athena.ckx.entity.time.Zhongxrl" resultClass="com.athena.ckx.entity.time.Zhongxrl">
+		select xingq,
+		niany,
+		biaos,
+		ri,
+		nianzqzx,
+		shifjfr,
+		xis,
+		shifgzr,
+		usercenter,
+		nianz from ZHONGXRL where  1=1  and usercenter = #usercenter# and niany = #niany# and ri = #ri#
+	</select>
+	
+	
+	<!-- 新增 -->
+	<insert id="insertZhongxrl" parameterClass="com.athena.ckx.entity.time.Zhongxrl">insert into
+		ZHONGXRL (xingq,niany,biaos,ri,nianzqzx,shifjfr,xis,shifgzr,usercenter,nianz,createUser,createTime,updateUser,updateTime)
+		values(
+			#xingq#,
+			#niany#,
+			'1',
+			#ri#,
+			#nianzqzx#,
+			#shifjfr#,
+			#xis#,
+			#shifgzr#,
+			#usercenter#,
+			#nianz#,
+			#updateUser#,
+			to_char(current_date,'yyyy-mm-dd hh24:mi:ss'), 
+			#updateUser#,
+			to_char(current_date,'yyyy-mm-dd hh24:mi:ss')
+		)
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="updateZhongxrl" parameterClass="com.athena.ckx.entity.time.Zhongxrl">
+		update ZHONGXRL 
+		set 
+		xingq=#xingq#,
+		niany=#niany#,
+		
+		ri=#ri#,
+		nianzqzx=#nianzqzx#,
+		shifjfr=#shifjfr#,
+		xis=#xis#,
+		shifgzr=#shifgzr#,
+		usercenter=#usercenter#,
+		nianz=#nianz#,
+		updateUser=#updateUser#,
+		updateTime=to_char(current_date,'yyyy-mm-dd hh24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="niany">niany = #niany#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ri">ri = #ri#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	
+	<!-- 删除 -->
+	<delete id="deleteZhongxrl" parameterClass="com.athena.ckx.entity.time.Zhongxrl">
+		delete from ZHONGXRL where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="niany">niany = #niany#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ri">ri = #ri#</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<!-- 逻辑删除  -->
+	<update id="deleteLogicZhongxrl" parameterClass="com.athena.ckx.entity.time.Zhongxrl">
+		update ZHONGXRL 
+		set biaos='0',
+			updateUser=#updateUser#,
+			updateTime=to_char(current_date,'yyyy-mm-dd hh24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="niany">niany = #niany#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ri">ri = #ri#</isNotEmpty>
+		</dynamic>
+	</update>
+</sqlMap>

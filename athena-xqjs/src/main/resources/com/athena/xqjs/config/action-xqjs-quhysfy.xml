@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="qhysfy" extend="toft-default" namespace="/qhysfy">
+
+
+		<!-- 取货运输费用 -->
+		<action name="quhysfy" class="quhysfyAction" method="execute">
+    		<result name="select">/WEB-INF/pages/xqjs/quhysfy/quhysfy.jsp</result>
+    	</action>
+		
+		<action name="queryYunsfyhz" class="quhysfyAction" method="query">
+    	</action>
+		
+		
+		<action name="toYuShenPage" class="quhysfyAction" method="toYuShenPage">
+    		<result name="toyushen">/WEB-INF/pages/xqjs/quhysfy/yushen.jsp</result>
+    	</action>
+    	
+    	
+    	<action name="queryRukmx" class="quhysfyAction" method="queryRukmx">
+    	</action>
+    	
+    	
+       	<action name="queryPostLxjlb" class="quhysfyAction" method="queryPostLxjlb">
+    	</action>
+    	<action name="saveyushen" class="quhysfyAction" method="saveyushen">
+    	
+    	</action>
+    	
+    	
+    	<action name="savechushen" class="quhysfyAction" method="savechushen">
+    	</action>
+    	
+    	
+    		<action name="toprint" class="quhysfyAction" method="toprint">
+    			<result name="toprint">/WEB-INF/pages/xqjs/quhysfy/print.jsp</result>
+    	</action>
+    	
+    	<action name="tochongsuan" class="quhysfyAction" method="tochongsuan">
+    			<result name="tochongsuan">/WEB-INF/pages/xqjs/quhysfy/chongsuan.jsp</result>
+    			<result name="tochongsuanJij">/WEB-INF/pages/xqjs/quhysfy/chongsuanJij.jsp</result>
+    	</action>
+    	
+    	<action name="chongsuan" class="quhysfyAction" method="chongsuan">
+    	</action>
+    	
+    	<action name="updateRukmxBaoz" class="quhysfyAction" method="updateRukmxBaoz">
+    	</action>
+    	
+    	 	<action name="updateRukmxJinjj" class="quhysfyAction" method="savesRukmxJinjj">
+    	</action>
+    	
+    	 	 	<action name="chongsuanupdateRukmxJinjj" class="quhysfyAction" method="chongsuanupdateRukmxJinjj">
+    	</action>
+    	  	<action name="chehuiYunsfyhz" class="quhysfyAction" method="chehuiYunsfyhz">
+    	</action>
+    	
+    	  	<action name="zhongshenYunsfyhz" class="quhysfyAction" method="zhongshenYunsfyhz">
+    	</action>
+    	
+    	  	<action name="tochushenpage" class="quhysfyAction" method="tochushenpage">
+    	  			<result name="tochushenpage">/WEB-INF/pages/xqjs/quhysfy/chushen.jsp</result>
+    	</action>
+    	
+    	  	<action name="queryRukmxChus" class="quhysfyAction" method="queryRukmxChus">
+    	</action>
+    	
+    	
+        <action name="downloadYunsfyhz" class="quhysfyAction" method="downloadYunsfyhz">
+    	</action>
+    	    <action name="downloadchushen" class="quhysfyAction" method="downloadchushen">
+    	</action>
+    	 <action name="jinjjyfgl" class="quhysfyAction" method="executejinjjyfgl">
+    	     	<result name="selectjinjjyfgl">/WEB-INF/pages/xqjs/quhysfy/jinjjyfgl.jsp</result>
+    	</action>
+    	
+    	<action name="queryRukmxJij" class="quhysfyAction" method="queryRukmxJij"/>
+    	
+    	<!-- 零星件运费管理  -->
+		<action name="lingxjyfgl" class="quhysfyAction" method="lingxjyfgl">
+    		<result name="select">/WEB-INF/pages/xqjs/quhysfy/lingxjyfgl.jsp</result>
+    	</action>
+    	<action name="queryLxjfygl" class="quhysfyAction" method="queryLxjfygl"/>
+	    <action name="savesLxjfygl" class="quhysfyAction" method="savesLxjfygl"/> 
+   		<action name="downloadlxjfyglMob" class="quhysfyAction" method="downloadlxjfyglMob"/> 
+   		<action name="importAth_uploadlxjfygl" class="quhysfyAction" method="uploadlxjfygl">
+   			<result name="upload">/WEB-INF/pages/xqjs/quhysfy/lingxjyfgl.jsp</result> 
+   		</action>
+	</package>
+</toft>

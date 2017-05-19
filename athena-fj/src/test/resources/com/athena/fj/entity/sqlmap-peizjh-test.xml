@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="peizjhTest">
+
+	<!--查询物流故障表-->
+	<select id="queryWulgz" parameterClass="java.util.Map" resultClass="com.athena.fj.entity.Wulgz">
+	<![CDATA[
+	select yaocmxh,peizdh,jihcx,shijcx,shijcp,guzyy,daocsj,shijdcsj,yunssbm from FJ_WULGZ 	where peizdh = #peizdh# order by peizdh
+	]]>
+	</select>
+
+	<!--查询配载单表-->
+	<select id="queryPeizd" parameterClass="java.util.Map" resultClass="com.athena.fj.entity.Peizjh">
+	<![CDATA[
+	select peizdh,yunssbm,jihcx,chep,to_char(daocsj,'yyyy-MM-dd hh24:mi') daocsj,to_char(faysj,'yyyy-MM-dd hh24:mi') faysj,kehbm from FJ_PEIZD where peizdh = #peizdh# order by peizdh
+	]]>
+	</select>
+	
+	<!--查询配载单明细表-->
+	<select id="queryPeizdmx" parameterClass="java.util.Map" resultClass="com.athena.fj.entity.Peizdmx">
+	    <![CDATA[select BEIHDH,PEIZDH,BAOZSL,CANGKBH,ZICKBH from FJ_PEIZDMX where beihdh=#beihdh# and  peizdh = #peizdh# ]]>
+	</select>
+	
+	<!-- 查询配载计划表记录数 -->
+	<select id="queryPeizjh" parameterClass="java.util.Map" resultClass="java.util.List">
+	<![CDATA[select * from FJ_PEIZJH where 1=1]]>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="peizdh"><![CDATA[peizdh = #peizdh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询要车计划明细状态 -->
+	<select id="queryYaocmx" parameterClass="java.util.Map" resultClass="java.lang.String">
+	<![CDATA[select yaoczt from FJ_YAOCMX where   ID=#yaocmxh# ]]>
+	</select>
+	
+	
+	<!-- 配载计划修改    hzg 2011-12-26 -->	
+	<update id="updatePeizjh" parameterClass="com.athena.fj.entity.Peizjh">
+		<![CDATA[update ${dbSchemal2}FJ_PEIZJH set chep = #chep#,jihzt = #jihzt#,daysj =to_date( #daysj#,'yyyy-MM-dd hh24:mi:ss')   
+		where  peizdh=#peizdh# and yaocmxh=#yaocmxh# ]]>
+	</update>
+	
+	<!-- 插入配载单表    hzg 2012-1-11 -->		
+	<insert id="insertPeizd" parameterClass="com.athena.fj.entity.Peizjh">
+		<![CDATA[insert into ${dbSchemal2}FJ_PEIZD(PEIZDH,YUNSSBM,JIHCX,CHEP,DAOCSJ,FAYSJ,KEHBM,DAYSJ,CREATOR,CREATE_TIME,EDITOR,EDIT_TIME)
+			values(#peizdh#,#yunssbm#,#jihcx#,#chep#,to_date(#daocsj#,'yyyy-MM-dd hh24:mi'),to_date(#faysj#,'yyyy-MM-dd hh24:mi'),#kehbm#,to_date(#daysj#,'yyyy-MM-dd hh24:mi:ss'),#creator#,to_date(#createTime#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss'))
+		]]>
+	</insert>
+	
+<!-- 插入备货令信息到配载单明细表    hzg 2012-1-11 -->		
+	<insert id="insertPeizdmx" parameterClass="com.athena.fj.entity.Peizdmx">
+		<![CDATA[insert into ${dbSchemal2}FJ_PEIZDMX(BEIHDH,PEIZDH,BAOZSL,CANGKBH,ZICKBH,CREATOR,CREATE_TIME,EDITOR,EDIT_TIME)
+			values(#beihdh#,#peizdh#,#baozsl#,#cangkbh#,#zickbh#,#creator#,to_date(#createTime#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss'))
+		]]>
+	</insert>	
+	
+	
+	<!--车型查询  hzg 2011-12-22 -->   
+   <select id="queryChexMap"  resultClass="java.util.HashMap">
+		<![CDATA[select chexbh,chexmc from ${dbSchemal3}CKX_CHEX]]>
+   </select>
+   
+<!--运输商查询  hzg 2011-12-27 -->   
+   <select id="queryYunssMap"  resultClass="java.util.HashMap">
+		<![CDATA[select gcbh,gcbh||':'||gongsmc AS gongsmc from ${dbSchemal3}CKX_GONGYS where leix=4]]>
+   </select>
+	
+</sqlMap>

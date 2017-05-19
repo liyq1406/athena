@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="transTime">
+
+  <select id="getCalendar_team" resultClass="java.util.HashMap">
+	select c.usercenter,c.appobj,e.kaissj,e.jiezsj
+    <!-- 日历组 -->
+    from ${dbSchemal3}ckx_calendar_group c
+   <!-- 日历的具体工作时间段 -->
+    inner join ${dbSchemal3}ckx_calendar_team e on e.bianzh=c.bianzh 
+    where  c.appobj=#xiehztbh# and c.usercenter=#usercenter# and e.xingqxh=1
+   and c.biaos='1'   and e.biaos='1'
+    order by c.usercenter,c.appobj,e.xuh
+</select>
+<select id="getCalendar_version" resultClass="java.util.HashMap">
+	select c.usercenter , c.appobj,v.riq
+	<!--日历组 -->
+	from ${dbSchemal3}ckx_calendar_group c
+	<!--日历版次 -->
+	inner join ${dbSchemal3}ckx_calendar_version v
+	on c.rilbc = v.banc and c.usercenter = v.usercenter
+	<![CDATA[where c.biaos='1' and v.riq>=#nowTime#   and  rownum<=15 and]]> 
+	v.shifgzr=1 and c.usercenter=#usercenter# and c.appobj=#xiehztbh#
+	  order by v.riq 
+</select>
+<!-- 取工业周期内的最早的休息日 -->
+<select id="getCalendar_version_MinDayoff" resultClass="java.lang.String">
+	select min(v.riq) as riq
+	<!--日历组 -->
+	from ${dbSchemal3}ckx_calendar_group c
+	<!--日历版次 -->
+	inner join ${dbSchemal3}ckx_calendar_version v
+	on c.rilbc = v.banc and c.usercenter = v.usercenter
+	<![CDATA[where c.biaos='1' and  v.riq>=#nowTime# and v.riq<#dayWork#  and  rownum<=5 and]]> 
+	v.shifgzr=0 and c.usercenter=#usercenter# and c.appobj=#xiehztbh#
+	order by v.riq
+	  
+</select>
+<select id="getCalendar_version_NotWork" resultClass="java.util.HashMap">
+	select usercenter , appobj,riq from (
+	select c.usercenter , c.appobj,v.riq
+	<!--日历组 -->
+	from ${dbSchemal3}ckx_calendar_group c
+	<!--日历版次 -->
+	inner join ${dbSchemal3}ckx_calendar_version v
+	on c.rilbc = v.banc and c.usercenter = v.usercenter
+	<![CDATA[where c.biaos='1' and v.riq<#nowTime#  and]]> 
+	v.shifgzr=1 and c.usercenter=#usercenter# and c.appobj=#xiehztbh#
+	  order by v.riq desc
+	  )  where 
+	  <![CDATA[ rownum<=10 ]]> 
+</select>
+
+
+<select id="queryCkxYunssk" resultClass="com.athena.ckx.entity.transTime.CkxYunssk">
+	select usercenter,xiehztbh ,gcbh ,  to_char(daohsj,'yyyy-MM-dd hh24:mi:ss') daohsj ,to_char(facsj,'yyyy-MM-dd hh24:mi:ss') facsj , xuh 
+	from ${dbSchemal3}ckx_yunssk
+	where 1=1 
+		<dynamic>
+		    <isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongzr"> substr(xuh, 1, 8) = #gongzr#</isNotEmpty>
+		</dynamic>
+		order by usercenter,xiehztbh,gcbh, xuh  
+	</select>
+
+<select id="getMaxCkxYunsskXuh" resultClass="java.lang.Integer">
+	select max(xuh) 
+	from ${dbSchemal3}ckx_yunssk
+	where 1=1 
+		<dynamic>
+		    <isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuh">xuh like '$xuh$%'</isNotEmpty>
+		</dynamic>
+		
+	</select>
+<insert id="insertCkxYunsskEffect" parameterClass="java.util.Map">
+	insert into ${dbSchemal3}ckx_yunssk	
+	(usercenter,xiehztbh ,gcbh , facsj , daohsj , xuh,creator,create_time,editor,edit_time)
+	values(<![CDATA[
+	#usercenter#,#xiehztbh# ,#gcbh# , #facsj# , #daohsj#  , #xuh#,
+	#creator#,#create_time#,#editor#,#edit_time# 
+	   ]]> ) 
+	</insert>
+	
+	<!-- xss-0011489 运输时间-手工计算 -->
+	<insert id="insertCkxYunsskTemp" parameterClass="java.util.Map">
+	insert into ${dbSchemal3}ckx_yunssk_temp	
+	(usercenter,xiehztbh ,gcbh , facsj , daohsj , xuh,creator,create_time,editor,edit_time)
+	values(<![CDATA[
+	#usercenter#,#xiehztbh# ,#gcbh# , #facsj# , #daohsj#  , #xuh#,
+	#creator#,#create_time#,#editor#,#edit_time# 
+	   ]]> ) 
+	</insert>
+	
+	
+<insert id="insertCkxYunssk" parameterClass="com.athena.ckx.entity.transTime.CkxYunssk">
+	insert into ${dbSchemal3}ckx_yunssk	
+	(usercenter,xiehztbh ,gcbh , facsj , daohsj , xuh,creator,create_time,editor,edit_time)
+	values(<![CDATA[
+	#usercenter#,#xiehztbh# ,#gcbh# , to_date(#facsj#,'yyyy-MM-dd hh24:mi:ss') , to_date(#daohsj#,'yyyy-MM-dd hh24:mi:ss')  , #xuh#,
+	#creator#,#create_time#,#editor#,#edit_time# 
+	   ]]> ) 
+	</insert>	
+	<update id="updateCkxYunssk" parameterClass="com.athena.ckx.entity.transTime.CkxYunssk">
+	update ${dbSchemal3}ckx_yunssk
+	set 
+       
+    		   <![CDATA[daohsj = to_date(#daohsj#,'yyyy-MM-dd hh24:mi:ss')]]> ,    	
+    		   <![CDATA[facsj = to_date(#facsj#,'yyyy-MM-dd hh24:mi:ss')]]> ,    	
+    		   <![CDATA[editor = #editor#]]> ,    
+    		   <![CDATA[edit_time = #edit_time#]]> 
+	 where <![CDATA[usercenter = #usercenter# and  xiehztbh = #xiehztbh# and gcbh = #gcbh# and  xuh=#xuh#]]> 
+	</update>
+<delete id="deleteCkxYunssk" parameterClass="com.athena.ckx.entity.transTime.CkxYunssk">
+ delete ${dbSchemal3}ckx_yunssk	 where 1=1
+ <dynamic>
+		<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+		<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+		<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+		<isNotEmpty prepend=" and " property="xuh">xuh = #xuh#</isNotEmpty>
+		<isNotEmpty prepend=" and " property="daohsj">daohsj = #daohsj#</isNotEmpty>
+	</dynamic>
+</delete>
+
+<delete id="truncateCkxYunssk" parameterClass="com.athena.ckx.entity.transTime.CkxYunssk">
+ truncate table ${dbSchemal3}ckx_yunssk	 
+</delete>
+
+<!-- xss-0011489 运输时间-手工计算 --> 
+	<delete id="deleteCkxYunsskTemp" >
+	  delete  from ${dbSchemal3}ckx_yunssk_temp where usercenter||xiehztbh in 
+	  ( select distinct usercenter||xiehztbh from ${dbSchemal3}ckx_yunssjmb_temp where 1=1 
+		   <dynamic>
+		   <!-- 0007140 按照用户中心 、和物流工艺员所对应的卸货站台 编组删除数据-->
+		   <isNotEmpty property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotEmpty>
+		       <isNotEmpty property="xiehztbzs" prepend=" and ">xiehztbh in $xiehztbzs$</isNotEmpty>
+				
+			</dynamic>	
+	  )
+	</delete>
+
+</sqlMap>

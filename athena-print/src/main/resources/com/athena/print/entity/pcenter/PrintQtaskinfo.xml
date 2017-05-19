@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pcenter">
+	<!-- 查询子作业表的数据 -->
+	<select id="queryPrintQtaskinfo" resultClass="com.athena.print.entity.pcenter.PrintQtaskinfo">
+	   select 
+	   i.usercenter,
+       i.qid,
+       i.seq,
+       t.zidmc,
+       i.sfilename,
+       i.modelnumber,
+       i.status,
+       i.printnumber,
+       i.printunitcount,
+       i.printtype,
+       i.daypc,
+       i.quyzs
+  	from ${dbSchemal3}ckx_print_qtask_info i
+  	left join ${dbSchemal3}ckx_print_dictinfos t on  t.zidbm = i.modelnumber and t.usercenter=i.usercenter  
+ 	where 1 = 1
+ 	<!--and t.zidbm='p35'-->
+		<dynamic>
+			<isNotEmpty prepend="  and " property="qid">i.qid = #qid#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="seq">i.seq = #seq#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">i.usercenter = #usercenter#</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 根据主作业的ID号 和 子作业的状态(未发送状态) 来查询出是否有未发送的作业-->
+	<select id="queryPrintQtaskinfo1"  parameterClass="java.util.Map" resultClass="com.athena.print.entity.pcenter.PrintQtaskinfo">
+	select usercenter,qid,seq,sfilename,modelnumber,status,printnumber,printunitcount,printtype,daypc,quyzs
+	from ${dbSchemal3}ckx_print_qtask_info 
+	where qid=#qid# and status=0 and usercenter=#usercenter#
+	</select>
+	
+	<!-- 根据seq 查询出子作业-->
+	<select id="queryPrintQtaskinfobyseq"  parameterClass="java.util.Map" resultClass="com.athena.print.entity.pcenter.PrintQtaskinfo">
+	select usercenter,qid,seq,sfilename,modelnumber,status,printnumber,printunitcount,printtype,daypc,quyzs
+	from ${dbSchemal3}ckx_print_qtask_info 
+	where seq=#seq# and usercenter=#usercenter#
+	</select>
+	
+	<!-- 根据主作业的ID号 和 子作业的状态(发送状态) 来查询出 已发送的作业-->
+	<select id="queryPrintQtaskinfo2"  parameterClass="java.lang.String" resultClass="com.athena.print.entity.pcenter.PrintQtaskinfo">
+	select usercenter,qid,seq,sfilename,modelnumber,status,printnumber,printunitcount,printtype,daypc,quyzs
+	from ${dbSchemal3}ckx_print_qtask_info 
+	where qid=#qid# and status=1 and usercenter='UW'
+	</select>
+	
+	<!--根据主列表作业ID   获取子列表信息-->
+	<select id="queryPrintQtaskinfobyqid"  parameterClass="java.lang.String" resultClass="com.athena.print.entity.pcenter.PrintQtaskinfo">
+	select usercenter,qid,seq,sfilename,modelnumber,status,printnumber,printunitcount,printtype,daypc,quyzs
+	from ${dbSchemal3}ckx_print_qtask_info 
+	where qid=#qid# and usercenter='UW'
+	</select>
+	
+	<!-- 插入一条数据-->
+	<insert id="insertPrintQtaskinfo" parameterClass="com.athena.print.entity.pcenter.PrintQtaskinfo">
+	insert into ${dbSchemal3}ckx_print_qtask_info
+	(usercenter,qid,seq,sfilename,modelnumber,status,printnumber,printunitcount,printtype,daypc,quyzs)
+	values(#usercenter#,#qid#,#seq#,#sfilename#,#modelnumber#,#status#,#printnumber#,#printunitcount#,#printtype#,#daypc#,#quyzs#)
+	</insert>
+	
+	<!-- 更新一条数据-->
+	<update id="updatePrintQtaskinfo" parameterClass="com.athena.print.entity.pcenter.PrintQtaskinfo">
+		update ${dbSchemal3}ckx_print_qtask_info set 
+		qid=#qid#,
+		seq=#seq#,
+		sfilename=#sfilename#, 
+		modelnumber=#modelnumber#, 
+		printnumber=#printnumber#,
+		printunitcount=#printunitcount#,
+		printtype=#printtype#,
+		daypc=#daypc#,
+		quyzs=#quyzs#,
+		status=#status#
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="qid">id = #qid#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="seq">seq = #seq#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	
+	<!-- 更新子作业数据 -->
+	<update id="updatePrintQtaskinfos" parameterClass="com.athena.print.entity.pcenter.PrintQtaskinfo">
+		update ${dbSchemal3}ckx_print_qtask_info set 
+		status=0,
+		sfilename=''
+		where qid = #qid#
+	</update>
+	
+	<!-- 根据子作业的子序号    来更新子作业的状态为 已发送-->
+	<update id="updatePrintQtaskinfo1" parameterClass="com.athena.print.entity.pcenter.PrintQtaskinfo">
+		update ${dbSchemal3}ckx_print_qtask_info set 
+		status=1
+		where seq=#seq# and qid=#qid# and usercenter='UW'
+	</update>
+	
+	<!-- 根据子作业的子序号 以及 子作业对应的主作业编号 来  更新文件的路径-->
+	<update id="updatePrintQtaskinfo2" parameterClass="com.athena.print.entity.pcenter.PrintQtaskinfo">
+		update ${dbSchemal3}ckx_print_qtask_info set 
+		sfilename=#sfilename#
+		where seq=#seq# and qid=#qid# and usercenter='UW'
+	</update>
+	
+	<!-- 页面上重打  更新子作业的状态为 未发送状态????????-->
+	<update id="updatePrintQtaskinfo3" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_print_qtask_info set 
+		status=0
+		where qid=#qid# and usercenter='UW'
+	</update>
+	
+	<!--依据子作业对应的主作业ID  逻辑删除一条数据-->
+	<delete id="deletePrintQtaskinfo" parameterClass="com.athena.print.entity.pcenter.PrintQtaskinfo">
+		update ${dbSchemal3}ckx_print_qtask_info 
+		set status = 2
+		where qid = #qid# and usercenter=#usercenter#
+	</delete>
+	
+	<!--依据子作业对应的主作业ID  逻辑删除一条数据 mantis:0012836 20160822 by CSY -->
+	<update id="updateStatusOfPQInfoByQid" parameterClass="java.util.Map">
+		update ${dbSchemal3}ckx_print_qtask_info 
+		set status = 2
+		where qid = #qid# and usercenter=#usercenter#
+		and status = 0
+	</update>
+	
+	<!-- 依据子作业序号 及 子作业对应的主作业ID   逻辑删除一条数据-->
+	<delete id="deletePrintQtaskinfo1" parameterClass="com.athena.print.entity.pcenter.PrintQtaskinfo">
+		update ${dbSchemal3}ckx_print_qtask_info 
+		set status = 2 
+		where qid = #qid# and seq = #seq# and usercenter='UW'
+	</delete>
+	
+	
+	<!-- 当只有一个区域时 根据作业编号和子任务编号 来查询对应的打印参数-->
+	<select id="queryPrintsheet"  parameterClass="com.athena.print.entity.pcenter.PrintQtaskinfo"  resultClass="com.athena.print.entity.pcenter.PrintQtasksheet">
+		select qid,seq,area,spars
+		from ${dbSchemal3}ckx_print_qtask_sheet 
+		where 1=1 
+			<dynamic>
+				<isNotEmpty prepend="  and " property="seq">seq = #seq#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="qid">qid = #qid#
+				</isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!-- 当只有一个区域时 根据作业编号和子任务编号 来查询对应的打印参数-->
+	<select id="querySheet"  resultClass="com.athena.print.entity.pcenter.PrintQtasksheet">
+		select qid,seq,area,spars
+		from ${dbSchemal3}ckx_print_qtask_sheet 
+		where 1=1 
+			<dynamic>
+				<isNotEmpty prepend="  and " property="seq">seq = #seq#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="qid">qid = #qid#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="area">area = #area#
+				</isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!-- 当只有一个区域时 根据作业编号和子任务编号 来查询对应的打印参数-->
+	<select id="queryGrid" parameterClass="com.athena.print.entity.pcenter.PrintQtasksheet"  resultClass="com.athena.print.entity.pcenter.PrintQtasklist">
+		select qid,seq,area,spars,xuh
+		from ${dbSchemal3}ckx_print_qtask_list 
+		where 1=1 
+			<dynamic>
+				<isNotEmpty prepend="  and " property="seq">seq = #seq#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="qid">qid = #qid#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="area">area = #area#
+				</isNotEmpty>
+			</dynamic>
+		order by xuh
+	</select>
+	
+	<select id="queryGrid1" resultClass="com.athena.print.entity.pcenter.PrintQtasklist">
+		select qid,seq,area,spars,xuh
+		from ${dbSchemal3}ckx_print_qtask_list 
+		where 1=1 
+			<dynamic>
+				<isNotEmpty prepend="  and " property="seq">seq = #seq#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="qid">qid = #qid#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="area">area = #area#
+				</isNotEmpty>
+			</dynamic>
+		order by xuh
+	</select>
+	
+	<!--插入表单区域-->
+	<insert id="insertPrintQtasksheet" parameterClass="com.athena.print.entity.pcenter.PrintQtasksheet">
+	insert into ${dbSchemal3}ckx_print_qtask_sheet 
+	(qid,seq,area,spars)
+	values(#qid#,#seq#,#area#,#spars#)
+	</insert>
+	
+	<!--插入清单区域-->
+	<insert id="insertPrintQtasklist" parameterClass="com.athena.print.entity.pcenter.PrintQtasklist">
+	insert into ${dbSchemal3}ckx_print_qtask_list 
+	(qid,seq,area,xuh,spars)
+	values(#qid#,#seq#,#area#,#xuh#,#spars#)
+	</insert>
+</sqlMap>

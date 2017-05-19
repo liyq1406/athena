@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ppl">
+	<!-- 插入年度预告信息 -->
+	<insert id="insertNiandyg" parameterClass="com.athena.xqjs.entity.ppl.Niandyg">
+		insert into
+		${dbSchemal1}xqjs_niandyg
+		(pplbc,
+		ppllx,
+		maoxqbc,
+		xuqcfsj,
+		jihydm,
+		jisnf,
+		zhuangt,
+		creator,
+		create_time,
+		jissj,
+		beiz,
+		<dynamic>
+			<isNotEmpty property="shengxsj">shengxsj,</isNotEmpty>
+			<isNotEmpty property="fassj">fassj,</isNotEmpty>
+		</dynamic>
+		editor,
+		edit_time,
+		active)
+		values
+		(
+		#pplbc#,
+		#ppllx#,
+		#maoxqbc#,
+		to_date(#xuqcfsj#,'yyyy-MM-dd HH24:mi:ss'),
+		#jihydm#,
+		#jisnf#,
+		'0',
+		#creator#,
+		to_timestamp(#create_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+		to_date(#jissj#,'yyyy-MM-dd HH24:mi:ss'),
+		#beiz#,
+		<dynamic>
+			<isNotEmpty property="shengxsj">to_date(#shengxsj#,'yyyy-MM-dd
+				HH24:mi:ss'),</isNotEmpty>
+			<isNotEmpty property="fassj">to_date(#fassj#,'yyyy-MM-dd
+				HH24:mi:ss'),</isNotEmpty>
+		</dynamic>
+		#editor#,
+		to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+		'1'
+		)
+	</insert>
+	<!-- 查询所有的年度预告 -->
+	<select id="queryNiandyg" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ppl.Niandyg">
+		select
+		pplbc,
+		ppllx,
+		maoxqbc,
+		beiz,
+		jisnf,
+		to_char(jissj,'yyyy-MM-dd HH24:mi:ss') jissj,
+		zhuangt,
+		editor,
+		(select xuqly from ${dbSchemal1}xqjs_maoxq m where m.xuqbc = n.maoxqbc) as xuqly,
+		to_char(edit_time,'yyyy-MM-dd HH24:mi:ss:ff3') as edit_time
+		from
+		${dbSchemal1}xqjs_niandyg n 
+		where
+		active='1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="ppllx"> ppllx = #ppllx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="pplbc"> pplbc like '$pplbc$%'</isNotEmpty>
+			<isNotEmpty prepend=" and " property="maoxqbc"> maoxqbc like '$maoxqbc$%'</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jissj">to_char(jissj,'YYYY-mm-dd')=#jissj#</isNotEmpty>
+		</dynamic>
+		ORDER BY JISSJ DESC
+
+	</select>
+	<!-- 修改年度预告信息 -->
+	<update id="updateNiandyg" parameterClass="com.athena.xqjs.entity.ppl.Niandyg">
+		update
+		${dbSchemal1}xqjs_niandyg
+		<dynamic prepend="set">
+			<isNotEmpty property="beiz" prepend=",">
+				beiz= #beiz#
+			</isNotEmpty>
+			<isNotEmpty property="zhuangt" prepend=",">
+				zhuangt= #zhuangt#
+			</isNotEmpty>
+			<isNotEmpty property="shengxsj" prepend=",">
+				shengxsj=#shengxsj# 
+			</isNotEmpty>
+			<isNotEmpty property="fassj" prepend=",">
+				fassj= #fasj#
+			</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				editor= #neweditor#
+			</isNotEmpty>
+			<isNotEmpty property="edittime" prepend=",">
+				edit_time=to_timestamp(#edittime#,'yyyy-MM-dd HH24:mi:ss:ff3')
+			</isNotEmpty>
+			<isNotEmpty property="active" prepend=",">
+				active= #active#
+			</isNotEmpty>
+		</dynamic>
+		where <![CDATA[pplbc = #pplbc# 
+		              and editor=#editor# 
+		              and to_char(edit_time,'yyyy-MM-dd HH24:mi:ss:ff3')=#edit_time#]]>
+	</update>
+
+	<!-- 逻辑删除某一版次的PPL年度预告 -->
+	<update id="deleteNiandyg" parameterClass="java.util.Map">
+	<![CDATA[
+	update  
+	       ${dbSchemal1}xqjs_niandyg  
+	        set active = '0'
+    where zhuangt = '0' and  
+    (sysdate-(to_date(to_char(create_time,'yyyy-MM-dd HH24:mi:ss:ff3'),'yyyy-MM-dd HH24:mi:ss:ff3')))>3  ]]>
+	</update>
+	<!-- 查询某一PPL版次的年度预告信息 -->
+	<select id="queryNiandyginfo" parameterClass="com.athena.xqjs.entity.ppl.Niandyg"
+		resultClass="com.athena.xqjs.entity.ppl.Niandyg">
+		select jisnf,ppllx
+		from ${dbSchemal1}xqjs_niandyg
+		where
+		pplbc=#pplbc#  
+	</select>
+	<!-- 查询中心日历表获取每个周期的第一天 -->
+	<select id="queryCC" parameterClass="com.athena.xqjs.entity.common.CalendarCenter"
+		resultClass="com.athena.xqjs.entity.common.CalendarCenter">
+		select
+		a.riq,rownum
+		from
+		(select riq from
+		${dbSchemal3}ckx_calendar_center
+		where nianzq=#nianzq# and
+		usercenter=#usercenter#
+		order by riq ) a
+		where rownum=1
+	  </select>
+	  
+	  <!-- 查询毛需求跟供应商制造路线不匹配的记录 进行异常报警 -->
+	<select id="queryZhizlxBpp" resultClass="java.util.HashMap">
+	  select  DISTINCT
+	           a.usercenter as usercenter,
+               a.lingjbh    as lingjbh,
+               a.zhizlx     as zhizlx,
+               l.gongysbh   as gongysbh,
+               g.gonghlx    as gonghlx
+          from  
+                ${dbSchemal1}xqjs_maoxqmx a ,
+                ${dbSchemal3}ckx_lingjgys l,
+                ${dbSchemal3}ckx_gongys g
+         where  a.usercenter=l.usercenter 
+         
+               and 	a.active = '1'
+               and 	a.lingjbh = l.lingjbh
+               
+               and 	g.usercenter=l.usercenter
+               and 	g.gcbh = l.gongysbh
+               
+               and 	xuqbc = #xuqbc# 
+		<dynamic>
+		      <isNotEmpty prepend=" and " property="lx1">
+	                    a.zhizlx=#lx1#
+		      </isNotEmpty>
+               <isNotEmpty prepend=" and " property="lx2">
+	                    a.zhizlx=#lx2#
+		      </isNotEmpty>
+		      <isNotEmpty prepend=" and " property="lx1">
+	                    g.gonghlx &lt;&gt; #lx1# 
+		      </isNotEmpty>
+               <isNotEmpty prepend=" and " property="lx2">
+	                    g.gonghlx &lt;&gt; #lx2# 
+		      </isNotEmpty>
+		</dynamic>               
+		
+	  </select>
+	  
+	<!-- 判断计算年度预告明细 检查参数 xh 2015-09-09 -->
+	<insert id="insertXqmx" parameterClass="java.util.Map">
+		insert into
+		${dbSchemal1}xqjs_xqmx
+		(id,usercenter,lingjbh,lingjdw,zhizlx,zhizlxx,lingjmc,gongysdm,gongyfe,fayzq,beihzq,gongysmc,dinghcj,jihyz,baozlx,baozrl)
+		select 
+			${dbSchemal1}xqjs_xqmx_seq.nextval,usercenter,lingjbh,danw,zhizlx,zhizlxx,zhongwmc,gcbh,gongyfe,fayzq,beihzq,
+			gongsmc,dinghcj,jihyz,baozlx,baozrl
+		 from (
+		select c.usercenter usercenter,
+               c.lingjbh    lingjbh,
+               c.danw       danw,
+               c.nzhizlx     zhizlx,
+               c.zhizlx      zhizlxx,
+               c.zhongwmc   zhongwmc,
+               lg.gongysbh  gcbh,
+               lg.gongyfe   gongyfe,
+               lg.fayzq     fayzq ,
+               lg.beihzq    beihzq,
+               lg.gongsmc   gongsmc,
+               c.dinghcj    dinghcj,
+               c.jihy       jihyz,
+               lg.uabzlx    baozlx,
+               lg.baozrl    baozrl
+             
+          from (select a.usercenter usercenter,
+                       a.lingjbh    lingjbh,
+                       a.danw       danw,
+                       a.zhizlx     zhizlx,
+                       a.nzhizlx    nzhizlx,
+                       b.zhongwmc   zhongwmc,
+                       b.dinghcj    dinghcj,
+                       b.jihy       jihy
+                  from (select distinct  n.usercenter,n.lingjbh,n.danw,n.nzhizlx,nvl(d.dinghlx,n.zhizlx)zhizlx from 
+	                      (select  m.usercenter,m.lingjbh,m.danw,nvl(z.zhizlxx,m.zhizlx) zhizlx,m.zhizlx nzhizlx  from  
+	                    (select distinct usercenter,lingjbh,danw,zhizlx from ${dbSchemal1}xqjs_maoxqmx 
+	                     where  xuqbc = #xuqbc#) m
+	                        left join   ${dbSchemal1}ckx_zhizlxzh z
+	                        on   m.usercenter=z.usercenter and m.zhizlx=z.zhizlxy ) n 
+	                        left join   ${dbSchemal1}ckx_dinghlxzh d
+	                        on n.usercenter=d.usercenter and n.zhizlx=d.zhizlx and n.lingjbh=d.lingjbh ) a
+                  left  join (select usercenter,
+                                         lingjbh,
+                                         zhongwmc,
+                                         danw,
+                                         dinghcj,
+                                         jihy
+                                    from ${dbSchemal3}ckx_lingj
+                                   ) b
+                    on (a.usercenter = b.usercenter and a.lingjbh = b.lingjbh)) c
+          left  join (select ljgys.usercenter,
+                                 ljgys.gongysbh,
+                                 ljgys.lingjbh,
+                                 ljgys.gongyfe,
+                                 ljgys.uabzlx,
+                                 ljgys.ucrl * ljgys.uaucgs as baozrl,
+                                 gys.gongsmc,
+                                 gys.fayzq,
+                                 gys.beihzq,
+                                 gys.gonghlx
+                            from ${dbSchemal3}ckx_lingjgys ljgys,
+                                 ${dbSchemal3}ckx_gongys   gys
+                           where ljgys.biaos = '1'
+                             and ljgys.gongyfe &gt; 0
+                             and ljgys.usercenter = gys.usercenter(+)
+                             and ljgys.gongysbh = gys.gcbh(+)) lg
+            on (c.usercenter = lg.usercenter and c.lingjbh = lg.lingjbh and c.zhizlx = lg.gonghlx))
+	</insert>
+	
+	<!-- 判断计算年度预告明细 检查参数 xh 2015-09-09 -->
+	<insert id="insertXqmxKd" parameterClass="java.util.Map">
+		insert into
+		${dbSchemal1}xqjs_xqmx
+		(id,usercenter,lingjbh,lingjdw,zhizlx,zhizlxx,lingjmc,gongysdm,gongyfe,fayzq,beihzq,gongysmc,dinghcj,jihyz,baozlx,baozrl)
+		select 
+			${dbSchemal1}xqjs_xqmx_seq.nextval,usercenter,lingjbh,danw,zhizlx,zhizlxx,zhongwmc,gcbh,gongyfe,fayzq,beihzq,
+			gongsmc,dinghcj,jihyz,baozlx,baozrl
+		 from (
+		select c.usercenter usercenter,
+               c.lingjbh    lingjbh,
+               c.danw       danw,
+               c.nzhizlx     zhizlx,
+               c.zhizlx      zhizlxx,
+               c.zhongwmc   zhongwmc,
+               lg.gongysbh  gcbh,
+               lg.gongyfe   gongyfe,
+               lg.fayzq     fayzq ,
+               lg.beihzq    beihzq,
+               lg.gongsmc   gongsmc,
+               c.dinghcj    dinghcj,
+               c.jihy       jihyz,
+               lg.uabzlx    baozlx,
+               lg.baozrl    baozrl
+             
+          from (select a.usercenter usercenter,
+                       a.lingjbh    lingjbh,
+                       a.danw       danw,
+                       a.zhizlx     zhizlx,
+                       a.nzhizlx    nzhizlx,
+                       b.zhongwmc   zhongwmc,
+                       b.dinghcj    dinghcj,
+                       b.jihy       jihy
+                  from ( select distinct  n.usercenter,n.lingjbh,n.danw,n.nzhizlx,nvl(d.dinghlx,n.zhizlx)zhizlx from 
+	                      (select  m.usercenter,m.lingjbh,m.danw,nvl(z.zhizlxx,m.zhizlx) zhizlx,m.zhizlx nzhizlx  from  
+	                    (select distinct usercenter,lingjbh,danw,zhizlx from ${dbSchemal1}xqjs_maoxqmx 
+	                     where  xuqbc=#xuqbc#) m
+	                        left join   ${dbSchemal1}ckx_zhizlxzh z
+	                        on   m.usercenter=z.usercenter and m.zhizlx=z.zhizlxy ) n 
+	                        left join   ${dbSchemal1}ckx_dinghlxzh d
+	                        on n.usercenter=d.usercenter and n.zhizlx=d.zhizlx and n.lingjbh=d.lingjbh ) a
+                  left  join (select usercenter,
+                                         lingjbh,
+                                         zhongwmc,
+                                         danw,
+                                         zhizlx,
+                                      case when anjmlxhd is not null then substr(anjmlxhd,0,3) else dinghcj end  as dinghcj,
+                                         jihy
+                                    from ${dbSchemal3}ckx_lingj
+                                   ) b
+                    on (a.usercenter = b.usercenter and a.lingjbh = b.lingjbh)) c
+          left  join (select ljgys.usercenter,
+                                 ljgys.gongysbh,
+                                 ljgys.lingjbh,
+                                 ljgys.gongyfe,
+                                 ljgys.uabzlx,
+                                 ljgys.ucrl * ljgys.uaucgs as baozrl,
+                                 gys.gongsmc,
+                                 gys.fayzq,
+                                 gys.beihzq,
+                                 gys.gonghlx
+                            from ${dbSchemal3}ckx_lingjgys ljgys,
+                                 ${dbSchemal3}ckx_gongys   gys
+                           where ljgys.biaos = '1'
+                             and ljgys.gongyfe &gt; 0
+                             and ljgys.usercenter = gys.usercenter(+)
+                             and ljgys.gongysbh = gys.gcbh(+)) lg
+            on (c.usercenter = lg.usercenter and c.lingjbh = lg.lingjbh and c.zhizlx = lg.gonghlx))
+	</insert>
+	<!-- 向异常报警表中插入异常信息 -->
+	<insert id="insertYicbj" parameterClass="java.util.Map">
+		insert into
+		${dbSchemal1}xqjs_yicbj
+		(
+		lingjbh, 
+		usercenter,
+		cuowlx, 
+		cuowxxxx,
+		jihyz,
+		jihydm,
+		jismk,
+		create_time
+		)
+		select
+			lingjbh,
+			usercenter,
+			#cuowlx#,
+			decode(lingjmc,null, #exceptionMsg1#) ||
+			decode(lingjdw, null, #exceptionMsg2#) ||
+			decode(jihyz, null, #exceptionMsg5#) ||
+			decode(dinghcj, null, #exceptionMsg8#) ||
+			decode(baozlx, null, #exceptionMsg3#) ||
+			decode(baozrl, null,#exceptionMsg4#) ||
+			decode(gongysdm, null, #exceptionMsg6#) ||
+			decode(zhizlx, null, #exceptionMsg9#) ||
+			decode(beihzq, null,#exceptionMsg10#) ||
+			decode(fayzq, null, #exceptionMsg11#) ||
+			decode(gongyfe, null, #exceptionMsg12#)  as  cuowxxxx,
+			#jihyz#,
+			#jihydm#,
+			#jismk#,
+			sysdate
+			from
+			${dbSchemal1}xqjs_xqmx
+			where active is null
+   </insert>
+   <!-- 查询异常报警信息 -->
+	<select id="queryallYicbj" resultClass="java.util.HashMap">
+		select
+			lingjbh,
+			usercenter,
+			lingjdw,
+			jihyz,
+			dinghcj,
+			baozlx,
+			baozrl,
+			gongysdm,
+			zhizlx,
+			beihzq,
+			fayzq,
+			gongyfe
+			from
+			${dbSchemal1}xqjs_xqmx
+			where active is null
+   </select>
+	<!--设置xqmx表中的标识 active 1 为参数齐全 -->
+	<update id="updateXqmxKd">
+		update ${dbSchemal1}xqjs_xqmx
+		set active='1'
+	</update>
+	<!-- IL无供应商处理 -->
+	<update id="updateNogysFeKd">
+		update ${dbSchemal1}xqjs_xqmx
+		set 
+		    gongyfe = 1,
+		    gongysdm = '7800000000',
+		    fayzq = 63,
+		    beihzq = 0
+		where
+		    gongysdm is  null
+		    and zhizlxx = '97X'
+		</update>
+	<update id="updateNogysFeAx">
+		update ${dbSchemal1}xqjs_xqmx
+		set 
+		    gongyfe = 1,
+		    gongysdm = '5200000000',
+		    fayzq = 21,
+		    beihzq = 0
+		where
+		    gongysdm is  null
+		     and zhizlxx = '97D'
+		</update>
+	<!--设置xqmx表中的标识 active 1 为参数齐全 -->
+	<update id="updateXqmxIl">
+		update ${dbSchemal1}xqjs_xqmx
+		set active='1'
+	</update>
+	<!-- IL无供应商处理 -->
+	<update id="updateNogysFe">
+		update ${dbSchemal1}xqjs_xqmx
+		set 
+		    gongyfe = 1,
+		    gongysdm = 'M000000000'
+		where
+		    gongysdm is  null
+		</update>
+	<!-- 查询零件表获取零件名称以及订货车间 -->
+	<select id="lingjinfo" parameterClass="com.athena.xqjs.entity.common.Lingj"
+		resultClass="com.athena.xqjs.entity.common.Lingj">
+		select zhongwmc,fawmc,dinghcj ,lingjbh,usercenter,jihy from
+		${dbSchemal3}ckx_lingj
+		where usercenter=#usercenter# and lingjbh=#lingjbh#
+  </select>
+	<!-- 查询供应商表获取供应商名称 -->
+	<select id="gysinfo" parameterClass="com.athena.xqjs.entity.common.Gongys"
+		resultClass="com.athena.xqjs.entity.common.Gongys">
+		select gongsmc,usercenter,gcbh ,gongsmc from ${dbSchemal3}ckx_gongys
+		where usercenter=#usercenter# and gcbh=#gcbh#
+  </select>
+
+  <!--查询计划员组表 获取计划员组 -->
+  <select id="selectJihyz" resultClass="com.athena.xqjs.entity.ppl.Manager"  parameterClass="java.util.Map">
+  select zuh,usercenter,zhizlx from  ${dbSchemal3}ckx_manager where biaos='1' and usercenter = #usercenter# order by zuh
+
+  </select>
+	<!--查询需求版次 -->
+	<select id="selectXuqbc" resultClass="com.athena.xqjs.entity.ilorder.Maoxq">
+		select xuqbc from ${dbSchemal1}xqjs_maoxq where active='1' order by xuqbc
+	</select>
+	<!-- 查询计算处理参数设置 -->
+	<select id="searchJisclcssz" resultClass="com.athena.xqjs.entity.common.Jisclcssz">
+		select
+		usercenter,
+		jiscldm
+		from ${dbSchemal1}xqjs_jisclcssz
+		where jiscldm='20'
+		   and usercenter=#usercenter#
+		   and chulzt='1'
+  </select>
+	<!-- 向计算处理参数设置表中插入一条数据 -->
+	<insert id="insertJisclcssz" parameterClass="java.util.Map">
+	     <![CDATA[    merge into ${dbSchemal1}xqjs_jisclcssz a
+                         using (select count(*) co from ${dbSchemal1}xqjs_jisclcssz a  where a.usercenter = #usercenter# and a.jiscldm = '20') b
+                         on(b.co<>0)
+                         when matched then 
+                              update set 
+                                     a.chulzt = '0',
+                                     a.caozy=#caozy#,
+                                     a.jihyz=#jihyz#,
+                                     a.updatetime=to_date(#updatetime#,'yyyy-MM-dd HH24:mi:ss')
+                                     where  a.usercenter = #usercenter#  and  a.jiscldm = #jiscldm#
+                         when  not matched then 
+                         insert (usercenter,jiscldm,chulzt,jihyz,caozy,updatetime) values(#usercenter#,'20','0',#jihyz#,#caozy#,to_date(#updatetime#,'yyyy-MM-dd HH24:mi:ss'))]]>
+		<!--  insert into
+		${dbSchemal1}xqjs_jisclcssz (usercenter,jiscldm,chulzt,jihyz,caozy,updatetime)
+		values
+		(#usercenter#,'20','0',#jihyz#,#caozy#, to_timestamp(#updatetime#,'yyyy-MM-dd HH24:mi:ss:ff3'))-->
+  </insert>
+	<!-- 修改计算处理参数设置表中的计算状态 -->
+	<update id="updateJisclcssz" parameterClass="java.util.Map">
+		update ${dbSchemal1}xqjs_jisclcssz
+		set chulzt='0',
+		updatetime = to_timestamp(#updatetime#,'yyyy-MM-dd HH24:mi:ss:ff3')
+		where jiscldm ='20' and usercenter=#usercenter#
+  </update>
+	<!-- 清空中间表 xqmx中的数据 -->
+	<delete id="deleteXqmx">
+		delete from ${dbSchemal1}xqjs_xqmx
+  </delete>
+	<!-- 查询零件供应商份额不为100%的零件 -->
+	<select id="selectfe" resultClass="com.athena.xqjs.entity.common.Lingj">
+  <![CDATA[
+  				select  
+  						lingjbh,
+  						usercenter 
+  						from  ${dbSchemal1}xqjs_xqmx 
+    			group by lingjbh,usercenter   having  sum(gongyfe)<>1
+]]>
+	</select>
+	<!-- 删除供应商份额不为100%的零件 -->
+	<delete id="deletefene" parameterClass="com.athena.xqjs.entity.common.Lingj">
+		update ${dbSchemal1}xqjs_xqmx set active = '' where lingjbh=#lingjbh# and
+		usercenter=#usercenter#
+ </delete>
+	<!-- 向异常报警表中插入一条数据 -->
+	<insert id="yicfe" parameterClass="com.athena.xqjs.entity.ycbj.Yicbj">
+		insert into
+		${dbSchemal1}xqjs_yicbj
+		(lingjbh,
+		usercenter,
+		cuowlx,
+		cuowxxxx,
+		create_time,
+		<dynamic>
+			<isNotEmpty property="jihyz">
+				jihyz,
+	        </isNotEmpty>
+			<isNotEmpty property="jihydm">
+				jihydm,
+			</isNotEmpty>
+		</dynamic>
+		jismk)
+		values (#lingjbh#,
+		#usercenter#,
+		#cuowlx#,
+		#cuowxxxx# ,
+		sysdate,
+		<dynamic>
+			<isNotEmpty property="jihyz">
+				#jihyz#,
+	        </isNotEmpty>
+			<isNotEmpty property="jihydm">
+				#jihydm#,
+			</isNotEmpty>
+		</dynamic>
+		#jismk#
+		)
+	</insert>
+</sqlMap>

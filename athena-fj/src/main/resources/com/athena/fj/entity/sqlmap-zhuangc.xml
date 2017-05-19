@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- ibatis数据库操作配置文件 -->
+<sqlMap namespace="zhuangcfy">
+	<!--UC标签查询 70101  hzg 2012-1-20 -->   
+	<select id="queryUC" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			select   a.uch,a.ush,a.lingjbh,a.lingjsl,a.uaxh,a.xiehd,a.beihdh,a.cangkbh,a.keh,a.peizdh,a.yaohlh,b.biaos 
+			from ${dbSchemal4}CK_UCBQ a inner join ${dbSchemal4}CK_BEIHDMX b on a.uch=b.uch and a.usercenter=b.usercenter 
+			where a.usercenter = #usercenter# and a.uch = #uch# 
+		]]> 
+	</select>
+	
+	<!--UC标签查询 70103  hzg 2012-2-2 -->   
+	<select id="queryUCList" parameterClass="java.util.Map" resultClass="com.athena.fj.entity.Zhuangcmy">
+		<![CDATA[
+			select  u.uch,u.uaxh,u.uah,u.ush as uskh,u.lingjmc,u.lingjbh,u.lingjsl,
+      		u.uaxh as baozdm,u.xiehd,u.beihdh as beihlh,u.cangkbh,u.keh as kehbm,
+      		u.peizdh,u.yaohlh as yaohlbh,y.gongysdm, 
+      		y.gongysmc,
+           	u.danw,
+           	u.pich,
+           	u.ucxh,
+           	u.ucgs,
+           	u.ucrl
+			from ${dbSchemal4}CK_UCBQ u JOIN ${dbSchemal4}CK_YAONBHL y ON u.usercenter=y.usercenter and u.yaohlh=y.yaohlh 
+			where u.uch in($uch$) and u.usercenter = #usercenter# and u.xiehd=#xiehd#
+		]]> 
+	</select>
+	
+	<!--UC标签查询  hzg 2012-2-3 -->   
+	<select id="queryUCGongysdm" parameterClass="java.lang.String" resultClass="java.lang.String">
+		<![CDATA[
+			select gongysdm  from ${dbSchemal4}CK_UCBQ where uch =#uch# 
+		]]> 
+	</select>
+	
+	<!--仓库编号查询  hzg 2012-7-12 -->   
+	<select id="queryCangkbhOfPeizd" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+			select f.cangkbh from ${dbSchemal2}FJ_PEIZJH f where f.peizdh=#peizdh# and f.usercenter=#usercenter#
+		]]> 
+	</select>
+	
+	<!--配载单查询 70102 hzg 2012-1-20 -->   
+	<select id="queryPeizdChep" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			select peizdh,chep,jihcx,yunssbm,gongsmc,yunslx,shifzc from ${dbSchemal2}FJ_PEIZD f
+			left join (select * from ${dbSchemal3}ckx_gongys  where usercenter=#usercenter#) c on  f.yunssbm=c.gcbh
+			where peizdh = #peizdh#
+		]]> 
+	</select>
+	
+	<!--插入装车明细表  hzg 2012-2-3 -->  
+	<insert id="insertZhuangcmy" parameterClass="com.athena.fj.entity.Zhuangcmy">
+		<![CDATA[
+		insert into ${dbSchemal2}FJ_ZHUANGCMY(uakh,zhuangcdh,uskh,kehbm,baozdm,lingjmc,lingjsl,lingjbh,beihlh,cangkbh,xiehd,yaohlbh,creator,create_time,editor,edit_time) 
+		values(#uch#,#zhuangcdh#,#uskh#,#kehbm#,#baozdm#,#lingjmc#,#lingjsl#,#lingjbh#,#beihlh#,#cangkbh#,#xiehd#,#yaohlbh#,#creator#,to_date(#createTime#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss'))
+		]]>
+	</insert>
+	
+	<!--插入装车表  hzg 2012-2-3 -->  
+	<insert id="insertZhuangcfy" parameterClass="com.athena.fj.entity.Zhuangcfy">
+		<![CDATA[
+		insert into ${dbSchemal2}FJ_ZHUANGCFY(zhuangcdh,usercenter,peizdh,yunssbm,jihcx,chep,gongysbm,creator,create_time,editor,edit_time) 
+		values(#zhuangcdh#,#usercenter#,#peizdh#,#yunssbm#,#jihcx#,#chep#,#gongysbm#,#creator#,to_date(#createTime#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss'))
+		]]>
+	</insert>
+	
+	<!--更新配载单车牌  hzg 2012-2-3 -->  
+	<update id="updatePeizdChep" parameterClass="java.util.Map">
+		<![CDATA[
+		update ${dbSchemal2}FJ_PEIZD SET chep=#chep#
+		]]>
+		<dynamic>
+			<isNotEmpty prepend="," property="shifzc">shifzc=#shifzc# </isNotEmpty>
+		</dynamic>
+		<![CDATA[
+		where peizdh=#peizdh#
+		]]>
+	</update>
+	
+	
+	<!--查询运输路线客户  hzg 2012-7-9 -->  
+	<select id="queryKehLxz" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		SELECT A.YUNSLXBH,B.KEHBH FROM 
+		 ( SELECT Y.YUNSLXBH FROM ${dbSchemal3}CKX_YUNSLX Y WHERE Y.BIAOS='1' AND Y.USERCENTER=#usercenter#)A
+		 INNER JOIN 
+		 (SELECT K.YUNSLXBH,K.KEHBH FROM ${dbSchemal3}CKX_KEH_CHENGPK K WHERE K.USERCENTER=#usercenter#) B
+		 ON A.YUNSLXBH = B.YUNSLXBH
+		 GROUP BY A.YUNSLXBH,B.KEHBH
+		 ORDER BY A.YUNSLXBH
+		]]>
+	</select>
+	
+	<!--查询运输路线客户  hzg 2012-7-10 -->  
+	<select id="queryKehOfLxz" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+		SELECT KEHBH FROM 
+		 ( SELECT Y.YUNSLXBH FROM ${dbSchemal3}CKX_YUNSLX Y WHERE Y.BIAOS='1' AND Y.USERCENTER=#usercenter#)A
+		 INNER JOIN 
+		 (SELECT K.YUNSLXBH,K.KEHBH FROM ${dbSchemal3}CKX_KEH_CHENGPK K WHERE K.USERCENTER=#usercenter#) B
+		 ON A.YUNSLXBH = B.YUNSLXBH  WHERE A.YUNSLXBH=#yunslx#
+		 GROUP BY KEHBH
+		 ORDER BY KEHBH
+		]]>
+	</select>
+	
+	
+	<!--UCBQ表客户分组查询  hzg 2012-7-10 -->  
+	<select id="queryKehOfUCH" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+		SELECT uc.KEHBH FROM  ${dbSchemal4}CK_UCBQ uc 
+		WHERE UCH IN ($uch$) AND USERCENTER = #usercenter# 
+		GROUP BY KEHBH
+		]]>
+	</select>
+	
+	<!--UCBQ表卸货点分组查询 hzg 2012-7-12 -->  
+	<select id="queryXiehdOfUCH" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+		SELECT uc.XIEHD FROM  ${dbSchemal4}CK_UCBQ uc 
+		WHERE UCH IN ($uch$) AND USERCENTER = #usercenter# 
+		GROUP BY XIEHD
+		]]>
+	</select>
+	
+	
+	<!--UCBQ表要货令号查询 hzg 2012-7-12 -->  
+	<select id="queryYaohlhOfUCH" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+		SELECT uc.YAOHLH FROM  ${dbSchemal4}CK_UCBQ uc 
+		WHERE UCH IN ($uch$) AND USERCENTER = #usercenter# 
+		GROUP BY YAOHLH
+		]]>
+	</select>
+	
+	<!--更新内部要货令表要货令状态为06 hzg 2012-7-13 -->  
+	<update id="updateYaohlZT" parameterClass="java.util.Map" >
+		<![CDATA[
+		UPDATE ${dbSchemal4}CK_YAONBHL SET 	YAOHLZT = #yaohlzt#
+		WHERE YAOHLH IN ($yaohlhs$) AND USERCENTER=#usercenter#
+		]]>
+	</update>
+	
+	
+	<!--更新备货单明细表中的biao状态为3  hzg 2012-7-25 -->  
+	<update id="updateBeihdmxZT" parameterClass="java.util.Map" >
+		<![CDATA[
+		UPDATE ${dbSchemal4}CK_BEIHDMX SET 	BIAOS = #biaos#
+		WHERE UCH IN ($uch$) AND USERCENTER = #usercenter# 
+		]]>
+	</update>
+	
+	<!--获得工厂编码 hzg 2012-7-12 -->  
+	<select id="queryGongcbm" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+		SELECT c.GONGCBM FROM ${dbSchemal3}CKX_XIEHZT c
+		WHERE XIEHZTBH = #xiehdbh# AND USERCENTER=#usercenter#
+		]]>
+	</select>
+	
+	<!--配载单下没有扫描的UCH的个数 hzg 2012-7-25 -->  
+	<select id="getCountOfUCH" parameterClass="java.lang.String" resultClass="java.lang.String">
+		<![CDATA[
+		select count(*) as Numb from (
+		select a.beihdh,a.peizdh,a.beihdzt,b.uch,b.biaos,b.xiehd from ${dbSchemal4}CK_BEIHD a inner join ${dbSchemal4}CK_BEIHDMX b
+		on a.beihdh=b.beihdh and a.usercenter=b.usercenter  
+		where a.peizdh=#peizdh# )s where biaos<3
+		]]>
+	</select>
+	
+	<!--返回配载单对应的要车明细号 hzg 2012-8-17 -->  
+	<select id="getYaocmxhOfpeizd" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+			select f.yaocmxh from ${dbSchemal2}fj_peizjh f where f.usercenter=#usercenter# and f.peizdh=#peizdh#
+		]]>
+	</select>
+	
+	<!-- ******************************** 获取打印机组信息 2012-9-24 hzg*********************************** -->
+	<select id="queryYhzbhOfPrintUserInfo" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+			select p.userscode from ${dbSchemal3}ckx_print_userinfo p where p.usercenter=#usercenter# and p.usercode=#username#
+		]]>
+	</select>
+	<select id="queryDjzbhOfPrintDictInfo" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+			select p.danjzbh from ${dbSchemal3}ckx_print_strogdict p where p.usercenter=#usercenter#  and P.CANGKBH=#cangkbh# and p.zidbm=#zidbm#
+		]]>
+	</select>
+	<select id="queryDyjzbhOfPrintRight" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+			select p.spcodes from ${dbSchemal3}ckx_print_right p where p.usercenter=#usercenter#  and p.userscode=#yhzbh# 
+			and p.scodes=#djzbh# and p.storagescode=#cangkbh#
+
+		]]>
+	</select>
+	
+	
+	<!-- ******************************** 插入打印业务表  2012-6-5 hzg*********************************** -->
+  	<!-- 插入CKX_PRINT_QTASK_MAIN -->
+   <insert id="insertPrintQtaskMain" parameterClass="java.util.Map">
+   	<![CDATA[
+   	  insert into ${dbSchemal3}CKX_PRINT_QTASK_MAIN
+		(
+		 USERCENTER,
+		 QID,
+		 SACCOUNT,
+		 PGID,
+		 SCODE,
+		 STORAGECODE,
+		 SDEVICECODE,
+		 CREATETIME,
+		 STATUS,
+		 BIAOS)
+		values(
+		 #usercenter#,
+		 #qid#,
+	     #saccount#,
+		 #pgid#,
+		 #scode#,
+		 #storagecode#,
+		 #sdevicecode#,
+		 to_date(#createtime#,'yyyy-MM-dd hh24:mi:ss'),
+		 #status#,
+		 #biaos#)
+	]]>
+   </insert>
+   	<!-- 插入CKX_PRINT_QTASK_INFO -->
+   <insert id="insertPrintQtaskInfo" parameterClass="java.util.Map">
+   	<![CDATA[
+   	  insert into ${dbSchemal3}CKX_PRINT_QTASK_INFO
+		(
+		 USERCENTER,
+		 QID,
+		 SEQ,
+		 MODELNUMBER,
+		 PRINTNUMBER,
+		 PRINTUNITCOUNT,
+		 PRINTTYPE,
+		 STATUS,
+		 QUYZS)
+		values(
+		 #usercenter#,
+		 #qid#,
+		 #seq#,
+		 #modelnumber#,
+		 #printnumber#,
+		 #printunitcount#,
+		 #printtype#,
+		 #status#,
+		 #quyzs#)
+	]]>
+   </insert>
+   	<!-- 插入CKX_PRINT_QTASK_SHEET -->
+   <insert id="insertPrintQtaskSheet" parameterClass="java.util.Map">
+   	<![CDATA[
+   	  insert into ${dbSchemal3}CKX_PRINT_QTASK_SHEET
+		(
+		 QID,
+		 SEQ,
+		 AREA,
+		 SPARS)
+		values(
+		 #qid#,
+		 #seq#,
+		 #area#,
+		 #spars#)
+	]]>
+   </insert>
+	<!-- 插入CKX_PRINT_QTASK_LIST -->
+   <insert id="insertPrintQtaskList" parameterClass="java.util.Map">
+   	<![CDATA[
+   	  insert into ${dbSchemal3}CKX_PRINT_QTASK_LIST
+		(
+		 QID,
+		 SEQ,
+		 AREA,
+		 XUH,
+		 SPARS)
+		values(
+		 #qid#,
+		 #seq#,
+		 #area#,
+		 #xuh#,
+		 #spars#)
+	]]>
+   </insert>
+	
+	<!--UCBQ gswang 2012-12-12 -->  
+	<select id="queryUcbq" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		SELECT WLD.WULD, WLD.WULD2,WLD.JIZQBH,UC.* FROM  ${dbSchemal4}CK_UCBQ UC LEFT JOIN (SELECT WR.USERCENTER,WR.WULD2,WR.WULD,RQC.JIZQBH FROM ${dbSchemal3}CKX_WULDRQGX WR INNER JOIN ${dbSchemal3}CKX_RONGQC RQC ON WR.USERCENTER = RQC.USERCENTER AND WR.WULD2 = RQC.RONGQCBH) 
+		WLD ON UC.USERCENTER  = WLD.USERCENTER  AND UC.KEH = WLD.WULD
+		WHERE  UC.UCH IN ($uch$) AND UC.USERCENTER = #usercenter#  AND UC.XIEHD=#xiehd#
+		]]>
+	</select>
+	
+	<!--UCBQ gswang 2012-12-12 -->  
+	<select id="queryCangkRongqc" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			select ck.cangkbh,ck.rongqcbh,rqc.jizqbh from ${dbSchemal3}ckx_cangk ck left join 
+			(select rq.jizqbh,rq.rongqcbh,rq.usercenter from ${dbSchemal3}ckx_rongqc rq where rq.biaos = '1') 
+			rqc on ck.usercenter = rqc.usercenter and ck.rongqcbh = rqc.rongqcbh 
+			where ck.usercenter = #usercenter# AND ck.cangkbh = #cangkbh# and  ck.biaos = '1'
+		]]>
+	</select>
+	
+		<!-- 插入容器账务流水表 GSWANG 2012-12-20-->
+   <insert id="insertRONGQZWLS" parameterClass="java.util.Map">
+   	<![CDATA[
+		 insert into ${dbSchemal4}CK_RONGQZWLS 
+		(JSFHDH, FLAG, USERCENTER,            RONGQXH, GONGYSDM, CHENGYSBH, GONGYSMC, CHENGYSMC, WULD, SJWULD, DIAORWLD, DIAORSJWLD, RONGQSL, JIESRQ, CAOZY, ZAIY, CREATOR, EDIT_TIME, CAOZM)
+		values (#JSFHDH#, '1', #USERCENTER#, #RONGQXH#, #GONGYSDM#, #CHENGYS#, '', '',         #WULD#, #SJWULD#,'',  '', #RONGQSL#, to_date(#JIESRQ#, 'yyyy-MM-dd hh24:mi:ss'), #CAOZY#, #ZAIY#, '', to_date(#JIESRQ#, 'yyyy-MM-dd hh24:mi:ss'), #CAOZM#)
+	]]>
+   </insert>
+	
+	   	<!--更新容器账目表 GSWANG 2012-12-20 -->  
+   <insert id="insertRONGQZZ" parameterClass="java.util.Map">
+   	<![CDATA[
+		insert into ${dbSchemal4}CK_RONGQZZ_L (LIUSH,USERCENTER, WULD, JZLX, CHENGYS, GONGYSDM, RONGQLB, RONGQSL, RONGQZT, EDIT_TIME)
+		values (#LIUSH#,#USERCENTER#, #WULD#, #JZLX#, #CHENGYS#, #GONGYSDM#, #RONGQXH#, #RONGQSL#, '', to_date(#JIESRQ#, 'yyyy-MM-dd hh24:mi:ss'))
+	]]>
+   </insert>
+   
+   	<!--到货时间查询  GSWANG 2014-12-26 -->   
+	<select id="queryDaodsj" parameterClass="com.athena.fj.entity.Zhuangcfy" resultClass="java.lang.String">
+		<![CDATA[
+			select  to_char(min(y.zuiwsj),'YYYY-MM-DD HH24:MI:SS') t from ${dbSchemal4}ck_yaonbhl y where (y.usercenter,y.yaohlh) 
+			in (select fy.usercenter,b.yaohlbh from ${dbSchemal2}fj_zhuangcmy b  inner join  ${dbSchemal2}fj_zhuangcfy fy 
+			on b.zhuangcdh = fy.zhuangcdh where b.zhuangcdh =#zhuangcdh#)
+		]]> 
+	</select>
+</sqlMap>

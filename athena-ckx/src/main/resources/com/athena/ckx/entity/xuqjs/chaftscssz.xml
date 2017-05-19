@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- 系统参数定义  denggq 2012-3-19 -->
+	
+	<!-- 多数据查询 -->
+	<select id="queryChaftscssz" parameterClass="com.athena.ckx.entity.xuqjs.Xitcsdy" resultClass="com.athena.ckx.entity.xuqjs.Xitcsdy">
+		select usercenter,zidlx,zidlxmc,zidbm,zidmc,shifqj,qujzdz,qujzxz,paix,creator,create_time,editor,edit_time
+		from ${dbSchemal5}ckx_xitcsdy
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidlx"><![CDATA[zidlx = #zidlx#]]></isNotEmpty>
+		</dynamic>
+		order by zidlx,paix
+	</select>
+	
+	
+	<!-- 更新数据 -->
+	<update id="updateChaftscssz" parameterClass="com.athena.ckx.entity.xuqjs.Xitcsdy">
+		update ${dbSchemal5}ckx_xitcsdy 
+		set qujzxz = #qujzxz#,
+			qujzdz = #qujzdz#,
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+	    <dynamic prepend="where"> 
+	    	<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zidlx"><![CDATA[zidlx = #zidlx#]]></isNotEmpty>
+		</dynamic>
+	</update>
+	
+</sqlMap>

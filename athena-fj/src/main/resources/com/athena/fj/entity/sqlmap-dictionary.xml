@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- ibatis数据库操作配置文件 -->
+<sqlMap namespace="dictionary">
+	
+<!--客户查询  hzg 2012-2-21 -->
+   <select id="queryKeh"  resultClass="java.util.HashMap">
+		<![CDATA[select kehbh,kehmc from ${dbSchemal3}CKX_KEHB where biaos='1']]>
+   </select>
+
+<!--运输商查询  hzg 2012-2-21 -->
+   <select id="queryYunss" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		<![CDATA[select gcbh  from ${dbSchemal3}CKX_GONGYS where leix='3' and usercenter=#usercenter# and biaos='1']]>
+   </select>
+   
+<!--车型查询  hzg 2012-3-1 -->
+   <select id="queryChex" resultClass="java.util.HashMap">
+		<![CDATA[select chexbh from ${dbSchemal3}CKX_CHEX  where biaos='1']]>
+   </select>
+   
+<!--运输路线查询  hzg 2012-3-20 -->
+   <select id="queryYunslx" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		<![CDATA[select yunslxbh from ${dbSchemal3}CKX_YUNSLX where usercenter=#usercenter# and biaos='1']]>
+   </select>
+   
+<!--运输路线下的客户查询  hzg 2012-3-21 -->
+   <select id="queryKehCpk" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select a.kehbh 
+				from ${dbSchemal3}CKX_KEH_CHENGPK a
+				where yunslxbh=#yunslxbh# and usercenter=#usercenter# 
+				group by a.kehbh
+		]]>
+   </select>   
+   
+<!--运输路线下的运输商查询  hzg 2012-3-30 -->
+   <select id="queryYunssCpk" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select a.chengysbh
+				from ${dbSchemal3}CKX_KEH_CHENGPK a
+				where 
+				a.yunslxbh=#yunslxbh# 
+				and a.usercenter=#usercenter# 
+				group by a.chengysbh
+		]]>
+   </select> 
+   
+ <!--运输商下的车型查询  hzg 2012-3-30 -->
+   <select id="queryChexYunss" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select m.chexbh from 
+		${dbSchemal3}CKX_CHEX_YUNSS m
+		where yunssbh=#yunssbm# and usercenter=#usercenter# 
+		]]>
+   </select>   
+     
+</sqlMap>
+

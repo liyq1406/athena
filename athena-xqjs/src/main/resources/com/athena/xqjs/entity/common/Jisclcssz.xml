@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+	<!-- 计算算处理状态查询 -->
+	<select id="queryJisclState" resultClass="java.lang.String">
+		select
+			chulzt
+		from 
+			${dbSchemal1}xqjs_jisclcssz
+		where
+			jiscldm = #jiscldm#
+			<dynamic>
+				<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter#</isNotNull>
+			</dynamic>
+	</select>
+	
+	<!-- 计算算处理状态查询 -->
+	<select id="checkJisclState" resultClass="java.lang.String">
+		select
+			chulzt
+		from 
+			${dbSchemal1}xqjs_jisclcssz
+		where
+			jiscldm = #jiscldm# and chulzt = '20' and rownum <![CDATA[<]]> 2
+	</select>
+	
+	<!-- 更新处理状态 -->
+	<update id="updateState">
+		update 
+			${dbSchemal1}xqjs_jisclcssz
+		set 
+			chulzt = #state#,
+			UPDATETIME = to_date(substr(#updatetime#,0,19),'yyyy-MM-dd HH24:mi:ss'),
+			EDITOR = #editor#,
+			EDIT_TIME = To_Timestamp(#edit_time#, 'yyyy-mm-dd HH24:mi:ss:ff3')
+		where
+			jiscldm = #jiscldm#
+			<dynamic>
+				<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter#</isNotNull>
+			</dynamic>
+	</update>
+	<select id="queryAllJisclState" resultClass="com.athena.xqjs.entity.common.Jisclcssz">
+		select
+			t.usercenter,
+			t.jiscldm,
+			t.chulzt,
+			t.beiz
+		from 
+			${dbSchemal1}xqjs_jisclcssz t
+	</select>
+</sqlMap>

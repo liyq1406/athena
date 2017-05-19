@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ts_ckx">
+	
+	<!--查询单据类型信息-->
+	<select id="queryPrintStrogdict" resultClass="com.athena.ckx.entity.cangk.PrintStrogdict" parameterClass="com.athena.ckx.entity.cangk.PrintStrogdict">
+		select * from (
+		select c.usercenter,c.cangkbh,c.zidbm,c.zidmc,c.danjzbh,c.printnumber,c.biaos,1 as active 
+		from ${dbSchemal3}ckx_print_strogdict c 
+		where c.usercenter=#usercenter# and c.cangkbh = #cangkbh#
+		union
+		select t.usercenter,#cangkbh# as cangkbh,t.zidbm,t.zidmc,t.danjzbh,1 as printnumber,0 as biaos,0 as active 
+		from ${dbSchemal3}ckx_print_dictinfos t
+		where t.usercenter =#usercenter# 
+		      and t.biaos = '1'
+		      and not exists(
+			  select * from ${dbSchemal3}ckx_print_strogdict c 
+			  where t.usercenter=c.usercenter and t.zidbm=c.zidbm and t.zidmc=c.zidmc and c.cangkbh = #cangkbh#)) x
+		where 1=1
+		<dynamic>
+	    	<isNotEmpty property="danjzbh" prepend="and">
+	    		<![CDATA[x.danjzbh = #danjzbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>	  
+		order by length(x.zidbm),x.zidbm
+	</select>
+	
+	<!--插入一条数据-->
+	<insert id="insertPrintStrogdict" parameterClass="com.athena.ckx.entity.cangk.PrintStrogdict">
+		insert into ${dbSchemal3}ckx_print_strogdict (usercenter,cangkbh,zidbm,zidmc,danjzbh,biaos,printnumber,creator,create_time)
+		values(#usercenter#,#cangkbh#,#zidbm#,#zidmc#,#danjzbh#,'1',#printnumber#,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<!--更新一条数据-->
+	<update id="updatePrintStrogdict" parameterClass="com.athena.ckx.entity.cangk.PrintStrogdict">
+		update ${dbSchemal3}ckx_print_strogdict
+		set printnumber = #printnumber#,
+			danjzbh = #danjzbh#,
+			biaos = #biaos# ,
+			editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+		<dynamic prepend="where">
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zidbm">zidbm = #zidbm#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<update id="updatePrintStrogdicts" parameterClass="com.athena.ckx.entity.cangk.PrintStrogdict">
+		update ${dbSchemal3}ckx_print_strogdict
+		set printnumber = #printnumber#,
+			danjzbh = '',
+			biaos = #biaos# ,
+			editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+		<dynamic prepend="where">
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zidbm">zidbm = #zidbm#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--物理删除一条记录-->
+	<delete id="deletePrintStrogdict" parameterClass="com.athena.ckx.entity.cangk.PrintStrogdict">
+		delete  from ${dbSchemal3}ckx_print_strogdict where
+		<dynamic prepend="  ">
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zidbm">zidbm = #zidbm#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zidmc">zidmc = #zidmc#</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

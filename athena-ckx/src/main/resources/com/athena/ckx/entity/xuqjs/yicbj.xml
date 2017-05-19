@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ycbj">
+
+	<!-- 插入年度预告信息 -->
+	<insert id="insertYcbjCKX" parameterClass="com.athena.ckx.entity.xuqjs.Yicbj">
+		insert into ${dbSchemal1}
+		xqjs_yicbj
+		(usercenter,lingjbh,jismk,cuowlx,cuowxxxx,jihydm,jihyz,create_time,creator,editor,edit_time)
+		values
+		(
+		#usercenter#,
+		#lingjbh#,
+		#jismk#,
+		#cuowlx#,
+		#cuowxxxx#,
+		#jihydm#,
+		#jihyz#,
+		sysdate,
+		#creator#,
+		#editor#,
+		sysdate
+		)
+	</insert>
+
+</sqlMap>

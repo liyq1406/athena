@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+<!-- <select id="queryCkx_shengcx_lingj" resultClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj">
+   select chanxlj.usercenter , chanxlj.shengcxbh , 
+   chanxlj.lingjbh ,chanxlj.zhizlx, chanxlj.shengcbl , 
+   chanxlj.shengcjp , chanxlj.shifqyjjpl , chanxlj.jingjpl , 
+   chanxlj.youxbc,chanxlj.cangkbh
+   from ${dbSchemal3}ckx_shengcx_lingj   chanxlj     
+    inner join ${dbSchemal3}ckx_shengcx shengcx 
+    on shengcx.usercenter = chanxlj.usercenter and shengcx.shengcxbh = chanxlj.shengcxbh
+   where shengcx.biaos = '1'
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[chanxlj.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[chanxlj.shengcxbh = #shengcxbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[chanxlj.lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+		
+		order by chanxlj.lingjbh desc
+</select> -->
+<select id="queryCkx_shengcx_lingj" resultClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj">
+   select chanxlj.usercenter , chanxlj.shengcxbh , 
+   chanxlj.lingjbh ,chanxlj.zhizlx, chanxlj.zhuxfx , 
+    chanxlj.shifqyjjpl , chanxlj.jingjpl , chanxlj.shengcbl ,
+   chanxlj.youxbc,chanxlj.cangkbh,chanxlj.lingjlx
+   from ${dbSchemal3}ckx_shengcx_lingj   chanxlj     
+    inner join ${dbSchemal3}ckx_shengcx shengcx 
+    on shengcx.usercenter = chanxlj.usercenter and shengcx.shengcxbh = chanxlj.shengcxbh
+   where shengcx.biaos = '1' 
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[chanxlj.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[chanxlj.shengcxbh = #shengcxbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[chanxlj.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shifqyjjpl"><![CDATA[chanxlj.shifqyjjpl = #shifqyjjpl#]]></isNotEmpty>
+		</dynamic>
+		
+		order by chanxlj.lingjbh desc
+</select>
+<!-- <select id="getCkx_shengcx_lingj" resultClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj">
+   select usercenter , shengcxbh , lingjbh , zhizlx , shengcbl , shengcjp , shifqyjjpl , jingjpl , youxbc,cangkbh
+   from ${dbSchemal3}ckx_shengcx_lingj
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shifqyjjpl"><![CDATA[shifqyjjpl = #shifqyjjpl#]]></isNotEmpty>
+		</dynamic>
+</select> -->
+<select id="getCkx_shengcx_lingj" resultClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj">
+   select usercenter , shengcxbh , lingjbh , zhizlx , zhuxfx  , shifqyjjpl , jingjpl , youxbc,cangkbh
+   from ${dbSchemal3}ckx_shengcx_lingj
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shifqyjjpl"><![CDATA[shifqyjjpl = #shifqyjjpl#]]></isNotEmpty>
+		</dynamic>
+</select>
+
+<!-- 验证生产比例100% -->
+<!-- <select id="getShengcxljblSum" resultClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj">
+  select chanxlj.usercenter,chanxlj.LINGJBH,sum(chanxlj.shengcbl)as shengcbl
+   from ${dbSchemal3}ckx_shengcx_lingj chanxlj     
+    left join ${dbSchemal3}ckx_shengcx shengcx 
+    on shengcx.usercenter = chanxlj.usercenter and shengcx.shengcxbh = chanxlj.shengcxbh
+   where shengcx.biaos = '1'
+group by chanxlj.usercenter,chanxlj.lingjbh
+having  sum(nvl(chanxlj.shengcbl,0)) not in (100,0)
+</select> -->
+<!-- 验证同一用户中心同一零件下主线有且仅有一条，且各辅线的级别不能相同 -->
+<select id="checkZhuxfx" resultClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj" parameterClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj">
+   select t.usercenter,t.lingjbh
+            from  ${dbSchemal3}ckx_shengcx_lingj    t      
+              where t.usercenter=#usercenter# and t.lingjbh=#lingjbh#       
+    group by t.usercenter,t.lingjbh
+    <![CDATA[having (select count(zhuxfx) from ${dbSchemal3}ckx_shengcx_lingj 
+    where zhuxfx='0' and lingjbh=t.lingjbh)<>1  and count(*)>0 ]]> 
+    union all
+    select t.usercenter,t.lingjbh
+            from  ${dbSchemal3}ckx_shengcx_lingj    t  
+              where t.usercenter=#usercenter# and t.lingjbh=#lingjbh#            
+    group by t.usercenter,t.lingjbh,t.zhuxfx
+    <![CDATA[ having count(*)>1]]>
+</select>
+
+
+
+<!-- <insert id="insertCkx_shengcx_lingj" parameterClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj">
+insert into ${dbSchemal3}ckx_shengcx_lingj
+(usercenter , shengcxbh , lingjbh , zhizlx , shengcbl , shengcjp , shifqyjjpl , jingjpl , 
+                                youxbc ,cangkbh, creator , create_time , editor , edit_time )
+values(#usercenter# , #shengcxbh#, #lingjbh#, #zhizlx# , #shengcbl# , #shengcjp# , #shifqyjjpl# , #jingjpl# , 
+#youxbc# ,#cangkbh#, #creator# , #create_time# , #editor# , #edit_time# )
+</insert> -->
+<insert id="insertCkx_shengcx_lingj" parameterClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj">
+insert into ${dbSchemal3}ckx_shengcx_lingj
+(usercenter , shengcxbh , lingjbh , zhizlx , zhuxfx  , shifqyjjpl , jingjpl , 
+                                youxbc ,cangkbh, creator , create_time , editor , edit_time, lingjlx , shengcbl )
+values(#usercenter# , #shengcxbh#, #lingjbh#, #zhizlx# , #zhuxfx#  , #shifqyjjpl# , #jingjpl# , 
+#youxbc# ,#cangkbh#, #creator# , #create_time# , #editor# , #edit_time# , #lingjlx#, #shengcbl#)
+</insert>
+
+<!-- <update id="updateCkx_shengcx_lingj" parameterClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj">
+update ${dbSchemal3}ckx_shengcx_lingj
+<dynamic prepend="set">
+ <isNotEmpty property="zhizlx" prepend=",">
+    		   <![CDATA[zhizlx = #zhizlx#]]> 
+    	</isNotEmpty>
+        <isNotEmpty property="shengcbl" prepend=",">
+    		   <![CDATA[shengcbl = #shengcbl#]]> 
+    	</isNotEmpty>
+    	 <isNotEmpty property="shengcjp" prepend=",">
+    		   <![CDATA[shengcjp = #shengcjp#]]> 
+    	</isNotEmpty>
+    	<isNotEmpty property="shifqyjjpl" prepend=",">
+    		   <![CDATA[shifqyjjpl = #shifqyjjpl#]]>
+    	</isNotEmpty>
+    	<isNotEmpty property="jingjpl" prepend=",">
+    		   <![CDATA[jingjpl = #jingjpl#]]> 
+    	</isNotEmpty>
+    	<isNotEmpty property="youxbc" prepend=",">
+    		   <![CDATA[youxbc = #youxbc#]]> 
+    	</isNotEmpty>
+    	<isNotEmpty property="cangkbh" prepend=",">
+    		   <![CDATA[cangkbh = #cangkbh#]]> 
+    	</isNotEmpty>
+    	<isNotEmpty property="editor" prepend=",">
+    		   <![CDATA[editor = #editor#]]> 
+    	</isNotEmpty>
+    	<isNotEmpty property="edit_time" prepend=",">
+    		   <![CDATA[edit_time = #edit_time#]]> 
+    	</isNotEmpty>
+    </dynamic> 
+       where  <![CDATA[ usercenter = #usercenter# and shengcxbh = #shengcxbh# and lingjbh = #lingjbh#]]> 
+</update> -->
+<update id="updateCkx_shengcx_lingj" parameterClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj">
+update ${dbSchemal3}ckx_shengcx_lingj
+set
+     	<![CDATA[zhizlx = #zhizlx#]]> ,
+    	<![CDATA[zhuxfx = #zhuxfx#]]> ,
+    	<![CDATA[shifqyjjpl = #shifqyjjpl#]]>,    	
+    	<![CDATA[jingjpl = #jingjpl#]]> ,
+    	<![CDATA[youxbc = #youxbc#]]> ,    	
+    	<![CDATA[cangkbh = #cangkbh#]]> ,    	
+    	<![CDATA[editor = #editor#]]> ,    	
+    	<![CDATA[edit_time = #edit_time#]]> ,
+    	<![CDATA[lingjlx = #lingjlx#]]>  ,
+    	<![CDATA[shengcbl = #shengcbl#]]> 
+    
+       where  <![CDATA[ usercenter = #usercenter# and shengcxbh = #shengcxbh# and lingjbh = #lingjbh#]]> 
+</update>
+
+<delete id="deleteCkx_shengcx_lingj"  parameterClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj">
+delete ${dbSchemal3}ckx_shengcx_lingj
+where <![CDATA[ usercenter = #usercenter# and shengcxbh = #shengcxbh# and lingjbh = #lingjbh#]]>
+</delete>
+
+<!-- 查询DDBH中的所有分装线 -->
+<select id="queryAllFenzxInDDBH" resultClass="com.athena.ckx.entity.xuqjs.Fenzx">
+   select usercenter,fenzxh,daxxh,xiaohdbh,fenzxddxxlzcs,fenzxxs,beijwxpxfs,biaos,creator,create_time,editor,edit_time
+	from ${dbSchemal5}ckx_fenzx
+	where biaos = 1
+</select>
+
+<!-- 查询DDBH中的一个分装线 -->
+<select id="getHanzfzxInDDBH" parameterClass="com.athena.ckx.entity.xuqjs.Fenzx" resultClass="com.athena.ckx.entity.xuqjs.Fenzx">
+		select usercenter,fenzxh,daxxh,xiaohdbh,fenzxddxxlzcs,fenzxxs,beijwxpxfs,biaos,creator,create_time,editor,edit_time
+		from ${dbSchemal5}ckx_fenzx
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenzxh"><![CDATA[fenzxh = #fenzxh#]]></isNotEmpty>
+			</dynamic>
+	</select>
+
+<select id="getCountChanxlj" parameterClass="com.athena.ckx.entity.paicfj.Ckx_shengcx_lingj" resultClass="java.lang.String">
+   select count(1) from ${dbSchemal3}ckx_shengcx_lingj
+	where usercenter = #usercenter# and shengcxbh = #shengcxbh# and lingjbh = #lingjbh#
+</select>
+</sqlMap>

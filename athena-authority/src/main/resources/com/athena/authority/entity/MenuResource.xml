@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.MenuResource" id="MenuResource">
+		<result column="ID" property="id" />
+		<result column="MENU_CODE" property="menuCode" />
+		<result column="MENU_NAME" property="menuName" />
+		<result column="MENU_PATH" property="menuPath" />
+		<result column="MENDER" property="mender" />
+		<result column="MODIFY_TIME" property="modifyTime" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="ACTIVE" property="active" />		
+	</resultMap>
+	
+	<select id="queryMenuResource" resultMap="MenuResource">select 
+		ID,
+		MENU_CODE,
+		MENU_NAME,
+		MENU_PATH,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		ACTIVE
+		 from ${dbSchemal0}SYS_MENU_RESOURCE where 1=1
+		<dynamic>
+		    <isNotEmpty prepend="  and " property="menuName">MENU_NAME like '%'||#menuName#||'%'
+			</isNotEmpty>
+			<!-- 默认的排序 -->
+			<isEmpty property="order" >
+				order by MENU_PATH
+			</isEmpty>
+			
+			<isEqual property="order" compareValue="menuPath">
+				order by MENU_PATH $sort$
+			</isEqual>
+			<isEqual property="order" compareValue="menuName">
+				order by MENU_NAME $sort$
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<select id="getMenuResource" resultMap="MenuResource">select 
+		ID,
+		MENU_CODE,
+		MENU_NAME,
+		MENU_PATH,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		ACTIVE from ${dbSchemal0}SYS_MENU_RESOURCE where ID=#id#
+	</select>
+	
+	<insert id="insertMenuResource" parameterClass="com.athena.authority.entity.MenuResource">insert into
+		${dbSchemal0}SYS_MENU_RESOURCE (ID,MENU_CODE,MENU_NAME,MENU_PATH,MENDER,MODIFY_TIME,
+		CREATOR,CREATE_TIME,ACTIVE)
+		values(
+			#id#,
+			#menuCode#,
+			#menuName#,
+			#menuPath#,
+			#mender#,
+			#modifyTime#,
+			#creator#,
+			#createTime#,#active#)
+	</insert>
+	
+	<update id="updateMenuResource" parameterClass="com.athena.authority.entity.MenuResource">
+		update ${dbSchemal0}SYS_MENU_RESOURCE set 
+		MENU_CODE=#menuCode#,
+		MENU_NAME=#menuName#,
+		MENU_PATH=#menuPath#,
+		MENDER=#mender#,
+		MODIFY_TIME=#modifyTime#,
+		CREATOR=#creator#,
+		CREATE_TIME=#createTime#,
+		ACTIVE=#active#,
+		ID=#id# where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deleteMenuResource" parameterClass="com.athena.authority.entity.MenuResource">
+		delete from ${dbSchemal0}SYS_MENU_RESOURCE where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

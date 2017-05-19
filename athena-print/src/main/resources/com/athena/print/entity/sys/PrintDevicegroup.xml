@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sys">
+
+	<!--查询打印机组信息-->
+	<select id="queryPrintDevicegroup"  resultClass="com.athena.print.entity.sys.PrintDevicegroup">
+	select usercenter,sname,spcodes,sdesc,nflag,biaos,creator,create_time,editor,edit_time
+	from ${dbSchemal3}ckx_print_devicegroup 
+	where 1=1
+		<dynamic>
+		<isNotEmpty prepend="  and " property="usercenter">usercenter=#usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="spcodes">spcodes=#spcodes#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="sname">sname like '%'||#sname#||'%'</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos=#biaos#</isNotEmpty>
+		</dynamic>
+	order by spcodes
+	</select>
+	
+	<!--查询打印机组信息-->
+	<select id="queryPrintDevicegroups"  resultClass="com.athena.print.entity.sys.PrintDevicegroup">
+	select usercenter,sname,spcodes,sdesc,nflag,biaos,creator,create_time,editor,edit_time
+	from ${dbSchemal3}ckx_print_devicegroup 
+	where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="spcodes">spcodes=#spcodes#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos=#biaos#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter=#usercenter#</isNotEmpty>
+		</dynamic>
+	order by spcodes
+	</select>
+	
+	<!--根据打印机组编号 获取打印机组实体-->
+	<select id="getPrintDevicegroup" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevicegroup">
+	select usercenter,sname,spcodes,sdesc,nflag,biaos,creator,create_time,editor,edit_time
+	from ${dbSchemal3}ckx_print_devicegroup 
+	where spcodes=#spcodes#
+	</select>
+	
+	<!--打印权限验证打印机组编号是否存在-->
+	<select id="queryPrintDevicegroup1" parameterClass="com.athena.print.entity.sys.Printright" resultClass="com.athena.print.entity.sys.PrintDevicegroup">
+	select usercenter,sname,spcodes,sdesc,nflag,biaos,creator,create_time,editor,edit_time
+	from ${dbSchemal3}ckx_print_devicegroup 
+	where usercenter=#usercenter# and spcodes=#spcodes# and biaos='1'
+	</select>
+	
+	<!--打印权限验证打印机组编号是否存在-->
+	<select id="queryPrintDevicegroup2" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevicegroup">
+	select usercenter,sname,spcodes,sdesc,nflag,biaos,creator,create_time,editor,edit_time
+	from ${dbSchemal3}ckx_print_devicegroup 
+	where usercenter=#usercenter# and biaos='1'
+	</select>
+	
+	<!--插入一条数据-->
+	<insert id="insertPrintDevicegroup" parameterClass="com.athena.print.entity.sys.PrintDevicegroup">insert into
+		${dbSchemal3}ckx_print_devicegroup (usercenter,sname,spcodes,sdesc,nflag,biaos,creator,create_time)
+		values(#usercenter#,#sname#,#spcodes#,#sdesc#,#nflag#,1,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<!--更新一条数据-->
+	<update id="updatePrintDevicegroup" parameterClass="com.athena.print.entity.sys.PrintDevicegroup">
+		update ${dbSchemal3}ckx_print_devicegroup set 
+		sname=#sname#,
+		spcodes=#spcodes#,
+		sdesc=#sdesc#,
+		biaos=#biaos#,
+		editor=#editor#,
+		edit_time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss'),
+		nflag=#nflag# 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="spcodes">spcodes = #spcodes#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--更新一条数据-->
+	<update id="updatePrintDevicegroup1" parameterClass="com.athena.print.entity.sys.PrintDevicegroup">
+		update ${dbSchemal3}ckx_print_devicegroup set 
+		biaos='1'
+		where spcodes=#spcodes# and usercenter = #usercenter#
+	</update>
+	
+	<!--删除一条数据-->
+	<delete id="deletePrintDevicegroup" parameterClass="com.athena.print.entity.sys.PrintDevicegroup">
+		update ${dbSchemal3}ckx_print_devicegroup
+		set <![CDATA[biaos = 0]]> 
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="spcodes">spcodes = #spcodes#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

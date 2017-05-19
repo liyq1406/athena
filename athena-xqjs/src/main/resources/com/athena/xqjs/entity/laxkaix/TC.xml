@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tc">
+
+	<resultMap class="com.athena.xqjs.entity.laxkaix.TC" id="TC">
+		<!-- -->
+		<result column="ID" property="id" />
+		<result column="TCNO" property="tcNo" />
+		<result column="UTNO" property="utNo" />
+		<result column="QIYSJ" property="qiysj" />
+		<result column="QIYD" property="qiyd" />
+		<result column="MUDD" property="mudd" />
+		<result column="DINGHCJ" property="dinghcj" />
+		<result column="YUJDDSJ" property="yujddsj" />
+		<result column="ZUISWLD" property="zuiswld" />
+		<result column="DAODWLDSJ" property="daodwldsj" />
+		<result column="ZUIXYJDDSJ" property="zuixyjddsj" />
+		<result column="LAXZDDDSJ" property="laxzdddsj" />
+		<result column="KAIXZDSJ" property="kaixzdsj" />
+		<result column="TCZT" property="tczt" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="EDITOR" property="editor" />
+		<result column="EDIT_TIME" property="editTime" />
+		<result column="LUJDM" property="lujdm"/>
+		<result column="PAP_SHEET_ID" property="papSheetId"/>
+		<result column="PAP_BOX_ID" property="papBoxId"/>
+		<result column="KDYS_SHEET_ID" property="kdysSheetId"/>
+	</resultMap>
+
+	<select id="getSumzxqkc" parameterClass="com.athena.xqjs.entity.laxkaix.TC" resultClass="java.util.HashMap">
+		select
+		tclj_.lingjh,
+		sum(tclj_.lingjsl) as sumLingjsl
+		from ${dbSchemal1}XQJS_TC tc_
+		inner JOIN ${dbSchemal1}XQJS_LINS_TCLJ tclj_ on tc_.tcno = tclj_.tcno where
+		1=1 and tc_.tczt = '1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="zuiswld">
+				tc_.zuiswld = #zuiswld#
+			</isNotEmpty>
+		</dynamic>
+		group by tclj_.lingjh order by tclj_.lingjh asc
+	</select>
+	<update id="updateLaxzdsj" parameterClass="java.util.HashMap">
+		UPDATE
+		${dbSchemal1}XQJS_TC tc_ SET ZUIXYJDDSJ =
+		to_date(#laxzdsj#,'yyyy-MM-dd'),LAXZDDDSJ =
+		to_date(#laxzdsj#,'yyyy-MM-dd'),
+		EDITOR = #editor#,EDIT_TIME =
+		to_date(#editTime#,'yyyy-MM-dd'),
+		LUJDM = #lujdm#
+		WHERE ID = #id# AND TCNO = #tcNo#
+	</update>
+	<update id="updateKaixzdsj" parameterClass="java.util.HashMap">
+		UPDATE
+		${dbSchemal1}XQJS_TC tc_ SET ZUIXYJDDSJ =
+		to_date(#laxzdsj#,'yyyy-MM-dd'),KAIXZDSJ =
+		to_date(#kaixzdsj#,'yyyy-MM-dd'),
+		EDITOR = #editor#,EDIT_TIME =
+		to_date(#editTime#,'yyyy-MM-dd')
+		WHERE ID = #id# AND TCNO = #tcNo#
+	</update>
+	<select id="getTcId" resultClass="java.util.HashMap">
+		select
+		tc_.ID,to_char(tc_.QIYSJ,'yyyy-MM-dd') as QIYSJ,tc_.MUDD,tc_.ZUISWLD
+		from ${dbSchemal1}XQJS_TC tc_
+		WHERE 1=1  AND tc_.TCZT='1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="tcNo">
+				tc_.tcNo = #tcNo#
+			</isNotEmpty>
+		</dynamic>
+		order by ID asc
+	</select>
+	<select id="getTcIdList" resultClass="java.util.HashMap">
+		select
+		tc_.ID,tc_.TCNO
+		from ${dbSchemal1}XQJS_TC tc_
+		WHERE 1=1  AND tc_.TCZT='1' order by ID asc
+	</select>
+	<select id="getTcLujdm" resultClass="java.util.HashMap">
+		select DISTINCT
+		tc_.TCNO,tc_.LUJDM,tc_.ZUISWLD
+		from ${dbSchemal1}XQJS_TC tc_
+		WHERE 1=1 AND tc_.TCZT='1'
+	</select>
+</sqlMap>

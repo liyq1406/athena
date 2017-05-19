@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_kac">
+
+	<!-- 叉车多 数据查询 -->
+	<select id="queryLiucdy" parameterClass="com.athena.truck.entity.Liucdy" resultClass="com.athena.truck.entity.Liucdy">
+		select usercenter,daztbh,quybh,liucbh,liucmc,leix,biaozsj,liucbs,biaos
+		from ${dbSchemal3}ckx_liucdy
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="quybh" prepend="and">
+	    		<![CDATA[quybh = #quybh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="daztbh" prepend="and">
+	    		<![CDATA[daztbh = #daztbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="liucbh" prepend="and">
+	    		<![CDATA[liucbh = #liucbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="liucbs" prepend="and">
+	    		<![CDATA[liucbs = #liucbs#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,quybh,daztbh,liucbh
+	</select>
+	
+<!-- 新增流程定义 hzg 20150128 -->		
+	<insert id="insertLiucdy" parameterClass="com.athena.truck.entity.Liucdy">
+		<![CDATA[
+		insert into ${dbSchemal3}ckx_liucdy( usercenter,quybh,daztbh,liucbh,
+		liucmc,biaozsj,liucbs,biaos,creator,create_time,editor,edit_time)
+		values
+		(#usercenter# ,#quybh#,#daztbh#,#liucbh#,#liucmc#,
+		#biaozsj#,#liucbs#,#biaos#,#creator# ,sysdate,#editor#,sysdate )]]>
+	</insert>
+	
+<!-- 更新流程定义 hzg 20150128 -->	
+	<update id="updateLiucdy" parameterClass="com.athena.truck.entity.Liucdy">
+		update ${dbSchemal3}ckx_liucdy 
+		set daztbh=#daztbh#,
+		liucmc=#liucmc#,
+		biaos=#biaos#,
+		biaozsj=#biaozsj#,
+		edit_time =sysdate
+        where  usercenter = #usercenter# and quybh=#quybh# and liucbh=#liucbh# and daztbh=#daztbh#
+	</update>
+	
+	
+	<!--逻辑删除   hzg 20150128 -->
+	<delete id="deleteLiucdy" parameterClass="com.athena.truck.entity.Liucdy">
+		<![CDATA[
+		update ${dbSchemal3}ckx_liucdy
+		set biaos = '0', editor = #editor# , edit_time = sysdate 
+		where  usercenter = #usercenter# and quybh=#quybh# and liucbh=#liucbh#  and daztbh=#daztbh#
+		]]>
+	</delete>
+	
+<!--区域查询  hzg 20150128 -->
+   <select id="queryLiucQuybh" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		<![CDATA[select quybh from ${dbSchemal3}CKX_DENGDQY where usercenter=#usercenter# and biaos='1']]>
+   </select>
+ 
+<!--区域下的大站台查询  hzg 20150128 -->
+   <select id="queryQyDaztbh" parameterClass="com.athena.truck.entity.Shijdzt" resultClass="com.athena.truck.entity.Shijdzt">
+		<![CDATA[
+		select a.daztbh 
+				from ${dbSchemal3}CKX_DAZT a
+				where quybh=#quybh# and usercenter=#usercenter# and biaos='1'
+				group by a.daztbh
+		]]>
+   </select>    
+   
+<!--区域下的大站台查询  chenpeng 20150206 -->
+   <select id="queryQyDaztbhss" parameterClass="java.util.HashMap" resultClass="com.athena.truck.entity.Shijdzt">
+		select 
+    	cd.daztbh from  ${dbSchemal3}ckx_dazt cd where cd.quybh in (
+      select qy.quybh from ${dbSchemal3}SYS_QY_GROUP qy inner join ${dbSchemal3}sys_post p on qy.post_id = p.post_code and p.biaos = '1'
+	inner join ${dbSchemal3}ckx_dengdqy d on qy.usercenter = d.usercenter and qy.quybh = d.quybh and d.biaos = '1' 
+    where qy.usercenter in (select ru.usercenter from ${dbSchemal3}sys_r_post_usercenter ru where ru.post_code = #post_code#)
+     and p.post_code =  #post_code#  and qy.usercenter = #usercenter# )
+     
+      order by cd.daztbh
+   </select>   
+
+  <select id="queryLiucbh" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		     select a.zidbm  from ${dbSchemal3}CKX_XITCSDY a where zidlx=#zidlx# and beiz=#beiz#
+		]]>
+   </select>  
+   
+   <select id="queryMorCount" parameterClass="com.athena.truck.entity.Liucdy" resultClass="java.lang.String">
+		<![CDATA[
+		     select count(1) Counts  from ${dbSchemal3}CKX_LIUCDY a where a.usercenter=#usercenter#  and a.quybh=#quybh# and a.daztbh=#daztbh# 
+		]]>
+   </select>  
+ 
+<!-- 根据用户中心 、大站台编号和标识查询大站台信息 -->   
+	<select id="queryDaztsss" parameterClass="com.athena.truck.entity.Shijdzt" resultClass="com.athena.truck.entity.Shijdzt">
+		select usercenter,daztbh,daztmc,quybh,paidtqqsx,paidtqqxx,duiycmqy,kacwdbjsj,fangkbzsj,biaos,biaos as yuanbiaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_dazt
+		where 1=1 and biaos='1'
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="daztbh"><![CDATA[daztbh = #daztbh#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,daztbh
+	</select>
+	
+	
+	<!-- 默认流程查询 hzg 2015.3.12 -->   
+	<select id="queryMorlcOfxitcsdy" resultClass="java.util.HashMap">
+		<![CDATA[
+		  select t.zidbm,t.zidmc from ckx_xitcsdy t where zidlx='LCDY' and t.beiz='MR'
+		]]>
+	</select>
+	
+</sqlMap>

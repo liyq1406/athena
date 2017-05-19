@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="laxkaixTest">
+	
+  <select id="getLaxjhmx"    resultClass="com.athena.xqjs.entity.laxkaix.Laxjhmx">
+	  	SELECT * FROM ${dbSchemal1}XQJS_LAXJHMX 
+	  	WHERE 1=1 AND mx_.LAXJHNO = #laxjhNo# AND  mx_.USERCENTER = #usercenter#
+	  	AND ID = #id# AND TCNO = #tcNo#
+  </select>
+  <delete id="deleteLinstclj">
+  		DELETE FROM ${dbSchemal1}XQJS_LINS_TCLJ
+  		WHERE 1 = 1 AND  LINGJH &gt;='ZQ80596980' AND LINGJH &lt;='ZQ80596985' 
+  		AND TCNO &gt;='TC00' AND TCNO &lt;='TC04'
+  </delete>
+   <delete id="deleteLinsXuq">
+  		DELETE FROM ${dbSchemal1}XQJS_LINS_XUQ
+  		WHERE 1 = 1 AND  LINGJH = #lingjh#
+  </delete>
+  <select id="getLinsTcljslTest" resultClass="java.util.HashMap">
+		SELECT USERCENTER,JIHYDM,
+			TCNO,
+			LINGJH,
+			LINGJSL
+		FROM ${dbSchemal1}XQJS_LINS_TCLJ WHERE 1=1 
+		AND  LINGJH &gt;='ZQ80596980' AND LINGJH &lt;='ZQ80596985' 
+		ORDER BY LINGJH
+	</select>
+	   
+   <select id="getLinsXuq" resultClass="com.athena.xqjs.entity.laxkaix.LinsXuq">
+   	SELECT * FROM ${dbSchemal1}XQJS_LINS_XUQ
+   	WHERE 1=1 AND USERCENTER = #usercenter# AND JIHYDM = #jihydm# AND LINGJH=#lingjh#
+   </select>
+    <delete id="deleteKaixjhmxByKaijhNo" parameterClass="com.athena.xqjs.entity.laxkaix.Kaixjhmx">
+  		DELETE FROM ${dbSchemal1}XQJS_KAIXJHMX
+  		WHERE 1 = 1 AND  KAIXJHNO = #kaixjhNo#
+  </delete>
+   
+   <insert id="insertAnxmaoxqtestdata" parameterClass="java.util.HashMap">
+   		INSERT INTO ${dbSchemal1}XQJS_ANXMAOXQ(
+   			USERCENTER,
+   			XIAOHD,
+   			LINGJBH,
+   			DANW,
+   			ZHIZLX,
+   			XHSJ,
+   			ZHONGZLXH,
+   			OFH,
+   			HANZBS,
+   			EMON,
+   			SHUNXH,
+   			XIAOHXS,
+   			XUQLY,
+   			CHEJH,
+   			CHANX,
+   			CAIFSJ
+   		) VALUES(
+   			#usercenter#,
+   			#xiaohd#,
+   			#lingjbh#,
+   			#danw#,
+   			#zhizlx#,
+   			to_date(#xhsj#,'yyyy-MM-dd HH24:MI:SS'),
+   			#zhongzlxh#,
+   			#ofh#,
+   			#hanzbs#,
+   			#emon#,
+   			#shunxh#,
+   			#xiaohxs#,
+   			#xuqly#,
+   			#chejh#,
+   			#chanx#,
+   			to_date(#caifsj#,'yyyy-MM-dd')
+   		)
+   </insert>
+</sqlMap>

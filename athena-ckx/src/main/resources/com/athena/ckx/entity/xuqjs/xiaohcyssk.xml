@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	小火车运输时刻表
+	@author denggq
+	@date 2012-4-12
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryCkxXiaohcyssk" parameterClass="com.athena.ckx.entity.xuqjs.CkxXiaohcyssk" resultClass="com.athena.ckx.entity.xuqjs.CkxXiaohcyssk">
+		select usercenter,shengcxbh,xiaohcbh,riq,tangc,to_char(kaisbhsj,'yyyy-MM-dd hh24:mi:ss') as kaisbhsj,to_char(chufsxsj,'yyyy-MM-dd hh24:mi:ss') as chufsxsj,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_xiaohcyssk 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="riq" prepend="and">
+	    		<![CDATA[riq = #riq#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="tangc" prepend="and">
+	    		<![CDATA[tangc = #tangc#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,shengcxbh,xiaohcbh,riq,tangc
+	</select>
+	
+	<select id="getCkxXiaohcyssk" resultClass="com.athena.ckx.entity.xuqjs.CkxXiaohcyssk">
+		select usercenter,shengcxbh,xiaohcbh,riq,tangc,to_char(kaisbhsj,'yyyy-MM-dd hh24:mi:ss') as kaisbhsj,to_char(chufsxsj,'yyyy-MM-dd hh24:mi:ss') as chufsxsj  
+		from ${dbSchemal3}ckx_xiaohcyssk 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="riq" prepend="and">
+	    		<![CDATA[riq = #riq#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="tangc" prepend="and">
+	    		<![CDATA[tangc = #tangc#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<insert id="insertCkxXiaohcyssk" parameterClass="com.athena.ckx.entity.xuqjs.CkxXiaohcyssk">
+		insert into ${dbSchemal3}ckx_xiaohcyssk(usercenter,shengcxbh,xiaohcbh,riq,tangc,kaisbhsj,chufsxsj,creator,create_time,editor,edit_time)
+		values(#usercenter#,#shengcxbh#,#xiaohcbh#,#riq#,#tangc#,to_date(#kaisbhsj#,'yyyy-MM-dd hh24:mi:ss'),to_date(#chufsxsj#,'yyyy-MM-dd hh24:mi:ss'),#creator#,sysdate,#editor#,sysdate)
+	</insert>
+	
+	<update id="updateCkxXiaohcyssk" parameterClass="com.athena.ckx.entity.xuqjs.CkxXiaohcyssk">
+		update ${dbSchemal3}ckx_xiaohcyssk 
+		set kaisbhsj = to_date(#kaisbhsj#,'yyyy-MM-dd hh24:mi:ss'),
+			chufsxsj = to_date(#chufsxsj#,'yyyy-MM-dd hh24:mi:ss') ,
+			editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where <![CDATA[usercenter = #usercenter# and shengcxbh = #shengcxbh# and xiaohcbh = #xiaohcbh# and riq = #riq# and tangc = #tangc#]]> 
+	</update>
+	
+	<delete id="deleteCkxXiaohcyssk" parameterClass="com.athena.ckx.entity.xuqjs.CkxXiaohcyssk">
+		delete from ${dbSchemal3}ckx_xiaohcyssk  where
+		<dynamic prepend=" ">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="riq" prepend="and">
+	    		<![CDATA[riq = #riq#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="tangc" prepend="and">
+	    		<![CDATA[tangc = #tangc#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+	<!-- 批量4040清除小火车运输时刻中间表 -->
+	<delete id="truncateCkxXiaohcyssk">
+		truncate table ${dbSchemal3}ckx_xiaohcyssk
+	</delete>
+	
+</sqlMap>

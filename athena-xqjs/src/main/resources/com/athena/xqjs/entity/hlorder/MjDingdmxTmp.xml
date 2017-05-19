@@ -1,0 +1,1609 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="hlorder">
+
+	<resultMap class="com.athena.xqjs.entity.ilorder.Dingdmx" id="Dingdmx">
+		<result column="xiaohch" property="xiaohch" />
+		<result column="shid" property="shid" />
+		<result column="YUGSFQZ" property="yugsfqz" />
+		<result column="FAHD" property="fahd" />
+		<result column="LUJDM" property="lujdm" />
+		<result column="SHUL" property="shul" />
+		<result column="UABZUCLX" property="uabzuclx" />
+		<result column="xiehd" property="xiehd" />
+		<result column="LINGJBH" property="lingjbh" />
+		<result column="YAOHQSRQ" property="yaohqsrq" />
+		<result column="usbaozlx" property="usbaozlx" />
+		<result column="ZUIHWHSJ" property="zuihwhsj" />
+		<result column="DINGHCJ" property="dinghcj" />
+		<result column="UABZUCRL" property="uabzucrl" />
+		<result column="YAOHJSRQ" property="yaohjsrq" />
+		<result column="YIJFL" property="yijfl" />
+		<result column="XIEHZT" property="xiehzt" />
+		<result column="xiaohccxh" property="xiaohccxh" />
+		<result column="usbaozrl" property="usbaozrl" />
+		<result column="zuiwdhsj" property="zuiwdhsj" />
+		<result column="UABZUCSL" property="uabzucsl" />
+		<result column="xiaohcsxsj" property="xiaohcsxsj" />
+		<result column="GONGYSLX" property="gongyslx" />
+		<result column="xiaohsj" property="xiaohsj" />
+		<result column="ZUIHWHR" property="zuihwhr" />
+		<result column="JIAOFRQ" property="jiaofrq" />
+		<result column="LEIX" property="leix" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="zuizdhsj" property="zuizdhsj" />
+		<result column="ZHUANGT" property="zhuangt" />
+		<result column="xianbyhlx" property="xianbyhlx" />
+		<result column="DANW" property="danw" />
+		<result column="FAYRQ" property="fayrq" />
+		<result column="GONGHLX" property="gonghlx" />
+		<result column="xiaohcbhsj" property="xiaohcbhsj" />
+		<result column="UABZLX" property="uabzlx" />
+		<result column="JISSL" property="jissl" />
+		<result column="DINGDH" property="dingdh" />
+		<result column="GONGYSDM" property="gongysdm" />
+		<result column="JIHYZ" property="jihyz" />
+		<result column="CANGKDM" property="cangkdm" />
+	</resultMap>
+
+	<select id="mjQueryDingdmxByPC" resultMap="Dingdmx">
+		select
+		yu.DINGDH as DINGDH,
+		yu.USERCENTER as USERCENTER,
+		yu.GONGYSDM as GONGYSDM,
+		yu.GONGYSLX as GONGYSLX,
+		yu.LINGJBH as LINGJBH,
+		yu.CANGKDM as CANGKDM,
+		yu.YAOHQSRQ as YAOHQSRQ,
+		yu.YAOHJSRQ as YAOHJSRQ,
+		yu.GONGHLX as GONGHLX,
+		yu.SHUL as shul,
+		yu.SHUL as JISSL,
+		yu.DANW as danw,
+		yu.UABZLX as UABZLX,
+		yu.UABZUCLX as UABZUCLX,
+		yu.UABZUCSL as UABZUCSL,
+		yu.UABZUCRL as UABZUCRL,
+		mp.DINGHCJ as DINGHCJ,
+		mp.JIHYDZ as JIHYZ,
+		mp.LUJDM as LUJDM,
+		'0' as leix,
+		'0' as ZHUANGT,
+		'' as YIJFL,
+		'' as SHID ,
+		'' as ZUIZDHSJ,
+		'' as ZUIWDHSJ,
+		'' as XIAOHSJ,
+		'' as XIAOHCBHSJ,
+		'' as XIAOHCSXSJ,
+		'' as XIEHD,
+		'' as XIANBYHLX,
+		'' as USBAOZLX,
+		'' as USBAOZRL,
+		'' as XIAOHCH,
+		'' as XIAOHCCXH,
+		'' as CHANX,
+		'' as XIAOHD,
+		'' as FENPXH,
+		'' as XIEHZT,
+		'' as FAHD,
+		'' as FAYRQ,
+		'' as JIAOFRQ,
+		'' as YUGSFQZ,
+		'' as ZUIHWHR,
+		'' as ZUIHWHSJ
+		from
+		${dbSchemal1}xqjs_yugzjb yu,
+		${dbSchemal1}xqjs_maoxqhzpc mp
+		where
+		yu.usercenter = mp.usercenter
+		and
+		yu.lingjbh = mp.lingjbh
+		and
+		yu.gongysdm = mp.gongysdm 
+	</select>
+
+
+
+	<select id="mjQueryDingdmxBySC" resultMap="Dingdmx">
+		select
+		yu.DINGDH as DINGDH,
+		yu.USERCENTER as USERCENTER,
+		yu.GONGYSDM as GONGYSDM,
+		yu.GONGYSLX as GONGYSLX,
+		yu.LINGJBH as LINGJBH,
+		yu.CANGKDM as CANGKDM,
+		yu.YAOHQSRQ as YAOHQSRQ,
+		yu.YAOHJSRQ as YAOHJSRQ,
+		yu.GONGHLX as GONGHLX,
+		yu.SHUL as shul,
+		yu.SHUL as JISSL,
+		yu.DANW as danw,
+		yu.UABZLX as UABZLX,
+		yu.UABZUCLX as UABZUCLX,
+		yu.UABZUCSL as UABZUCSL,
+		yu.UABZUCRL as UABZUCRL,
+		mp.DINGHCJ as DINGHCJ,
+		mp.JIHYZ as JIHYZ,
+		mp.LUJDM as LUJDM,
+		'0' as leix,
+		'0' as ZHUANGT,
+		'' as YIJFL,
+		'' as SHID ,
+		'' as ZUIZDHSJ,
+		'' as ZUIWDHSJ,
+		'' as XIAOHSJ,
+		'' as XIAOHCBHSJ,
+		'' as XIAOHCSXSJ,
+		'' as XIEHD,
+		'' as XIANBYHLX,
+		'' as USBAOZLX,
+		'' as USBAOZRL,
+		'' as XIAOHCH,
+		'' as XIAOHCCXH,
+		'' as CHANX,
+		'' as XIAOHD,
+		'' as FENPXH,
+		'' as XIEHZT,
+		'' as FAHD,
+		'' as FAYRQ,
+		'' as JIAOFRQ,
+		'' as YUGSFQZ,
+		'' as ZUIHWHR,
+		'' as ZUIHWHSJ
+		from
+		${dbSchemal1}xqjs_yugzjb yu,
+		${dbSchemal1}xqjs_maoxqhzsc mp
+		where
+		yu.usercenter = mp.usercenter
+		and
+		yu.lingjbh = mp.lingjbh
+		and
+		yu.gongysdm = mp.gongysdm 
+	</select>
+
+	<select id="mjQueryDingdmxByJC" resultMap="Dingdmx">
+		select
+		yu.DINGDH as DINGDH,
+		yu.USERCENTER as USERCENTER,
+		yu.GONGYSDM as GONGYSDM,
+		yu.GONGYSLX as GONGYSLX,
+		yu.LINGJBH as LINGJBH,
+		yu.CANGKDM as CANGKDM,
+		yu.YAOHQSRQ as YAOHQSRQ,
+		yu.YAOHJSRQ as YAOHJSRQ,
+		yu.GONGHLX as GONGHLX,
+		yu.SHUL as shul,
+		yu.SHUL as JISSL,
+		yu.DANW as danw,
+		yu.UABZLX as UABZLX,
+		yu.UABZUCLX as UABZUCLX,
+		yu.UABZUCSL as UABZUCSL,
+		yu.UABZUCRL as UABZUCRL,
+		mp.DINGHCJ as DINGHCJ,
+		mp.JIHYZ as JIHYZ,
+		mp.LUJDM as LUJDM,
+		'0' as leix,
+		'0' as ZHUANGT,
+		'' as YIJFL,
+		'' as SHID ,
+		'' as ZUIZDHSJ,
+		'' as ZUIWDHSJ,
+		'' as XIAOHSJ,
+		'' as XIAOHCBHSJ,
+		'' as XIAOHCSXSJ,
+		'' as XIEHD,
+		'' as XIANBYHLX,
+		'' as USBAOZLX,
+		'' as USBAOZRL,
+		'' as XIAOHCH,
+		'' as XIAOHCCXH,
+		'' as CHANX,
+		'' as XIAOHD,
+		'' as FENPXH,
+		'' as XIEHZT,
+		'' as FAHD,
+		'' as FAYRQ,
+		'' as JIAOFRQ,
+		'' as YUGSFQZ,
+		'' as ZUIHWHR,
+		'' as ZUIHWHSJ
+		from
+		${dbSchemal1}xqjs_yugzjb yu,
+		${dbSchemal1}xqjs_maoxqhzjc mp
+		where
+		yu.usercenter = mp.usercenter
+		and
+		yu.lingjbh = mp.lingjbh
+		and
+		yu.gongysdm = mp.gongysdm 
+	</select>
+
+	<select id="mjQueryDingdmx" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+		select
+		XIAOHCH,
+		SHID,
+		YUGSFQZ,
+		FAHD,
+		LUJDM,
+		SHUL,
+		UABZUCLX,
+		XIEHD,
+		LINGJBH,
+		YAOHQSRQ,
+		USBAOZLX,
+		ZUIHWHSJ,
+		DINGHCJ,
+		UABZUCRL,
+		YAOHJSRQ,
+		YIJFL,
+		XIEHZT,
+		XIAOHCCXH,
+		USBAOZRL,
+		TO_CHAR(ZUIWDHSJ,'yyyy-mm-dd HH24:mi') AS  ZUIWDHSJ,
+		UABZUCSL,
+		XIAOHCSXSJ,
+		GONGYSLX,
+		XIAOHSJ,
+		ZUIHWHR,
+		TO_CHAR(JIAOFRQ,'yyyy-mm-dd HH24:mi') AS JIAOFRQ,
+		LEIX,
+		USERCENTER,
+		TO_CHAR(ZUIZDHSJ,'yyyy-mm-dd HH24:mi') AS  ZUIZDHSJ,
+		ZHUANGT,
+		XIANBYHLX,
+		DANW,
+		FAYRQ,
+		GONGHLX,
+		XIAOHCBHSJ,
+		UABZLX,
+		JISSL,
+		DINGDH,
+		GONGYSDM,
+		JIHYZ,
+		CANGKDM,
+		FENPXH,
+		XIAOHD,
+		GCBH,
+		UABZUCRL*UABZUCSL  AS UABZRL,
+		KANBXHBM,
+		DECODE(M.GONGHLX,'C1',M.CANGKDM,'CD',M.XIAOHD,'M1',M.CANGKDM,'MD',M.XIAOHD,NULL) AS KEH,
+		to_char(EDIT_TIME,'yyyy-mm-dd HH24:mi:ss:ff3') as EDIT_TIME,
+		EDITOR,
+		ID
+		from
+		${dbSchemal1}XQJS_DINGDMX M
+		where
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysdm">
+				gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xiaohd">
+				XIAOHD = #xiaohd#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="leix">
+				LEIX = #leix#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="cangkdm">
+				cangkdm = #cangkdm#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdh">
+				dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gonghlx">
+				gonghlx = #gonghlx#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="fayrq">
+				fayrq = to_date(#fayrq#,'yyyy-mm-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="rq">
+				$rq$ 
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jiaofrq">
+			to_char(jiaofrq,case when  length(#jiaofrq#)=16 then 'yyyy-mm-dd HH24:mi'  else 'yyyy-mm-dd'  end ) = #jiaofrq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jihyz">
+				JIHYZ = #jihyz#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="id">
+				id = #id#
+			</isNotEmpty>
+			<isNotEmpty  prepend=" and " property="keh">
+			         <isEqual  property="gonghlx" compareValue="C1">
+				         cangkdm = #keh# 
+				     </isEqual>
+				     <isEqual  property="gonghlx" compareValue="CD">
+				         xiaohd = #keh# 
+				     </isEqual>
+				      <isEqual  property="gonghlx" compareValue="M1">
+				         cangkdm = #keh# 
+				     </isEqual>
+				     <isEqual  property="gonghlx" compareValue="MD">
+				         xiaohd = #keh# 
+				     </isEqual>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and "   property="start">
+				 <isEqual  property="sj" compareValue="0">
+				         TO_CHAR(ZUIWDHSJ,'yyyy-mm-dd HH24:mi') &gt;=#start# 
+				 </isEqual>
+				  <isEqual  property="sj" compareValue="1">
+				         XIAOHCBHSJ&gt;=#start# 
+				 </isEqual>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and "   property="end">
+				 <isEqual  property="sj" compareValue="0">
+				         TO_CHAR(ZUIWDHSJ,'yyyy-mm-dd HH24:mi') &lt;=#end# 
+				 </isEqual>
+				  <isEqual  property="sj" compareValue="1">
+				        XIAOHCBHSJ&lt;=#end# 
+				 </isEqual>
+			</isNotEmpty>
+		</dynamic>
+		order by
+		yaohqsrq
+	</select>
+
+	<select id="mjQueryDingdmxByLingjbh" resultClass="com.athena.xqjs.entity.ilorder.Dingdmx"
+		parameterClass="java.util.Map">
+		select
+			gcbh,
+			xiaohch,
+			shid,
+			yugsfqz,
+			fahd,
+			lujdm,
+			shul,
+			uabzuclx,
+			xiehd,
+			lingjbh,
+		    yaohqsrq,
+		    usbaozlx,
+		    zuihwhsj,
+		    dinghcj,
+		    uabzucrl,
+		    yaohjsrq,
+		    yijfl,
+		    xiehzt,
+		    xiaohccxh,
+		    usbaozrl,
+		    zuiwdhsj,
+		    uabzucsl,
+		    xiaohcsxsj,
+		    gongyslx,
+		    xiaohsj,
+		    zuihwhr,
+		    jiaofrq,
+		    leix,
+		    usercenter,
+		    zuizdhsj,
+		    zhuangt,
+		    xianbyhlx,
+		    danw,
+		    fayrq,
+		    gonghlx,
+		    xiaohcbhsj,
+		    uabzlx,
+		    jissl,
+		    dingdh,
+		    gongysdm,
+		    jihyz,
+		    cangkdm,
+		    id,
+		    editor,
+			to_char(edit_time,'yyyy-mm-dd HH24:mi:ss:ff3') as edit_time
+		from
+		${dbSchemal1}XQJS_DINGDMX 
+		where
+			1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdh">
+				dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysdm">
+				<![CDATA[gongysdm like '%$gongysdm$%']]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="rq">
+				$rq$
+			</isNotEmpty>
+		</dynamic>
+			ORDER BY 
+			lingjbh,
+			fayrq
+	</select>
+
+	<select id="mjQueryShul" parameterClass="java.util.Map"
+		resultClass="java.math.BigDecimal">
+		select
+			sum(shul) as shul
+		from
+			${dbSchemal1}XQJS_DINGDMX,
+			${dbSchemal1}XQJS_DINGD
+		where
+			1 = 1
+		and
+			${dbSchemal1}XQJS_DINGDMX.dingdh = ${dbSchemal1}XQJS_DINGD.dingdh
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdh">
+				${dbSchemal1}XQJS_DINGDMX.dingdh
+				= #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				${dbSchemal1}XQJS_DINGDMX.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="fahzq">
+				${dbSchemal1}XQJS_DINGD.fahzq =
+				#fahzq#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="mjQueryOrderNum" resultMap="Dingdmx">
+		select
+		dingdh,
+		xiaohch,
+		shid,
+		YUGSFQZ,
+		FAHD,
+		LUJDM,
+		SHUL,
+		UABZUCLX,
+		xiehd,
+		LINGJBH,
+		YAOHQSRQ,
+		usbaozlx,
+		ZUIHWHSJ,
+		DINGHCJ,
+		UABZUCRL,
+		YAOHJSRQ,
+		YIJFL,
+		XIEHZT,
+		xiaohccxh,
+		usbaozrl,
+		zuiwdhsj,
+		UABZUCSL,
+		xiaohcsxsj,
+		GONGYSLX,
+		xiaohsj,
+		ZUIHWHR,
+		JIAOFRQ,
+		LEIX,
+		USERCENTER,
+		zuizdhsj,
+		ZHUANGT,
+		xianbyhlx,
+		DANW,
+		FAYRQ,
+		GONGHLX,
+		xiaohcbhsj,
+		UABZLX,
+		JISSL,
+		GONGYSDM,
+		JIHYZ,
+		CANGKDM
+		from
+		${dbSchemal1}XQJS_DINGDMX
+		where
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+		</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysdm">
+				gongysdm = #gongysdm#
+		</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdh">
+         	<![CDATA[dingdh like '$dingdh$%']]>
+			</isNotEmpty>
+		</dynamic>
+		order by
+		dingdh desc
+	</select>
+
+	<insert id="mjInsertDingdmx">
+		insert into
+		${dbSchemal1}XQJS_DINGDMX
+		(
+		ID,
+		xiaohch,
+		shid,
+		YUGSFQZ,
+		FAHD,
+		LUJDM,
+		SHUL,
+		UABZUCLX,
+		xiehd,
+		LINGJBH,
+		YAOHQSRQ,
+		usbaozlx,
+		ZUIHWHSJ,
+		DINGHCJ,
+		UABZUCRL,
+		YAOHJSRQ,
+		YIJFL,
+		XIEHZT,
+		xiaohccxh,
+		chanx,
+		usbaozrl,
+		zuiwdhsj,
+		UABZUCSL,
+		xiaohcsxsj,
+		GONGYSLX,
+		xiaohsj,
+		ZUIHWHR,
+		JIAOFRQ,
+		LEIX,
+		USERCENTER,
+		zuizdhsj,
+		ZHUANGT,
+		xianbyhlx,
+		DANW,
+		FAYRQ,
+		GONGHLX,
+		xiaohcbhsj,
+		UABZLX,
+		JISSL,
+		DINGDH,
+		GONGYSDM,
+		JIHYZ,
+		CANGKDM,
+		active,
+		tangc,
+		creator,create_time,editor,edit_time,
+		LINGJMC,
+		GONGSMC,
+		xiaohd,
+		GCBH,
+		BEIHSJ2
+		)
+		values(
+		${dbSchemal1}XQJS_DINGDMX_SEQ.nextval,
+		#xiaohch#,
+		<dynamic>
+			<isNull property="shid">null,</isNull>
+			<isNotNull property="shid">to_date(#shid#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>	
+		<dynamic>
+			<isNull property="yugsfqz">null,</isNull>
+			<isNotNull property="yugsfqz">#yugsfqz#,</isNotNull>
+		</dynamic>
+		#fahd#,
+		#lujdm#,
+		#shul#,
+		#uabzuclx#,
+		#xiehd#,
+		#lingjbh#,
+		<dynamic>
+			<isNull property="yaohqsrq">null,</isNull>
+			<isNotNull property="yaohqsrq">to_date(substr(#yaohqsrq#,1,10),'yyyy-mm-dd'),</isNotNull>
+		</dynamic>
+		<dynamic>
+			<isNull property="usbaozlx">null,</isNull>
+			<isNotNull property="usbaozlx">#usbaozlx#,</isNotNull>
+		</dynamic>
+		<dynamic>
+			<isNull property="zuihwhsj">null,</isNull>
+			<isNotNull property="zuihwhsj">to_date(#zuihwhsj#,'yyyy-MM-dd HH24:mi:ss'),</isNotNull>
+		</dynamic>
+		#dinghcj#,
+		<dynamic>
+			<isNull property="uabzucrl">null,</isNull>
+			<isNotNull property="uabzucrl">#uabzucrl#,</isNotNull>
+		</dynamic>
+		decode(#yaohjsrq#,'null',null,to_date(substr(#yaohjsrq#,1,10),'yyyy-mm-dd')),
+		<dynamic>
+			<isNull property="yijfl">null,</isNull>
+			<isNotNull property="yijfl">#yijfl#,</isNotNull>
+		</dynamic>
+		#xiehzt#,
+		#xiaohccxh#,
+		#chanx#,
+		<dynamic>
+			<isNull property="usbaozrl">null,</isNull>
+			<isNotNull property="usbaozrl">#usbaozrl#,</isNotNull>
+		</dynamic>
+		<dynamic>
+			<isNull property="zuiwdhsj">to_date(substr(#jiaofrq#,1,10),'yyyy-mm-dd'),</isNull>
+			<isNotNull property="zuiwdhsj">to_date(#zuiwdhsj#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>
+		#uabzucsl#,
+		#xiaohcsxsj# ,
+		<dynamic>
+			<isNull property="gongyslx">null,</isNull>
+			<isNotNull property="gongyslx">#gongyslx#,</isNotNull>
+       </dynamic>
+       <dynamic>
+			<isNull property="xiaohsj">null,</isNull>
+			<isNotNull property="xiaohsj">to_date(#xiaohsj#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>
+		#zuihwhr#,
+		case when #jiaofrq#='null' then null when length(#jiaofrq#)=16 then to_date(#jiaofrq#,'yyyy-mm-dd HH24:mi')
+		else to_date(substr(#jiaofrq#,1,10),'yyyy-mm-dd') end ,
+		<dynamic>
+		   <isNull property="leix">null,</isNull>
+			<isNotNull property="leix">#leix#,</isNotNull>
+		</dynamic>
+		#usercenter#,
+		<dynamic>
+			<isNull property="zuizdhsj">to_date(substr(#jiaofrq#,1,10),'yyyy-mm-dd'),</isNull>
+			<isNotNull property="zuizdhsj">to_date(#zuizdhsj#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>
+		#zhuangt#,
+		<dynamic>
+			<isNull property="xianbyhlx">null,</isNull>
+			<isNotNull property="xianbyhlx">#xianbyhlx#,</isNotNull>
+		</dynamic>
+		#danw#,
+		<dynamic>
+			<isNotNull property="faysj">to_date(#faysj#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+			<isNull property="faysj">decode(#fayrq#,'null',null,to_date(substr(#fayrq#,1,10),'yyyy-mm-dd')),</isNull>
+		</dynamic>
+		#gonghlx#,
+		#xiaohcbhsj#,
+		#uabzlx#,
+		<dynamic>
+			<isNull property="jissl">null,</isNull>
+			<isNotNull property="jissl">#jissl#,</isNotNull>
+		</dynamic>
+		#dingdh#,
+		#gongysdm#,
+		#jihyz#,
+		<dynamic>
+			<isNull property="cangkdm">null,</isNull>
+			<isNotNull property="cangkdm">substr(#cangkdm#,0,3),</isNotNull>
+		</dynamic>
+		#active#,
+		<dynamic>
+			<isNull property="tangc">null,</isNull>
+			<isNotNull property="tangc">#tangc#,</isNotNull>
+		</dynamic>
+		#creator#,
+		to_timestamp(#create_time#, 'yyyy-mm-dd HH24:mi:ss:FF3'),
+		#editor#,
+		to_timestamp(#edit_time#, 'yyyy-mm-dd HH24:mi:ss:FF3'),
+		#lingjmc#,
+		#gongsmc#,
+		#xiaohd#,
+		#gcbh#,
+		<dynamic>
+			<isNull property="beihsj2">null</isNull>
+			<isNotNull property="beihsj2">#beihsj2#</isNotNull>
+		</dynamic>
+		)
+	</insert>
+	<!-- 0011486 xh 20150701 PJ订单均分 -->
+	<!--清空PJ均分订单中间表  -->
+	<delete id="mjDeleteVJJF" parameterClass="java.util.Map">
+	  delete from  ${dbSchemal1}XQJS_DINGDMX_MJJF where USERCENTER=#usercenter#
+	</delete>
+	<!-- 将需要均分的数据插入到MJ均分表中 -->
+	<insert id="mjInsertDingdmxvjjf" parameterClass="java.lang.String" >
+	insert into  ${dbSchemal1}XQJS_DINGDMX_MJJF(
+	    ID          ,
+	    MID         ,
+	    DINGDH      ,
+	    LINGJBH     ,
+	    USERCENTER  ,
+	    GONGYSDM    ,
+	    GONGYSLX    ,
+	    YAOHQSRQ    ,
+	    YAOHJSRQ    ,
+	    CANGKDM     ,
+	    XIEHZT      ,
+	    FAHD        ,
+	    DINGHCJ     ,
+	    SHUL        ,
+	    DANW        ,
+	    UABZLX      ,
+	    UABZUCLX    ,
+	    UABZUCSL    ,
+	    UABZUCRL    ,
+	    FAYRQ       ,
+	    JIAOFRQ     ,
+	    ZHUANGT     ,
+	    YUGSFQZ     ,
+	    LEIX        ,
+	    LUJDM       ,
+	    JIHYZ       ,
+	    ZUIHWHR     ,
+	    ZUIHWHSJ    ,
+	    JISSL       ,
+	    GONGHLX     ,
+	    YIJFL       ,
+	    YIZZL       ,
+	    YAOHLGSZL   ,
+	    YAOHLGSYJF  ,
+	    YAOHLGSYZZ  ,
+	    YIJFLDDMX   ,
+	    YIZZLDDMX   ,
+	    SHID        ,
+	    ZUIZDHSJ    ,
+	    ZUIWDHSJ    ,
+	    XIAOHSJ     ,
+	    XIAOHCBHSJ  ,
+	    XIAOHCSXSJ  ,
+	    XIEHD       ,
+	    XIANBYHLX   ,
+	    USBAOZLX    ,
+	    USBAOZRL    ,
+	    XIAOHCH     ,
+	    XIAOHCCXH   ,
+	    CHANX       ,
+	    XIAOHD      ,
+	    FENPXH      ,
+	    EDITOR      ,
+	    EDIT_TIME   ,
+	    CREATOR     ,
+	    CREATE_TIME ,
+	    ACTIVE      ,
+	    KANBXHBM    ,
+	    TANGC       ,
+	    PAICZT      ,
+	    GCBH        ,
+	    BEIHSJ2     ,
+	    LINGJMC     ,
+	    GONGSMC     ,
+	    NEIBYHZX    ,
+	    PCKAISSJ    ,
+	    PCJIESSJ    ,
+	    PCEDITOR    ,
+	    PCEDIT_TIME ,
+	    PCFLAG      ,
+	    UABZGS,
+	    JILTS       ,
+	    UAGS
+	   )
+		SELECT    
+		${dbSchemal1}XQJS_DINGDMX_SEQ.nextval ,
+		ID          ,
+	    DINGDH      ,
+	    LINGJBH     ,
+	    USERCENTER  ,
+	    GONGYSDM    ,
+	    GONGYSLX    ,
+	    YAOHQSRQ    ,
+	    YAOHJSRQ    ,
+	    CANGKDM     ,
+	    XIEHZT      ,
+	    FAHD        ,
+	    DINGHCJ     ,
+	    SHUL        ,
+	    DANW        ,
+	    UABZLX      ,
+	    UABZUCLX    ,
+	    UABZUCSL    ,
+	    UABZUCRL    ,
+	    FACSJ as FAYRQ       ,
+	    DAOHSJ      ,
+	    ZHUANGT     ,
+	    YUGSFQZ     ,
+	    LEIX        ,
+	    LUJDM       ,
+	    JIHYZ       ,
+	    ZUIHWHR     ,
+	    ZUIHWHSJ    ,
+	    JISSL       ,
+	    GONGHLX     ,
+	    YIJFL       ,
+	    YIZZL       ,
+	    YAOHLGSZL   ,
+	    YAOHLGSYJF  ,
+	    YAOHLGSYZZ  ,
+	    YIJFLDDMX   ,
+	    YIZZLDDMX   ,
+	    DAOHSJ as SHID        ,
+	    DAOHSJ as  ZUIZDHSJ    ,
+	    DAOHSJ  as   ZUIWDHSJ ,
+	    DAOHSJ as  XIAOHSJ     ,
+	    XIAOHCBHSJ  ,
+	    XIAOHCSXSJ  ,
+	    XIEHD       ,
+	    XIANBYHLX   ,
+	    USBAOZLX    ,
+	    USBAOZRL    ,
+	    XIAOHCH     ,
+	    XIAOHCCXH   ,
+	    CHANX       ,
+	    XIAOHD      ,
+	    FENPXH      ,
+	    EDITOR      ,
+	    EDIT_TIME   ,
+	    CREATOR     ,
+	    CREATE_TIME ,
+	    ACTIVE      ,
+	    KANBXHBM    ,
+	    TANGC       ,
+	    PAICZT      ,
+	    GCBH      ,
+	    BEIHSJ2     ,
+	    LINGJMC     ,
+	    GONGSMC     ,
+	    NEIBYHZX    ,
+	    PCKAISSJ    ,
+	    PCJIESSJ    ,
+	    PCEDITOR    ,
+	    PCEDIT_TIME ,
+	    PCFLAG      ,
+	    UABZGS,
+	    JILTS,
+	    (UAPJGS+YINGY) UAGS    FROM ( 
+		SELECT   B.JILTS, A.* ,FLOOR(UABZGS/JILTS) UAPJGS ,CASE WHEN  MOD(TO_NUMBER(UABZGS) ,TO_NUMBER(JILTS)) <![CDATA[ >= ]]> RK THEN 1 ELSE 0 END  YINGY FROM
+		( SELECT   RANK() OVER(PARTITION BY N.ID  ORDER BY N.DAOHSJ) RK,N.*,
+		 CASE WHEN  (TO_NUMBER(N.USBAOZRL)=0  ) THEN 0 ELSE FLOOR(N.SHUL/N.USBAOZRL) END UABZGS 
+		 FROM (SELECT M.*,Y.DAOHSJ,Y.FACSJ  FROM ${dbSchemal1}XQJS_DINGDMX M ,${dbSchemal1}CKX_YUNSSK Y WHERE M.DINGDH=#dingdh# AND M.LEIX='9' AND M.SHUL<![CDATA[ > ]]>0  
+		 AND　M.USERCENTER= Y.USERCENTER　AND M.GCBH=Y.GCBH AND substr(M.XIEHZT,0,4)=Y.XIEHZTBH AND TO_CHAR(M.JIAOFRQ,'YYYYMMDD')=substr(Y.XUH,0,8) ) N ) A,
+		 
+		 (SELECT Y.USERCENTER,Y.XIEHZTBH,Y.GCBH,substr(Y.XUH,0,8) XUH,COUNT(*) JILTS
+		       FROM   ${dbSchemal1}CKX_YUNSSK Y  GROUP BY  Y.USERCENTER,Y.XIEHZTBH,Y.GCBH,substr(Y.XUH,0,8) ) B
+		 WHERE A.USERCENTER= B.USERCENTER AND B.XIEHZTBH=substr(A.XIEHZT,0,4) AND TO_CHAR(A.JIAOFRQ,'YYYYMMDD')=B.XUH
+		 AND A.GCBH=B.GCBH ) C 	where (UAPJGS+YINGY)<![CDATA[ > ]]>0
+	</insert>
+	<!-- 根据PJ均分表中的数据删除订单明细表中的需均分的记录 -->
+	<delete id="mjDeleteVJjfmx" parameterClass="java.lang.String">
+	delete  from   ${dbSchemal1}XQJS_DINGDMX where dingdh=#dingdh# and  id in (select distinct mid  from ${dbSchemal1}XQJS_DINGDMX_MJJF )
+	</delete>
+	<!-- 查询PJ均分表中的数据 -->
+	<select id="mjQueryVJjf" parameterClass="java.lang.String" resultClass="com.athena.xqjs.entity.ilorder.Dingdmx"> 
+	select 
+	    ID       ,
+	    DINGDH      ,
+	    LINGJBH     ,
+	    USERCENTER  ,
+	    GONGYSDM    ,
+	    GONGYSLX    ,
+	    YAOHQSRQ    ,
+	    YAOHJSRQ    ,
+	    CANGKDM     ,
+	    XIEHZT      ,
+	    FAHD        ,
+	    DINGHCJ     ,
+	    SHUL        ,
+	    DANW        ,
+	    UABZLX      ,
+	    UABZUCLX    ,
+	    UABZUCSL    ,
+	    UABZUCRL    ,
+	    to_char(fayrq,'YYYY-MM-DD hh24:mi')  FAYRQ       ,
+	    to_char(jiaofrq,'YYYY-MM-DD hh24:mi') JIAOFRQ     ,
+	    ZHUANGT     ,
+	    YUGSFQZ     ,
+	    LEIX        ,
+	    LUJDM       ,
+	    JIHYZ       ,
+	    ZUIHWHR     ,
+	    ZUIHWHSJ    ,
+	    JISSL       ,
+	    GONGHLX     ,
+	    YIJFL       ,
+	    YIZZL       ,
+	    YAOHLGSZL   ,
+	    YAOHLGSYJF  ,
+	    YAOHLGSYZZ  ,
+	    YIJFLDDMX   ,
+	    YIZZLDDMX   ,
+	    SHID        ,
+	    ZUIZDHSJ    ,
+	    ZUIWDHSJ    ,
+	    XIAOHSJ     ,
+	    XIAOHCBHSJ  ,
+	    XIAOHCSXSJ  ,
+	    XIEHD       ,
+	    XIANBYHLX   ,
+	    USBAOZLX    ,
+	    USBAOZRL    ,
+	    XIAOHCH     ,
+	    XIAOHCCXH   ,
+	    CHANX       ,
+	    XIAOHD      ,
+	    FENPXH      ,
+	    EDITOR      ,
+	    EDIT_TIME   ,
+	    CREATOR     ,
+	    CREATE_TIME ,
+	    ACTIVE      ,
+	    KANBXHBM    ,
+	    TANGC       ,
+	    PAICZT      ,
+	    GCBH        ,
+	    BEIHSJ2     ,
+	    LINGJMC     ,
+	    GONGSMC     ,
+	    NEIBYHZX    ,
+	    PCKAISSJ    ,
+	    PCJIESSJ    ,
+	    PCEDITOR    ,
+	    PCEDIT_TIME ,
+	    PCFLAG      
+	    from   ${dbSchemal1}XQJS_DINGDMX_MJJF where dingdh=#dingdh# 
+	</select>
+	<!-- 更新PJ均分的数据 -->	
+	<update id="mjUpdatePjjf" parameterClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+	update   ${dbSchemal1}XQJS_DINGDMX_MJJF  set 
+	zuiwdhsj=to_date(#zuiwdhsj#,'yyyy-MM-dd HH24:mi'),
+	zuizdhsj=to_date(#zuizdhsj#,'yyyy-MM-dd HH24:mi'),
+	fayrq=to_date(#fayrq#,'yyyy-MM-dd HH24:mi')
+	where ID=#id#
+	</update>
+	
+	
+	
+    <!--将PJ均分表中的记录插入到订单明细中  -->
+     <insert id="mjInsertDingdmxfromvjjf" parameterClass="java.lang.String">
+    insert into  ${dbSchemal1}XQJS_DINGDMX(
+	    ID       ,
+	    DINGDH      ,
+	    LINGJBH     ,
+	    USERCENTER  ,
+	    GONGYSDM    ,
+	    GONGYSLX    ,
+	    YAOHQSRQ    ,
+	    YAOHJSRQ    ,
+	    CANGKDM     ,
+	    XIEHZT      ,
+	    FAHD        ,
+	    DINGHCJ     ,
+	    SHUL        ,
+	    DANW        ,
+	    UABZLX      ,
+	    UABZUCLX    ,
+	    UABZUCSL    ,
+	    UABZUCRL    ,
+	    FAYRQ       ,
+	    JIAOFRQ     ,
+	    ZHUANGT     ,
+	    YUGSFQZ     ,
+	    LEIX        ,
+	    LUJDM       ,
+	    JIHYZ       ,
+	    ZUIHWHR     ,
+	    ZUIHWHSJ    ,
+	    JISSL       ,
+	    GONGHLX     ,
+	    YIJFL       ,
+	    YIZZL       ,
+	    YAOHLGSZL   ,
+	    YAOHLGSYJF  ,
+	    YAOHLGSYZZ  ,
+	    YIJFLDDMX   ,
+	    YIZZLDDMX   ,
+	    SHID        ,
+	    ZUIZDHSJ    ,
+	    ZUIWDHSJ    ,
+	    XIAOHSJ     ,
+	    XIAOHCBHSJ  ,
+	    XIAOHCSXSJ  ,
+	    XIEHD       ,
+	    XIANBYHLX   ,
+	    USBAOZLX    ,
+	    USBAOZRL    ,
+	    XIAOHCH     ,
+	    XIAOHCCXH   ,
+	    CHANX       ,
+	    XIAOHD      ,
+	    FENPXH      ,
+	    EDITOR      ,
+	    EDIT_TIME   ,
+	    CREATOR     ,
+	    CREATE_TIME ,
+	    ACTIVE      ,
+	    KANBXHBM    ,
+	    TANGC       ,
+	    PAICZT      ,
+	    GCBH        ,
+	    BEIHSJ2     ,
+	    LINGJMC     ,
+	    GONGSMC     ,
+	    NEIBYHZX    ,
+	    PCKAISSJ    ,
+	    PCJIESSJ    ,
+	    PCEDITOR    ,
+	    PCEDIT_TIME ,
+	    PCFLAG      
+	   )
+		SELECT    
+		ID          ,
+	    DINGDH      ,
+	    LINGJBH     ,
+	    USERCENTER  ,
+	    GONGYSDM    ,
+	    GONGYSLX    ,
+	    YAOHQSRQ    ,
+	    YAOHJSRQ    ,
+	    CANGKDM     ,
+	    XIEHZT      ,
+	    FAHD        ,
+	    DINGHCJ     ,
+	    USBAOZRL*UAGS   SHUL,
+	    DANW        ,
+	    UABZLX      ,
+	    UABZUCLX    ,
+	    UABZUCSL    ,
+	    UABZUCRL    ,
+	    FAYRQ       ,
+	    JIAOFRQ     ,
+	    ZHUANGT     ,
+	    YUGSFQZ     ,
+	    LEIX        ,
+	    LUJDM       ,
+	    JIHYZ       ,
+	    ZUIHWHR     ,
+	    ZUIHWHSJ    ,
+	    JISSL       ,
+	    GONGHLX     ,
+	    YIJFL       ,
+	    YIZZL       ,
+	    YAOHLGSZL   ,
+	    YAOHLGSYJF  ,
+	    YAOHLGSYZZ  ,
+	    YIJFLDDMX   ,
+	    YIZZLDDMX   ,
+	    SHID        ,
+	    ZUIZDHSJ    ,
+	    ZUIWDHSJ    ,
+	    XIAOHSJ     ,
+	    XIAOHCBHSJ  ,
+	    XIAOHCSXSJ  ,
+	    XIEHD       ,
+	    XIANBYHLX   ,
+	    USBAOZLX    ,
+	    USBAOZRL    ,
+	    XIAOHCH     ,
+	    XIAOHCCXH   ,
+	    CHANX       ,
+	    XIAOHD      ,
+	    FENPXH      ,
+	    EDITOR      ,
+	    EDIT_TIME   ,
+	    CREATOR     ,
+	    CREATE_TIME ,
+	    ACTIVE      ,
+	    KANBXHBM    ,
+	    TANGC       ,
+	    PAICZT      ,
+	    GCBH        ,
+	    BEIHSJ2     ,
+	    LINGJMC     ,
+	    GONGSMC     ,
+	    NEIBYHZX    ,
+	    PCKAISSJ    ,
+	    PCJIESSJ    ,
+	    PCEDITOR    ,
+	    PCEDIT_TIME ,
+	    PCFLAG  FROM 	${dbSchemal1}XQJS_DINGDMX_MJJF where dingdh=#dingdh# 
+		</insert>
+		
+		<!--查询物流路径信息 -->
+		<select id="mjQueryWulljxx" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.common.Wullj" >
+        SELECT
+		usercenter,
+		fenpqh,
+		lingjbh,
+		gongysbh,
+		lujbh,
+		lujmc,
+		fahd,
+		waibms,
+		zhidgys,
+		jiaofm,
+		beihzq,
+		yunszq,
+		gcbh ,
+		xiehztbh,
+		songhpc,
+		mudd,
+		dinghck,
+		mos2,
+		cangkshpc2,
+		cangkshsj2,
+		cangkfhsj2,
+		beihsj2,
+		ibeihsj2,
+		pbeihsj2,
+		beihsjc,
+		xianbck,
+		mos,
+		cangkshpc,
+		cangkshsj,
+		cangkfhsj,
+		beihsj,
+		ibeihsj,
+		pbeihsj,
+		wulgyyz,
+		wulgyyz1,
+		wulgyyz2
+		FROM
+		${dbSchemal3}ckx_wullj
+		WHERE
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+				zhizlx = #zhizlx#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">
+				gongysbh = #gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehzt">
+				xiehztbh = #xiehzt#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">
+				fenpqh = #fenpqh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="waibms">
+				waibms = #waibms#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">
+				mudd = #mudd#
+			</isNotEmpty>
+		</dynamic>
+       </select>
+		<!-- end   0011486 -->	
+	<!-- 创建临时订单 -->
+	<insert id="mjCreateTempDingdmx" parameterClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+		insert into
+		${dbSchemal1}XQJS_DINGDMX
+		(
+		ID,
+		xiaohch,
+		shid,
+		YUGSFQZ,
+		FAHD,
+		LUJDM,
+		SHUL,
+		UABZUCLX,
+		xiehd,
+		LINGJBH,
+		YAOHQSRQ,
+		usbaozlx,
+		ZUIHWHSJ,
+		DINGHCJ,
+		UABZUCRL,
+		YAOHJSRQ,
+		YIJFL,
+		XIEHZT,
+		xiaohccxh,
+		chanx,
+		usbaozrl,
+		zuiwdhsj,
+		UABZUCSL,
+		xiaohcsxsj,
+		GONGYSLX,
+		xiaohsj,
+		ZUIHWHR,
+		JIAOFRQ,
+		LEIX,
+		USERCENTER,
+		zuizdhsj,
+		ZHUANGT,
+		xianbyhlx,
+		DANW,
+		FAYRQ,
+		GONGHLX,
+		xiaohcbhsj,
+		UABZLX,
+		JISSL,
+		DINGDH,
+		GONGYSDM,
+		JIHYZ,
+		CANGKDM,
+		active,
+		tangc,
+		creator,create_time,editor,edit_time,
+		LINGJMC,
+		GONGSMC,
+		xiaohd,
+		GCBH,
+		BEIHSJ2
+		)
+		values(
+		${dbSchemal1}XQJS_DINGDMX_SEQ.nextval,
+		#xiaohch#,
+		<dynamic>
+			<isNull property="shid">null,</isNull>
+			<isNotNull property="shid">to_date(#shid#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>	
+		<dynamic>
+			<isNull property="yugsfqz">null,</isNull>
+			<isNotNull property="yugsfqz">#yugsfqz#,</isNotNull>
+		</dynamic>
+		#fahd#,
+		#lujdm#,
+		#shul#,
+		#uabzuclx#,
+		#xiehd#,
+		#lingjbh#,
+		<dynamic>
+			<isNull property="yaohqsrq">null,</isNull>
+			<isNotNull property="yaohqsrq">to_date(substr(#yaohqsrq#,1,10),'yyyy-mm-dd'),</isNotNull>
+		</dynamic>
+		<dynamic>
+			<isNull property="usbaozlx">null,</isNull>
+			<isNotNull property="usbaozlx">#usbaozlx#,</isNotNull>
+		</dynamic>
+		<dynamic>
+			<isNull property="zuihwhsj">null,</isNull>
+			<isNotNull property="zuihwhsj">to_date(#zuihwhsj#,'yyyy-MM-dd HH24:mi:ss'),</isNotNull>
+		</dynamic>
+		#dinghcj#,
+		#uabzucrl#,
+		decode(#yaohjsrq#,'null',null,to_date(substr(#yaohjsrq#,1,10),'yyyy-mm-dd')),
+		<dynamic>
+			<isNull property="yijfl">null,</isNull>
+			<isNotNull property="yijfl">#yijfl#,</isNotNull>
+		</dynamic>
+		#xiehzt#,
+		#xiaohccxh#,
+		#chanx#,
+		#usbaozrl#,
+		<dynamic>
+			<isNull property="zuiwdhsj">null,</isNull>
+			<isNotNull property="zuiwdhsj">to_date(#zuiwdhsj#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>
+		#uabzucsl#,
+		#xiaohcsxsj# ,
+		<dynamic>
+			<isNull property="gongyslx">null,</isNull>
+			<isNotNull property="gongyslx">#gongyslx#,</isNotNull>
+       </dynamic>
+       <dynamic>
+			<isNull property="xiaohsj">null,</isNull>
+			<isNotNull property="xiaohsj">to_date(#xiaohsj#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>
+		#zuihwhr#,
+		decode(#jiaofrq#,'null',null,to_date(#jiaofrq#,'yyyy-mm-dd HH24:mi')),
+		<dynamic>
+		   <isNull property="leix">null,</isNull>
+			<isNotNull property="leix">#leix#,</isNotNull>
+		</dynamic>
+		#usercenter#,
+		<dynamic>
+			<isNull property="zuizdhsj">null,</isNull>
+			<isNotNull property="zuizdhsj">to_date(#zuizdhsj#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>
+		#zhuangt#,
+		<dynamic>
+			<isNull property="xianbyhlx">null,</isNull>
+			<isNotNull property="xianbyhlx">#xianbyhlx#,</isNotNull>
+		</dynamic>
+		#danw#,
+		decode(#fayrq#,'null',null,to_date(substr(#fayrq#,1,10),'yyyy-mm-dd')),
+		#gonghlx#,
+		#xiaohcbhsj#,
+		#uabzlx#,
+		<dynamic>
+			<isNull property="jissl">null,</isNull>
+			<isNotNull property="jissl">#jissl#,</isNotNull>
+		</dynamic>
+		#dingdh#,
+		#gongysdm#,
+		#jihyz#,
+		<dynamic>
+			<isNull property="cangkdm">null,</isNull>
+			<isNotNull property="cangkdm">substr(#cangkdm#,0,3),</isNotNull>
+		</dynamic>
+		#active#,
+		<dynamic>
+			<isNull property="tangc">null,</isNull>
+			<isNotNull property="tangc">#tangc#,</isNotNull>
+		</dynamic>
+		#creator#,
+		to_timestamp(#create_time#, 'yyyy-mm-dd HH24:mi:ss:FF3'),
+		#editor#,
+		to_timestamp(#edit_time#, 'yyyy-mm-dd HH24:mi:ss:FF3'),
+		#lingjmc#,
+		#gongsmc#,
+		#xiaohd#,
+		#gcbh#,
+		#beihsj2#
+		)
+	</insert>
+
+	<update id="mjUpdateDingdmx" parameterClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+		update ${dbSchemal1}XQJS_DINGDMX set
+		xiaohch=#xiaohch#,
+		shid=#shid#,
+		YUGSFQZ=#yugsfqz#,
+		FAHD=#fahd#,
+		LUJDM=#lujdm#,
+		SHUL=#shul#,
+		UABZUCLX=#uabzuclx#,
+		xiehd=#xiehd#,
+		LINGJBH=#lingjbh#,
+		YAOHQSRQ=#yaohqsrq#,
+		usbaozlx=#usbaozlx#,
+		ZUIHWHSJ=#zuihwhsj#,
+		DINGHCJ=#dinghcj#,
+		UABZUCRL=#uabzucrl#,
+		YAOHJSRQ=#yaohjsrq#,
+		YIJFL=#yijfl#,
+		XIEHZT=#xiehzt#,
+		xiaohccxh=#xiaohccxh#,
+		usbaozrl=#usbaozrl#,
+		zuiwdhsj=#zuiwdhsj#,
+		UABZUCSL=#uabzucsl#,
+		xiaohcsxsj=#xiaohcsxsj#,
+		GONGYSLX=#gongyslx#,
+		xiaohsj=#xiaohsj#,
+		ZUIHWHR=#zuihwhr#,
+		JIAOFRQ=#jiaofrq#,
+		LEIX=#leix#,
+		USERCENTER=#usercenter#,
+		zuizdhsj=#zuizdhsj#,
+		ZHUANGT=#zhuangt#,
+		xianbyhlx=#xianbyhlx#,
+		DANW=#danw#,
+		FAYRQ=#fayrq#,
+		GONGHLX=#gonghlx#,
+		xiaohcbhsj=#xiaohcbhsj#,
+		UABZLX=#uabzlx#,
+		JISSL=#jissl#,
+		DINGDH=#dingdh#,
+		GONGYSDM=#gongysdm#,
+		JIHYZ=#jihyz#,
+		CANGKDM=#cangkdm#
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+
+	<update id="mjUpdateDingdmxForKd" >
+		update
+			${dbSchemal1}XQJS_DINGDMX
+		set
+			SHUL=#shul#
+			<dynamic>
+				<isNotEmpty prepend="  , " property="faykssj">
+					yaohqsrq = to_date(substr(#faykssj#,1,10),'yyyy-mm-dd')
+				</isNotEmpty>
+				<isNotEmpty prepend="  , " property="fayjssj">
+					yaohjsrq = to_date(substr(#fayjssj#,1,10),'yyyy-mm-dd')
+				</isNotEmpty>
+			</dynamic>
+		where
+			1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">
+				ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<delete id="mjDeleteDingdmx" parameterClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+		delete from ${dbSchemal1}XQJS_DINGDMX where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdh">dingdh = #dingdh#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<delete id="mjDeleteDingdMxByNoDingdh" >
+		delete from ${dbSchemal1}XQJS_DINGDMX mx  where not exists (select dingdh from ${dbSchemal1}xqjs_dingd dd where mx.dingdh = dd.dingdh)  and mx.gonghlx in ('PP','PS','PJ','NP','NS','NJ','VJ','MJ') 
+	</delete>
+	
+
+	<!-- *******************李智(start)******************* -->
+	<resultMap class="com.athena.xqjs.entity.ilorder.Dingdmx" id="dingdmxByParam">
+		<result column="ID" property="id" />
+		<result column="DINGDH" property="dingdh" />
+		<result column="LINGJBH" property="lingjbh" />
+		<result column="GONGYSDM" property="gongysdm" />
+		<result column="GONGSMC" property="gongsmc" />
+		<result column="GONGYSLX" property="gongyslx" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="CANGKDM" property="cangkdm" />
+		<result column="UABZUCRL" property="uabzucrl" />
+		<result column="UABZLX" property="uabzlx" />
+		<result column="UABZUCSL" property="uabzucsl" />
+		<result column="DANW" property="danw" />
+		<result column="GONGHLX" property="gonghlx" />
+		<result column="SHUL" property="shul" />
+		<result column="YAOHLGSZL" property="yaohlgszl" />
+		<result column="YAOHLGSYJF" property="yaohlgsyjf" />
+		<result column="YAOHLGSYZZ" property="yaohlgsyzz" />
+		<result column="JFBL" property="jfbl" />
+		<result column="JIHYZ" property="jihyz" />
+		<result column="JIAOFRQ" property="jiaofrq" />
+		<result column="LINGJMC" property="lingjmc" />
+		
+		<result column="FAWMC" property="fawmc" />
+		<result column="ZHONGWMC" property="zhongwmc" />
+	</resultMap>
+
+	<select id="mjQueryDingdmxByParam" resultMap="dingdmxByParam">
+		select
+		t1.ID,
+		t1.DINGDH,
+		t1.LINGJBH,
+		t3.ZHONGWMC,
+		t1.GONGYSDM,
+		t1.LINGJMC,
+		t4.GONGSMC,
+		t1.GONGYSLX,
+		t1.USERCENTER,
+		t1.CANGKDM,
+		t1.UABZUCRL,
+		t1.UABZLX,
+		t1.UABZUCSL,
+		t1.DANW,
+		t1.SHUL,
+		t1.GONGHLX,
+		t1.YAOHLGSZL,
+		t1.YAOHLGSYJF,
+		t1.YAOHLGSYZZ,
+		case 
+			when t1.SHUL = 0 then
+			   0
+			else
+			   (t1.YIJFL + t1.YIZZL)/t1.SHUL
+		end  as JFBL,
+		t1.JIHYZ,
+		t1.JIAOFRQ,
+		t3.FAWMC
+		from ${dbSchemal1}XQJS_DINGDMX t1
+		join
+		(select * from ${dbSchemal1}xqjs_dingd t where 1=1 
+		<dynamic>
+		<isNotEmpty prepend=" and " property="dingdzt1">
+		<![CDATA[t.dingdzt>=#dingdzt1#]]>
+			</isNotEmpty>
+			 <isNotEmpty prepend=" and " property="dingdzt2">
+			  			<![CDATA[t.dingdzt<=#dingdzt2#]]>
+            </isNotEmpty>
+		<isNotEmpty prepend=" and " property="dingdlx">
+		t.dingdlx = #dingdlx# or t.dingdlx = #dingdlx1#
+			</isNotEmpty>
+			
+		</dynamic>
+		) t2
+			 on (t1.DINGDH = t2.DINGDH)
+		left join ${dbSchemal3}CKX_LINGJ t3 
+			 on (t1.LINGJBH = t3.LINGJBH and t1.usercenter = t3.lingjbh)
+		left join
+		${dbSchemal3}CKX_GONGYS t4 
+			 on (t1.GONGYSDM = t4.GCBH and t1.usercenter = t4.usercenter)
+	    WHERE 1=1
+		<dynamic>
+		    <isNotEmpty prepend=" and " property="dingdzt1">
+			            <![CDATA[T1.zhuangt>=#dingdzt1#]]>
+            </isNotEmpty>
+            <isNotEmpty prepend=" and " property="dingdzt2">
+			  			<![CDATA[T1.zhuangt<=#dingdzt2#]]>
+            </isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="jihyz">t1.JIHYZ = #jihyz#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">t1.USERCENTER =#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh"><![CDATA[t1.DINGDH = #dingdh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[t1.GONGYSDM =#gongysdm#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[t1.LINGJBH =#lingjbh#]]>
+			</isNotEmpty>
+			<!-- 3大/2小/1等于 -->
+			<isEqual prepend="  " property="searchSymbols" compareValue="1">
+				<!-- 交付比例 -->
+				<isNotEmpty prepend=" and " property="jfbl">
+					<![CDATA[t1.YAOHLGSYJF/t1.YAOHLGSZL = #jfbl#]]>
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="  " property="searchSymbols" compareValue="2">
+				<!-- 交付比例 -->
+				<isNotEmpty prepend=" and " property="jfbl">
+					<![CDATA[t1.YAOHLGSYJF/t1.YAOHLGSZL <= #jfbl#]]>
+				</isNotEmpty>
+			</isEqual>
+			<isEqual prepend="  " property="searchSymbols" compareValue="3">
+				<!-- 交付比例 -->
+				<isNotEmpty prepend=" and " property="jfbl">
+					<![CDATA[t1.YAOHLGSYJF/t1.YAOHLGSZL >= #jfbl#]]>
+				</isNotEmpty>
+			</isEqual>
+			<isNotEmpty prepend="and" property="dingdzzsj_start">
+                <![CDATA[t1.JIAOFRQ >= to_date(#jiaofrqStart#,'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="dingdzzsj_end">
+                <![CDATA[t1.JIAOFRQ <= to_date(#jiaofrqEnd#,'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+		</dynamic>
+		order by
+		JIAOFRQ desc
+	</select>
+
+	<resultMap class="com.athena.xqjs.entity.ilorder.Dingdmx" id="allowGzsl">
+		<result column="ALLOWGZSL" property="allowGzsl" />
+	</resultMap>
+	<!-- 查询可以终止的数量 -->
+	<select id="mjQueryMxAllowGzsl" resultMap="allowGzsl">
+		select sum(YAOHSL) as ALLOWGZSL from ${dbSchemal1}CK_YAOHL t1
+		where
+		<!-- 选择的订单零件 -->
+		t1.USERCENTER = #usercenter# and t1.DINGDH = #dingdh# and t1.LINGJBH =
+		#lingjbh# and t1.DINGDMXID=#dingdmxid#
+		<!-- 要货令状态= 01:表达 -->    
+		<![CDATA[and t1.YAOHLZT = #yaohlzt#]]>
+		group by t1.DINGDH,t1.LINGJBH,t1.DINGDMXID
+
+	</select>
+	<!-- *******************李智(end)******************* -->
+	
+	<update id="mjUpdateDingdmxZt" parameterClass="java.util.Map">
+		update ${dbSchemal1}XQJS_DINGDMX set
+		ZHUANGT=#zhuangt#
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdh">DINGDH = #dingdh#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	<delete id="mjDeleteDingdmxList" parameterClass="java.util.Map">
+		delete from ${dbSchemal1}XQJS_DINGDMX where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysdm">gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdh">dingdh = #dingdh#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	<select id="mjSumShul" parameterClass="java.util.Map" resultClass="String">
+	  select sum(t.shul)
+          from ${dbSchemal1}XQJS_DINGDMX t
+         where 1=1
+         <isNotEmpty prepend="  and " property="dingdh">dingdh = #dingdh#
+			</isNotEmpty>
+          <isNotEmpty prepend="  and " property="lingjbh">lingjbh = #lingjbh#
+			</isNotEmpty>
+          <isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+           <isNotEmpty prepend="  and " property="gongysdm">gongysdm = #gongysdm#
+			</isNotEmpty>
+           and t.yaohqsrq between to_date(#qisrq#, 'yyyy-mm-dd') and
+               to_date(#jiesrq#, 'yyyy-mm-dd')
+	
+	</select>
+	<select id="mjQueryCgbh" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+	select cangkdm,max(gcbh) from ${dbSchemal1}XQJS_DINGDMX  where 1=1
+	<isNotEmpty prepend="  and " property="dingdh">dingdh = #dingdh#
+	</isNotEmpty>
+	group by cangkdm
+	</select>
+	
+	
+	
+	<!--  wuyichao 2014-10-29 临时订单导入  -->
+	<select id="mjQueryUsercenters" resultClass="java.lang.String">
+		select
+			 usercenter
+			from ${dbSchemal3}ckx_usercenter
+		where  <![CDATA[biaos='1']]>
+	</select>
+	<!--  wuyichao 2014-10-29 临时订单导入  -->
+</sqlMap>

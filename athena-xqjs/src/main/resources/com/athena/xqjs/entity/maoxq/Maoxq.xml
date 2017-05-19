@@ -1,0 +1,2675 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="maoxqCompare">
+	<!-- 主页面 毛需求查询 -->
+	<select id="selmxq" 
+		resultClass="com.athena.xqjs.entity.ilorder.Maoxq">
+         <![CDATA[select t.xuqbc  as  xuqbc,
+				       to_char(t.xuqcfsj,'yyyy-mm-dd HH24:mi:ss') as  xuqcfsj,
+				       t.xuqly  as xuqly,
+				       t.beiz   as beiz,
+				       t.shengxbz as shengxbz,
+				       t.editor as editor,
+				       to_char(t.edit_time,'yyyy-mm-dd HH24:mi:ss:ff3') as edit_time,
+				       t.shijscmj    as  shifjscmj,
+				       t.shizdyssk   as  shifzdyssk,
+				       t.zhigyzqfrom  as  zdgyzqfrom,
+				       t.zhigyzqto    as  zdgyzqto,
+				       t.active as active,
+				       t.usercenter as usercenter
+				     from  ${dbSchemal1}xqjs_maoxq t ]]>
+		where
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="xuqly">
+                                  <![CDATA[xuqly = #xuqly#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="xuqbc">
+                                  <![CDATA[xuqbc like '%$xuqbc$%']]>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY XUQCFSJ DESC,XUQBC DESC
+	</select>
+
+	<!-- 查询毛需求版次 -->
+	<select id="generationBanc" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+               <![CDATA[ select max(xuqbc)  as  xuqbc
+                               from  ${dbSchemal1}xqjs_maoxq t
+                          where 
+				               t.active = 1
+                               and  
+                               xuqbc like '$xuqbc$%']]>
+
+	</select>
+
+	<!-- 修改备注 毛需求主表 -->
+	<update id="updateMxq" parameterClass="com.athena.xqjs.entity.ilorder.Maoxq">
+		update ${dbSchemal1}xqjs_maoxq
+
+		<dynamic prepend="set">
+			<isNotEmpty prepend="," property="editor">
+	                                        <![CDATA[ editor = #newEditor#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="newEdit_time">
+	                                         <![CDATA[edit_time = to_timestamp(#newEdit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="beiz">
+	                                        <![CDATA[ beiz = #beiz#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="shifjscmj">
+	                                        <![CDATA[ shijscmj = #shifjscmj#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="shifzdyssk">
+	                                        <![CDATA[ shizdyssk = #shifzdyssk#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zdgyzqfrom">
+	                                        <![CDATA[ zhigyzqfrom = #zdgyzqfrom#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zdgyzqto">
+	                                        <![CDATA[ zhigyzqto = #zdgyzqto#]]>
+			</isNotEmpty>
+		</dynamic>
+		where active = '1'
+		<dynamic>
+			<isNotEmpty prepend="and" property="xuqbc">
+                                  <![CDATA[xuqbc = #xuqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="editor">
+                                  <![CDATA[editor = #editor#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="edit_time">
+                                  <![CDATA[to_char(edit_time,'yyyy-mm-dd HH24:mi:ss:ff3')= #edit_time# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+<!-- 修改备注 毛需求主表 -->
+	<update id="updateMxqAtOnly" parameterClass="com.athena.xqjs.entity.ilorder.Maoxq">
+		update ${dbSchemal1}xqjs_maoxq
+
+		<dynamic prepend="set">
+			<isNotEmpty prepend="," property="editor">
+	                                        <![CDATA[ editor = #newEditor#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="newEdit_time">
+	                                         <![CDATA[edit_time = to_timestamp(#newEdit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="shifjscmj">
+	                                        <![CDATA[ shijscmj = #shifjscmj#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="shifzdyssk">
+	                                        <![CDATA[ shizdyssk = #shifzdyssk#]]>
+			</isNotEmpty>
+		</dynamic>
+		where active = '1'
+		<dynamic>
+			<isNotEmpty prepend="and" property="xuqbc">
+                                  <![CDATA[xuqbc != #xuqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="editor">
+                                  <![CDATA[editor = #editor#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="edit_time">
+                                  <![CDATA[to_char(edit_time,'yyyy-mm-dd HH24:mi:ss:ff3')= #edit_time# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+<!--物理删除 毛需求主表 -->
+	<update id="deletMaoxqFg" parameterClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+		delete from  ${dbSchemal1}xqjs_maoxq
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="xuqbc">
+                                  <![CDATA[xuqbc = #xuqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="editor">
+                                  <![CDATA[editor = #editor#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="edit_time">
+                                  <![CDATA[to_char(edit_time,'yyyy-mm-dd HH24:mi:ss:ff3')= #edit_time# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<!--物理删除 毛需求明细 -->
+	<update id="deletMXFg" parameterClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+		delete from   ${dbSchemal1}xqjs_maoxqmx
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="and" property="id">
+	                                  <![CDATA[id = #id#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="xuqbc">
+	                                  <![CDATA[xuqbc = #xuqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+	                                  <![CDATA[lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+		                                  <![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+		                                  <![CDATA[zhizlx = #zhizlx#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+                                  <![CDATA[chanx = #chanx#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shiycj">
+                                  <![CDATA[shiycj = #shiycj#]]>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--逻辑删除 毛需求主表 -->
+	<update id="deletMaoxq" parameterClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+		update ${dbSchemal1}xqjs_maoxq
+		set active = #active#,
+		editor = #newEditor#,
+		edit_time = to_timestamp(#newEdit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="xuqbc">
+                                  <![CDATA[xuqbc = #xuqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="editor">
+                                  <![CDATA[editor = #editor#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="edit_time">
+                                  <![CDATA[to_char(edit_time,'yyyy-mm-dd HH24:mi:ss:ff3')= #edit_time# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<!--逻辑删除 毛需求明细 -->
+	<update id="deletMX" parameterClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+		update ${dbSchemal1}xqjs_maoxqmx
+		set active = #active#,
+		editor = #newEditor#,
+		edit_time = to_timestamp(#newEdit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+		where active = '1'
+		<dynamic>
+			<isNotEmpty prepend="and" property="id">
+	                                  <![CDATA[id = #id#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="xuqbc">
+	                                  <![CDATA[xuqbc = #xuqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+	                                  <![CDATA[lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+		                                  <![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+		                                  <![CDATA[zhizlx = #zhizlx#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+                                  <![CDATA[chanx = #chanx#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="editor">
+                                  <![CDATA[editor = #editor#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="edit_time">
+		                                  <![CDATA[to_char(edit_time,'yyyy-mm-dd HH24:mi:ss:ff3')= #edit_time# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<!--修改 毛需求明细 需求数量 -->
+	<update id="updateSl" parameterClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+		update ${dbSchemal1}xqjs_maoxqmx
+		set xuqsl = #xuqsl#,
+		editor = #newEditor#,
+		edit_time = to_timestamp(#newEdit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+		where active = '1'
+		<dynamic>
+			<isNotEmpty prepend="and" property="id">
+	                                  <![CDATA[id = #id#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="xuqbc">
+	                                  <![CDATA[xuqbc = #xuqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+	                                  <![CDATA[lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+		                                  <![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+		                                  <![CDATA[zhizlx = #zhizlx#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+                                  <![CDATA[chanx = #chanx#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="editor">
+                                  <![CDATA[editor = #editor#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="edit_time">
+		                                  <![CDATA[to_char(edit_time,'yyyy-mm-dd HH24:mi:ss:ff3')= #edit_time# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+
+	<!-- 插入毛需求主表 -->
+	<insert id="insMaoxq" parameterClass="com.athena.xqjs.entity.ilorder.Maoxq">
+		insert into ${dbSchemal1}xqjs_maoxq(
+		xuqbc,
+		xuqly,
+		<dynamic>
+			<isNotEmpty property="xuqcfsj">xuqcfsj,</isNotEmpty>
+		</dynamic>
+		beiz,
+		shengxbz,
+		creator,
+		create_time,
+		editor,
+		edit_time,
+		active,
+		shijscmj,
+		shizdyssk,
+		usercenter)
+		values(
+		#xuqbc#,
+		#xuqly#,
+		<dynamic>
+			<isNotEmpty property="xuqcfsj">to_date(#xuqcfsj#,'yyyy-mm-dd'),</isNotEmpty>
+		</dynamic>
+		#beiz#,
+		#shengxbz#,
+		#creator#,
+		to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		#editor#,
+		to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		'1',
+		'0',
+		'0',
+		#usercenter#
+		)
+	</insert>
+
+	<!--插入毛需求明细 -->
+	<insert id="insMX" parameterClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+		insert into
+		${dbSchemal1}xqjs_maoxqmx
+		(id,
+		xuqbc,
+		usercenter,
+		shiycj,
+		chanx,
+		xuqz,
+		xuqrq,
+		lingjbh,
+		xuqsl,
+		danw,
+		zhizlx,
+		xuqsszq,
+		creator,
+		create_time,
+		editor,
+		edit_time,
+		active,
+		xuqksrq,
+		xuqjsrq)
+		values(
+		#id#,
+		#xuqbc#,
+		#usercenter#,
+		#shiycj#,
+		#chanx#,
+		#xuqz#,
+		to_date(#xuqrq#,'yyyy-MM-dd'),
+		#lingjbh#,
+		#xuqsl#,
+		#danw#,
+		#zhizlx#,
+		#xuqsszq#,
+		#creator#,
+		to_timestamp(#create_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+		#editor#,
+		to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+		'1',
+		#xuqksrq#,
+		#xuqjsrq#
+		)
+	   </insert>
+
+	<!--另存为 插入毛需求明细 -->
+	<insert id="saveAs" parameterClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+		insert into ${dbSchemal1}xqjs_maoxqmx
+		(id,
+		xuqbc,
+		usercenter,
+		xuqz,
+		lingjbh,
+		xuqsl,
+		danw,
+		zhizlx,
+		xuqsszq,
+		creator,
+		editor,
+		chanx,
+		shiycj,
+		<dynamic>
+		       	<isNotEmpty property="xuqrq">	
+					   xuqrq,
+				</isNotEmpty>
+				<isNotEmpty property="create_time">	
+					   create_time,
+				</isNotEmpty>
+				  	<isNotEmpty property="edit_time">	
+						edit_time,
+				</isNotEmpty>
+		</dynamic>
+		active,
+		xuqksrq,
+		xuqjsrq
+		)
+		values(
+		#id#,
+		#xuqbc#,
+		#usercenter#,
+		#xuqz#,
+		#lingjbh#,
+		#xuqsl#,
+		#danw#,
+		#zhizlx#,
+		#xuqsszq#,
+		#creator#,
+		#editor#,
+		#chanx#,
+		#shiycj#,
+		<dynamic>
+		       	<isNotEmpty property="xuqrq">	
+					   to_date(#xuqrq#,'yyyy-MM-dd'),
+				</isNotEmpty>
+				<isNotEmpty property="create_time">	
+					   to_timestamp(#create_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+				</isNotEmpty>
+				  	<isNotEmpty property="edit_time">	
+						to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+				</isNotEmpty>
+		</dynamic>
+		'1',
+		#xuqksrq#,
+		#xuqjsrq#
+		)
+
+	   </insert>
+    
+    <select id="saveAsQuery" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+	select
+		xuqbc,
+		usercenter,
+		xuqz,
+		to_char(xuqrq,'yyyy-mm-dd') AS xuqrq,
+		lingjbh,
+		sum(xuqsl) as xuqsl,
+		danw,
+		zhizlx,
+		xuqsszq,
+		#creator#,
+		#create_time#  AS create_time,
+		#editor#,
+		#edit_time#   AS  edit_time,
+		'1',
+		xuqksrq,
+		xuqjsrq,
+		chanx,
+		shiycj
+		from ${dbSchemal1}xqjs_maoxqmx
+		where 
+		1=1
+		   and
+		xuqbc = #oldxuqbc#
+		group by xuqbc,usercenter,xuqz,xuqrq,lingjbh,danw,zhizlx,xuqsszq,xuqksrq,xuqjsrq,chanx,shiycj
+    </select>
+
+
+
+
+	<!-- 毛需求明细 新增 数据唯一性检查 -->
+	<!-- 按照版次号，用户中心，零件号，制造路线，产线，需求时间对数据唯一性进行检查 -->
+	<!-- $xuqlx$ 判断产线是否为空 -->
+	<select id="checkMxUnique" parameterClass="com.athena.xqjs.entity.maoxq.CompareCyc"
+		resultClass="int">
+		select count(*)
+		from
+		${dbSchemal1}xqjs_maoxqmx m
+		where active = '1'
+		<dynamic>
+			<isNotEmpty property="xuqlx">
+				$xuqlx$
+                  </isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqbc">
+                                  <![CDATA[m.xuqbc = #xuqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+                                  <![CDATA[m.chanx = #chanx#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shiycj">
+                                  <![CDATA[m.shiycj = #shiycj#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqrq">
+                                  <![CDATA[m.xuqrq = to_date(#xuqrq#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+                                  <![CDATA[m.usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+                                  <![CDATA[m.zhizlx = #zhizlx#]]>
+
+                  </isNotEmpty>
+                 </dynamic>     
+	   
+	   
+	   </select>
+	   
+	   <!-- 查询指定版次 毛需求明细  判断是按产线存储还是按用户中心存储 -->
+	   <select id="judge_mode"   parameterClass="com.athena.xqjs.entity.maoxq.CompareCyc"  resultClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+	           select   id,       
+						xuqbc,       
+						usercenter,       
+						shiycj,       
+						chanx,       
+						xuqz,       
+						xuqrq,       
+						lingjbh,       
+						xuqsl,       
+						danw,       
+						zhizlx,       
+						xuqsszq,       
+						creator,       
+						create_time,       
+						editor,       
+						edit_time,       
+						active,       
+						xuqksrq,       
+						xuqjsrq,
+						lingjmc,
+						jihyz
+						 from (
+	           select   m.id         as  id,       
+						m.xuqbc      as  xuqbc,       
+						m.usercenter as  usercenter,       
+						m.shiycj     as  shiycj,       
+						m.chanx      as  chanx,       
+						m.xuqz       as  xuqz,       
+						m.xuqrq      as  xuqrq,       
+						m.lingjbh    as  lingjbh,       
+						m.xuqsl      as  xuqsl,       
+						m.danw       as  danw,       
+						m.zhizlx     as  zhizlx,       
+						m.xuqsszq    as  xuqsszq,       
+						m.creator    as  creator,       
+						to_char(m.create_time,'yyyy-mm-dd HH24:mi:ss:ff3') as create_time,       
+						m.editor      as editor,       
+						to_char(m.edit_time,'yyyy-mm-dd HH24:mi:ss:ff3')   as edit_time,       
+						m.active      as active,       
+						m.xuqksrq     as xuqksrq,       
+						m.xuqjsrq     as xuqjsrq,
+						l.zhongwmc    as lingjmc,
+						l.jihy        as jihyz
+				  from  ${dbSchemal1}xqjs_maoxqmx m
+				  join  ${dbSchemal3}ckx_lingj l
+				     on(m.usercenter = l.usercenter and m.lingjbh = l.lingjbh )		         
+	             and active = '1' 
+	            <dynamic >
+	              <isNotEmpty  prepend = " and " property = "xuqbc">
+
+                                  <![CDATA[m.xuqbc = #xuqbc#]]>
+
+                  </isNotEmpty>
+                   <isNotEmpty  prepend = " and " property = "rownums">
+                                  <![CDATA[rownum <= to_number(#rownums#)]]>
+
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihyz">
+                                  <![CDATA[m.jihyz = #jihyz#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+                                  <![CDATA[m.usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+                                  <![CDATA[m.zhizlx = #zhizlx#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+                                  <![CDATA[m.chanx = #chanx#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shiycj">
+                                  <![CDATA[m.shiycj = #shiycj#]]>
+			</isNotEmpty>
+		</dynamic>
+		order by id
+		)t where 1=1  
+		 <dynamic >
+                   <isNotEmpty  prepend = " and " property = "rownums">
+                                  <![CDATA[rownum <= to_number(#rownums#)]]>
+			</isNotEmpty>
+			</dynamic>
+	</select>
+
+	<!--查询毛需求明细某版次的开始年份 -->
+	<select id="startYearRQ" parameterClass="com.athena.xqjs.entity.maoxq.CompareCyc"
+		resultClass="java.util.HashMap">
+		select
+		      min(to_char(m.xuqrq,'yyyy-mm-dd')) as minyear
+		from ${dbSchemal1}xqjs_maoxqmx m
+		where active = '1' and xuqbc = #xuqbc#
+		order by minyear
+	   </select>
+	   
+
+	<!--查询毛需求明细某版次的有多少日期-->	   
+	<select id="queryJrq" resultClass="java.util.HashMap">
+		select distinct to_char(m.xuqrq,'yyyy-mm-dd') as xuqrq 
+			from ${dbSchemal1}xqjs_maoxqmx m 
+			where active = '1' and m.xuqbc= #xuqbc# 
+			order by xuqrq
+	</select>
+
+	<!--查询毛需求明细某版次的有多少日期-->	   
+	<select id="queryJrqDay" resultClass="java.util.HashMap">
+		select distinct to_char(m.xuqrq,'yyyy-mm-dd') as xuqrq 
+			from ${dbSchemal1}xqjs_maoxqmx m 
+			where active = '1' and m.xuqbc= #xuqbc# 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="xuqksrq">
+                  <![CDATA[m.xuqrq >= to_date(#xuqksrq#,'yyyy-mm-dd')]]>
+			</isNotEmpty>
+		</dynamic>
+			order by xuqrq
+	</select>
+
+	<!-- 年度周期汇总到产线  xss-20150707-0011493-->
+	<select id="hzChanxCyc" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+		select m.xuqbc as xuqbc,
+		m.usercenter as usercenter,
+		m.shiycj as shiycj,
+		m.chanx as chanx,
+		m.lingjbh as lingjbh,
+		m.zhizlx as zhizlx,
+		l.zhongwmc as lingjmc,
+		m.danw as danw,
+		l.jihy as jihyz,
+		#P0# as xuqksrq,
+		m.january as january,
+		m.feburary as feburary,
+		m.march as march,
+		m.april as april,
+		m.may as may,
+		m.june as june,
+		m.july as july,
+		m.august as august,
+		m.september as september,
+		m.october as october,
+		m.november as november,
+		m.december as december,
+		m.p13 as p13,
+		m.p14 as p14,
+		m.p15 as p15
+		from
+		(select
+		m.xuqbc as xuqbc,
+		m.usercenter as usercenter,
+		m.chanx as chanx,
+		m.shiycj as shiycj,
+		m.lingjbh as lingjbh,
+		m.zhizlx as zhizlx,
+		m.danw as danw,
+		sum(decode(m.xuqsszq,#P0#,m.xuqsl,0)) as january,
+		sum(decode(m.xuqsszq,#P1#,m.xuqsl,0)) as feburary,
+		sum(decode(m.xuqsszq,#P2#,m.xuqsl,0)) as march,
+		sum(decode(m.xuqsszq,#P3#,m.xuqsl,0)) as april,
+		sum(decode(m.xuqsszq,#P4#,m.xuqsl,0)) as may,
+		sum(decode(m.xuqsszq,#P5#,m.xuqsl,0)) as june,
+		sum(decode(m.xuqsszq,#P6#,m.xuqsl,0)) as july,
+		sum(decode(m.xuqsszq,#P7#,m.xuqsl,0)) as august,
+		sum(decode(m.xuqsszq,#P8#,m.xuqsl,0)) as september,
+		sum(decode(m.xuqsszq,#P9#,m.xuqsl,0)) as october,
+		sum(decode(m.xuqsszq,#P10#,m.xuqsl,0))as november,
+		sum(decode(m.xuqsszq,#P11#,m.xuqsl,0))as december,
+		sum(decode(m.xuqsszq,#P12#,m.xuqsl,0))as p13,
+		sum(decode(m.xuqsszq,#P13#,m.xuqsl,0))as p14,
+		sum(decode(m.xuqsszq,#P14#,m.xuqsl,0))as p15
+		from ${dbSchemal1}xqjs_maoxqmx m
+		where active = '1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="xuqbc">
+                                  <![CDATA[m.xuqbc = #xuqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+                                  <![CDATA[m.usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+                                  <![CDATA[m.zhizlx = #zhizlx#]]>
+			</isNotEmpty>
+		</dynamic>
+		group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.chanx,m.shiycj,m.danw
+		
+		) m
+		join ${dbSchemal3}ckx_lingj l
+		on(m.usercenter = l.usercenter and m.lingjbh = l.lingjbh)
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="jihyz">
+                                  <![CDATA[l.jihy = #jihyz#]]>
+			</isNotEmpty>
+		</dynamic>
+		order by m.xuqbc,m.usercenter,m.lingjbh,m.chanx
+	</select>
+
+    <!-- 查找KD件年周序 -->
+    <select id="querykdweek" resultClass="java.util.HashMap">
+           select   nianzx
+			   from (select distinct v.nianzx
+			          from ${dbSchemal3}ckx_calendar_version v
+			         where v.usercenter = #usercenter#
+			           and v.banc = #banc#
+			           and v.riq &gt;= #rq#)
+			 where rownum &lt;= 64
+			 order by nianzx
+    </select>
+
+
+	<!-- 年度周期汇总到用户中心 xss-20150707-0011493 -->
+	<select id="hzUsercenterCyc" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+		select m.xuqbc as xuqbc,
+		m.usercenter as usercenter,
+		m.lingjbh as lingjbh,
+		m.zhizlx as zhizlx,
+		l.zhongwmc as lingjmc,
+		m.danw as danw,
+		l.jihy as jihyz,
+		#P0# as xuqksrq,
+		m.january as january,
+		m.feburary as feburary,
+		m.march as march,
+		m.april as april,
+		m.may as may,
+		m.june as june,
+		m.july as july,
+		m.august as august,
+		m.september as september,
+		m.october as october,
+		m.november as november,
+		m.december as december,
+		m.p13 as p13,
+		m.p14 as p14,
+		m.p15 as p15
+		from
+		(select
+		m.xuqbc as xuqbc,
+		m.usercenter as usercenter,
+		m.lingjbh as lingjbh,
+		m.zhizlx as zhizlx,
+		m.danw as danw,
+		sum(decode(m.xuqsszq,#P0#,m.xuqsl,0)) as january,
+		sum(decode(m.xuqsszq,#P1#,m.xuqsl,0)) as feburary,
+		sum(decode(m.xuqsszq,#P2#,m.xuqsl,0)) as march,
+		sum(decode(m.xuqsszq,#P3#,m.xuqsl,0)) as april,
+		sum(decode(m.xuqsszq,#P4#,m.xuqsl,0)) as may,
+		sum(decode(m.xuqsszq,#P5#,m.xuqsl,0)) as june,
+		sum(decode(m.xuqsszq,#P6#,m.xuqsl,0)) as july,
+		sum(decode(m.xuqsszq,#P7#,m.xuqsl,0)) as august,
+		sum(decode(m.xuqsszq,#P8#,m.xuqsl,0)) as september,
+		sum(decode(m.xuqsszq,#P9#,m.xuqsl,0)) as october,
+		sum(decode(m.xuqsszq,#P10#,m.xuqsl,0))as november,
+		sum(decode(m.xuqsszq,#P11#,m.xuqsl,0))as december,
+		sum(decode(m.xuqsszq,#P12#,m.xuqsl,0))as p13,
+		sum(decode(m.xuqsszq,#P13#,m.xuqsl,0))as p14,
+		sum(decode(m.xuqsszq,#P14#,m.xuqsl,0))as p15
+		from ${dbSchemal1}xqjs_maoxqmx m
+		where active = '1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="xuqbc">
+                                  <![CDATA[m.xuqbc = #xuqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+                                  <![CDATA[m.usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+                                  <![CDATA[m.zhizlx = #zhizlx#]]>
+			</isNotEmpty>
+		</dynamic>
+		group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.danw
+		
+		) m
+		join ${dbSchemal3}ckx_lingj l
+		on(m.usercenter = l.usercenter and m.lingjbh = l.lingjbh )
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="jihyz">
+                                  <![CDATA[l.jihy = #jihyz#]]>
+
+                      		 </isNotEmpty>
+				  </dynamic>
+				order by m.xuqbc,m.usercenter,m.lingjbh
+	        </select>
+	   <!-- 查询中心日历 获得年周序 -->
+	   <select id="queryNianZx"  parameterClass="java.lang.String"  resultClass="com.athena.xqjs.entity.common.CalendarCenter">
+	          select  distinct 
+                      t.nianzx as nianzx
+		        from  ${dbSchemal3}CKX_CALENDAR_CENTER t
+		        where <![CDATA[t.riq like '$riq$%']]>
+		        order by  nianzx 
+	   
+	   </select>
+	   
+       <!-- 周需求汇总 到 用户中心 xss-20150707-0011493-->
+	    <select id="hzUsercenterWeek"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.maoxq.CompareWeek">
+				   select   m.xuqbc      as  xuqbc,       
+				            m.usercenter as  usercenter,    
+				            m.lingjbh    as  lingjbh,            
+							m.zhizlx     as  zhizlx,      
+				            l.zhongwmc   as  lingjmc,
+							m.danw       as  danw, 
+							l.jihy       as  jihyz,
+							#S0#         as  xuqksrq,
+							m.s0Week     as s0Week1  ,
+							m.s1Week     as s1Week1  ,
+							m.s2Week     as s2Week1  ,
+							m.s3Week     as s3Week1  ,
+							m.s4Week     as s4Week1  ,
+							m.s5Week     as s5Week1  ,
+							m.s6Week     as s6Week1  ,
+							m.s7Week     as s7Week1  ,
+							m.s8Week     as s8Week1  ,
+							m.s9Week     as s9Week1  ,
+							m.s10Week    as s10Week1 ,
+							m.s11Week    as s11Week1 ,
+							m.s12Week    as s12Week1 ,
+							m.s13Week    as s13Week1 ,
+							m.s14Week    as s14Week1 ,
+							m.s15Week    as s15Week1 ,
+							m.s16Week    as s16Week1 ,
+							m.s17Week    as s17Week1 ,
+							m.s18Week    as s18Week1 ,
+							m.s19Week    as s19Week1 ,
+							m.s20Week    as s20Week1 ,
+							m.s21Week    as s21Week1 ,
+							m.s22Week    as s22Week1 ,
+							m.s23Week    as s23Week1 ,
+							m.s24Week    as s24Week1 ,
+							m.s25Week    as s25Week1 ,
+							m.s26Week    as s26Week1 ,
+							m.s27Week    as s27Week1 ,
+							m.s28Week    as s28Week1 ,
+							m.s29Week    as s29Week1 ,
+							m.s30Week    as s30Week1 ,
+							m.s31Week    as s31Week1 ,
+							m.s32Week    as s32Week1 ,
+							m.s33Week    as s33Week1 ,
+							m.s34Week    as s34Week1 ,
+							m.s35Week    as s35Week1 ,
+							m.s36Week    as s36Week1 ,
+							m.s37Week    as s37Week1 ,
+							m.s38Week    as s38Week1 ,
+							m.s39Week    as s39Week1 ,
+							m.s40Week    as s40Week1 ,
+							m.s41Week    as s41Week1 ,
+							m.s42Week    as s42Week1 ,
+							m.s43Week    as s43Week1 ,
+							m.s44Week    as s44Week1 ,
+							m.s45Week    as s45Week1 ,
+							m.s46Week    as s46Week1 ,
+							m.s47Week    as s47Week1 ,
+							m.s48Week    as s48Week1 ,
+							m.s49Week    as s49Week1 ,
+							m.s50Week    as s50Week1 ,
+							m.s51Week    as s51Week1 ,
+							m.s52Week    as s52Week1 ,
+							m.s53Week    as s53Week1 ,
+							m.s54Week    as s54Week1 ,
+							m.s55Week    as s55Week1 ,
+							m.s56Week    as s56Week1 ,
+							m.s57Week    as s57Week1 ,
+							m.s58Week    as s58Week1 ,
+							m.s59Week    as s59Week1 ,
+							m.s60Week    as s60Week1 ,
+							m.s61Week    as s61Week1 ,
+							m.s62Week    as s62Week1 ,
+							m.s63Week    as s63Week1 ,
+							m.s64Week    as s64Week1 
+			        from 
+			           (select
+				            m.xuqbc      as  xuqbc,       
+				            m.usercenter as  usercenter,    
+				            m.lingjbh    as  lingjbh,            
+							m.zhizlx     as  zhizlx,    
+							m.danw       as  danw,   
+				        sum(decode(m.xuqz,#S0#,m.xuqsl,0))    as s0Week  ,
+						sum(decode(m.xuqz,#S1#,m.xuqsl,0))    as s1Week  ,
+						sum(decode(m.xuqz,#S2#,m.xuqsl,0))    as s2Week  ,
+						sum(decode(m.xuqz,#S3#,m.xuqsl,0))    as s3Week  ,
+						sum(decode(m.xuqz,#S4#,m.xuqsl,0))    as s4Week  ,
+						sum(decode(m.xuqz,#S5#,m.xuqsl,0))    as s5Week  ,
+						sum(decode(m.xuqz,#S6#,m.xuqsl,0))    as s6Week  ,
+						sum(decode(m.xuqz,#S7#,m.xuqsl,0))    as s7Week  ,
+						sum(decode(m.xuqz,#S8#,m.xuqsl,0))    as s8Week  ,
+						sum(decode(m.xuqz,#S9#,m.xuqsl,0))    as s9Week  ,
+						sum(decode(m.xuqz,#S10#,m.xuqsl,0))    as s10Week ,
+						sum(decode(m.xuqz,#S11#,m.xuqsl,0))    as s11Week ,
+						sum(decode(m.xuqz,#S12#,m.xuqsl,0))    as s12Week ,
+						sum(decode(m.xuqz,#S13#,m.xuqsl,0))    as s13Week ,
+						sum(decode(m.xuqz,#S14#,m.xuqsl,0))    as s14Week ,
+						sum(decode(m.xuqz,#S15#,m.xuqsl,0))    as s15Week ,
+						sum(decode(m.xuqz,#S16#,m.xuqsl,0))    as s16Week ,
+						sum(decode(m.xuqz,#S17#,m.xuqsl,0))    as s17Week ,
+						sum(decode(m.xuqz,#S18#,m.xuqsl,0))    as s18Week ,
+						sum(decode(m.xuqz,#S19#,m.xuqsl,0))    as s19Week ,
+						sum(decode(m.xuqz,#S20#,m.xuqsl,0))    as s20Week ,
+						sum(decode(m.xuqz,#S21#,m.xuqsl,0))    as s21Week ,
+						sum(decode(m.xuqz,#S22#,m.xuqsl,0))    as s22Week ,
+						sum(decode(m.xuqz,#S23#,m.xuqsl,0))    as s23Week ,
+						sum(decode(m.xuqz,#S24#,m.xuqsl,0))    as s24Week ,
+						sum(decode(m.xuqz,#S25#,m.xuqsl,0))    as s25Week ,
+						sum(decode(m.xuqz,#S26#,m.xuqsl,0))    as s26Week ,
+						sum(decode(m.xuqz,#S27#,m.xuqsl,0))    as s27Week ,
+						sum(decode(m.xuqz,#S28#,m.xuqsl,0))    as s28Week ,
+						sum(decode(m.xuqz,#S29#,m.xuqsl,0))    as s29Week ,
+						sum(decode(m.xuqz,#S30#,m.xuqsl,0))    as s30Week ,
+						sum(decode(m.xuqz,#S31#,m.xuqsl,0))    as s31Week ,
+						sum(decode(m.xuqz,#S32#,m.xuqsl,0))    as s32Week ,
+						sum(decode(m.xuqz,#S33#,m.xuqsl,0))    as s33Week ,
+						sum(decode(m.xuqz,#S34#,m.xuqsl,0))    as s34Week ,
+						sum(decode(m.xuqz,#S35#,m.xuqsl,0))    as s35Week ,
+						sum(decode(m.xuqz,#S36#,m.xuqsl,0))    as s36Week ,
+						sum(decode(m.xuqz,#S37#,m.xuqsl,0))    as s37Week ,
+						sum(decode(m.xuqz,#S38#,m.xuqsl,0))    as s38Week ,
+						sum(decode(m.xuqz,#S39#,m.xuqsl,0))    as s39Week ,
+						sum(decode(m.xuqz,#S40#,m.xuqsl,0))    as s40Week ,
+						sum(decode(m.xuqz,#S41#,m.xuqsl,0))    as s41Week ,
+						sum(decode(m.xuqz,#S42#,m.xuqsl,0))    as s42Week ,
+						sum(decode(m.xuqz,#S43#,m.xuqsl,0))    as s43Week ,
+						sum(decode(m.xuqz,#S44#,m.xuqsl,0))    as s44Week ,
+						sum(decode(m.xuqz,#S45#,m.xuqsl,0))    as s45Week ,
+						sum(decode(m.xuqz,#S46#,m.xuqsl,0))    as s46Week ,
+						sum(decode(m.xuqz,#S47#,m.xuqsl,0))    as s47Week ,
+						sum(decode(m.xuqz,#S48#,m.xuqsl,0))    as s48Week ,
+						sum(decode(m.xuqz,#S49#,m.xuqsl,0))    as s49Week ,
+						sum(decode(m.xuqz,#S50#,m.xuqsl,0))    as s50Week ,
+						sum(decode(m.xuqz,#S51#,m.xuqsl,0))    as s51Week ,
+						sum(decode(m.xuqz,#S52#,m.xuqsl,0))    as s52Week ,
+						sum(decode(m.xuqz,#S53#,m.xuqsl,0))    as s53Week ,
+						sum(decode(m.xuqz,#S54#,m.xuqsl,0))    as s54Week ,
+						sum(decode(m.xuqz,#S55#,m.xuqsl,0))    as s55Week ,
+						sum(decode(m.xuqz,#S56#,m.xuqsl,0))    as s56Week ,
+						sum(decode(m.xuqz,#S57#,m.xuqsl,0))    as s57Week ,
+						sum(decode(m.xuqz,#S58#,m.xuqsl,0))    as s58Week ,
+						sum(decode(m.xuqz,#S59#,m.xuqsl,0))    as s59Week ,
+						sum(decode(m.xuqz,#S60#,m.xuqsl,0))    as s60Week ,
+						sum(decode(m.xuqz,#S61#,m.xuqsl,0))    as s61Week ,
+						sum(decode(m.xuqz,#S62#,m.xuqsl,0))    as s62Week ,
+						sum(decode(m.xuqz,#S63#,m.xuqsl,0))    as s63Week ,
+						sum(decode(m.xuqz,#S64#,m.xuqsl,0))    as s64Week 
+				     from  ${dbSchemal1}xqjs_maoxqmx  m
+				     where active = '1'
+			     <dynamic >
+	              <isNotEmpty  prepend = " and " property = "xuqbc">
+
+                                  <![CDATA[m.xuqbc = #xuqbc#]]>
+
+                  </isNotEmpty>
+                  <isNotEmpty  prepend = " and " property = "xuqbc1">
+                                  <![CDATA[m.xuqbc = #xuqbc1#]]>
+
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+                                  <![CDATA[m.usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+                                  <![CDATA[m.zhizlx = #zhizlx#]]>
+			</isNotEmpty>
+		</dynamic>
+		group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.danw
+		
+		) m
+		join ${dbSchemal3}ckx_lingj l
+		on(m.usercenter = l.usercenter and m.lingjbh = l.lingjbh )
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="jihyz">
+                                  <![CDATA[l.jihy = #jihyz#]]>
+
+                      		 </isNotEmpty>
+				  </dynamic>
+				order by m.xuqbc,m.usercenter,m.lingjbh	
+	        </select>
+	       <!-- 周需求汇总 到 产线 xss-20150707-0011493-->
+	    <select id="hzChanxWeek"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.maoxq.CompareWeek">
+				   select   m.xuqbc      as  xuqbc,       
+				            m.usercenter as  usercenter,    
+				            m.lingjbh    as  lingjbh,
+				            m.shiycj     as shiycj,   
+				            m.chanx      as  chanx,         
+							m.zhizlx     as  zhizlx,      
+				            l.zhongwmc   as  lingjmc,
+							m.danw       as  danw, 
+							l.jihy       as  jihyz,
+							#S0#         as  xuqksrq,
+							m.s0Week     as s0Week1  ,
+							m.s1Week     as s1Week1  ,
+							m.s2Week     as s2Week1  ,
+							m.s3Week     as s3Week1  ,
+							m.s4Week     as s4Week1  ,
+							m.s5Week     as s5Week1  ,
+							m.s6Week     as s6Week1  ,
+							m.s7Week     as s7Week1  ,
+							m.s8Week     as s8Week1  ,
+							m.s9Week     as s9Week1  ,
+							m.s10Week    as s10Week1 ,
+							m.s11Week    as s11Week1 ,
+							m.s12Week    as s12Week1 ,
+							m.s13Week    as s13Week1 ,
+							m.s14Week    as s14Week1 ,
+							m.s15Week    as s15Week1 ,
+							m.s16Week    as s16Week1 ,
+							m.s17Week    as s17Week1 ,
+							m.s18Week    as s18Week1 ,
+							m.s19Week    as s19Week1 ,
+							m.s20Week    as s20Week1 ,
+							m.s21Week    as s21Week1 ,
+							m.s22Week    as s22Week1 ,
+							m.s23Week    as s23Week1 ,
+							m.s24Week    as s24Week1 ,
+							m.s25Week    as s25Week1 ,
+							m.s26Week    as s26Week1 ,
+							m.s27Week    as s27Week1 ,
+							m.s28Week    as s28Week1 ,
+							m.s29Week    as s29Week1 ,
+							m.s30Week    as s30Week1 ,
+							m.s31Week    as s31Week1 ,
+							m.s32Week    as s32Week1 ,
+							m.s33Week    as s33Week1 ,
+							m.s34Week    as s34Week1 ,
+							m.s35Week    as s35Week1 ,
+							m.s36Week    as s36Week1 ,
+							m.s37Week    as s37Week1 ,
+							m.s38Week    as s38Week1 ,
+							m.s39Week    as s39Week1 ,
+							m.s40Week    as s40Week1 ,
+							m.s41Week    as s41Week1 ,
+							m.s42Week    as s42Week1 ,
+							m.s43Week    as s43Week1 ,
+							m.s44Week    as s44Week1 ,
+							m.s45Week    as s45Week1 ,
+							m.s46Week    as s46Week1 ,
+							m.s47Week    as s47Week1 ,
+							m.s48Week    as s48Week1 ,
+							m.s49Week    as s49Week1 ,
+							m.s50Week    as s50Week1 ,
+							m.s51Week    as s51Week1 ,
+							m.s52Week    as s52Week1 ,
+							m.s53Week    as s53Week1 ,
+							m.s54Week    as s54Week1 ,
+							m.s55Week    as s55Week1 ,
+							m.s56Week    as s56Week1 ,
+							m.s57Week    as s57Week1 ,
+							m.s58Week    as s58Week1 ,
+							m.s59Week    as s59Week1 ,
+							m.s60Week    as s60Week1 ,
+							m.s61Week    as s61Week1 ,
+							m.s62Week    as s62Week1 ,
+							m.s63Week    as s63Week1 ,
+							m.s64Week    as s64Week1 
+			        from 
+			           (select
+				            m.xuqbc      as  xuqbc,       
+				            m.usercenter as  usercenter,    
+				            m.lingjbh    as  lingjbh,  
+				            m.shiycj     as shiycj,  
+				            m.chanx      as  chanx,        
+							m.zhizlx     as  zhizlx,    
+							m.danw       as  danw,   
+				        sum(decode(m.xuqz,#S0#,m.xuqsl,0))    as s0Week  ,
+						sum(decode(m.xuqz,#S1#,m.xuqsl,0))    as s1Week  ,
+						sum(decode(m.xuqz,#S2#,m.xuqsl,0))    as s2Week  ,
+						sum(decode(m.xuqz,#S3#,m.xuqsl,0))    as s3Week  ,
+						sum(decode(m.xuqz,#S4#,m.xuqsl,0))    as s4Week  ,
+						sum(decode(m.xuqz,#S5#,m.xuqsl,0))    as s5Week  ,
+						sum(decode(m.xuqz,#S6#,m.xuqsl,0))    as s6Week  ,
+						sum(decode(m.xuqz,#S7#,m.xuqsl,0))    as s7Week  ,
+						sum(decode(m.xuqz,#S8#,m.xuqsl,0))    as s8Week  ,
+						sum(decode(m.xuqz,#S9#,m.xuqsl,0))    as s9Week  ,
+						sum(decode(m.xuqz,#S10#,m.xuqsl,0))    as s10Week ,
+						sum(decode(m.xuqz,#S11#,m.xuqsl,0))    as s11Week ,
+						sum(decode(m.xuqz,#S12#,m.xuqsl,0))    as s12Week ,
+						sum(decode(m.xuqz,#S13#,m.xuqsl,0))    as s13Week ,
+						sum(decode(m.xuqz,#S14#,m.xuqsl,0))    as s14Week ,
+						sum(decode(m.xuqz,#S15#,m.xuqsl,0))    as s15Week ,
+						sum(decode(m.xuqz,#S16#,m.xuqsl,0))    as s16Week ,
+						sum(decode(m.xuqz,#S17#,m.xuqsl,0))    as s17Week ,
+						sum(decode(m.xuqz,#S18#,m.xuqsl,0))    as s18Week ,
+						sum(decode(m.xuqz,#S19#,m.xuqsl,0))    as s19Week ,
+						sum(decode(m.xuqz,#S20#,m.xuqsl,0))    as s20Week ,
+						sum(decode(m.xuqz,#S21#,m.xuqsl,0))    as s21Week ,
+						sum(decode(m.xuqz,#S22#,m.xuqsl,0))    as s22Week ,
+						sum(decode(m.xuqz,#S23#,m.xuqsl,0))    as s23Week ,
+						sum(decode(m.xuqz,#S24#,m.xuqsl,0))    as s24Week ,
+						sum(decode(m.xuqz,#S25#,m.xuqsl,0))    as s25Week ,
+						sum(decode(m.xuqz,#S26#,m.xuqsl,0))    as s26Week ,
+						sum(decode(m.xuqz,#S27#,m.xuqsl,0))    as s27Week ,
+						sum(decode(m.xuqz,#S28#,m.xuqsl,0))    as s28Week ,
+						sum(decode(m.xuqz,#S29#,m.xuqsl,0))    as s29Week ,
+						sum(decode(m.xuqz,#S30#,m.xuqsl,0))    as s30Week ,
+						sum(decode(m.xuqz,#S31#,m.xuqsl,0))    as s31Week ,
+						sum(decode(m.xuqz,#S32#,m.xuqsl,0))    as s32Week ,
+						sum(decode(m.xuqz,#S33#,m.xuqsl,0))    as s33Week ,
+						sum(decode(m.xuqz,#S34#,m.xuqsl,0))    as s34Week ,
+						sum(decode(m.xuqz,#S35#,m.xuqsl,0))    as s35Week ,
+						sum(decode(m.xuqz,#S36#,m.xuqsl,0))    as s36Week ,
+						sum(decode(m.xuqz,#S37#,m.xuqsl,0))    as s37Week ,
+						sum(decode(m.xuqz,#S38#,m.xuqsl,0))    as s38Week ,
+						sum(decode(m.xuqz,#S39#,m.xuqsl,0))    as s39Week ,
+						sum(decode(m.xuqz,#S40#,m.xuqsl,0))    as s40Week ,
+						sum(decode(m.xuqz,#S41#,m.xuqsl,0))    as s41Week ,
+						sum(decode(m.xuqz,#S42#,m.xuqsl,0))    as s42Week ,
+						sum(decode(m.xuqz,#S43#,m.xuqsl,0))    as s43Week ,
+						sum(decode(m.xuqz,#S44#,m.xuqsl,0))    as s44Week ,
+						sum(decode(m.xuqz,#S45#,m.xuqsl,0))    as s45Week ,
+						sum(decode(m.xuqz,#S46#,m.xuqsl,0))    as s46Week ,
+						sum(decode(m.xuqz,#S47#,m.xuqsl,0))    as s47Week ,
+						sum(decode(m.xuqz,#S48#,m.xuqsl,0))    as s48Week ,
+						sum(decode(m.xuqz,#S49#,m.xuqsl,0))    as s49Week ,
+						sum(decode(m.xuqz,#S50#,m.xuqsl,0))    as s50Week ,
+						sum(decode(m.xuqz,#S51#,m.xuqsl,0))    as s51Week ,
+						sum(decode(m.xuqz,#S52#,m.xuqsl,0))    as s52Week ,
+						sum(decode(m.xuqz,#S53#,m.xuqsl,0))    as s53Week ,
+						sum(decode(m.xuqz,#S54#,m.xuqsl,0))    as s54Week ,
+						sum(decode(m.xuqz,#S55#,m.xuqsl,0))    as s55Week ,
+						sum(decode(m.xuqz,#S56#,m.xuqsl,0))    as s56Week ,
+						sum(decode(m.xuqz,#S57#,m.xuqsl,0))    as s57Week ,
+						sum(decode(m.xuqz,#S58#,m.xuqsl,0))    as s58Week ,
+						sum(decode(m.xuqz,#S59#,m.xuqsl,0))    as s59Week ,
+						sum(decode(m.xuqz,#S60#,m.xuqsl,0))    as s60Week ,
+						sum(decode(m.xuqz,#S61#,m.xuqsl,0))    as s61Week ,
+						sum(decode(m.xuqz,#S62#,m.xuqsl,0))    as s62Week ,
+						sum(decode(m.xuqz,#S63#,m.xuqsl,0))    as s63Week ,
+						sum(decode(m.xuqz,#S64#,m.xuqsl,0))    as s64Week 
+				     from  ${dbSchemal1}xqjs_maoxqmx  m
+				     where active = '1'
+			     <dynamic >
+	              <isNotEmpty  prepend = " and " property = "xuqbc">
+
+                                  <![CDATA[m.xuqbc = #xuqbc#]]>
+
+                  </isNotEmpty>
+                  <isNotEmpty  prepend = " and " property = "xuqbc1">
+                                  <![CDATA[m.xuqbc = #xuqbc1#]]>
+
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+                                  <![CDATA[m.usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+                                  <![CDATA[m.zhizlx = #zhizlx#]]>
+			</isNotEmpty>
+		</dynamic>
+		group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.chanx,m.shiycj,m.danw
+		
+		) m
+		join ${dbSchemal3}ckx_lingj l
+		on(m.usercenter = l.usercenter and m.lingjbh = l.lingjbh )
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="jihyz">
+                                  <![CDATA[l.jihy = #jihyz#]]>
+			</isNotEmpty>
+		</dynamic>
+		order by m.xuqbc,m.usercenter,m.lingjbh,m.chanx
+	</select>
+
+	<!-- 日滚动 汇总到产线  xss-20150707-0011493 -->
+	<select id="hzChanxDays" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.maoxq.MaoxqDays">
+		select m.xuqbc as xuqbc,
+		m.usercenter   as usercenter,
+		m.shiycj    as shiycj,
+		m.chanx     as chanx,
+		m.lingjbh   as lingjbh,
+		m.zhizlx    as zhizlx,
+		l.zhongwmc  as lingjmc,
+		m.danw as danw,
+		l.jihy as jihyz,
+		#J0# as xuqksrq,
+		m.j0 as j0,
+		m.j1 as j1,
+		m.j2 as j2,
+		m.j3 as j3,
+		m.j4 as j4,
+		m.j5 as j5,
+		m.j6 as j6,
+		m.j7 as j7,
+		m.j8 as j8
+		from
+		(select
+		m.xuqbc as xuqbc,
+		m.usercenter as usercenter,
+		m.shiycj as shiycj,
+		m.chanx  as chanx,
+		m.lingjbh as lingjbh,
+		m.zhizlx as zhizlx,
+		m.danw as danw,
+		sum(decode(m.xuqrq,to_date(#J0#,'yyyy-mm-dd'),m.xuqsl,0)) as j0,
+		sum(decode(m.xuqrq,to_date(#J1#,'yyyy-mm-dd'),m.xuqsl,0)) as j1,
+		sum(decode(m.xuqrq,to_date(#J2#,'yyyy-mm-dd'),m.xuqsl,0)) as j2,
+		sum(decode(m.xuqrq,to_date(#J3#,'yyyy-mm-dd'),m.xuqsl,0)) as j3,
+		sum(decode(m.xuqrq,to_date(#J4#,'yyyy-mm-dd'),m.xuqsl,0)) as j4,
+		sum(decode(m.xuqrq,to_date(#J5#,'yyyy-mm-dd'),m.xuqsl,0)) as j5,
+		sum(decode(m.xuqrq,to_date(#J6#,'yyyy-mm-dd'),m.xuqsl,0)) as j6,
+		sum(decode(m.xuqrq,to_date(#J7#,'yyyy-mm-dd'),m.xuqsl,0)) as j7,
+		sum(decode(m.xuqrq,to_date(#J8#,'yyyy-mm-dd'),m.xuqsl,0)) as j8
+		from ${dbSchemal1}xqjs_maoxqmx m
+		where active = '1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="xuqbc">
+                                  <![CDATA[m.xuqbc = #xuqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+                                  <![CDATA[m.usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+                                  <![CDATA[m.zhizlx = #zhizlx#]]>
+			</isNotEmpty>
+		</dynamic>
+		group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.chanx,m.shiycj,m.danw
+		
+		) m
+		join ${dbSchemal3}ckx_lingj l
+		on(m.usercenter = l.usercenter and m.lingjbh = l.lingjbh)
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="jihyz">
+                                  <![CDATA[l.jihy = #jihyz#]]>
+			</isNotEmpty>
+		</dynamic>
+		order by m.xuqbc,m.usercenter,m.lingjbh,m.chanx
+	</select>
+
+	<!-- 日滚动 汇总到用户中心 xss-20150707-0011493-->
+	<select id="hzUsercenterDays" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.maoxq.MaoxqDays">
+		select m.xuqbc as xuqbc,
+		m.usercenter as usercenter,
+		m.lingjbh as lingjbh,
+		m.zhizlx as zhizlx,
+		l.zhongwmc as lingjmc,
+		m.danw as danw,
+		l.jihy as jihyz,
+		#J0# as xuqksrq,
+		m.j0 as j0,
+		m.j1 as j1,
+		m.j2 as j2,
+		m.j3 as j3,
+		m.j4 as j4,
+		m.j5 as j5,
+		m.j6 as j6,
+		m.j7 as j7,
+		m.j8 as j8
+		from
+		(select
+		m.xuqbc as xuqbc,
+		m.usercenter as usercenter,
+		m.lingjbh as lingjbh,
+		m.zhizlx as zhizlx,
+		m.danw as danw,
+		sum(decode(m.xuqrq,to_date(#J0#,'yyyy-mm-dd'),m.xuqsl,0)) as j0,
+		sum(decode(m.xuqrq,to_date(#J1#,'yyyy-mm-dd'),m.xuqsl,0)) as j1,
+		sum(decode(m.xuqrq,to_date(#J2#,'yyyy-mm-dd'),m.xuqsl,0)) as j2,
+		sum(decode(m.xuqrq,to_date(#J3#,'yyyy-mm-dd'),m.xuqsl,0)) as j3,
+		sum(decode(m.xuqrq,to_date(#J4#,'yyyy-mm-dd'),m.xuqsl,0)) as j4,
+		sum(decode(m.xuqrq,to_date(#J5#,'yyyy-mm-dd'),m.xuqsl,0)) as j5,
+		sum(decode(m.xuqrq,to_date(#J6#,'yyyy-mm-dd'),m.xuqsl,0)) as j6,
+		sum(decode(m.xuqrq,to_date(#J7#,'yyyy-mm-dd'),m.xuqsl,0)) as j7,
+		sum(decode(m.xuqrq,to_date(#J8#,'yyyy-mm-dd'),m.xuqsl,0)) as j8
+		from ${dbSchemal1}xqjs_maoxqmx m
+		where active = '1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="xuqbc">
+                                  <![CDATA[m.xuqbc = #xuqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+                                  <![CDATA[m.usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+                                  <![CDATA[m.zhizlx = #zhizlx#]]>
+			</isNotEmpty>
+		</dynamic>
+		group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.danw
+		
+		) m
+		join ${dbSchemal3}ckx_lingj l
+		on(m.usercenter = l.usercenter and m.lingjbh = l.lingjbh )
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="jihyz">
+                                  <![CDATA[l.jihy = #jihyz#]]>
+			</isNotEmpty>
+		</dynamic>
+		order by m.xuqbc,m.usercenter,m.lingjbh
+	</select>
+
+	<!-- 年度周期汇总到产线 xss-20150707-0011493-v4_008 -->
+	<select id="compareChanxCyc" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+		select 
+		      c.usercenter,
+		      c.lingjbh,
+		      c.chanx,
+		      c.zhizlx,
+		      c.danw,
+		      c.p0Cyc1,
+			  c.p1Cyc1,
+			  c.p2Cyc1,
+			  c.p3Cyc1,
+			  c.p4Cyc1,
+			  c.p0Cyc2,
+			  c.p1Cyc2,
+			  c.p2Cyc2,
+			  c.p3Cyc2,
+			  c.p4Cyc2,
+		      l.zhongwmc as lingjmc,
+		      l.jihy     as jihyz ,
+			  n.gongysbh as gongysbh ,
+     		  x.gongsmc as gongysmc , 
+      		  n.gcbh as gcbh , 
+      		  xx.gongsmc  as chengysmc 
+		 from (
+				select 
+				      nvl(a.usercenter1,b.usercenter2) as usercenter,
+				      nvl(a.lingjbh1,b.lingjbh2) as lingjbh,
+				      nvl(a.chanx1,b.chanx2)     as chanx,
+				      nvl(a.zhizlx1,b.zhizlx2)   as zhizlx,
+				      nvl(a.danw1,b.danw2)       as danw,
+				      a.p0Cyc1 as p0Cyc1,
+					  a.p1Cyc1 as p1Cyc1,
+					  a.p2Cyc1 as p2Cyc1,
+					  a.p3Cyc1 as p3Cyc1,
+					  a.p4Cyc1 as p4Cyc1,
+					  b.p0Cyc2 as p0Cyc2,
+					  b.p1Cyc2 as p1Cyc2,
+					  b.p2Cyc2 as p2Cyc2,
+					  b.p3Cyc2 as p3Cyc2,
+					  b.p4Cyc2 as p4Cyc2
+				    from  
+						(select
+								m.xuqbc as xuqbc1,
+								m.usercenter as usercenter1,
+								m.chanx as chanx1,
+								m.lingjbh as lingjbh1,
+								m.zhizlx as zhizlx1,
+								m.danw as danw1,
+								sum(decode(m.xuqsszq,#P0#,m.xuqsl,0)) as p0Cyc1,
+								sum(decode(m.xuqsszq,#P1#,m.xuqsl,0)) as p1Cyc1,
+								sum(decode(m.xuqsszq,#P2#,m.xuqsl,0)) as p2Cyc1,
+								sum(decode(m.xuqsszq,#P3#,m.xuqsl,0)) as p3Cyc1,
+								sum(decode(m.xuqsszq,#P4#,m.xuqsl,0)) as p4Cyc1
+						from ${dbSchemal1}xqjs_maoxqmx m
+						where active = '1'
+						<dynamic>
+							<isNotEmpty prepend=" and " property="xuqbc">
+				                                  <![CDATA[m.xuqbc = #xuqbc#]]>
+				
+				                  </isNotEmpty>
+							<isNotEmpty prepend=" and " property="lingjbh">
+				                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+							</isNotEmpty>
+							<isNotEmpty prepend=" and " property="usercenter">
+				                                  <![CDATA[m.usercenter = #usercenter#]]>
+							</isNotEmpty>
+						</dynamic>
+						group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.chanx,m.danw
+						
+						) a
+						full join 
+						(select
+								m.xuqbc as xuqbc2,
+								m.usercenter as usercenter2,
+								m.chanx as chanx2,
+								m.lingjbh as lingjbh2,
+								m.zhizlx as zhizlx2,
+								m.danw as danw2,
+								sum(decode(m.xuqsszq,#P0#,m.xuqsl,0)) as p0Cyc2,
+								sum(decode(m.xuqsszq,#P1#,m.xuqsl,0)) as p1Cyc2,
+								sum(decode(m.xuqsszq,#P2#,m.xuqsl,0)) as p2Cyc2,
+								sum(decode(m.xuqsszq,#P3#,m.xuqsl,0)) as p3Cyc2,
+								sum(decode(m.xuqsszq,#P4#,m.xuqsl,0)) as p4Cyc2
+						from ${dbSchemal1}xqjs_maoxqmx m
+						where active = '1'
+						<dynamic>
+							<isNotEmpty prepend=" and " property="xuqbc1">
+				                                  <![CDATA[m.xuqbc = #xuqbc1#]]>
+				
+				                  </isNotEmpty>
+							<isNotEmpty prepend=" and " property="lingjbh">
+				                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+							</isNotEmpty>
+							<isNotEmpty prepend=" and " property="usercenter">
+				                                  <![CDATA[m.usercenter = #usercenter#]]>
+							</isNotEmpty>
+						</dynamic>
+						group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.chanx,m.danw
+		             	
+		              ) b
+				      on(a.usercenter1 = b.usercenter2 and a.lingjbh1 = b.lingjbh2 and a.chanx1 = b.chanx2 and a.zhizlx1 = b.zhizlx2)
+		    ) c
+			left join (select *
+							  from (select t.usercenter,
+							               t.gongysbh,
+							               t.gcbh,
+							               t.lingjbh,
+							               row_number() over(partition by t.usercenter, t.gongysbh order by t.usercenter, t.gongysbh) as row_flag
+							          from ${dbSchemal1}ckx_wullj t )
+							 where row_flag = 1
+			   )n on (c.usercenter = n.usercenter and c.lingjbh = n.lingjbh)
+			 left join ${dbSchemal1}ckx_gongys x on (n.usercenter = x.usercenter and n.gongysbh = x.gcbh )
+			 left join ${dbSchemal1}ckx_gongys xx on (n.usercenter = xx.usercenter and n.gcbh = xx.gcbh )  
+			 left join ${dbSchemal3}ckx_lingj l on(c.usercenter = l.usercenter and c.lingjbh = l.lingjbh ) 
+				<dynamic prepend="where">
+					<isNotEmpty prepend=" and " property="jihyz">
+		                                  <![CDATA[l.jihy = #jihyz#]]>
+					</isNotEmpty>
+				</dynamic>
+				order by c.usercenter,c.lingjbh,c.chanx
+	</select>
+
+	<!-- 年度周期汇总到用户中心 xss-20150707-0011493 -v4_008 -->
+	<select id="compareCenterCyc" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+		select 
+		      c.usercenter,
+		      c.lingjbh,
+		      c.zhizlx,
+		      c.danw,
+		      c.p0Cyc1,
+			  c.p1Cyc1,
+			  c.p2Cyc1,
+			  c.p3Cyc1,
+			  c.p4Cyc1,
+			  c.p0Cyc2,
+			  c.p1Cyc2,
+			  c.p2Cyc2,
+			  c.p3Cyc2,
+			  c.p4Cyc2,
+		      l.zhongwmc as lingjmc,
+		      l.jihy     as jihyz,
+      		  n.gcbh       as gcbh, 
+       		  xx.gongsmc   as chengysmc,
+      		  x.gongsmc    as gongysmc,
+      		  n.gongysbh     as gongysbh
+		      from (
+		            select 
+					      nvl(a.usercenter1,b.usercenter2) as usercenter,
+					      nvl(a.lingjbh1,b.lingjbh2) as lingjbh,
+					      nvl(a.zhizlx1,b.zhizlx2)   as zhizlx,
+					      nvl(a.danw1,b.danw2)       as danw,
+					      a.p0Cyc1 as p0Cyc1,
+						  a.p1Cyc1 as p1Cyc1,
+						  a.p2Cyc1 as p2Cyc1,
+						  a.p3Cyc1 as p3Cyc1,
+						  a.p4Cyc1 as p4Cyc1,
+						  b.p0Cyc2 as p0Cyc2,
+						  b.p1Cyc2 as p1Cyc2,
+						  b.p2Cyc2 as p2Cyc2,
+						  b.p3Cyc2 as p3Cyc2,
+						  b.p4Cyc2 as p4Cyc2
+					    from  
+							(select
+									m.xuqbc as xuqbc1,
+									m.usercenter as usercenter1,
+									m.lingjbh as lingjbh1,
+									m.zhizlx as zhizlx1,
+									m.danw as danw1,
+									sum(decode(m.xuqsszq,#P0#,m.xuqsl,0)) as p0Cyc1,
+									sum(decode(m.xuqsszq,#P1#,m.xuqsl,0)) as p1Cyc1,
+									sum(decode(m.xuqsszq,#P2#,m.xuqsl,0)) as p2Cyc1,
+									sum(decode(m.xuqsszq,#P3#,m.xuqsl,0)) as p3Cyc1,
+									sum(decode(m.xuqsszq,#P4#,m.xuqsl,0)) as p4Cyc1
+							from ${dbSchemal1}xqjs_maoxqmx m
+							where active = '1'
+							<dynamic>
+								<isNotEmpty prepend=" and " property="xuqbc">
+					                                  <![CDATA[m.xuqbc = #xuqbc#]]>
+					
+					                  </isNotEmpty>
+								<isNotEmpty prepend=" and " property="lingjbh">
+					                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+								</isNotEmpty>
+								<isNotEmpty prepend=" and " property="usercenter">
+					                                  <![CDATA[m.usercenter = #usercenter#]]>
+								</isNotEmpty>
+							</dynamic>
+							group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.danw
+			             
+			                ) a
+							full join 
+							(select
+									m.xuqbc as xuqbc2,
+									m.usercenter as usercenter2,
+									m.lingjbh as lingjbh2,
+									m.zhizlx as zhizlx2,
+									m.danw as danw2,
+									sum(decode(m.xuqsszq,#P0#,m.xuqsl,0)) as p0Cyc2,
+									sum(decode(m.xuqsszq,#P1#,m.xuqsl,0)) as p1Cyc2,
+									sum(decode(m.xuqsszq,#P2#,m.xuqsl,0)) as p2Cyc2,
+									sum(decode(m.xuqsszq,#P3#,m.xuqsl,0)) as p3Cyc2,
+									sum(decode(m.xuqsszq,#P4#,m.xuqsl,0)) as p4Cyc2
+							from ${dbSchemal1}xqjs_maoxqmx m
+							where active = '1'
+							<dynamic>
+								<isNotEmpty prepend=" and " property="xuqbc1">
+					                                  <![CDATA[m.xuqbc = #xuqbc1#]]>
+					
+					                  </isNotEmpty>
+								<isNotEmpty prepend=" and " property="lingjbh">
+					                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+								</isNotEmpty>
+								<isNotEmpty prepend=" and " property="usercenter">
+					                                  <![CDATA[m.usercenter = #usercenter#]]>
+								</isNotEmpty>
+							</dynamic>
+							group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.danw
+							
+							) b
+							on(a.usercenter1 = b.usercenter2 and a.lingjbh1 = b.lingjbh2 and a.zhizlx1 = b.zhizlx2)
+
+		      )  c
+			left join (select *
+							  from (select t.usercenter,
+							               t.gongysbh,
+							               t.gcbh,
+							               t.lingjbh,
+							               row_number() over(partition by t.usercenter, t.gongysbh order by t.usercenter, t.gongysbh) as row_flag
+							          from ${dbSchemal1}ckx_wullj t ) 
+							 where row_flag = 1
+			   )n on (c.usercenter = n.usercenter and c.lingjbh = n.lingjbh)
+			 left join ${dbSchemal1}ckx_gongys x on (c.usercenter = x.usercenter and n.gongysbh = x.gcbh )
+			 left join ${dbSchemal1}ckx_gongys xx on (c.usercenter = xx.usercenter and n.gcbh = xx.gcbh ) 			
+             left join ${dbSchemal3}ckx_lingj l
+				on(c.usercenter = l.usercenter and c.lingjbh = l.lingjbh ) 
+			<dynamic prepend="where">
+					<isNotEmpty prepend=" and " property="jihyz">
+		                                  <![CDATA[l.jihy = #jihyz#]]>
+					</isNotEmpty>
+			</dynamic>
+			  order by c.usercenter,c.lingjbh
+	</select>
+
+      <!-- 周需求汇总 到 用户中心 xss-20150707-0011493-->
+	    <select id="compareUsercenterWeek"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.maoxq.CompareWeek">
+		select 
+		      c.usercenter,
+		      c.lingjbh,
+		      c.zhizlx,
+		      c.danw,
+		      c. s0Week1  ,                  
+             c. s1Week1  ,                  
+             c. s2Week1  ,                  
+             c. s3Week1  ,                  
+             c. s4Week1  ,                  
+             c. s5Week1  ,                  
+             c. s6Week1  ,                  
+             c. s7Week1  ,                  
+             c. s8Week1  ,                  
+             c. s9Week1  ,                  
+             c. s10Week1 ,                  
+             c. s11Week1 ,                  
+             c. s12Week1 ,                  
+             c. s13Week1 ,                  
+             c. s14Week1 ,                  
+             c. s15Week1 ,                  
+             c. s16Week1 ,                  
+             c. s17Week1 ,                  
+             c. s18Week1 ,                  
+             c. s19Week1 ,                  
+             c. s20Week1 ,                  
+             c. s21Week1 ,                  
+             c. s22Week1 ,                  
+             c. s23Week1 ,                  
+             c. s24Week1 ,                  
+             c. s25Week1 ,                  
+             c. s26Week1 ,                  
+             c. s27Week1 ,                  
+             c. s28Week1 ,                  
+             c.  s29Week1 ,                 
+             c. s30Week1 ,                  
+             c. s31Week1 ,                  
+             c. s32Week1 ,                  
+             c. s33Week1 ,                  
+             c. s34Week1 ,                  
+             c. s35Week1 ,                  
+             c. s36Week1 ,                  
+             c. s37Week1 ,                  
+             c. s38Week1 ,                  
+             c. s39Week1 ,                  
+             c. s40Week1 ,                  
+             c. s41Week1 ,                  
+             c. s42Week1 ,                  
+             c. s43Week1 ,                  
+             c. s44Week1 ,                  
+             c. s45Week1 ,                  
+             c. s46Week1 ,                  
+             c. s47Week1 ,                  
+             c. s48Week1 ,                  
+             c. s49Week1 ,                  
+             c. s50Week1 ,                  
+             c. s51Week1 ,                  
+             c. s52Week1 ,                  
+             c. s53Week1 ,                  
+             c. s54Week1 ,                  
+             c. s55Week1 ,                  
+             c. s56Week1 ,                  
+             c. s57Week1 ,                  
+             c. s58Week1 ,                  
+             c. s59Week1 ,                  
+             c. s60Week1 ,                  
+             c. s61Week1 ,                  
+             c. s62Week1 ,                  
+             c. s63Week1 ,                  
+             c. s64Week1 ,
+             c. s0Week2  ,                  
+             c. s1Week2  ,                  
+             c. s2Week2  ,                  
+             c. s3Week2  ,                  
+             c. s4Week2  ,                  
+             c. s5Week2  ,                  
+             c. s6Week2  ,                  
+             c. s7Week2  ,                  
+             c. s8Week2  ,                  
+             c. s9Week2  ,                  
+             c. s10Week2 ,                  
+             c. s11Week2 ,                  
+             c. s12Week2 ,                  
+             c. s13Week2 ,                  
+             c. s14Week2 ,                  
+             c. s15Week2 ,                  
+             c. s16Week2 ,                  
+             c. s17Week2 ,                  
+             c. s18Week2 ,                  
+             c. s19Week2 ,                  
+             c. s20Week2 ,                  
+             c. s21Week2 ,                  
+             c. s22Week2 ,                  
+             c. s23Week2 ,                  
+             c. s24Week2 ,                  
+             c. s25Week2 ,                  
+             c. s26Week2 ,                  
+             c. s27Week2 ,                  
+             c. s28Week2 ,                  
+             c.  s29Week2 ,                 
+             c. s30Week2 ,                  
+             c. s31Week2 ,                  
+             c. s32Week2 ,                  
+             c. s33Week2 ,                  
+             c. s34Week2 ,                  
+             c. s35Week2 ,                  
+             c. s36Week2 ,                  
+             c. s37Week2 ,                  
+             c. s38Week2 ,                  
+             c. s39Week2 ,                  
+             c. s40Week2 ,                  
+             c. s41Week2 ,                  
+             c. s42Week2 ,                  
+             c. s43Week2 ,                  
+             c. s44Week2 ,                  
+             c. s45Week2 ,                  
+             c. s46Week2 ,                  
+             c. s47Week2 ,                  
+             c. s48Week2 ,                  
+             c. s49Week2 ,                  
+             c. s50Week2 ,                  
+             c. s51Week2 ,                  
+             c. s52Week2 ,                  
+             c. s53Week2 ,                  
+             c. s54Week2 ,                  
+             c. s55Week2 ,                  
+             c. s56Week2 ,                  
+             c. s57Week2 ,                  
+             c. s58Week2 ,                  
+             c. s59Week2 ,                  
+             c. s60Week2 ,                  
+             c. s61Week2 ,                  
+             c. s62Week2 ,                  
+             c. s63Week2 ,                  
+             c. s64Week2 ,
+		      l.zhongwmc as lingjmc,
+		      l.jihy     as jihyz 
+		 from
+		      (
+				select 
+				      nvl(a.usercenter1,b.usercenter2) as usercenter,
+				      nvl(a.lingjbh1,b.lingjbh2) as lingjbh,
+				      nvl(a.zhizlx1,b.zhizlx2)   as zhizlx,
+				      nvl(a.danw1,b.danw2)       as danw,
+				       	 a. s0Week1    as  s0Week1, 
+						 a. s1Week1    as  s1Week1, 
+						 a. s2Week1    as  s2Week1, 
+						 a. s3Week1    as  s3Week1, 
+						 a. s4Week1    as  s4Week1, 
+						 a. s5Week1    as  s5Week1, 
+						 a. s6Week1    as  s6Week1, 
+						 a. s7Week1    as  s7Week1, 
+						 a. s8Week1    as  s8Week1, 
+						 a. s9Week1    as  s9Week1, 
+						 a. s10Week1   as  s10Week1,
+						 a. s11Week1   as  s11Week1,
+						 a. s12Week1   as  s12Week1,
+						 a. s13Week1   as  s13Week1,
+						 a. s14Week1   as  s14Week1,
+						 a. s15Week1   as  s15Week1,
+						 a. s16Week1   as  s16Week1,
+						 a. s17Week1   as  s17Week1,
+						 a. s18Week1   as  s18Week1,
+						 a. s19Week1   as  s19Week1,
+						 a. s20Week1   as  s20Week1,
+						 a. s21Week1   as  s21Week1,
+						 a. s22Week1   as  s22Week1,
+						 a. s23Week1   as  s23Week1,
+						 a. s24Week1   as  s24Week1,
+						 a. s25Week1   as  s25Week1,
+						 a. s26Week1   as  s26Week1,
+						 a. s27Week1   as  s27Week1,
+						 a. s28Week1   as  s28Week1,
+						 a. s29Week1   as  s29Week1,
+						 a. s30Week1   as  s30Week1,
+						 a. s31Week1   as  s31Week1,
+						 a. s32Week1   as  s32Week1,
+						 a. s33Week1   as  s33Week1,
+						 a. s34Week1   as  s34Week1,
+						 a. s35Week1   as  s35Week1,
+						 a. s36Week1   as  s36Week1,
+						 a. s37Week1   as  s37Week1,
+						 a. s38Week1   as  s38Week1,
+						 a. s39Week1   as  s39Week1,
+						 a. s40Week1   as  s40Week1,
+						 a. s41Week1   as  s41Week1,
+						 a. s42Week1   as  s42Week1,
+						 a. s43Week1   as  s43Week1,
+						 a. s44Week1   as  s44Week1,
+						 a. s45Week1   as  s45Week1,
+						 a. s46Week1   as  s46Week1,
+						 a. s47Week1   as  s47Week1,
+						 a. s48Week1   as  s48Week1,
+						 a. s49Week1   as  s49Week1,
+						 a. s50Week1   as  s50Week1,
+						 a. s51Week1   as  s51Week1,
+						 a. s52Week1   as  s52Week1,
+						 a. s53Week1   as  s53Week1,
+						 a. s54Week1   as  s54Week1,
+						 a. s55Week1   as  s55Week1,
+						 a. s56Week1   as  s56Week1,
+						 a. s57Week1   as  s57Week1,
+						 a. s58Week1   as  s58Week1,
+						 a. s59Week1   as  s59Week1,
+						 a. s60Week1   as  s60Week1,
+						 a. s61Week1   as  s61Week1,
+						 a. s62Week1   as  s62Week1,
+						 a. s63Week1   as  s63Week1,
+						 a. s64Week1   as  s64Week1,
+						 b. s0Week2    as  s0Week2, 
+						 b. s1Week2    as  s1Week2, 
+						 b. s2Week2    as  s2Week2, 
+						 b. s3Week2    as  s3Week2, 
+						 b. s4Week2    as  s4Week2, 
+						 b. s5Week2    as  s5Week2, 
+						 b. s6Week2    as  s6Week2, 
+						 b. s7Week2    as  s7Week2, 
+						 b. s8Week2    as  s8Week2, 
+						 b. s9Week2    as  s9Week2, 
+						 b. s10Week2   as  s10Week2,
+						 b. s11Week2   as  s11Week2,
+						 b. s12Week2   as  s12Week2,
+						 b. s13Week2   as  s13Week2,
+						 b. s14Week2   as  s14Week2,
+						 b. s15Week2   as  s15Week2,
+						 b. s16Week2   as  s16Week2,
+						 b. s17Week2   as  s17Week2,
+						 b. s18Week2   as  s18Week2,
+						 b. s19Week2   as  s19Week2,
+						 b. s20Week2   as  s20Week2,
+						 b. s21Week2   as  s21Week2,
+						 b. s22Week2   as  s22Week2,
+						 b. s23Week2   as  s23Week2,
+						 b. s24Week2   as  s24Week2,
+						 b. s25Week2   as  s25Week2,
+						 b. s26Week2   as  s26Week2,
+						 b. s27Week2   as  s27Week2,
+						 b. s28Week2   as  s28Week2,
+						 b. s29Week2   as  s29Week2,
+						 b. s30Week2   as  s30Week2,
+						 b. s31Week2   as  s31Week2,
+						 b. s32Week2   as  s32Week2,
+						 b. s33Week2   as  s33Week2,
+						 b. s34Week2   as  s34Week2,
+						 b. s35Week2   as  s35Week2,
+						 b. s36Week2   as  s36Week2,
+						 b. s37Week2   as  s37Week2,
+						 b. s38Week2   as  s38Week2,
+						 b. s39Week2   as  s39Week2,
+						 b. s40Week2   as  s40Week2,
+						 b. s41Week2   as  s41Week2,
+						 b. s42Week2   as  s42Week2,
+						 b. s43Week2   as  s43Week2,
+						 b. s44Week2   as  s44Week2,
+						 b. s45Week2   as  s45Week2,
+						 b. s46Week2   as  s46Week2,
+						 b. s47Week2   as  s47Week2,
+						 b. s48Week2   as  s48Week2,
+						 b. s49Week2   as  s49Week2,
+						 b. s50Week2   as  s50Week2,
+						 b. s51Week2   as  s51Week2,
+						 b. s52Week2   as  s52Week2,
+						 b. s53Week2   as  s53Week2,
+						 b. s54Week2   as  s54Week2,
+						 b. s55Week2   as  s55Week2,
+						 b. s56Week2   as  s56Week2,
+						 b. s57Week2   as  s57Week2,
+						 b. s58Week2   as  s58Week2,
+						 b. s59Week2   as  s59Week2,
+						 b. s60Week2   as  s60Week2,
+						 b. s61Week2   as  s61Week2,
+						 b. s62Week2   as  s62Week2,
+						 b. s63Week2   as  s63Week2,
+						 b. s64Week2   as  s64Week2                  
+				    from  
+						  (select
+						            m.xuqbc      as  xuqbc1,       
+						            m.usercenter as  usercenter1,    
+						            m.lingjbh    as  lingjbh1,            
+									m.zhizlx     as  zhizlx1,    
+									m.danw       as  danw1,   
+						        sum(decode(m.xuqz,#S0#,m.xuqsl,0))    as s0Week1  ,
+								sum(decode(m.xuqz,#S1#,m.xuqsl,0))    as s1Week1  ,
+								sum(decode(m.xuqz,#S2#,m.xuqsl,0))    as s2Week1 ,
+								sum(decode(m.xuqz,#S3#,m.xuqsl,0))    as s3Week1  ,
+								sum(decode(m.xuqz,#S4#,m.xuqsl,0))    as s4Week1  ,
+								sum(decode(m.xuqz,#S5#,m.xuqsl,0))    as s5Week1  ,
+								sum(decode(m.xuqz,#S6#,m.xuqsl,0))    as s6Week1  ,
+								sum(decode(m.xuqz,#S7#,m.xuqsl,0))    as s7Week1  ,
+								sum(decode(m.xuqz,#S8#,m.xuqsl,0))    as s8Week1  ,
+								sum(decode(m.xuqz,#S9#,m.xuqsl,0))    as s9Week1  ,
+								sum(decode(m.xuqz,#S10#,m.xuqsl,0))    as s10Week1 ,
+								sum(decode(m.xuqz,#S11#,m.xuqsl,0))    as s11Week1 ,
+								sum(decode(m.xuqz,#S12#,m.xuqsl,0))    as s12Week1 ,
+								sum(decode(m.xuqz,#S13#,m.xuqsl,0))    as s13Week1 ,
+								sum(decode(m.xuqz,#S14#,m.xuqsl,0))    as s14Week1 ,
+								sum(decode(m.xuqz,#S15#,m.xuqsl,0))    as s15Week1 ,
+								sum(decode(m.xuqz,#S16#,m.xuqsl,0))    as s16Week1 ,
+								sum(decode(m.xuqz,#S17#,m.xuqsl,0))    as s17Week1 ,
+								sum(decode(m.xuqz,#S18#,m.xuqsl,0))    as s18Week1 ,
+								sum(decode(m.xuqz,#S19#,m.xuqsl,0))    as s19Week1 ,
+								sum(decode(m.xuqz,#S20#,m.xuqsl,0))    as s20Week1 ,
+								sum(decode(m.xuqz,#S21#,m.xuqsl,0))    as s21Week1 ,
+								sum(decode(m.xuqz,#S22#,m.xuqsl,0))    as s22Week1 ,
+								sum(decode(m.xuqz,#S23#,m.xuqsl,0))    as s23Week1 ,
+								sum(decode(m.xuqz,#S24#,m.xuqsl,0))    as s24Week1 ,
+								sum(decode(m.xuqz,#S25#,m.xuqsl,0))    as s25Week1 ,
+								sum(decode(m.xuqz,#S26#,m.xuqsl,0))    as s26Week1 ,
+								sum(decode(m.xuqz,#S27#,m.xuqsl,0))    as s27Week1 ,
+								sum(decode(m.xuqz,#S28#,m.xuqsl,0))    as s28Week1 ,
+								sum(decode(m.xuqz,#S29#,m.xuqsl,0))    as s29Week1 ,
+								sum(decode(m.xuqz,#S30#,m.xuqsl,0))    as s30Week1 ,
+								sum(decode(m.xuqz,#S31#,m.xuqsl,0))    as s31Week1 ,
+								sum(decode(m.xuqz,#S32#,m.xuqsl,0))    as s32Week1 ,
+								sum(decode(m.xuqz,#S33#,m.xuqsl,0))    as s33Week1 ,
+								sum(decode(m.xuqz,#S34#,m.xuqsl,0))    as s34Week1 ,
+								sum(decode(m.xuqz,#S35#,m.xuqsl,0))    as s35Week1 ,
+								sum(decode(m.xuqz,#S36#,m.xuqsl,0))    as s36Week1 ,
+								sum(decode(m.xuqz,#S37#,m.xuqsl,0))    as s37Week1 ,
+								sum(decode(m.xuqz,#S38#,m.xuqsl,0))    as s38Week1 ,
+								sum(decode(m.xuqz,#S39#,m.xuqsl,0))    as s39Week1 ,
+								sum(decode(m.xuqz,#S40#,m.xuqsl,0))    as s40Week1 ,
+								sum(decode(m.xuqz,#S41#,m.xuqsl,0))    as s41Week1 ,
+								sum(decode(m.xuqz,#S42#,m.xuqsl,0))    as s42Week1 ,
+								sum(decode(m.xuqz,#S43#,m.xuqsl,0))    as s43Week1 ,
+								sum(decode(m.xuqz,#S44#,m.xuqsl,0))    as s44Week1 ,
+								sum(decode(m.xuqz,#S45#,m.xuqsl,0))    as s45Week1 ,
+								sum(decode(m.xuqz,#S46#,m.xuqsl,0))    as s46Week1 ,
+								sum(decode(m.xuqz,#S47#,m.xuqsl,0))    as s47Week1 ,
+								sum(decode(m.xuqz,#S48#,m.xuqsl,0))    as s48Week1 ,
+								sum(decode(m.xuqz,#S49#,m.xuqsl,0))    as s49Week1 ,
+								sum(decode(m.xuqz,#S50#,m.xuqsl,0))    as s50Week1 ,
+								sum(decode(m.xuqz,#S51#,m.xuqsl,0))    as s51Week1 ,
+								sum(decode(m.xuqz,#S52#,m.xuqsl,0))    as s52Week1 ,
+								sum(decode(m.xuqz,#S53#,m.xuqsl,0))    as s53Week1 ,
+								sum(decode(m.xuqz,#S54#,m.xuqsl,0))    as s54Week1 ,
+								sum(decode(m.xuqz,#S55#,m.xuqsl,0))    as s55Week1 ,
+								sum(decode(m.xuqz,#S56#,m.xuqsl,0))    as s56Week1 ,
+								sum(decode(m.xuqz,#S57#,m.xuqsl,0))    as s57Week1 ,
+								sum(decode(m.xuqz,#S58#,m.xuqsl,0))    as s58Week1 ,
+								sum(decode(m.xuqz,#S59#,m.xuqsl,0))    as s59Week1 ,
+								sum(decode(m.xuqz,#S60#,m.xuqsl,0))    as s60Week1 ,
+								sum(decode(m.xuqz,#S61#,m.xuqsl,0))    as s61Week1 ,
+								sum(decode(m.xuqz,#S62#,m.xuqsl,0))    as s62Week1 ,
+								sum(decode(m.xuqz,#S63#,m.xuqsl,0))    as s63Week1 ,
+								sum(decode(m.xuqz,#S64#,m.xuqsl,0))    as s64Week1 
+						     from  ${dbSchemal1}xqjs_maoxqmx  m
+						     where active = '1'
+					     <dynamic >
+			              <isNotEmpty  prepend = " and " property = "xuqbc">
+		
+		                                  <![CDATA[m.xuqbc = #xuqbc#]]>
+		
+		                  </isNotEmpty>
+					<isNotEmpty prepend=" and " property="lingjbh">
+		                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="usercenter">
+		                                  <![CDATA[m.usercenter = #usercenter#]]>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="zhizlx">
+		                                  <![CDATA[m.zhizlx = #zhizlx#]]>
+					</isNotEmpty>
+				</dynamic>
+				group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.danw
+				
+				) a 	
+				full join 		 
+						 
+				(select
+						            m.xuqbc      as  xuqbc2,       
+						            m.usercenter as  usercenter2,    
+						            m.lingjbh    as  lingjbh2,            
+									m.zhizlx     as  zhizlx2,    
+									m.danw       as  danw2,   
+						        sum(decode(m.xuqz,#S0#,m.xuqsl,0))    as s0Week2  ,
+								sum(decode(m.xuqz,#S1#,m.xuqsl,0))    as s1Week2  ,
+								sum(decode(m.xuqz,#S2#,m.xuqsl,0))    as s2Week2  ,
+								sum(decode(m.xuqz,#S3#,m.xuqsl,0))    as s3Week2  ,
+								sum(decode(m.xuqz,#S4#,m.xuqsl,0))    as s4Week2  ,
+								sum(decode(m.xuqz,#S5#,m.xuqsl,0))    as s5Week2  ,
+								sum(decode(m.xuqz,#S6#,m.xuqsl,0))    as s6Week2  ,
+								sum(decode(m.xuqz,#S7#,m.xuqsl,0))    as s7Week2  ,
+								sum(decode(m.xuqz,#S8#,m.xuqsl,0))    as s8Week2  ,
+								sum(decode(m.xuqz,#S9#,m.xuqsl,0))    as s9Week2  ,
+								sum(decode(m.xuqz,#S10#,m.xuqsl,0))    as s10Week2 ,
+								sum(decode(m.xuqz,#S11#,m.xuqsl,0))    as s11Week2 ,
+								sum(decode(m.xuqz,#S12#,m.xuqsl,0))    as s12Week2 ,
+								sum(decode(m.xuqz,#S13#,m.xuqsl,0))    as s13Week2 ,
+								sum(decode(m.xuqz,#S14#,m.xuqsl,0))    as s14Week2 ,
+								sum(decode(m.xuqz,#S15#,m.xuqsl,0))    as s15Week2 ,
+								sum(decode(m.xuqz,#S16#,m.xuqsl,0))    as s16Week2 ,
+								sum(decode(m.xuqz,#S17#,m.xuqsl,0))    as s17Week2 ,
+								sum(decode(m.xuqz,#S18#,m.xuqsl,0))    as s18Week2 ,
+								sum(decode(m.xuqz,#S19#,m.xuqsl,0))    as s19Week2 ,
+								sum(decode(m.xuqz,#S20#,m.xuqsl,0))    as s20Week2 ,
+								sum(decode(m.xuqz,#S21#,m.xuqsl,0))    as s21Week2 ,
+								sum(decode(m.xuqz,#S22#,m.xuqsl,0))    as s22Week2 ,
+								sum(decode(m.xuqz,#S23#,m.xuqsl,0))    as s23Week2 ,
+								sum(decode(m.xuqz,#S24#,m.xuqsl,0))    as s24Week2 ,
+								sum(decode(m.xuqz,#S25#,m.xuqsl,0))    as s25Week2 ,
+								sum(decode(m.xuqz,#S26#,m.xuqsl,0))    as s26Week2 ,
+								sum(decode(m.xuqz,#S27#,m.xuqsl,0))    as s27Week2 ,
+								sum(decode(m.xuqz,#S28#,m.xuqsl,0))    as s28Week2 ,
+								sum(decode(m.xuqz,#S29#,m.xuqsl,0))    as s29Week2 ,
+								sum(decode(m.xuqz,#S30#,m.xuqsl,0))    as s30Week2 ,
+								sum(decode(m.xuqz,#S31#,m.xuqsl,0))    as s31Week2 ,
+								sum(decode(m.xuqz,#S32#,m.xuqsl,0))    as s32Week2 ,
+								sum(decode(m.xuqz,#S33#,m.xuqsl,0))    as s33Week2 ,
+								sum(decode(m.xuqz,#S34#,m.xuqsl,0))    as s34Week2 ,
+								sum(decode(m.xuqz,#S35#,m.xuqsl,0))    as s35Week2 ,
+								sum(decode(m.xuqz,#S36#,m.xuqsl,0))    as s36Week2 ,
+								sum(decode(m.xuqz,#S37#,m.xuqsl,0))    as s37Week2 ,
+								sum(decode(m.xuqz,#S38#,m.xuqsl,0))    as s38Week2 ,
+								sum(decode(m.xuqz,#S39#,m.xuqsl,0))    as s39Week2 ,
+								sum(decode(m.xuqz,#S40#,m.xuqsl,0))    as s40Week2 ,
+								sum(decode(m.xuqz,#S41#,m.xuqsl,0))    as s41Week2 ,
+								sum(decode(m.xuqz,#S42#,m.xuqsl,0))    as s42Week2 ,
+								sum(decode(m.xuqz,#S43#,m.xuqsl,0))    as s43Week2 ,
+								sum(decode(m.xuqz,#S44#,m.xuqsl,0))    as s44Week2 ,
+								sum(decode(m.xuqz,#S45#,m.xuqsl,0))    as s45Week2 ,
+								sum(decode(m.xuqz,#S46#,m.xuqsl,0))    as s46Week2 ,
+								sum(decode(m.xuqz,#S47#,m.xuqsl,0))    as s47Week2 ,
+								sum(decode(m.xuqz,#S48#,m.xuqsl,0))    as s48Week2 ,
+								sum(decode(m.xuqz,#S49#,m.xuqsl,0))    as s49Week2 ,
+								sum(decode(m.xuqz,#S50#,m.xuqsl,0))    as s50Week2 ,
+								sum(decode(m.xuqz,#S51#,m.xuqsl,0))    as s51Week2 ,
+								sum(decode(m.xuqz,#S52#,m.xuqsl,0))    as s52Week2 ,
+								sum(decode(m.xuqz,#S53#,m.xuqsl,0))    as s53Week2 ,
+								sum(decode(m.xuqz,#S54#,m.xuqsl,0))    as s54Week2 ,
+								sum(decode(m.xuqz,#S55#,m.xuqsl,0))    as s55Week2 ,
+								sum(decode(m.xuqz,#S56#,m.xuqsl,0))    as s56Week2 ,
+								sum(decode(m.xuqz,#S57#,m.xuqsl,0))    as s57Week2 ,
+								sum(decode(m.xuqz,#S58#,m.xuqsl,0))    as s58Week2 ,
+								sum(decode(m.xuqz,#S59#,m.xuqsl,0))    as s59Week2 ,
+								sum(decode(m.xuqz,#S60#,m.xuqsl,0))    as s60Week2 ,
+								sum(decode(m.xuqz,#S61#,m.xuqsl,0))    as s61Week2 ,
+								sum(decode(m.xuqz,#S62#,m.xuqsl,0))    as s62Week2 ,
+								sum(decode(m.xuqz,#S63#,m.xuqsl,0))    as s63Week2 ,
+								sum(decode(m.xuqz,#S64#,m.xuqsl,0))    as s64Week2 
+						     from  ${dbSchemal1}xqjs_maoxqmx  m
+						     where active = '1'
+					     <dynamic >
+			              <isNotEmpty  prepend = " and " property = "xuqbc1">
+		
+		                                  <![CDATA[m.xuqbc = #xuqbc1#]]>
+		
+		                  </isNotEmpty>
+					<isNotEmpty prepend=" and " property="lingjbh">
+		                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="usercenter">
+		                                  <![CDATA[m.usercenter = #usercenter#]]>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="zhizlx">
+		                                  <![CDATA[m.zhizlx = #zhizlx#]]>
+					</isNotEmpty>
+				</dynamic>
+				group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.danw
+				
+				) b 			 
+				 on(a.usercenter1 = b.usercenter2 and a.lingjbh1 = b.lingjbh2 and a.zhizlx1 = b.zhizlx2)
+		)c
+		left join ${dbSchemal3}ckx_lingj l
+		on(c.usercenter = l.usercenter and c.lingjbh = l.lingjbh )
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="jihyz">
+                                  <![CDATA[l.jihy = #jihyz#]]>
+
+                      		 </isNotEmpty>
+				  </dynamic>
+				order by c.usercenter,c.lingjbh
+	     </select>
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	       <!-- 周需求汇总 到 产线 xss-20150707-0011493-->
+	    <select id="compareChanxWeek"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.maoxq.CompareWeek">
+		select 
+		      c.usercenter,
+		      c.lingjbh,
+		      c.chanx,
+		      c.zhizlx,
+		      c.danw,
+		      c. s0Week1  ,                  
+             c. s1Week1  ,                  
+             c. s2Week1  ,                  
+             c. s3Week1  ,                  
+             c. s4Week1  ,                  
+             c. s5Week1  ,                  
+             c. s6Week1  ,                  
+             c. s7Week1  ,                  
+             c. s8Week1  ,                  
+             c. s9Week1  ,                  
+             c. s10Week1 ,                  
+             c. s11Week1 ,                  
+             c. s12Week1 ,                  
+             c. s13Week1 ,                  
+             c. s14Week1 ,                  
+             c. s15Week1 ,                  
+             c. s16Week1 ,                  
+             c. s17Week1 ,                  
+             c. s18Week1 ,                  
+             c. s19Week1 ,                  
+             c. s20Week1 ,                  
+             c. s21Week1 ,                  
+             c. s22Week1 ,                  
+             c. s23Week1 ,                  
+             c. s24Week1 ,                  
+             c. s25Week1 ,                  
+             c. s26Week1 ,                  
+             c. s27Week1 ,                  
+             c. s28Week1 ,                  
+             c.  s29Week1 ,                 
+             c. s30Week1 ,                  
+             c. s31Week1 ,                  
+             c. s32Week1 ,                  
+             c. s33Week1 ,                  
+             c. s34Week1 ,                  
+             c. s35Week1 ,                  
+             c. s36Week1 ,                  
+             c. s37Week1 ,                  
+             c. s38Week1 ,                  
+             c. s39Week1 ,                  
+             c. s40Week1 ,                  
+             c. s41Week1 ,                  
+             c. s42Week1 ,                  
+             c. s43Week1 ,                  
+             c. s44Week1 ,                  
+             c. s45Week1 ,                  
+             c. s46Week1 ,                  
+             c. s47Week1 ,                  
+             c. s48Week1 ,                  
+             c. s49Week1 ,                  
+             c. s50Week1 ,                  
+             c. s51Week1 ,                  
+             c. s52Week1 ,                  
+             c. s53Week1 ,                  
+             c. s54Week1 ,                  
+             c. s55Week1 ,                  
+             c. s56Week1 ,                  
+             c. s57Week1 ,                  
+             c. s58Week1 ,                  
+             c. s59Week1 ,                  
+             c. s60Week1 ,                  
+             c. s61Week1 ,                  
+             c. s62Week1 ,                  
+             c. s63Week1 ,                  
+             c. s64Week1 ,
+             c. s0Week2  ,                  
+             c. s1Week2  ,                  
+             c. s2Week2  ,                  
+             c. s3Week2  ,                  
+             c. s4Week2  ,                  
+             c. s5Week2  ,                  
+             c. s6Week2  ,                  
+             c. s7Week2  ,                  
+             c. s8Week2  ,                  
+             c. s9Week2  ,                  
+             c. s10Week2 ,                  
+             c. s11Week2 ,                  
+             c. s12Week2 ,                  
+             c. s13Week2 ,                  
+             c. s14Week2 ,                  
+             c. s15Week2 ,                  
+             c. s16Week2 ,                  
+             c. s17Week2 ,                  
+             c. s18Week2 ,                  
+             c. s19Week2 ,                  
+             c. s20Week2 ,                  
+             c. s21Week2 ,                  
+             c. s22Week2 ,                  
+             c. s23Week2 ,                  
+             c. s24Week2 ,                  
+             c. s25Week2 ,                  
+             c. s26Week2 ,                  
+             c. s27Week2 ,                  
+             c. s28Week2 ,                  
+             c.  s29Week2 ,                 
+             c. s30Week2 ,                  
+             c. s31Week2 ,                  
+             c. s32Week2 ,                  
+             c. s33Week2 ,                  
+             c. s34Week2 ,                  
+             c. s35Week2 ,                  
+             c. s36Week2 ,                  
+             c. s37Week2 ,                  
+             c. s38Week2 ,                  
+             c. s39Week2 ,                  
+             c. s40Week2 ,                  
+             c. s41Week2 ,                  
+             c. s42Week2 ,                  
+             c. s43Week2 ,                  
+             c. s44Week2 ,                  
+             c. s45Week2 ,                  
+             c. s46Week2 ,                  
+             c. s47Week2 ,                  
+             c. s48Week2 ,                  
+             c. s49Week2 ,                  
+             c. s50Week2 ,                  
+             c. s51Week2 ,                  
+             c. s52Week2 ,                  
+             c. s53Week2 ,                  
+             c. s54Week2 ,                  
+             c. s55Week2 ,                  
+             c. s56Week2 ,                  
+             c. s57Week2 ,                  
+             c. s58Week2 ,                  
+             c. s59Week2 ,                  
+             c. s60Week2 ,                  
+             c. s61Week2 ,                  
+             c. s62Week2 ,                  
+             c. s63Week2 ,                  
+             c. s64Week2 ,
+		     l.zhongwmc as lingjmc,
+		     l.jihy     as jihyz 
+		 from
+		      (
+				select 
+				      nvl(a.usercenter1,b.usercenter2) as usercenter,
+				      nvl(a.lingjbh1,b.lingjbh2) as lingjbh,
+				      nvl(a.chanx1,b.chanx2)     as chanx,
+				      nvl(a.zhizlx1,b.zhizlx2)   as zhizlx,
+				      nvl(a.danw1,b.danw2)       as danw,
+				       	  a. s0Week1    as  s0Week1, 
+						 a. s1Week1    as  s1Week1, 
+						 a. s2Week1    as  s2Week1, 
+						 a. s3Week1    as  s3Week1, 
+						 a. s4Week1    as  s4Week1, 
+						 a. s5Week1    as  s5Week1, 
+						 a. s6Week1    as  s6Week1, 
+						 a. s7Week1    as  s7Week1, 
+						 a. s8Week1    as  s8Week1, 
+						 a. s9Week1    as  s9Week1, 
+						 a. s10Week1   as  s10Week1,
+						 a. s11Week1   as  s11Week1,
+						 a. s12Week1   as  s12Week1,
+						 a. s13Week1   as  s13Week1,
+						 a. s14Week1   as  s14Week1,
+						 a. s15Week1   as  s15Week1,
+						 a. s16Week1   as  s16Week1,
+						 a. s17Week1   as  s17Week1,
+						 a. s18Week1   as  s18Week1,
+						 a. s19Week1   as  s19Week1,
+						 a. s20Week1   as  s20Week1,
+						 a. s21Week1   as  s21Week1,
+						 a. s22Week1   as  s22Week1,
+						 a. s23Week1   as  s23Week1,
+						 a. s24Week1   as  s24Week1,
+						 a. s25Week1   as  s25Week1,
+						 a. s26Week1   as  s26Week1,
+						 a. s27Week1   as  s27Week1,
+						 a. s28Week1   as  s28Week1,
+						 a. s29Week1   as  s29Week1,
+						 a. s30Week1   as  s30Week1,
+						 a. s31Week1   as  s31Week1,
+						 a. s32Week1   as  s32Week1,
+						 a. s33Week1   as  s33Week1,
+						 a. s34Week1   as  s34Week1,
+						 a. s35Week1   as  s35Week1,
+						 a. s36Week1   as  s36Week1,
+						 a. s37Week1   as  s37Week1,
+						 a. s38Week1   as  s38Week1,
+						 a. s39Week1   as  s39Week1,
+						 a. s40Week1   as  s40Week1,
+						 a. s41Week1   as  s41Week1,
+						 a. s42Week1   as  s42Week1,
+						 a. s43Week1   as  s43Week1,
+						 a. s44Week1   as  s44Week1,
+						 a. s45Week1   as  s45Week1,
+						 a. s46Week1   as  s46Week1,
+						 a. s47Week1   as  s47Week1,
+						 a. s48Week1   as  s48Week1,
+						 a. s49Week1   as  s49Week1,
+						 a. s50Week1   as  s50Week1,
+						 a. s51Week1   as  s51Week1,
+						 a. s52Week1   as  s52Week1,
+						 a. s53Week1   as  s53Week1,
+						 a. s54Week1   as  s54Week1,
+						 a. s55Week1   as  s55Week1,
+						 a. s56Week1   as  s56Week1,
+						 a. s57Week1   as  s57Week1,
+						 a. s58Week1   as  s58Week1,
+						 a. s59Week1   as  s59Week1,
+						 a. s60Week1   as  s60Week1,
+						 a. s61Week1   as  s61Week1,
+						 a. s62Week1   as  s62Week1,
+						 a. s63Week1   as  s63Week1,
+						 a. s64Week1   as  s64Week1,
+						 b. s0Week2    as  s0Week2, 
+						 b. s1Week2    as  s1Week2, 
+						 b. s2Week2    as  s2Week2, 
+						 b. s3Week2    as  s3Week2, 
+						 b. s4Week2    as  s4Week2, 
+						 b. s5Week2    as  s5Week2, 
+						 b. s6Week2    as  s6Week2, 
+						 b. s7Week2    as  s7Week2, 
+						 b. s8Week2    as  s8Week2, 
+						 b. s9Week2    as  s9Week2, 
+						 b. s10Week2   as  s10Week2,
+						 b. s11Week2   as  s11Week2,
+						 b. s12Week2   as  s12Week2,
+						 b. s13Week2   as  s13Week2,
+						 b. s14Week2   as  s14Week2,
+						 b. s15Week2   as  s15Week2,
+						 b. s16Week2   as  s16Week2,
+						 b. s17Week2   as  s17Week2,
+						 b. s18Week2   as  s18Week2,
+						 b. s19Week2   as  s19Week2,
+						 b. s20Week2   as  s20Week2,
+						 b. s21Week2   as  s21Week2,
+						 b. s22Week2   as  s22Week2,
+						 b. s23Week2   as  s23Week2,
+						 b. s24Week2   as  s24Week2,
+						 b. s25Week2   as  s25Week2,
+						 b. s26Week2   as  s26Week2,
+						 b. s27Week2   as  s27Week2,
+						 b. s28Week2   as  s28Week2,
+						 b. s29Week2   as  s29Week2,
+						 b. s30Week2   as  s30Week2,
+						 b. s31Week2   as  s31Week2,
+						 b. s32Week2   as  s32Week2,
+						 b. s33Week2   as  s33Week2,
+						 b. s34Week2   as  s34Week2,
+						 b. s35Week2   as  s35Week2,
+						 b. s36Week2   as  s36Week2,
+						 b. s37Week2   as  s37Week2,
+						 b. s38Week2   as  s38Week2,
+						 b. s39Week2   as  s39Week2,
+						 b. s40Week2   as  s40Week2,
+						 b. s41Week2   as  s41Week2,
+						 b. s42Week2   as  s42Week2,
+						 b. s43Week2   as  s43Week2,
+						 b. s44Week2   as  s44Week2,
+						 b. s45Week2   as  s45Week2,
+						 b. s46Week2   as  s46Week2,
+						 b. s47Week2   as  s47Week2,
+						 b. s48Week2   as  s48Week2,
+						 b. s49Week2   as  s49Week2,
+						 b. s50Week2   as  s50Week2,
+						 b. s51Week2   as  s51Week2,
+						 b. s52Week2   as  s52Week2,
+						 b. s53Week2   as  s53Week2,
+						 b. s54Week2   as  s54Week2,
+						 b. s55Week2   as  s55Week2,
+						 b. s56Week2   as  s56Week2,
+						 b. s57Week2   as  s57Week2,
+						 b. s58Week2   as  s58Week2,
+						 b. s59Week2   as  s59Week2,
+						 b. s60Week2   as  s60Week2,
+						 b. s61Week2   as  s61Week2,
+						 b. s62Week2   as  s62Week2,
+						 b. s63Week2   as  s63Week2,
+						 b. s64Week2   as  s64Week2                    
+				    from  
+						  (select
+						            m.xuqbc      as  xuqbc1,       
+						            m.usercenter as  usercenter1,
+						            m.chanx      as  chanx1,       
+						            m.lingjbh    as  lingjbh1,            
+									m.zhizlx     as  zhizlx1,    
+									m.danw       as  danw1,   
+						        sum(decode(m.xuqz,#S0#,m.xuqsl,0))    as s0Week1  ,
+								sum(decode(m.xuqz,#S1#,m.xuqsl,0))    as s1Week1  ,
+								sum(decode(m.xuqz,#S2#,m.xuqsl,0))    as s2Week1  ,
+								sum(decode(m.xuqz,#S3#,m.xuqsl,0))    as s3Week1  ,
+								sum(decode(m.xuqz,#S4#,m.xuqsl,0))    as s4Week1  ,
+								sum(decode(m.xuqz,#S5#,m.xuqsl,0))    as s5Week1  ,
+								sum(decode(m.xuqz,#S6#,m.xuqsl,0))    as s6Week1  ,
+								sum(decode(m.xuqz,#S7#,m.xuqsl,0))    as s7Week1  ,
+								sum(decode(m.xuqz,#S8#,m.xuqsl,0))    as s8Week1  ,
+								sum(decode(m.xuqz,#S9#,m.xuqsl,0))    as s9Week1  ,
+								sum(decode(m.xuqz,#S10#,m.xuqsl,0))    as s10Week1 ,
+								sum(decode(m.xuqz,#S11#,m.xuqsl,0))    as s11Week1 ,
+								sum(decode(m.xuqz,#S12#,m.xuqsl,0))    as s12Week1 ,
+								sum(decode(m.xuqz,#S13#,m.xuqsl,0))    as s13Week1 ,
+								sum(decode(m.xuqz,#S14#,m.xuqsl,0))    as s14Week1 ,
+								sum(decode(m.xuqz,#S15#,m.xuqsl,0))    as s15Week1 ,
+								sum(decode(m.xuqz,#S16#,m.xuqsl,0))    as s16Week1 ,
+								sum(decode(m.xuqz,#S17#,m.xuqsl,0))    as s17Week1 ,
+								sum(decode(m.xuqz,#S18#,m.xuqsl,0))    as s18Week1 ,
+								sum(decode(m.xuqz,#S19#,m.xuqsl,0))    as s19Week1 ,
+								sum(decode(m.xuqz,#S20#,m.xuqsl,0))    as s20Week1 ,
+								sum(decode(m.xuqz,#S21#,m.xuqsl,0))    as s21Week1 ,
+								sum(decode(m.xuqz,#S22#,m.xuqsl,0))    as s22Week1 ,
+								sum(decode(m.xuqz,#S23#,m.xuqsl,0))    as s23Week1 ,
+								sum(decode(m.xuqz,#S24#,m.xuqsl,0))    as s24Week1 ,
+								sum(decode(m.xuqz,#S25#,m.xuqsl,0))    as s25Week1 ,
+								sum(decode(m.xuqz,#S26#,m.xuqsl,0))    as s26Week1 ,
+								sum(decode(m.xuqz,#S27#,m.xuqsl,0))    as s27Week1 ,
+								sum(decode(m.xuqz,#S28#,m.xuqsl,0))    as s28Week1 ,
+								sum(decode(m.xuqz,#S29#,m.xuqsl,0))    as s29Week1 ,
+								sum(decode(m.xuqz,#S30#,m.xuqsl,0))    as s30Week1 ,
+								sum(decode(m.xuqz,#S31#,m.xuqsl,0))    as s31Week1 ,
+								sum(decode(m.xuqz,#S32#,m.xuqsl,0))    as s32Week1 ,
+								sum(decode(m.xuqz,#S33#,m.xuqsl,0))    as s33Week1 ,
+								sum(decode(m.xuqz,#S34#,m.xuqsl,0))    as s34Week1 ,
+								sum(decode(m.xuqz,#S35#,m.xuqsl,0))    as s35Week1 ,
+								sum(decode(m.xuqz,#S36#,m.xuqsl,0))    as s36Week1 ,
+								sum(decode(m.xuqz,#S37#,m.xuqsl,0))    as s37Week1 ,
+								sum(decode(m.xuqz,#S38#,m.xuqsl,0))    as s38Week1 ,
+								sum(decode(m.xuqz,#S39#,m.xuqsl,0))    as s39Week1 ,
+								sum(decode(m.xuqz,#S40#,m.xuqsl,0))    as s40Week1 ,
+								sum(decode(m.xuqz,#S41#,m.xuqsl,0))    as s41Week1 ,
+								sum(decode(m.xuqz,#S42#,m.xuqsl,0))    as s42Week1 ,
+								sum(decode(m.xuqz,#S43#,m.xuqsl,0))    as s43Week1 ,
+								sum(decode(m.xuqz,#S44#,m.xuqsl,0))    as s44Week1 ,
+								sum(decode(m.xuqz,#S45#,m.xuqsl,0))    as s45Week1 ,
+								sum(decode(m.xuqz,#S46#,m.xuqsl,0))    as s46Week1 ,
+								sum(decode(m.xuqz,#S47#,m.xuqsl,0))    as s47Week1 ,
+								sum(decode(m.xuqz,#S48#,m.xuqsl,0))    as s48Week1 ,
+								sum(decode(m.xuqz,#S49#,m.xuqsl,0))    as s49Week1 ,
+								sum(decode(m.xuqz,#S50#,m.xuqsl,0))    as s50Week1 ,
+								sum(decode(m.xuqz,#S51#,m.xuqsl,0))    as s51Week1 ,
+								sum(decode(m.xuqz,#S52#,m.xuqsl,0))    as s52Week1 ,
+								sum(decode(m.xuqz,#S53#,m.xuqsl,0))    as s53Week1 ,
+								sum(decode(m.xuqz,#S54#,m.xuqsl,0))    as s54Week1 ,
+								sum(decode(m.xuqz,#S55#,m.xuqsl,0))    as s55Week1 ,
+								sum(decode(m.xuqz,#S56#,m.xuqsl,0))    as s56Week1 ,
+								sum(decode(m.xuqz,#S57#,m.xuqsl,0))    as s57Week1,
+								sum(decode(m.xuqz,#S58#,m.xuqsl,0))    as s58Week1 ,
+								sum(decode(m.xuqz,#S59#,m.xuqsl,0))    as s59Week1 ,
+								sum(decode(m.xuqz,#S60#,m.xuqsl,0))    as s60Week1 ,
+								sum(decode(m.xuqz,#S61#,m.xuqsl,0))    as s61Week1 ,
+								sum(decode(m.xuqz,#S62#,m.xuqsl,0))    as s62Week1 ,
+								sum(decode(m.xuqz,#S63#,m.xuqsl,0))    as s63Week1 ,
+								sum(decode(m.xuqz,#S64#,m.xuqsl,0))    as s64Week1 
+						     from  ${dbSchemal1}xqjs_maoxqmx  m
+						     where active = '1'
+					     <dynamic >
+			              <isNotEmpty  prepend = " and " property = "xuqbc">
+		
+		                                  <![CDATA[m.xuqbc = #xuqbc#]]>
+		
+		                  </isNotEmpty>
+					<isNotEmpty prepend=" and " property="lingjbh">
+		                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="usercenter">
+		                                  <![CDATA[m.usercenter = #usercenter#]]>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="zhizlx">
+		                                  <![CDATA[m.zhizlx = #zhizlx#]]>
+					</isNotEmpty>
+				</dynamic>
+				group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.chanx,m.danw
+				
+				) a 	
+				full join 		 	 
+				(select
+						            m.xuqbc      as  xuqbc2,       
+						            m.usercenter as  usercenter2, 
+						            m.chanx      as  chanx2,   
+						            m.lingjbh    as  lingjbh2,            
+									m.zhizlx     as  zhizlx2,    
+									m.danw       as  danw2,   
+						        sum(decode(m.xuqz,#S0#,m.xuqsl,0))    as s0Week2  ,
+								sum(decode(m.xuqz,#S1#,m.xuqsl,0))    as s1Week2  ,
+								sum(decode(m.xuqz,#S2#,m.xuqsl,0))    as s2Week2  ,
+								sum(decode(m.xuqz,#S3#,m.xuqsl,0))    as s3Week2  ,
+								sum(decode(m.xuqz,#S4#,m.xuqsl,0))    as s4Week2  ,
+								sum(decode(m.xuqz,#S5#,m.xuqsl,0))    as s5Week2  ,
+								sum(decode(m.xuqz,#S6#,m.xuqsl,0))    as s6Week2  ,
+								sum(decode(m.xuqz,#S7#,m.xuqsl,0))    as s7Week2  ,
+								sum(decode(m.xuqz,#S8#,m.xuqsl,0))    as s8Week2  ,
+								sum(decode(m.xuqz,#S9#,m.xuqsl,0))    as s9Week2  ,
+								sum(decode(m.xuqz,#S10#,m.xuqsl,0))    as s10Week2 ,
+								sum(decode(m.xuqz,#S11#,m.xuqsl,0))    as s11Week2 ,
+								sum(decode(m.xuqz,#S12#,m.xuqsl,0))    as s12Week2 ,
+								sum(decode(m.xuqz,#S13#,m.xuqsl,0))    as s13Week2 ,
+								sum(decode(m.xuqz,#S14#,m.xuqsl,0))    as s14Week2 ,
+								sum(decode(m.xuqz,#S15#,m.xuqsl,0))    as s15Week2 ,
+								sum(decode(m.xuqz,#S16#,m.xuqsl,0))    as s16Week2 ,
+								sum(decode(m.xuqz,#S17#,m.xuqsl,0))    as s17Week2 ,
+								sum(decode(m.xuqz,#S18#,m.xuqsl,0))    as s18Week2 ,
+								sum(decode(m.xuqz,#S19#,m.xuqsl,0))    as s19Week2 ,
+								sum(decode(m.xuqz,#S20#,m.xuqsl,0))    as s20Week2 ,
+								sum(decode(m.xuqz,#S21#,m.xuqsl,0))    as s21Week2 ,
+								sum(decode(m.xuqz,#S22#,m.xuqsl,0))    as s22Week2 ,
+								sum(decode(m.xuqz,#S23#,m.xuqsl,0))    as s23Week2 ,
+								sum(decode(m.xuqz,#S24#,m.xuqsl,0))    as s24Week2 ,
+								sum(decode(m.xuqz,#S25#,m.xuqsl,0))    as s25Week2 ,
+								sum(decode(m.xuqz,#S26#,m.xuqsl,0))    as s26Week2 ,
+								sum(decode(m.xuqz,#S27#,m.xuqsl,0))    as s27Week2 ,
+								sum(decode(m.xuqz,#S28#,m.xuqsl,0))    as s28Week2 ,
+								sum(decode(m.xuqz,#S29#,m.xuqsl,0))    as s29Week2 ,
+								sum(decode(m.xuqz,#S30#,m.xuqsl,0))    as s30Week2 ,
+								sum(decode(m.xuqz,#S31#,m.xuqsl,0))    as s31Week2 ,
+								sum(decode(m.xuqz,#S32#,m.xuqsl,0))    as s32Week2 ,
+								sum(decode(m.xuqz,#S33#,m.xuqsl,0))    as s33Week2 ,
+								sum(decode(m.xuqz,#S34#,m.xuqsl,0))    as s34Week2 ,
+								sum(decode(m.xuqz,#S35#,m.xuqsl,0))    as s35Week2 ,
+								sum(decode(m.xuqz,#S36#,m.xuqsl,0))    as s36Week2 ,
+								sum(decode(m.xuqz,#S37#,m.xuqsl,0))    as s37Week2 ,
+								sum(decode(m.xuqz,#S38#,m.xuqsl,0))    as s38Week2 ,
+								sum(decode(m.xuqz,#S39#,m.xuqsl,0))    as s39Week2 ,
+								sum(decode(m.xuqz,#S40#,m.xuqsl,0))    as s40Week2 ,
+								sum(decode(m.xuqz,#S41#,m.xuqsl,0))    as s41Week2 ,
+								sum(decode(m.xuqz,#S42#,m.xuqsl,0))    as s42Week2 ,
+								sum(decode(m.xuqz,#S43#,m.xuqsl,0))    as s43Week2 ,
+								sum(decode(m.xuqz,#S44#,m.xuqsl,0))    as s44Week2 ,
+								sum(decode(m.xuqz,#S45#,m.xuqsl,0))    as s45Week2 ,
+								sum(decode(m.xuqz,#S46#,m.xuqsl,0))    as s46Week2 ,
+								sum(decode(m.xuqz,#S47#,m.xuqsl,0))    as s47Week2 ,
+								sum(decode(m.xuqz,#S48#,m.xuqsl,0))    as s48Week2 ,
+								sum(decode(m.xuqz,#S49#,m.xuqsl,0))    as s49Week2 ,
+								sum(decode(m.xuqz,#S50#,m.xuqsl,0))    as s50Week2 ,
+								sum(decode(m.xuqz,#S51#,m.xuqsl,0))    as s51Week2 ,
+								sum(decode(m.xuqz,#S52#,m.xuqsl,0))    as s52Week2 ,
+								sum(decode(m.xuqz,#S53#,m.xuqsl,0))    as s53Week2 ,
+								sum(decode(m.xuqz,#S54#,m.xuqsl,0))    as s54Week2 ,
+								sum(decode(m.xuqz,#S55#,m.xuqsl,0))    as s55Week2 ,
+								sum(decode(m.xuqz,#S56#,m.xuqsl,0))    as s56Week2 ,
+								sum(decode(m.xuqz,#S57#,m.xuqsl,0))    as s57Week2 ,
+								sum(decode(m.xuqz,#S58#,m.xuqsl,0))    as s58Week2 ,
+								sum(decode(m.xuqz,#S59#,m.xuqsl,0))    as s59Week2 ,
+								sum(decode(m.xuqz,#S60#,m.xuqsl,0))    as s60Week2 ,
+								sum(decode(m.xuqz,#S61#,m.xuqsl,0))    as s61Week2 ,
+								sum(decode(m.xuqz,#S62#,m.xuqsl,0))    as s62Week2 ,
+								sum(decode(m.xuqz,#S63#,m.xuqsl,0))    as s63Week2 ,
+								sum(decode(m.xuqz,#S64#,m.xuqsl,0))    as s64Week2 
+						     from  ${dbSchemal1}xqjs_maoxqmx  m
+						     where active = '1'
+					     <dynamic >
+			              <isNotEmpty  prepend = " and " property = "xuqbc1">
+		
+		                                  <![CDATA[m.xuqbc = #xuqbc1#]]>
+		
+		                  </isNotEmpty>
+					<isNotEmpty prepend=" and " property="lingjbh">
+		                                  <![CDATA[m.lingjbh = #lingjbh#]]>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="usercenter">
+		                                  <![CDATA[m.usercenter = #usercenter#]]>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="zhizlx">
+		                                  <![CDATA[m.zhizlx = #zhizlx#]]>
+					</isNotEmpty>
+				</dynamic>
+				group by m.xuqbc,m.usercenter,m.lingjbh,m.zhizlx,m.chanx,m.danw
+				
+				) b 			 
+				 on(a.usercenter1 = b.usercenter2 and a.lingjbh1 = b.lingjbh2 and a.chanx1=b.chanx2 and a.zhizlx1 = b.zhizlx2)
+		  ) c
+		left join ${dbSchemal3}ckx_lingj l
+		on(c.usercenter = l.usercenter and c.lingjbh = l.lingjbh )
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="jihyz">
+                                  <![CDATA[l.jihy = #jihyz#]]>
+
+                      		 </isNotEmpty>
+				  </dynamic>
+		 order by c.usercenter,c.lingjbh,c.chanx
+	     </select>
+	        
+   <select id="queryMaoxqljlx" resultClass="java.lang.String">
+           select zhizlxx from ${dbSchemal3}ckx_zhizlxzh
+                where   usercenter = #usercenter#
+                     and 
+                        zhizlxy = #zhizlx#
+   </select>
+   
+   
+   <!-- xss 20161017 v4_008 毛需求比较结果查询 -->
+   	<select id="queryCompareQr" parameterClass="com.athena.xqjs.entity.maoxq.CompareQr" resultClass="com.athena.xqjs.entity.maoxq.CompareQr">
+		select   
+		      xuqbc1, 
+		      xuqbc2, 
+		      jiz, 
+		      bjfs,
+		      zhuangt, 
+		      creator, 
+		      create_time
+ 		 from ${dbSchemal3}XQJS_MAOXQBJ where zhuangt='0'
+ 		       order by create_time desc 
+	</select>
+	
+	<update id="deleteCompareQr" parameterClass="com.athena.xqjs.entity.maoxq.CompareQr"> 
+    update ${dbSchemal3}XQJS_MAOXQBJ
+    	set zhuangt = '2'
+     where  xuqbc1 = #xuqbc1#
+           and xuqbc2 = #xuqbc2#
+           and jiz = #jiz#
+           and bjfs = #bjfs#
+           and ZHUANGT='0'
+	</update>
+	
+		<update id="deleteCompareQr_Mx" parameterClass="com.athena.xqjs.entity.maoxq.CompareQr"> 
+    update ${dbSchemal3}XQJS_MAOXQBJMX
+    	set zhuangt = '2'
+     where  xuqbc1 = #xuqbc1#
+           and xuqbc2 = #xuqbc2#
+           and jiz = #jiz#
+           and bjfs = #bjfs#
+           and ZHUANGT='0'
+	</update>
+	
+	
+	<insert id="insertCompareQr" parameterClass="java.util.Map">
+		insert into ${dbSchemal3}XQJS_MAOXQBJ(  
+		xuqbc1,
+		xuqbc2,
+		jiz,
+		zhuangt,   
+		bjfs, 		
+		creator,
+		create_time)
+		values( 
+		#xuqbc#,
+		#xuqbc1#,
+		#xuqbc#,
+		'0', 
+		#xsfs#, 
+		#creator#,
+		to_Date( (substr(#create_time# ,0 ,19 ) ),'YYYY-MM-DD HH24:mi:ss') 
+		)
+	</insert>
+	 
+	<insert id="insertCompareQrMx" parameterClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+		insert into ${dbSchemal3}XQJS_MAOXQBJMX( 
+		usercenter,
+		xuqbc1,
+		xuqbc2,
+		jiz,
+		zhuangt,   
+		bjfs,
+		lingjbh,
+		lingjmc,
+		chanx,
+		gongysbh,
+		gongysmc,
+		gcbh,
+		chengysmc,
+		danw,
+		zhizlx,
+		jhyz, 
+		p0l,
+		p0r,
+		p0ce,
+		p1l,
+		p1r,
+		p1ce,
+		p2l,
+		p2r,
+		p2ce,
+		p3l,
+		p3r,
+		p3ce,
+		p4l,
+		p4r,
+		p4ce,		
+		creator,
+		create_time)
+		values(
+		#usercenter#,
+		#xuqbc#,
+		#xuqbc1#,
+		#xuqbc#,
+		'0', 
+		#xsfs#,
+		#lingjbh#,
+		#lingjmc#,
+		#chanx#,
+		#gongysbh#,
+		#gongysmc#,
+		#gcbh#,
+		#chengysmc#,
+		#danw#,
+		#zhizlx#,
+		#jihyz#, 
+	 	#p0Cyc1#,
+	 	#p0Cyc2#, 
+    	#p0Margin#,	  
+		#p1Cyc1#,
+		#p1Cyc2#,
+		#p1Margin#,
+		#p2Cyc1#,
+		#p2Cyc2#,
+		#p2Margin#,
+		#p3Cyc1#,
+		#p3Cyc2#,
+		#p3Margin#,
+		#p4Cyc1#,
+		#p4Cyc2#,
+		#p4Margin#, 	
+		#creator#,
+		to_Date( (substr(#create_time# ,0 ,19 ) ),'YYYY-MM-DD HH24:mi:ss') 
+		)
+	</insert>
+	
+   <!-- 查找是否存在需求版次 已经发送的数据  0012943-->		        
+   <select id="maoxqSffs" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+           select   
+  					 xuqbc1 as xuqbc , 
+  					 xuqbc2 as xuqbc1,
+  					 zhuangt as zhuangt
+   		   from ${dbSchemal3}XQJS_MAOXQBJ 
+             where  
+             xuqbc1 = #xuqbc# and jiz = #xuqbc# and xuqbc2 = #xuqbc1# and ZHUANGT='1' and bjfs=#xsfs#
+   </select>
+   
+	<!-- 删除比较数据  0012943-->
+    <delete id="doDeleteXuqbcJizExists" parameterClass="java.util.Map">
+		delete
+		from
+		${dbSchemal3}XQJS_MAOXQBJ
+		where 
+		 xuqbc1 = #xuqbc# and jiz = #xuqbc# and xuqbc2 = #xuqbc1# and bjfs=#xsfs#
+	</delete>
+	
+	<!-- 删除比较明细数据  0012943-->
+    <delete id="doDeleteXuqbcJizExists_Mx" parameterClass="java.util.Map">
+		delete
+		from
+		${dbSchemal3}XQJS_MAOXQBJMX
+		where 
+	       xuqbc1 = #xuqbc# and jiz = #xuqbc# and xuqbc2 = #xuqbc1# and bjfs=#xsfs#
+	</delete>
+	
+	  	
+   <!-- 查找是否存在相同版次的数据   0012943-->		        
+   <select id="queryXuqbcJizExists" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+           select   
+  					 xuqbc1 as xuqbc , 
+  					 xuqbc2 as xuqbc1,
+  					 zhuangt as zhuangt
+   		   from ${dbSchemal3}XQJS_MAOXQBJ 
+           where  
+           xuqbc1 = #xuqbc# and jiz = #xuqbc# and xuqbc2 = #xuqbc1# and ZHUANGT='0' and bjfs=#xsfs#
+   </select>
+   
+   
+   
+   <!-- 查询是否有其他用户中心正在比较  0012943-->		        
+   <select id="QueryMaoxqSfbj" parameterClass="java.util.Map" resultClass="int">
+			select count(*) from ${dbSchemal3}xqjs_jisclcssz t where t.jiscldm in ('51','52','53','54') and t.chulzt='20'
+   </select>
+   
+   <!-- 周期毛需求比较 加解锁 -->
+   <update id="updateJisState"  parameterClass="java.util.Map"> 
+			update  ${dbSchemal3}xqjs_jisclcssz set chulzt = #chulzt# where jiscldm = #jiscldm# 
+   </update>
+	
+	
+	
+</sqlMap>

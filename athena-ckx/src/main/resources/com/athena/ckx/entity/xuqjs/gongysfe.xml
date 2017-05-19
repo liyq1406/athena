@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+	供应商份额 20150630 0011488
+	@author hanwu 
+	@date 2015-06-29
+-->
+<sqlMap namespace="ts_ckx">
+	
+	<!-- 查询供应商份额   -->
+	<select id="queryGongysfe" resultClass="com.athena.ckx.entity.xuqjs.Gongysfe">
+		select ck.usercenter,ck.lingjbh,ck.gongysdm,ck.biaodsl from ${dbSchemal3}ck_lingjgys ck
+		inner join ${dbSchemal3}ckx_lingjgys ckx on ck.usercenter = ckx.usercenter and ck.lingjbh = ckx.lingjbh and ck.gongysdm = ckx.gongysbh
+		where 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">
+				<![CDATA[ ck.usercenter = #usercenter# ]]>
+			</isNotNull>
+			<isNotNull property="lingjbh" prepend=" and ">
+				<![CDATA[ ck.lingjbh = #lingjbh# ]]>
+			</isNotNull>
+		</dynamic>
+		and ckx.biaos = 1
+	</select>
+	
+	<!-- 获取看板扫卡要货量   -->
+	<select id="getKanbskyhl" parameterClass="com.athena.ckx.entity.xuqjs.Gongysfe"
+	 resultClass="java.util.HashMap">
+		select usercenter,lingjbh,gongysdm,SUM(yaohsl) sl from ${dbSchemal3}ck_kbskls 
+		where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and saoksj >= TO_DATE(#feneczsj#,'YYYY-MM-DD HH24:MI:SS') and yaohlzt='01']]>
+		group by usercenter,lingjbh,gongysdm 
+	</select>
+	
+	<!-- 获取要货令要货量   -->
+	<select id="getYaohlyhl" parameterClass="com.athena.ckx.entity.xuqjs.Gongysfe"
+	 resultClass="java.util.HashMap">
+		select usercenter,lingjbh,gongysdm,SUM(yaohsl) sl from ${dbSchemal3}ck_yaohl 
+		where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and create_time >= TO_DATE(#feneczsj#,'YYYY-MM-DD HH24:MI:SS') and kanbkh is null]]>
+		group by usercenter,lingjbh,gongysdm  
+	</select>
+	
+	<!-- 更新供应商份额   -->
+	<update id="updateGongysfe" parameterClass="com.athena.ckx.entity.xuqjs.Gongysfe">
+		update ${dbSchemal3}ck_lingjgys 
+		set biaodsl=#biaodsl# , edit_time = to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+		where <![CDATA[ usercenter = #usercenter# and lingjbh = #lingjbh# and gongysdm = #gongysdm# ]]>
+	</update>
+</sqlMap>

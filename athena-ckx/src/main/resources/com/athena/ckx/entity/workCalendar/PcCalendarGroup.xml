@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="workCalendarPC">
+	<!-- 多记录查询 -->
+	<select id="queryCkxCalendarGroup" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarGroup">select 
+		usercenter,
+		biaos,
+		rilbc,
+		shengxsj,
+		beiz,
+		bianzh,
+		weilbzh,
+		appobj 
+		,creator,create_Time,editor,edit_Time
+		from ${dbSchemal3}ckx_pc_calendar_group where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="rilbc">rilbc = #rilbc#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="bianzh">bianzh = #bianzh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="appobj">appobj = #appobj#</isNotEmpty>			
+			<isNotEmpty prepend="  and " property="biaos">biaos = #biaos#</isNotEmpty>
+		</dynamic>
+		order by usercenter,rilbc,bianzh,appobj
+	</select>
+	
+	<!-- 根据日历版次找关联是否存在(有效的) -->
+	<select id="selectCountByBanc" resultClass="java.lang.Integer">
+		select count(rilbc) 
+		from ${dbSchemal3}ckx_pc_calendar_group 
+		where biaos=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="rilbc">rilbc = #rilbc#</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 单记录查询 -->
+	<select id="getCkxCalendarGroup" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarGroup">select 
+		usercenter,
+		biaos,
+		rilbc,
+		shengxsj,
+		beiz,
+		bianzh,
+		weilbzh,
+		appobj 
+		,creator,create_Time,editor,edit_Time
+		from ${dbSchemal3}ckx_pc_calendar_group 
+		where usercenter = #usercenter# and appobj = #appobj#
+	</select>
+	<!-- 插入记录 -->
+	<insert id="insertCkxCalendarGroup" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarGroup">insert into
+		${dbSchemal3}ckx_pc_calendar_group (usercenter,biaos,rilbc,shengxsj,beiz,bianzh,weilbzh,appobj,creator,create_Time,editor,edit_Time)
+		values(
+			#usercenter#,
+			1,
+			#rilbc#,
+			#shengxsj#,
+			#beiz#,
+			#bianzh#,
+			#weilbzh#,
+			#appobj#
+			,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	<!-- 修改记录 -->
+	<update id="updateCkxCalendarGroup" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarGroup">
+		update ${dbSchemal3}ckx_pc_calendar_group set 
+		usercenter=#usercenter#,
+		biaos=#biaos#,
+		rilbc=#rilbc#,
+		shengxsj=#shengxsj#,
+		beiz=#beiz#,
+		bianzh=#bianzh#,
+		weilbzh=#weilbzh#,
+		appobj=#appobj#,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where usercenter = #usercenter# and appobj = #appobj#
+	</update>
+	<!-- 删除记录 -->
+	<delete id="deleteCkxCalendarGroup" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarGroup">
+		delete from ${dbSchemal3}ckx_pc_calendar_group 
+		where usercenter = #usercenter# and appobj = #appobj#
+	</delete>
+	<!--  从工作日历获取工作时间        -->
+	<select id="getTotalTime" parameterClass="java.util.Map" resultClass="java.lang.String">
+select sum(times) total from (
+
+select g.usercenter, g.appobj,t.kaissj,t.jiezsj
+<![CDATA[,case when to_number(TO_DATE(t.jiezsj,'hh24:mi:ss')-TO_DATE(t.kaissj,'hh24:mi:ss'))<0  then ]]>
+      to_number(TO_DATE(t.jiezsj,'hh24:mi:ss')-TO_DATE(t.kaissj,'hh24:mi:ss')) * $days$+$days$
+
+ else to_number(TO_DATE(t.jiezsj,'hh24:mi:ss')-TO_DATE(t.kaissj,'hh24:mi:ss')) * $days$  end times
+
+ from ${dbSchemal3}ckx_pc_calendar_group g 
+inner join  ${dbSchemal3}ckx_pc_calendar_team t
+on g.bianzh=t.bianzh
+
+where g.appobj = #app# and usercenter=#usercenter#
+
+) s group by usercenter,appobj
+	</select>
+	
+</sqlMap>

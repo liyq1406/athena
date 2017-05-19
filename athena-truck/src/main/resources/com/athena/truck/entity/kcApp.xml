@@ -1,0 +1,930 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="kc_app">
+
+	<!-- 查询指定用户数量 -->
+	<select id="countKCUser" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(1)
+		  FROM ${dbSchemal3}SYS_USER U
+		 WHERE U.LOGINNAME = #username#
+		   AND U.PASSWORD = #password#
+		   AND U.BIAOS = '1'
+	</select>
+	
+	<!-- 查询是否验证手机号 -->
+	<select id="getPhoneCheck" resultClass="java.lang.String">
+		SELECT X.BEIZ
+		  FROM ${dbSchemal3}CKX_XITCSDY X
+		 WHERE X.ZIDBM = 'YZSJ'
+		   AND X.ZIDLX = 'KCRC'
+	</select>
+	
+	<!-- 获取指定承运商司机姓名 -->
+	<select id="getNameOfCYSSJ" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT K.SIJXM
+		  FROM ${dbSchemal3}KC_CYS_KC C, ${dbSchemal3}KC_KC_SJ K
+		 WHERE C.KACH = K.KACH
+		   AND C.BIAOS = K.BIAOS
+		   AND C.BIAOS = '1'
+		   AND C.CHENGYS = #username#
+		   AND C.KACH = #tnumber#
+		   AND K.SHOUJH = #cnumber#
+	</select>
+	
+	<!-- 获取指定承运商司机数量 -->
+	<select id="getCountOfCYSSJ" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT COUNT(1)
+		  FROM ${dbSchemal3}KC_CYS_KC C, ${dbSchemal3}KC_KC_SJ K
+		 WHERE C.KACH = K.KACH
+		   AND C.BIAOS = K.BIAOS
+		   AND C.BIAOS = '1'
+		   AND C.CHENGYS = #username#
+		   AND C.KACH = #tnumber#
+		   AND K.SHOUJH = #cnumber#
+	</select>
+	
+	<!-- 插入登录信息流水 -->
+	<insert id="insertLoginInfo" parameterClass="java.util.Map">
+		INSERT INTO ${dbSchemal3}KC_LOGIN_INFO
+		  (SHOUJH, CHENGYS, KACH, SIJXM, LOGIN_TIME)
+		VALUES
+		  (#cnumber#, #username#, #tnumber#, #sijxm#, SYSDATE)
+	</insert>
+	
+	<!-- 获取所有用户中心坐标 -->
+	<select id="getUCGridList" resultClass="java.util.HashMap">
+		SELECT U.USERCENTER "usercenter",U.UCNAME "name", U.LONGITUDE "longitude", U.LATITUDE "latitude" FROM ${dbSchemal3}KC_UCIP U WHERE U.BIAOS = '1'
+	</select>
+	
+	<!-- 获取指定用户中心IP -->
+	<select id="getUCIpList" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT U.IP FROM ${dbSchemal3}KC_UCIP U WHERE U.USERCENTER = #usercenter#
+	</select>
+	
+	<!-- 通过卡车号查找BL单 -->
+	<select id="getBLByTnumber" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		 select DISTINCT 
+		                blh 		"blh",
+		                uth 		"uth",
+		                cangkbh 	"cangkbh",
+		                chengysdm 	"cys",
+		                xiehzt 		"xhzt",
+		                daztbh 		"dzt",
+		                quybh 		"qybh",
+		                beiz1 		"beiz1",
+		                zuiwsj		"zwsj",
+		                zuizsj 		"zuizsj"
+		  from (select rank() over(partition by usercenter, blh, uth, cangkbh, chengysdm, xiehzt, daztbh, quybh order by beiz1, zuiwsj, zuizsj) rk,
+		               usercenter,
+		               blh,
+		               uth,
+		               cangkbh,
+		               chengysdm,
+		               xiehzt,
+		               daztbh,
+		               quybh,
+		               beiz1,
+		               zuiwsj,
+		               zuizsj
+		          from (select a.blh blh,
+		                       to_char(case
+		                                 when c.zuiwsj is null then
+		                                  sysdate
+		                                 else
+		                                  c.zuiwsj
+		                               end, 'yyyy-MM-dd hh24:mi') zuiwsj,
+		                       a.xiehzt xiehzt,
+		                       d.daztbh daztbh,
+		                       e.quybh quybh,
+		                       a.usercenter usercenter,
+		                       a.uth uth,
+		                       to_char(case
+		                                 when c.zuizsj is null then
+		                                  sysdate
+		                                 else
+		                                  c.zuizsj
+		                               end, 'yyyy-MM-dd hh24:mi') zuizsj,
+		                       a.cangkbh cangkbh,
+		                       a.chengysdm chengysdm,
+		                       case
+		                         when c.zuiwsj = c.zuizsj and shiflsk = '0' and
+		                              c.yaohllx in ('C1', 'CD', 'M1', 'MD') then
+		                          '1'
+		                         else
+		                          '0'
+		                       end beiz1
+		                  from ${dbSchemal3}ck_daohtzd a
+		                  left join ${dbSchemal3}ck_uabq b
+		                    on a.usercenter = b.usercenter
+		                   and a.uth = b.uth
+		                   and a.blh = b.blh
+		                  left join ${dbSchemal3}ck_yaohl c
+		                    on b.usercenter = c.usercenter
+		                   and b.yaohlh = c.yaohlh
+		                  left join ${dbSchemal3}ckx_xiehzt d
+		                    on a.usercenter = d.usercenter
+		                   and a.xiehzt = d.xiehztbh
+		                  left join ${dbSchemal3}ckx_dazt e
+		                    on d.usercenter = e.usercenter
+		                   and d.daztbh = e.daztbh
+		                 where 1 = 1
+		                   and a.shiftb = '0'
+		                   and a.zhuangt = 2
+		                   and e.biaos = '1'
+		                   and a.tch = #tnumber#
+		                   and a.usercenter = #usercenter#
+		                ) a
+		             WHERE SYSDATE - TO_DATE(ZUIWSJ, 'YYYY-MM-DD HH24:MI') <![CDATA[<=]]> 2) b   
+		 where b.rk = 1
+ 		ORDER BY BLH
+	</select>
+	
+	<!-- 通过BL号查找BL单 -->
+	<select id="getBLByBL" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		 select distinct 
+		                blh 		"blh",
+		                uth 		"uth",
+		                cangkbh 	"cangkbh",
+		                chengysdm 	"cys",
+		                xiehzt 		"xhzt",
+		                daztbh 		"dzt",
+		                quybh 		"qybh",
+		                beiz1 		"beiz1",
+		                zuiwsj		"zwsj",
+		                zuizsj 		"zuizsj"
+		  from (select rank() over(partition by usercenter, blh, uth, cangkbh, chengysdm, xiehzt, daztbh, quybh order by beiz1, zuiwsj, zuizsj) rk,
+		               usercenter,
+		               blh,
+		               uth,
+		               cangkbh,
+		               chengysdm,
+		               xiehzt,
+		               daztbh,
+		               quybh,
+		               beiz1,
+		               zuiwsj,
+		               zuizsj
+		          from (select a.blh blh,
+		                       to_char(case
+		                                 when c.zuiwsj is null then
+		                                  sysdate
+		                                 else
+		                                  c.zuiwsj
+		                               end, 'yyyy-MM-dd hh24:mi') zuiwsj,
+		                       a.xiehzt xiehzt,
+		                       d.daztbh daztbh,
+		                       e.quybh quybh,
+		                       a.usercenter usercenter,
+		                       a.uth uth,
+		                       to_char(case
+		                                 when c.zuizsj is null then
+		                                  sysdate
+		                                 else
+		                                  c.zuizsj
+		                               end, 'yyyy-MM-dd hh24:mi') zuizsj,
+		                       a.cangkbh cangkbh,
+		                       a.chengysdm chengysdm,
+		                       case
+		                         when c.zuiwsj = c.zuizsj and shiflsk = '0' and
+		                              c.yaohllx in ('C1', 'CD', 'M1', 'MD') then
+		                          '1'
+		                         else
+		                          '0'
+		                       end beiz1
+		                  from ${dbSchemal3}ck_daohtzd a
+		                  left join ${dbSchemal3}ck_uabq b
+		                    on a.usercenter = b.usercenter
+		                   and a.uth = b.uth
+		                   and a.blh = b.blh
+		                  left join ${dbSchemal3}ck_yaohl c
+		                    on b.usercenter = c.usercenter
+		                   and b.yaohlh = c.yaohlh
+		                  left join ${dbSchemal3}ckx_xiehzt d
+		                    on a.usercenter = d.usercenter
+		                   and a.xiehzt = d.xiehztbh
+		                  left join ${dbSchemal3}ckx_dazt e
+		                    on d.usercenter = e.usercenter
+		                   and d.daztbh = e.daztbh
+		                 where 1 = 1
+		                   and a.shiftb = '0'
+		                   and a.zhuangt = 2
+		                   AND e.biaos = '1'
+		                   AND a.blh = #blh#
+		                   AND a.usercenter = #usercenter#
+		                <dynamic>
+		                  <isNotEmpty prepend=" and " property="qybh">
+		                    e.quybh = #qybh#
+		                  </isNotEmpty>
+		                </dynamic>
+		                ) a) b
+		 where b.rk = 1
+	</select>
+	
+	<!-- 获取一个大站台的提前申报时间 -->
+	<select id="getDZTTime" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT MAX(D.SHENBTQSJ)
+		  FROM ${dbSchemal3}CKX_DAZT D
+		 WHERE D.USERCENTER = #usercenter#
+		   AND D.DAZTBH = #dzts#
+	</select>
+	
+	<!-- 查询当前申报卡车的上一次出厂时间，用于 出厂标记 功能 -->
+	<select id="queryLastChucsj" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+			max(a.shengbsj) shengbsj
+			,to_char(a.chucsj,'yyyy-MM-dd hh24:mi:ss') chucsj
+			,a.yundh yundh
+			,a.daztbh daztbh
+			,a.zhuangt zhuangt
+		from ${dbSchemal3}KC_YUND a
+		where 1=1
+			and a.chucsj is null
+			and a.zhuangt != '9'
+			and a.kach=#tnumber#
+			and a.usercenter=#usercenter#
+		group by a.chucsj,a.yundh,a.daztbh,a.zhuangt
+	</select>
+	
+	<!-- 查询特定的流程定义（申报） 
+			and liucbh = '1'-->
+	<select id="queryLiucdy" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select 
+			usercenter
+			,daztbh
+			,quybh
+			,liucbh
+			,liucmc
+			,leix
+			,biaozsj
+			,liucbs
+			,biaos
+			,beiz
+			,beiz1
+			,beiz2
+			,beiz3
+			,beiz4
+			,beiz5
+			,creator
+			,create_time
+			,editor
+			,edit_time
+		from ${dbSchemal3}CKX_LIUCDY t
+		where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="liucbh">
+					liucbh = #liucbh#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="daztbh">
+					daztbh = #daztbh#
+				</isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!-- 重新申报时删掉排队表中的数据-->
+	<update id="deleteChelpd" parameterClass="java.util.HashMap">
+		delete  from ${dbSchemal3}kc_chelpd a 
+		where  a.kach = #kach#
+			and a.yundh = #yundh#
+			and a.usercenter=#usercenter#
+	</update>
+	
+	<!-- 出厂标记 -->
+	<update id="updateChucbj" parameterClass="java.util.HashMap">
+		update ${dbSchemal3}KC_YUND 
+		set chucsj = sysdate
+			,zhuangt = #zhuangt#
+			,zhuangtmc = #zhuangtmc#
+			,editor = #editor#
+			,edit_time = sysdate
+		where kach = #kach#
+			and yundh = #yundh#
+			and usercenter=#usercenter#
+	</update>
+	
+	<!-- 出厂申报和出厂标记时，插入卡车出入厂流程表的流程状态 ,#chengysdm# -->
+	<insert id="insertKachChuc" parameterClass="java.util.HashMap">
+		insert into ${dbSchemal3}kc_churcls(
+			usercenter
+			,yundh
+			,quybh
+			,daztbh
+			,kach
+			,liucbh
+			,operator
+			,operate_time
+			,lastoperate_time
+			,operate_type
+			,biaozsj
+		)values(<![CDATA[
+			#usercenter#
+			,#yundh#
+			,#quybh#
+			,#daztbh#
+			,#kach#
+			,#zhuangt#
+			,#editor#
+			,sysdate
+			,(
+				select distinct
+					max(operate_time)
+				from ${dbSchemal3}kc_churcls
+				where 
+					usercenter = #usercenter#
+					and kach = #kach#
+					and yundh = #yundh#
+					and daztbh = #daztbh#
+			)
+			,'1'
+			,$biaozsj$
+			
+		]]>)
+	</insert>
+	
+	<!-- 查询容器返还 -->
+	<select id="queryRongqdj" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+			select usercenter,
+			       fanhdh  danjbh,
+			       danjlx,
+			       tch,
+			       danjzt   zhuangt,
+			       creator,
+			       create_time,
+			       editor,
+			       edit_time
+			    from ${dbSchemal3}CK_RONGQFH 
+			    where tch = #tnumber#
+				and usercenter=#usercenter#
+				and danjzt = '2' 
+	</select>
+	
+	<!-- 修改单据状态为 5：出门 -->
+	<update id="updateDanjzt" parameterClass="java.util.HashMap">
+			update ${dbSchemal3}CK_RONGQFH 
+		set danjzt = '5' ,editor = #editor# ,edit_time = sysdate
+		where 1=1 
+			and usercenter = #usercenter# 
+			and tch = #kach# 
+			and danjzt = '2' 
+	</update>
+	
+	<!-- 记录车辆排队表删除记录 -->
+     <insert id="insertChlepdls" parameterClass="java.util.HashMap">
+     	 insert into ${dbSchemal0}kc_chelpd_history 
+		( id,
+		  usercenter,
+		  quybh,
+		  daztbh,
+		  yundh,
+		  kach,
+		  chengysbh,
+		  chewbh,
+		  paidzt,
+		  paidxh,
+		  xiehxh,
+		  paidsx,
+		  yuanpdsx,
+		  zdchew,
+		  operate,
+		  beiz,
+		  beiz1,
+		  beiz2,
+		  beiz3,
+		  creator,
+	      create_time
+		)
+   select
+		seq_chelpd.nextval,
+		 usercenter,
+		  quybh,
+		  daztbh,
+		  yundh,
+		  kach,
+		  chengysbh,
+		  chewbh,
+		  paidzt,
+		  paidxh,
+		  xiehxh,
+		  paidsx,
+		  yuanpdsx,
+		  zdchew,
+		  'd',
+		  beiz,
+		  beiz1,
+		  beiz2,
+		  beiz3,
+		  #editor#,
+	    sysdate
+		from ${dbSchemal0}kc_chelpd 
+		where usercenter=#usercenter#
+		and   yundh=#yundh#
+		and   kach=#kach#
+     </insert>
+     
+     <!-- 获取指定用户中心的指定区域的指定卡车的未出厂、删除、撤销的运单数量 -->
+     <select id="getCountOfInFactory" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT COUNT(1)
+		  FROM ${dbSchemal3}KC_YUND Y
+		 WHERE Y.USERCENTER = #usercenter#
+		   AND Y.KACH = #tnumber#
+		   AND Y.ZHUANGT NOT IN ('9', '80', '90')
+		<dynamic>
+			<isNotNull property="qybh" prepend=" and ">Y.QUYBH = #qybh#</isNotNull>
+		</dynamic>
+	 </select>
+	 
+	 <!-- 获取申报状态运单集合 -->
+	 <select id="getShenbList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 	SELECT Y.YUNDH "ydh", TO_CHAR(Y.CREATE_TIME, 'YYYY-MM-DD HH24:MI') "time", Y.DAZTBH "dzt"
+		  FROM ${dbSchemal3}KC_YUND Y
+		 WHERE Y.USERCENTER = #usercenter#
+		   AND Y.QUYBH = #qybh#
+		   AND Y.KACH = #tnumber#
+		   AND Y.ZHUANGT = '1'
+		   ORDER BY Y.YUNDH
+	 </select>
+	 
+	 <!-- 获取要删除的申报状态运单集合 -->
+	 <select id="getDelShenbList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 	select yd.usercenter "usercenter",
+		       yd.yundh "yundh",
+		       yd.quybh "quybh",
+		       yd.daztbh "daztbh",
+		       yd.kach "kach",
+		       to_char(yd.shengbsj, 'yyyy-MM-dd hh24:mi:ss') "shengbsj",
+		       to_char(yd.rucsj, 'yyyy-MM-dd hh24:mi:ss') "rucsj",
+		       to_char(yd.chucsj, 'yyyy-MM-dd hh24:mi:ss') "chucsj",
+		       yd.flag "flag",
+		       yd.zhuangt "zhuangt",
+		       yd.zhuangtmc "zhuangtmc",
+		       yd.jijbs "jijbs",
+		       yd.beiz "beiz",
+		       yd.beiz1 "beiz1",
+		       yd.beiz2 "beiz2",
+		       yd.beiz3 "beiz3",
+		       yd.tiqpdbs "tiqpdbs",
+		       to_char(yd.create_time, 'yyyy-MM-dd hh24:mi:ss') "createTime",
+		       to_char(yd.edit_time, 'yyyy-MM-dd hh24:mi:ss') "editTime",
+		       d.biaozsj "biaozsj"
+		  from ${dbSchemal3}kc_yund yd
+		  left join ${dbSchemal3}ckx_liucdy d
+		    on yd.usercenter = d.usercenter
+		   and yd.quybh = d.quybh
+		   and yd.daztbh = d.daztbh
+		   and yd.zhuangt = d.liucbh
+		 where 1 = 1
+		   AND yd.zhuangt = '1'
+		   AND yd.usercenter = #usercenter#
+		   AND yd.yundh = #ydh#
+		 order by yd.usercenter, yd.yundh
+	 </select>
+	 
+	 <!-- 删除BL单 -->
+	 <update id="deleteyd" parameterClass="java.util.Map">
+	 	update ${dbSchemal3}kc_yund
+		set 
+			zhuangt = '80'
+			,zhuangtmc = '删除'
+			,editor = #username#
+			,edit_time = sysdate
+		where 
+			usercenter = #usercenter#
+			and YUNDH = #ydh#
+			and zhuangt = '1'
+	 </update>
+	 
+	 <!-- 插入流水表 -->
+	 <insert id="insertAppChurcls" parameterClass="java.util.Map">
+		insert into ${dbSchemal3}kc_churcls
+		  (usercenter,
+		   quybh,
+		   daztbh,
+		   yundh,
+		   liucbh,
+		   kach,
+		   chewbh,
+		   beiz,
+		   operator,
+		   operate_time,
+		   operate_type,
+		   biaozsj,
+		   lastoperate_time,
+		   chengysbh,
+		   rongqc,
+		   jijbs,
+		   tiqpdbs)
+		values
+		  (#usercenter#,
+		   #quybh#,
+		   #daztbh#,
+		   #yundh#,
+		   '80',
+		   #kach#,
+		   '',
+		   '',
+		   #beiz1#,
+		   sysdate,
+		   #beiz3#,
+		   #biaozsj#,
+		   sysdate,
+		   '',
+		   '',
+		   #jijbs#,
+		   #tiqpdbs#)
+	 </insert>
+	 
+	 <!-- 查询排队集合 -->
+	<select id="getQueueList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		 SELECT P.PAIDXH "pdxh", P.KACH "tnumber", P.PAIDZT "state"
+		  FROM ${dbSchemal3}KC_CHELPD P
+		 WHERE P.USERCENTER = #usercenter#
+		   AND P.QUYBH = #qybh#
+		   AND P.DAZTBH = #dzt#
+		 <dynamic>
+		   <isNotEmpty prepend=" and " property="pdzt">
+		   	P.PAIDZT = #pdzt#
+		   </isNotEmpty>
+		 </dynamic>
+		 ORDER BY P.PAIDXH ASC
+	</select>
+	
+	<!-- 获取状态 -->
+	<select id="getState" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT Y.DAZTBH "dzt",
+		       Y.ZHUANGT "currentstate",
+		       TO_CHAR(Y.ZHUNRSJ, 'HH:MI') "zrsj",
+		       TO_CHAR(Y.SHENGBSJ, 'HH:MI') "sbsj",
+		       TO_CHAR(P.CREATE_TIME, 'HH:MI') "pdsj",
+		       P.PAIDXH "pdxh"
+		  FROM ${dbSchemal3}KC_YUND Y
+		  LEFT JOIN ${dbSchemal3}KC_CHELPD P
+		    ON Y.USERCENTER = P.USERCENTER
+		   AND Y.YUNDH = P.YUNDH
+		 WHERE Y.USERCENTER = #usercenter#
+		   AND Y.KACH = #tnumber#
+		   AND Y.YUNDH = #ydh#
+		   AND Y.QUYBH = #qybh#
+		   AND Y.ZHUANGT IN ('1', '2', '3' ,'8')	
+	</select>
+	
+	<!-- 获取排队顺序 -->
+	<select id="getCountOfPD" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT COUNT(1)
+		  FROM ${dbSchemal3}KC_CHELPD P
+		 WHERE P.USERCENTER = #usercenter#
+		   AND P.QUYBH = #qybh#
+		   AND P.DAZTBH = #dzt#
+		   AND P.PAIDZT = '0'
+		   AND P.PAIDXH <![CDATA[<]]> #pdxh#
+	</select>
+	
+	<!-- 获取车位号 -->
+	<select id="getChewh" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT P.CHEWBH "cwh"
+		  FROM ${dbSchemal3}KC_CHELPD P
+		 WHERE P.USERCENTER = #usercenter#
+		   AND P.QUYBH = #qybh#
+		   AND P.DAZTBH = #dzt#
+		   AND P.PAIDZT = '1'
+		   AND P.KACH = #tnumber#
+		   AND P.YUNDH = #ydh#
+	</select>
+	
+	<!-- 获取运单 -->
+	<select id="getMyYund" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT Y.YUNDH "ydh", Y.ZHUANGT "state", Y.DAZTBH "dzt", Y.USERCENTER "usercenter"
+		  FROM ${dbSchemal3}KC_YUND Y
+		 WHERE Y.ZHUANGT NOT IN ('9', '80', '90')
+		   AND Y.USERCENTER = #usercenter#
+		   AND Y.QUYBH = #qybh#
+		   AND Y.KACH = #tnumber#
+		 ORDER BY Y.YUNDH
+	</select>
+	
+	<!-- 获取运单明细 -->
+	<select id="getMyYundmx" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT M.BLH "blh", M.CHENGYSDM "cys"
+		  FROM ${dbSchemal3}KC_YUNDMX M
+		 WHERE M.USERCENTER = #usercenter#
+		   AND M.YUNDH = #ydh#
+		 ORDER BY M.BLH
+	</select>
+	
+	<!-- 查询是否混装（所有BL单是否在不同大站台） -->
+	<select id="queryHunzFlag" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select distinct
+			b.daztbh daztbh
+			,c.quybh quybh
+		from ${dbSchemal3}ck_daohtzd a 
+			left join ${dbSchemal3}ckx_xiehzt b on a.usercenter = b.usercenter and a.xiehzt = b.xiehztbh
+			left join ${dbSchemal3}ckx_dazt c on b.usercenter = c.usercenter and b.daztbh = c.daztbh
+		where a.blh in ($blhs$) 
+			and c.biaos = '1'
+	</select>
+	
+	<!--查询当前BLH是否存在 -->
+	<select id="queryBLH" parameterClass="net.sf.json.JSONObject" resultClass="java.lang.Integer">
+		select  count(*) from ${dbSchemal3}kc_yundmx m ,${dbSchemal3}kc_yund y where 
+		m.usercenter=y.usercenter and m.yundh=y.yundh 
+		and y.zhuangt not in ('8','9','80','90') and m.blh=#blh#
+	</select>
+	
+	<!-- 入厂申报 新增 -->
+	<insert id="insertYund" parameterClass="java.util.HashMap">
+		insert into ${dbSchemal3}kc_yund(
+			usercenter
+			,yundh
+			,quybh
+			,daztbh
+			,kach
+			,shengbsj
+			,rucsj
+			,chucsj
+			,flag
+			,zhuangt
+			,zhuangtmc
+			,jijbs
+			,tiqpdbs
+			,beiz
+			,beiz1
+			,beiz2
+			,beiz3
+			,creator
+			,create_time
+			,editor
+			,edit_time
+		)values(<![CDATA[
+			#usercenter#
+			,#yundh#
+			,#quybh#
+			,#daztbh#
+			,#kach#
+			,sysdate
+			,to_date(#rucsj#,'yyyy-MM-dd hh24:mi:ss')
+			,to_date(#chucsj#,'yyyy-MM-dd hh24:mi:ss')
+			,#flag#
+			,#zhuangt#
+			,#zhuangtmc#
+			,'0'
+			,#tiqpdbs#
+			,#beiz#
+			,#beiz1#
+			,$beiz2$
+			,to_date(#beiz3#,'yyyy-MM-dd hh24:mi:ss')
+			,#creator#
+			,sysdate
+			,#editor#
+			,sysdate
+		]]>)
+	</insert>
+	
+	<insert id="insertYundmx" parameterClass="net.sf.json.JSONObject">
+		insert into ${dbSchemal3}kc_yundmx(
+			usercenter
+			,yundh
+			,blh
+			,uth
+			,zuizsj
+			,zuiwsj
+			,cangkbh
+			,xiehzt
+			,chengysdm
+			,beiz
+			,beiz1
+			,beiz2
+			,beiz3
+			,creator
+			,create_time
+			,editor
+			,edit_time
+		)values(<![CDATA[
+			#usercenter#
+			,#yundh#
+			,#blh#
+			,#uth#
+			,to_date(#zuizsj#,'yyyy-MM-dd hh24:mi:ss')
+			,to_date(#zwsj#,'yyyy-MM-dd hh24:mi')
+			,#cangkbh#
+			,#xhzt#
+			,#cys#
+			,#beiz#
+			,#beiz1#
+			,$beiz2$
+			,to_date(#beiz3#,'yyyy-MM-dd hh24:mi:ss')
+			,#creator#
+			,sysdate
+			,#editor#
+			,sysdate
+		]]>)
+	</insert>
+	
+	<insert id="insertChurcls" parameterClass="java.util.HashMap">
+		insert into ${dbSchemal3}kc_churcls(
+			usercenter
+			,yundh
+			,quybh
+			,daztbh
+			,kach
+			,liucbh
+			,operator
+			,operate_time
+			,operate_type
+			,biaozsj
+			,chengysbh
+			,tiqpdbs
+		)values(<![CDATA[
+			#usercenter#
+			,#yundh#
+			,#quybh#
+			,#daztbh#
+			,#tnumber#
+			,'1'
+			,#creator#
+			,sysdate
+			,'1'
+			,$biaozsj$
+			,#chengysdm#
+			,#tiqpdbs#
+		]]>)
+	</insert>
+	
+	<!-- 查询用户中心坐标IP页面 -->
+	<select id="getUCIP" resultClass="com.athena.truck.entity.Ucip">
+		SELECT U.USERCENTER, U.LONGITUDE, U.LATITUDE, U.IP, U.BIAOS, U.UCNAME, U.SHENBJL
+		  FROM ${dbSchemal3}KC_UCIP U
+		 WHERE 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">U.USERCENTER = #usercenter#</isNotNull>
+			<isNotNull property="biaos" prepend=" and ">U.BIAOS = #biaos#</isNotNull>
+		</dynamic>
+		ORDER BY U.USERCENTER
+	</select>
+	
+	<!-- 插入用户中心坐标IP -->
+	<insert id="insertUCIP" parameterClass="com.athena.truck.entity.Ucip">
+		insert into ${dbSchemal3}KC_UCIP
+			  (USERCENTER,
+			   LONGITUDE,
+			   LATITUDE,
+			   IP,
+			   BIAOS,
+			   CREATOR,
+			   CREATE_TIME,
+			   EDITOR,
+			   EDIT_TIME,
+			   UCNAME,
+			   SHENBJL)
+			values
+			  (#usercenter#,
+			   #longitude#,
+			   #latitude#,
+			   LOWER(#ip#),
+			   #biaos#,
+			   #creator#,
+			   SYSDATE,
+			   #editor#,
+			   SYSDATE,
+			   #ucname#,
+			   #shenbjl#)
+	</insert>
+	
+	<!-- 修改用户中心坐标IP -->
+	<update id="updateUCIP" parameterClass="com.athena.truck.entity.Ucip">
+		UPDATE ${dbSchemal3}KC_UCIP P
+		   SET P.LONGITUDE = #longitude#,
+		       P.LATITUDE  = #latitude#,
+		       P.IP        = LOWER(#ip#),
+		       P.BIAOS     = #biaos#,
+		       P.EDITOR    = #editor#,
+		       P.EDIT_TIME = SYSDATE,
+		       P.UCNAME    = #ucname# ,
+		       P.SHENBJL   = #shenbjl#
+		 WHERE P.USERCENTER = #usercenter#
+	</update>
+	
+	<!-- 删除用户中心 -->
+	<delete id="deleteUcip" parameterClass="com.athena.truck.entity.Ucip">
+		DELETE FROM ${dbSchemal3}KC_UCIP WHERE
+		<dynamic prepend=" ">
+			<isNotEmpty prepend=" and " property="usercenter">
+				<![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<!-- 获取承运商卡车 -->
+	<select id="getChengyskc" resultClass="com.athena.truck.entity.Chengyskc">
+		SELECT DISTINCT C.CHENGYS, C.KACH, S.GONGSMC CHENGYSMC, C.BIAOS
+		  FROM ${dbSchemal3}KC_CYS_KC C
+		  LEFT JOIN CKX_GONGYS S
+		    ON C.CHENGYS = S.GCBH
+		   AND S.LEIX = '3'
+		 WHERE 1 = 1
+		<dynamic>
+			<isNotNull property="chengys" prepend=" and ">C.CHENGYS = #chengys#</isNotNull>
+			<isNotNull property="kach" prepend=" and ">C.KACH = #kach#</isNotNull>
+			<isNotNull property="biaos" prepend=" and ">C.BIAOS = #biaos#</isNotNull>
+		</dynamic>
+		ORDER BY C.CHENGYS, C.KACH
+	</select>
+	
+	<!-- 获取卡车司机 -->
+	<select id="getKacsj" resultClass="com.athena.truck.entity.Kacsj">
+		SELECT K.KACH, K.CHENGYS, K.SHOUJH, K.SIJXM, K.BIAOS ,K.SHOUJH OLDSJH
+		  FROM ${dbSchemal3}KC_KC_SJ K
+		 WHERE 1=1
+		 <dynamic>
+			<isNotNull property="chengys" prepend=" and ">K.CHENGYS = #chengys#</isNotNull>
+			<isNotNull property="kach" prepend=" and ">K.KACH = #kach#</isNotNull>
+		 </dynamic>
+		 ORDER BY K.BIAOS DESC, K.KACH, K.CHENGYS, K.SHOUJH ASC 
+	</select>
+	
+	<!-- 获取有效卡车司机 -->
+	<select id="getKacsjYX" resultClass="com.athena.truck.entity.Kacsj">
+		SELECT K.KACH, K.CHENGYS, K.SHOUJH, K.SIJXM, K.BIAOS ,K.SHOUJH OLDSJH
+		  FROM ${dbSchemal3}KC_KC_SJ K
+		 WHERE 1=1
+		 AND K.BIAOS = 1
+		 <dynamic>
+			<isNotNull property="chengys" prepend=" and ">K.CHENGYS = #chengys#</isNotNull>
+			<isNotNull property="kach" prepend=" and ">K.KACH = #kach#</isNotNull>
+		 </dynamic>
+		 ORDER BY K.BIAOS DESC, K.KACH, K.CHENGYS, K.SHOUJH ASC 
+	</select>
+	
+	<!-- 失效承运商卡车 -->
+	<update id="deleteChengyskc" parameterClass="com.athena.truck.entity.Chengyskc">
+		UPDATE ${dbSchemal3}KC_CYS_KC C
+		   SET C.BIAOS = #biaos#, C.EDITOR = #editor#, C.EDIT_TIME = SYSDATE
+		 WHERE C.CHENGYS = #chengys#
+		   AND C.KACH = #kach#
+	</update>
+	
+	<!-- 获取承运商条数 -->
+	<select id="getCountOfCYS" parameterClass="com.athena.truck.entity.Chengyskc" resultClass="java.lang.Integer">
+		SELECT COUNT(1)
+		  FROM CKX_GONGYS G
+		 WHERE G.LEIX = '3'
+		   AND G.GCBH = #chengys#
+	</select>
+	
+	<!-- 新增承运商卡车 -->
+	<insert id="insertChengyskc" parameterClass="com.athena.truck.entity.Chengyskc">
+		INSERT INTO ${dbSchemal3}KC_CYS_KC
+		  (CHENGYS, KACH, BIAOS, CREATOR, EDITOR, CREATE_TIME, EDIT_TIME)
+		VALUES
+		  (#chengys#, #kach#, #biaos#, #creator#, #editor#, SYSDATE, SYSDATE)
+	</insert>
+	
+	<!-- 修改承运商卡车 -->
+	<update id="updateChengyskc" parameterClass="com.athena.truck.entity.Chengyskc">
+		UPDATE ${dbSchemal3}KC_CYS_KC K
+		   SET K.EDITOR = #editor#, K.EDIT_TIME = SYSDATE, K.BIAOS = #biaos#
+		 WHERE K.CHENGYS = #chengys#
+		   AND K.KACH = #kach#
+	</update>
+	
+	<!-- 添加卡车司机 -->
+	<insert id="insertKacsj" parameterClass="com.athena.truck.entity.Kacsj">
+		INSERT INTO ${dbSchemal3}KC_KC_SJ
+		  (CHENGYS,
+		   KACH,
+		   SHOUJH,
+		   SIJXM,
+		   BIAOS,
+		   CREATOR,
+		   EDITOR,
+		   CREATE_TIME,
+		   EDIT_TIME)
+		VALUES
+		  (#chengys#, #kach#, #shoujh#, #sijxm#, #biaos#, #creator#, #editor#, SYSDATE, SYSDATE)
+	</insert>
+	
+	<!-- 更新卡车司机 -->
+	<update id="updateKacsj" parameterClass="com.athena.truck.entity.Kacsj">
+		UPDATE ${dbSchemal3}KC_KC_SJ K
+		   SET K.SHOUJH    = #shoujh#,
+		       K.SIJXM     = #sijxm#,
+		       K.BIAOS     = #biaos#,
+		       K.EDITOR    = #editor#,
+		       K.EDIT_TIME = SYSDATE
+		 WHERE K.CHENGYS = #chengys#
+		   AND K.KACH = #kach#
+		   AND K.SHOUJH = #oldsjh#
+	</update>
+	
+	<!-- 删除卡车司机 -->
+	<update id="deleteKacsj" parameterClass="com.athena.truck.entity.Kacsj">
+		DELETE FROM ${dbSchemal3}KC_KC_SJ
+		 WHERE CHENGYS = #chengys#
+		   AND KACH = #kach#
+		<dynamic>
+			<isNotNull property="oldsjh" prepend=" and ">SHOUJH = #oldsjh#</isNotNull>
+			<isNull property="oldsjh" prepend=" and ">SHOUJH is null</isNull>
+		</dynamic>
+	</update>
+
+</sqlMap>

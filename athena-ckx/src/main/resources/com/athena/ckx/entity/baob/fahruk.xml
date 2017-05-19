@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- xryuan -->
+	<!-- 有发货通知且入库报表-->
+	<select id="queryfahruk" parameterClass="java.util.Map" resultClass="com.athena.ckx.entity.baob.Fahruk">
+			select distinct y.usercenter,
+                y.lingjbh,
+                y.lingjmc,
+                y.danw,
+                wullj.zhizlx,
+                y.gongysdm,
+                y.uaxh,
+                y.uarl,
+                y.ucxh,
+                y.ucrl,
+                y.blh,
+                y.lingjsl,
+                y.keyljsl,
+                y.rukrq from 
+                (select uabq.usercenter,
+	               uabq.blh,
+	               uabq.danw,
+	               uabq.gongysdm,
+	               uabq.gongysmc,
+	               uabq.ruksj      as rukrq,
+	               uabq.yanssl     as keyljsl,
+	               uabq.lingjsl,
+	               uabq.lingjbh,
+	               uabq.lingjmc,
+	               uabq.uaxh       as uaxh,
+	               uabq.uarl       as uarl,
+	               ucbq.ucxh,
+	               ucbq.ucrl
+          		from ${dbSchemal3}ck_uabq uabq, ${dbSchemal3}ck_ucbq ucbq
+         	where uabq.usercenter = ucbq.usercenter
+           and uabq.elh = ucbq.elh
+           and uabq.uah = ucbq.uah
+           and uabq.baozzt = '5') y,${dbSchemal3}ckx_wullj wullj
+		   where y.usercenter = wullj.usercenter
+		   and y.lingjbh = wullj.lingjbh
+		   and y.gongysdm = wullj.gongysbh
+			<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[y.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[y.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[y.gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx"><![CDATA[wullj.zhizlx = #zhizlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="blh"><![CDATA[y.blh = #blh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startrukrq"><![CDATA[to_char(y.rukrq,'yyyy-MM-dd') >= #startrukrq#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="endrukrq"><![CDATA[to_char(y.rukrq,'yyyy-MM-dd') < #endrukrq#]]></isNotEmpty>
+		</dynamic>
+		order by y.usercenter,y.blh,y.lingjbh
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,999 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="calendarVersion">
+
+	<resultMap class="com.athena.xqjs.entity.common.CalendarVersion"
+		id="CalendarVersion">
+		<result column="BANC" property="banc" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="RIQ" property="riq" />
+		<result column="ZHOUX" property="zhoux" />
+		<result column="NIANZX" property="nianzx" />
+		<result column="XINGQ" property="xingq" />
+		<result column="NIANZQ" property="nianzq" />
+		<result column="XIS" property="xis" />
+		<result column="SHIFJFR" property="shifjfr" />
+		<result column="SHIFGZR" property="shifgzr" />
+		<result column="BIAOS" property="biaos" />
+	</resultMap>
+
+	<select id="queryCalendarVersion" resultMap="CalendarVersion">
+		SELECT
+		banc,
+		usercenter,
+		riq,
+		zhoux,
+		nianzx,
+		xingq,
+		nianzq,
+		xis,
+		shifjfr,
+		shifgzr,
+		biaos
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		1 = 1 
+  	</select>
+
+	<select id="queryCalendarVersionByRi" resultMap="CalendarVersion">
+		SELECT
+		banc,
+		usercenter,
+		riq,
+		zhoux,
+		nianzx,
+		xingq,
+		nianzq,
+		xis,
+		shifjfr,
+		shifgzr,
+		biaos
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		where
+		riq BETWEEN
+		#zhoux# AND #biaos#
+		<dynamic>
+			<isNotEmpty prepend=" and " property="banc"><![CDATA[banc = #banc#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shifjfr"><![CDATA[shifjfr = #shifjfr#]]></isNotEmpty>
+		</dynamic>
+		order by
+		riq
+	</select>
+
+
+
+
+	<select id="queryCalendarVersionByGzr" resultMap="CalendarVersion">
+		SELECT
+		banc,
+		usercenter,
+		riq,
+		zhoux,
+		nianzx,
+		xingq,
+		nianzq,
+		xis,
+		shifjfr,
+		shifgzr,
+		biaos
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		banc = #banc#
+		and
+		usercenter =
+		#usercenter#
+		and
+		riq BETWEEN #zhoux# AND #biaos#
+		and
+		shifgzr = #shifgzr#
+		order by
+		riq
+  	</select>
+	<select id="countCalendarGongzts" resultClass="java.lang.Integer">
+		SELECT
+		count(*)
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		banc = #rilbc#
+		and
+		usercenter
+		= #usercenter#
+		and
+		riq BETWEEN #startTime# AND #endTime#
+		and
+		shifgzr =
+		#shifgzr#
+  	</select>
+	<select id="countAllCalendarGongzts" resultClass="java.util.HashMap">
+		SELECT
+		count(*) as GONGZRTS,BANC,USERCENTER
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE 1=1
+		and
+		riq BETWEEN #startTime#
+		AND #endTime#
+		and
+		shifgzr = #shifgzr#
+		<dynamic>
+			<isNotEmpty prepend=" and " property="banc">
+				BANC = #banc#
+			</isNotEmpty>
+		</dynamic>
+		group by banc,usercenter
+	</select>
+
+	<select id="queryCalendarVersionByNianzq" resultMap="CalendarVersion">
+		SELECT
+		banc,
+		usercenter,
+		riq,
+		zhoux,
+		nianzx,
+		xingq,
+		nianzq,
+		xis,
+		shifjfr,
+		shifgzr,
+		biaos
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		banc = #banc#
+		and
+		usercenter =
+		#usercenter#
+		and
+		nianzq = #nianzq#
+		order by
+		riq
+  	</select>
+
+	<select id="queryCalendarVersionGzrByMin" resultMap="CalendarVersion">
+		SELECT
+		banc,
+		usercenter,
+		riq,
+		zhoux,
+		nianzx,
+		xingq,
+		nianzq,
+		xis,
+		shifjfr,
+		shifgzr,
+		biaos
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		banc = #banc#
+		and
+		usercenter = #usercenter#
+		and
+		nianzq = #nianzq#
+		and
+		shifgzr = #shifgzr#
+		and 
+		    <![CDATA[ riq <= substr(#riq#,0,10) ]]>
+		order by
+		riq
+	</select>
+
+	<select id="queryCalendarVersionGzrByMax" resultMap="CalendarVersion">
+		SELECT
+		banc,
+		usercenter,
+		riq,
+		zhoux,
+		nianzx,
+		xingq,
+		nianzq,
+		xis,
+		shifjfr,
+		shifgzr,
+		biaos
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		banc = #banc#
+		and
+		usercenter = #usercenter#
+		and
+		nianzq = #nianzq#
+		and
+		shifgzr = #shifgzr#
+		and 
+		    <![CDATA[ riq >= substr(#riq#,0,10) ]]>
+		order by
+		riq
+	</select>
+
+	<select id="queryCalendarVersionGzrByBancAndRiq" resultMap="CalendarVersion">
+		SELECT
+		banc,
+		usercenter,
+		riq,
+		zhoux,
+		nianzx,
+		xingq,
+		nianzq,
+		xis,
+		shifjfr,
+		shifgzr,
+		biaos
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		banc = #banc#
+	    and shifgzr = '1'
+		and 
+		  <![CDATA[ to_date(riq,'yyyy-mm-dd') >=  to_date(#riq#,'yyyy-mm-dd')  ]]>
+		order by
+		riq
+	</select>
+
+
+	<select id="countGzr" resultMap="CalendarVersion">
+		SELECT
+		banc,
+		usercenter,
+		riq,
+		zhoux,
+		nianzx,
+		xingq,
+		nianzq,
+		xis,
+		shifjfr,
+		shifgzr,
+		biaos
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="banc"><![CDATA[banc = #banc#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="nianzq"><![CDATA[nianzq = #nianzq#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shifgzr"><![CDATA[shifgzr = #shifgzr#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="queryCalendarVersionNianzq" resultMap="CalendarVersion">
+		select
+		banc,
+		usercenter,
+		riq,
+		zhoux,
+		nianzx,
+		xingq,
+		nianzq,
+		xis,
+		shifjfr,
+		shifgzr,
+		biaos
+		from
+		${dbSchemal3}ckx_calendar_version ckx
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter
+				=#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+				riq = #riq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">
+				nianzq = #nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifgzr">
+				shifgzr = #shifgzr#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifjfr">
+				shifjfr = #shifjfr#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<select id="queryCalendarVersionRiq" resultMap="CalendarVersion"
+		parameterClass="java.util.Map">
+		select
+		distinct
+		riq
+		from
+		${dbSchemal3}ckx_calendar_version
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter
+				=#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">
+				nianzq = #nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifgzr">
+				shifgzr = #shifgzr#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifjfr">
+				shifjfr = #shifjfr#
+			</isNotEmpty>
+		</dynamic>
+		order by
+		riq
+	</select>
+
+
+
+	<select id="queryAllCalendarVersionMsg" resultMap="CalendarVersion">
+		select
+		ckx.banc,
+		ckx.usercenter,
+		ckx.riq,
+		ckx.zhoux,
+		ckx.nianzx,
+		ckx.xingq,
+		ckx.nianzq,
+		ckx.xis,
+		ckx.shifjfr,
+		ckx.shifgzr,
+		ckx.biaos
+		from
+		${dbSchemal3}ckx_calendar_version ckx
+		where
+		1 =1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER =
+				#usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">BANC = #banc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">NIANZQ = #nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifgzr">SHIFGZR = #shifgzr#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifjfr">SHIFJFR = #shifjfr#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">BETWEEN #zhoux# AND
+				#biaos#
+			</isNotEmpty>
+		</dynamic>
+		order by
+		riq
+	</select>
+	<select id="countDay" resultClass="java.lang.Integer">
+		select count(*)
+		from
+		${dbSchemal3}ckx_calendar_group ccg,
+		${dbSchemal3}ckx_calendar_version
+		ccv
+		where ccg.usercenter = #usercenter#
+		and ccg.usercenter =
+		ccv.usercenter
+		and ccg.rilbc = ccv.banc
+		and ccg.appobj = #cangkdm#
+		and
+		ccv.nianzq = #p0zhouqxh#
+		and ccv.shifgzr = '1'
+		and ccv.biaos = '1'
+	</select>
+	<!-- 吴易超新增 -->
+	<select id="pscountWeekDay" resultClass="com.athena.xqjs.entity.common.CalendarVersion">
+	    select COUNT(*) as xis , ccg.usercenter || ccg.appobj || ccv.nianzx as banc
+		    from
+		   ${dbSchemal3}ckx_calendar_group ccg,
+		    ${dbSchemal3}ckx_calendar_version
+		    ccv
+		    where  ccg.usercenter =
+		    ccv.usercenter
+		    and ccg.rilbc = ccv.banc
+		    and ccv.shifgzr = '1'
+		    and ccv.biaos = '1'
+	    group by ccg.usercenter , ccg.appobj,ccv.nianzx
+	</select>
+	<select id="pscountLastWeekDay" resultClass="com.athena.xqjs.entity.common.CalendarVersion">
+	    select COUNT(*) as xis , ccg.usercenter || ccg.appobj || ccv.nianzx as banc
+		    from
+		  ${dbSchemal3}ckx_calendar_group ccg,
+		    ${dbSchemal3}ckx_calendar_version
+		    ccv
+		    where  ccg.usercenter = ccv.usercenter
+		    and ccg.rilbc = ccv.banc
+		    and ccv.shifgzr = '1'
+		    and ccv.biaos = '1'
+		  and  ccv.riq >= substr(#ziyhqrq#,0,10)
+	    group by ccg.usercenter , ccg.appobj,ccv.nianzx
+	</select>
+	<!-- 吴易超新增 -->
+	<select id="countLastDay" resultClass="java.lang.Integer">
+		select count(*)
+		from
+		${dbSchemal3}ckx_calendar_group ccg,
+		${dbSchemal3}ckx_calendar_version
+		ccv
+		where ccg.usercenter = #usercenter#
+		and ccg.usercenter =
+		ccv.usercenter
+		and ccg.rilbc = ccv.banc
+		and ccg.appobj = #cangkdm#
+		and
+		ccv.nianzq = #p0zhouqxh#
+		and ccv.shifgzr = '1'
+		and ccv.biaos = '1'
+		and
+		ccv.riq &gt;= substr(#ziyhqrq#,0,10)
+  	</select>
+	<select id="countWeekDay" resultClass="java.lang.Integer">
+		select count(*)
+		from
+		${dbSchemal3}ckx_calendar_group ccg,
+		${dbSchemal3}ckx_calendar_version
+		ccv
+		where ccg.usercenter = #usercenter#
+		and ccg.usercenter =
+		ccv.usercenter
+		and ccg.rilbc = ccv.banc
+		and ccg.appobj = #cangkdm#
+		and
+		ccv.nianzx = #s0zxh#
+		and ccv.shifgzr = '1'
+		and ccv.biaos = '1'
+  	</select>
+	<select id="countLastWeekDay" resultClass="java.lang.Integer">
+		select count(*)
+		from
+		${dbSchemal3}ckx_calendar_group ccg,
+		${dbSchemal3}ckx_calendar_version
+		ccv
+		where ccg.usercenter = #usercenter#
+		and ccg.usercenter =
+		ccv.usercenter
+		and ccg.rilbc = ccv.banc
+		and ccg.appobj = #cangkdm#
+		and
+		ccv.nianzx = #s0zxh#
+		and ccv.shifgzr = '1'
+		and ccv.biaos = '1'
+		and
+		ccv.riq >= substr(#ziyhqrq#,0,10)
+  	</select>
+
+	<!-- 查询工作时间 -->
+	<select id="queryCalendarTeam" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.common.CalendarTeam">
+		select
+		bianzh,xingqxh,xuh,kaissj,jiezsj,ban,tiaozsj,creator,create_time,editor,edit_time,biaos
+		from
+		${dbSchemal3}ckx_calendar_team
+		where
+		biaos = '1'
+		<dynamic>
+			<isNotNull prepend=" and " property="bianzh">bianzh = #bianzh#
+			</isNotNull>
+			<isNotNull prepend=" and " property="xingqxh">xingqxh = #xingqxh#
+			</isNotNull>
+		</dynamic>
+		order by xuh
+	</select>
+
+	<!-- 查询按需订单订单时间 -->
+	<select id="queryAxScjssj" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ilorder.Dingd">
+		select
+		to_char(dingdjssj,'yyyy-MM-dd HH24:mi:ss') as dingdjssj,to_char(dingdsxsj,'yyyy-MM-dd HH24:mi:ss') as dingdsxsj
+		from
+		${dbSchemal1}xqjs_dingd
+		where dingdh = #dingdh#
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 查询看板计算时间 -->
+	<select id="queryKanbjssj" parameterClass="java.util.Map"
+		resultClass="java.lang.String">
+		select to_char(max(jissj),'yyyy-MM-dd') from ${dbSchemal1}xqjs_kanbxhgm
+	</select>
+
+	<!-- 查询按需订单订单时间 -->
+	<select id="queryaxpdScjssj" resultClass="java.lang.String">
+		select
+		to_char(max(dingdjssj),'yyyy-MM-dd HH24:mi:ss') as dingdjssj
+		from
+		${dbSchemal1}xqjs_dingd
+		where dingdlx in ('7','8') 
+	</select>
+
+
+	<select id="getZhuanhrq" resultClass="String" parameterClass="java.util.Map">
+		select ccv.riq
+		from ${dbSchemal3}ckx_calendar_group ccg,
+		${dbSchemal3}ckx_calendar_version ccv
+		where ccg.usercenter =
+		#usercenter#
+		and ccg.usercenter = ccv.usercenter
+		and ccg.rilbc =
+		ccv.banc
+		and ccg.appobj = #chanx#
+		and ccv.shifgzr = '1'
+		and ccv.biaos =
+		'1'
+		and ccv.riq &gt;= substr(#ziyhqrq#,0,10)
+		and rownum&lt;=16
+  	</select>
+
+
+	<select id="maxTime" resultClass="com.athena.xqjs.entity.common.CalendarVersion"
+		parameterClass="java.util.Map">
+		SELECT distinct usercenter,
+		xingq,
+		zhoux,
+		nianzx,
+		nianzq,
+		xis,
+		shifjfr,
+		shifgzr,
+		biaos,
+		riq
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				USERCENTER =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">
+				<![CDATA[ nianzq like '$nianzq$%' ]]>
+			</isNotEmpty>
+		</dynamic>
+		order by
+		nianzx desc
+	</select>
+
+
+	<select id="queryCalendarversionZhouShu" resultClass="Integer">
+		SELECT count(distinct zhoux)
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER =
+				#usercenter#
+		</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">NIANZQ = #nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+				riq >= #riq#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- wuyichao -->
+	<select id="queryCalendarversionZhouShuList" resultClass="com.athena.xqjs.entity.common.CalendarVersion">
+		SELECT count(distinct zhoux) as xi,usercenter as usercenter,nianzq as nianzq
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER =
+				#usercenter#
+		</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+		</dynamic>
+	group by usercenter,nianzq
+	</select>
+	<!-- wuyichao -->
+	
+
+	<select id="queryCalendarversionNianZhouXu" resultClass="String">
+		SELECT
+		distinct nianzx
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER =
+				#usercenter#
+		</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">NIANZQ = #nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zhoux">ZHOUX = #zhoux#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<select id="queryWorkZhoushus" resultClass="com.athena.xqjs.entity.common.CalendarVersion"
+		parameterClass="java.util.Map">
+		select usercenter,
+		zhoux,
+		nianzx,
+		nianzq
+		from
+		(SELECT
+		usercenter,
+		zhoux,
+		nianzx,
+		nianzq,
+		count (riq) as cnt
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		1 = 1
+		and shifgzr = '1'
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+					</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+						<![CDATA[ riq >= #riq# ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">
+				nianzq = #nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+		</dynamic>
+		group by
+		usercenter,
+		zhoux,
+		nianzx,
+		nianzq) jieg
+		where cnt > 0
+		order by
+		nianzx
+	</select>
+
+	<select id="queryBefWorkZhoushus" resultClass="com.athena.xqjs.entity.common.CalendarVersion"
+		parameterClass="java.util.Map">
+		select usercenter,
+		zhoux,
+		nianzx,
+		nianzq
+		from
+		(SELECT
+		usercenter,
+		zhoux,
+		nianzx,
+		nianzq,
+		count (riq) as cnt
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		1 = 1
+		and shifgzr = '1'
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+					</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+						<![CDATA[ riq < #riq# ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">
+				nianzq = #nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzx">
+						<![CDATA[ nianzx != (select c.nianzx from ${dbSchemal3}ckx_calendar_version c where c.riq = #riq#   and banc = #banc#)]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+		</dynamic>
+		group by
+		usercenter,
+		zhoux,
+		nianzx,
+		nianzq) jieg
+		where cnt > 0
+		order by
+		nianzx
+	</select>
+
+	<select id="queryMinRiq" resultClass="String" parameterClass="java.util.Map">
+		select min(t.riq) from
+
+		${dbSchemal3}ckx_calendar_version t
+		WHERE
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">
+				nianzq=#nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc=#banc#
+			</isNotEmpty>
+
+		</dynamic>
+	</select>
+
+	<select id="queryCalendarVersionObject" resultClass="com.athena.xqjs.entity.common.CalendarVersion"
+		parameterClass="java.util.Map">
+		SELECT
+		distinct
+		usercenter,
+		xingq,
+		zhoux,
+		nianzx,
+		nianzq,
+		xis,
+		shifjfr,
+		shifgzr,
+		biaos,
+		riq
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+				riq = #riq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">
+				nianzq = #nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzx">
+				nianzx = #nianzx#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zhoux">
+				zhoux = #zhoux#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifgzr">
+				shifgzr = #shifgzr#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY RIQ
+	</select>
+
+	<select id="queryTianshu" resultClass="com.athena.xqjs.entity.common.CalendarVersion"
+		parameterClass="java.util.Map">
+		select
+		distinct
+		usercenter,
+		xingq,
+		zhoux,
+		nianzx,
+		nianzq,
+		xis,
+		shifjfr,
+		shifgzr,
+		biaos,
+		riq
+		from
+		${dbSchemal3}ckx_calendar_version t
+		where
+		1= 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="nianzq">
+				nianzq = #nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+		</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifgzr">
+				SHIFGZR = #shifgzr#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zhoux">
+				zhoux = #zhoux#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+				riq between #kais#
+				and #jies#
+			</isNotEmpty>
+
+			<isNotEmpty prepend="  and " property="rownum">
+			<![CDATA[ rownum >= #rownum# ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+		</dynamic>
+		order by
+		riq
+	</select>
+	<select id="queryMaxNianzx" resultClass="String" parameterClass="java.util.Map">
+		SELECT
+		max(to_number(t.nianzx))
+		FROM
+
+		${dbSchemal3}ckx_calendar_version t
+		WHERE
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">
+				substr(t.nianzq, 0,
+				4) = substr(#nianzq#, 0,
+				4)
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<!-- 袁修瑞 -->
+	<select id="countWeeks" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		select nianzq,nianzx,zhoux from ${dbSchemal3}ckx_calendar_version
+		where nianzq <![CDATA[ >= ]]>
+		#startNianZq# and nianzq <![CDATA[ < ]]>
+		#endNianZq#
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc=#banc#
+			</isNotEmpty>
+		</dynamic>
+		group by nianzq,nianzx,zhoux
+		order by nianzq,zhoux
+	</select>
+
+
+	<select id="queryNianzqAndzhoux" resultClass="com.athena.xqjs.entity.common.CalendarVersion"
+		parameterClass="java.util.Map">
+		select nianzq,nianzx,zhoux from ${dbSchemal3}ckx_calendar_version
+		where riq=#ziyhqrq#
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc=#banc#
+			</isNotEmpty>
+		</dynamic>
+		group by nianzq,nianzx,zhoux
+	</select>
+
+	<select id="queryFirstWeekMinRiq" resultClass="String"
+		parameterClass="java.util.Map">
+		select min(t.riq) from
+		${dbSchemal3}ckx_calendar_version t
+		WHERE
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">
+				nianzq=#nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zhoux">
+				zhoux=#zhoux#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc=#banc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifgzr">
+				shifgzr=#shifgzr#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+				riq >= #riq#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="queryFirstWeekMaxRiq" resultClass="String"
+		parameterClass="java.util.Map">
+		select max(t.riq) from
+
+		${dbSchemal3}ckx_calendar_version t
+		WHERE
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">
+				nianzq=#nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zhoux">
+				zhoux=#zhoux#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc=#banc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifgzr">
+				shifgzr=#shifgzr#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+				riq >= #riq#
+			</isNotEmpty>
+
+		</dynamic>
+	</select>
+
+	<select id="queryGongZRByNianZq" resultClass="Integer">
+		SELECT count(riq)
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		1=1 and
+		shifgzr ='1'
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER =
+				#usercenter#
+		</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">NIANZQ = #nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+				riq >= #riq#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="queryGongZRByZhoux" resultClass="Integer">
+		SELECT count(riq)
+		FROM
+		${dbSchemal3}ckx_calendar_version
+		WHERE
+		1=1 and
+		shifgzr ='1'
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER =
+				#usercenter#
+		</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">NIANZQ = #nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="banc">
+				banc = #banc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zhoux">
+				zhoux = #zhoux#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+				riq >= #riq#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>

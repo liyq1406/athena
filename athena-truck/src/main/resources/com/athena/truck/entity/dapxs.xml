@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="dapxs">
+     
+     <!-- 查询 区域名称-->
+     <select id="queryQuymc" parameterClass="java.util.Map" resultClass="com.athena.truck.entity.Dengdqy">
+    select usercenter,quybh,quymc from ${dbSchemal0}ckx_dengdqy d where d.usercenter=#usercenter#   and d.quybh=#quybh#
+     </select>
+ 
+     <!-- 查询当前区域的入厂信息 -->
+     <select id="queryRucxx" parameterClass="java.util.HashMap" resultClass="com.athena.truck.entity.Yund">
+		    select y.kach,
+               y.daztbh,
+               p.chewbh beiz,
+               zhuangtmc,
+               to_char(zhunrsj, 'mm-dd hh24:mi') rucsj
+          from ${dbSchemal0}kc_yund y, ${dbSchemal0}kc_chelpd p
+         where y.usercenter = p.usercenter
+           and y.yundh = p.yundh
+           and y.quybh = #quybh#
+           and y.usercenter=#usercenter#
+           and p.paidzt = '1'
+         order by zhunrsj desc, p.chewbh asc
+     </select>
+    
+    <!-- 查询 申报排队的运单信息 -->
+    <select id="queryShenbpdxx" parameterClass="java.util.HashMap" resultClass="com.athena.truck.entity.Yund">
+         select kach, zhuangtmc, beiz, to_char(rucsj, 'mm-dd hh24:mi') rucsj
+       from (select y.yundh,
+                    y.kach,
+                    y.zhuangt,
+                    y.zhuangtmc,
+                    p.paidxh beiz,
+                    case when y.zhuangt = '1' then  y.shengbsj
+                      else p.create_time
+                    end rucsj
+               from ${dbSchemal0}kc_yund y, ${dbSchemal0}kc_chelpd p
+              where y.usercenter = p.usercenter(+)
+                and y.yundh = p.yundh(+)
+                and y.quybh = #quybh#
+                and y.usercenter=#usercenter#
+                and (y.zhuangt = '1' or y.zhuangt = '2'))
+      order by zhuangt desc, rucsj desc, beiz asc
+    </select>
+</sqlMap>

@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- ibatis数据库操作配置文件 -->
+<sqlMap namespace="yaocjh">
+	<!-- ================================ 要车计划配置  贺志国   2011-12-8=============================== -->
+	<!-- 要车计划查询   2011-12-21 -->
+	<select id="queryJihgz" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		SELECT Y.YAOCJHH,
+	       Y.USERCENTER,
+	       to_char(Y.DAOCSJ,'yyyy-MM-dd hh24:mi')as DAOCSJ,
+		   to_char(Y.FAYSJ,'yyyy-MM-dd hh24:mi')as FAYSJ,
+	       Y.YUNSLX,
+	       Y.JIHCX,
+	       Y.YAOCJHXH,
+           X.YUNSSBM,
+           PJH.PEIZDH,
+	       Y.YAOCZT
+	   FROM ${dbSchemal2}FJ_YAOCMX Y
+    JOIN ${dbSchemal2}FJ_YAOCJH X
+      ON Y.YAOCJHH = X.YAOCJHH and y.usercenter=x.usercenter
+    JOIN (select * from ${dbSchemal3}CKX_GONGYS where biaos = '1') G
+      ON X.YUNSSBM = G.GCBH  and x.usercenter=g.usercenter 
+       inner join ${dbSchemal2}FJ_PEIZJH pjh on pjh.yaocmxh = y.id 
+    WHERE Y.YAOCJHH IS NOT NULL and y.usercenter=#usercenter#
+		]]> 
+	<dynamic>
+	    <isNotEmpty prepend=" and " property="yaocjhxh"><![CDATA[y.yaocjhxh =#yaocjhxh#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="yunssbm"><![CDATA[yunssbm = #yunssbm#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="yunslx"><![CDATA[y.yunslx = #yunslx#]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="yaoczt"><![CDATA[y.yaoczt = #yaoczt#]]></isNotEmpty>
+	</dynamic>
+	<![CDATA[ ORDER BY Y.FAYSJ  DESC]]>
+	</select>
+	
+	<!-- *****************BY WANGCHONG   date :2012-03-20***************************** -->
+	
+	<!-- 
+	配载发交:${dbSchemal2}
+	参考系:${dbSchemal3}
+	仓库:${dbSchemal4}
+	 -->
+	 <!-- 更新要货令锁定配载 -->
+	 <update id="updateYHLSUODPZ" >
+		<![CDATA[ 
+		   UPDATE ${dbSchemal4}CK_YAONBHL Y SET Y.SUODPZ = '0' WHERE Y.Yaohllb = '05' AND Y.SUODPZ IS NULL
+		  ]]>
+	</update>
+		
+	 <!-- 更新要货令的配载状态by 王冲 -->
+	 <update id="updateYHLPZ" >
+		<![CDATA[ 
+		UPDATE ${dbSchemal4}CK_YAONBHL CK
+		   SET CK.SHIFPZ =
+		       (SELECT T.SHIFPZ
+		          FROM (SELECT DISTINCT CPK.USERCENTER,
+		                                CPK.CANGKBH,
+		                                CPK.KEHBH,
+		                                CPK.SHIFPZ
+		                  FROM ${dbSchemal3}CKX_KEH_CHENGPK CPK
+		                  ) T
+		         WHERE T.USERCENTER = CK.USERCENTER
+		           AND T.KEHBH = CK.KEH
+		           AND T.CANGKBH = CK.CANGKBH)
+		 WHERE EXISTS (SELECT 1
+		          FROM (SELECT DISTINCT CPK.USERCENTER,
+		                                CPK.CANGKBH,
+		                                CPK.KEHBH,
+		                                CPK.SHIFPZ
+		                  FROM ${dbSchemal3}CKX_KEH_CHENGPK CPK
+		                 ) T
+		         WHERE T.USERCENTER = CK.USERCENTER
+		           AND T.KEHBH = CK.KEH
+		           AND T.CANGKBH = CK.CANGKBH)
+		   AND CK.SHIFPZ = '9' and ck.cangkbh is not null
+	    ]]>
+	</update>
+	 
+	 
+	 <!-- 更新要货令发运时间  by 王冲 -->
+	<update id="updateFaYSJ" parameterClass="java.util.Map">
+		<![CDATA[ 
+				UPDATE ${dbSchemal4}CK_YAONBHL L
+				   SET L.FAYSJ =
+				       (SELECT L.JIAOFJ - KEHTQQ / (60 * 24) FAYSJ
+				          FROM (SELECT K.USERCENTER, K.KEHBH, T.GONGYSDM, coalesce(K.KEHTQQ, 0) KEHTQQ 
+				                  FROM ${dbSchemal3}CKX_KEH_CHENGPK K
+				                  JOIN (SELECT Y.USERCENTER,
+				                              Y.NEIBGYS_CANGKBH,
+				                              Y.KEH,
+				                              Y.GONGYSDM
+				                         FROM (SELECT C.USERCENTER, C.GONGYSDM, C.KEH, C.CANGKBH NEIBGYS_CANGKBH
+				                                FROM ${dbSchemal4}CK_YAONBHL C
+				                               WHERE C.FAYSJ IS NULL
+				                                 AND SHIFPZ = '1'
+				                                 AND SUODPZ = '0'
+				                                 AND YAOHLZT  in ('01','04') 
+				                                 AND C.USERCENTER = #UC#
+				                               GROUP BY C.USERCENTER, C.GONGYSDM, C.KEH,C.CANGKBH) Y
+				                        GROUP BY Y.USERCENTER,
+				                                 Y.NEIBGYS_CANGKBH,
+				                                 Y.KEH,
+				                                 Y.GONGYSDM) T
+				                    ON T.USERCENTER = K.USERCENTER
+				                   AND K.CANGKBH = T.NEIBGYS_CANGKBH
+				                   AND T.KEH = K.KEHBH
+				                 WHERE K.USERCENTER = #UC# 
+				                 GROUP BY K.KEHTQQ, K.KEHBH, K.USERCENTER, T.GONGYSDM) TMP
+				         WHERE TMP.USERCENTER = L.USERCENTER
+				           AND TMP.GONGYSDM = L.GONGYSDM
+				           AND TMP.KEHBH = L.KEH)
+				 WHERE L.USERCENTER = #UC#
+				   AND L.FAYSJ IS NULL
+				   AND SHIFPZ = '1'
+				   AND SUODPZ = '0'
+				   AND  YAOHLZT  in ('01','04') 
+	    ]]>
+	</update>
+	 
+	 
+	<!-- 要货令对应客户-供应商 查询   2011-12-13 -->
+	<select id="queryKehGYS" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+	    
+	      SELECT  KEH, CK.USERCENTER
+				  FROM ${dbSchemal4}CK_YAONBHL CK
+				 WHERE SHIFPZ = '1'
+				   AND SUODPZ = '0'
+				   AND YAOHLZT  in ('01','04') 
+				   AND CK.USERCENTER = #UC#
+				   AND FAYSJ <= TO_DATE(#DATE#, 'YYYY-MM-DD HH24:MI:SS')  AND  KEH IS NOT NULL
+				 GROUP BY KEH,  CK.USERCENTER
+	    ]]>
+	</select>
+	
+	<!-- 运输路线组 查询   2011-12-13 -->
+	<select id="queryLuXZ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			    SELECT CPK.USERCENTER,
+				       CPK.KEHBH,
+				       CPK.CANGKBH,
+				       CPK.CHENGYSBH,
+				       TO_CHAR(NVL(CPK.KEHTQQ,0)) KEHTQQ,
+				       TO_CHAR(NVL(CPK.YAOCTQQ,0)) YAOCTQQ,
+				       LX.YUNSLXBH,
+				       TO_CHAR(NVL(LX.ZUIDTQFYSJ,0)) ZUIDTQFYSJ
+				  FROM ${dbSchemal3}CKX_KEH_CHENGPK CPK
+				  JOIN (SELECT T.USERCENTER, T.CANGKBH NEIBGYS_CANGKBH, T.KEH
+				          FROM (SELECT KEH, CK.USERCENTER,CK.CANGKBH
+				                 FROM ${dbSchemal4}CK_YAONBHL CK
+				                WHERE SHIFPZ = '1'
+				                  AND SUODPZ = '0'
+				                  AND  YAOHLZT  in ('01','04') 
+				                  AND CK.USERCENTER = #UC#
+				                  AND FAYSJ <=
+				                      TO_DATE(#DATE#, 'YYYY-MM-DD HH24:MI:SS')
+				                GROUP BY KEH,  CK.USERCENTER,CK.CANGKBH) T
+				            ) TMP
+				    ON TMP.USERCENTER = CPK.USERCENTER
+				   AND TMP.NEIBGYS_CANGKBH = CPK.CANGKBH
+				   AND TMP.KEH = CPK.KEHBH
+				  JOIN (select * from ${dbSchemal3}CKX_YUNSLX where biaos=1) LX
+				    ON LX.YUNSLXBH = CPK.YUNSLXBH
+				   AND LX.USERCENTER = CPK.USERCENTER
+				   AND LX.USERCENTER = #UC# 
+				   ORDER BY   CPK.YUNSLXBH  ,   CPK.KEHBH 
+	    
+	    ]]>
+	</select>
+	
+	
+	<!-- 路线组交付时刻  查询   2011-12-13 -->
+	<select id="queryJiaoFSK" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+				SELECT SK.YUNSLXBH, SK.JIAOFSK
+				  FROM ${dbSchemal3}CKX_YUNSLX_JIAOF SK
+				  JOIN (SELECT CPK.USERCENTER, LX.YUNSLXBH
+				          FROM ${dbSchemal3}CKX_KEH_CHENGPK CPK
+				          JOIN (SELECT T.USERCENTER, T.CANGKBH NEIBGYS_CANGKBH, T.KEH
+				                 FROM (SELECT KEH, CK.USERCENTER, CK.CANGKBH
+				                        FROM ${dbSchemal4}CK_YAONBHL CK
+				                       WHERE SHIFPZ = '1'
+				                         AND SUODPZ = '0'
+				                         AND  YAOHLZT  in ('01','04') 
+				                         AND CK.USERCENTER = #UC#
+				                         AND FAYSJ <=
+				                             TO_DATE(#DATE#,
+				                                     'YYYY-MM-DD HH24:MI:SS')
+				                       GROUP BY KEH,  CK.USERCENTER,CK.CANGKBH) T
+				                   ) TMP
+				            ON TMP.USERCENTER = CPK.USERCENTER
+				           AND TMP.NEIBGYS_CANGKBH = CPK.CANGKBH
+				           AND TMP.KEH = CPK.KEHBH
+				          JOIN (select * from ${dbSchemal3}CKX_YUNSLX where biaos=1) LX
+				            ON LX.YUNSLXBH = CPK.YUNSLXBH
+				           AND LX.USERCENTER = CPK.USERCENTER
+				           AND LX.USERCENTER = #UC#
+				         GROUP BY CPK.USERCENTER, LX.YUNSLXBH) TT
+				    ON TT.USERCENTER = SK.USERCENTER
+				   AND TT.YUNSLXBH = SK.YUNSLXBH
+				 WHERE SK.USERCENTER = #UC#
+				   AND SK.XINGQXH = CASE (TRIM(TO_CHAR(TO_DATE(#DATE#,
+				                              'YYYY-MM-DD HH24:MI:SS'),
+				                      'DAY',
+				                      'NLS_DATE_LANGUAGE = AMERICAN')))
+				         WHEN 'MONDAY' THEN
+				          '1'
+				         WHEN 'TUESDAY' THEN
+				         '2'
+				         WHEN 'WEDNESDAY' THEN
+				          '3'
+				         WHEN 'THURSDAY' THEN
+				          '4'
+				         WHEN 'FRIDAY' THEN
+				          '5'
+				         WHEN 'SATURDAY' THEN
+				          '6'
+				         WHEN 'SUNDAY' THEN
+				          '7'
+				       END
+				 ORDER BY SK.YUNSLXBH,SK.JIAOFSK
+	    
+	    ]]>
+	</select>
+	
+	<!-- 路线组 仓库  查询   2011-12-13 -->
+	<select id="queryLXZCK" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+				SELECT CPK.YUNSLXBH, CPK.CANGKBH
+				  FROM ${dbSchemal3}CKX_KEH_CHENGPK CPK
+				  JOIN (SELECT T.USERCENTER,  T.CANGKBH NEIBGYS_CANGKBH, T.KEH
+				          FROM (SELECT  KEH, CK.USERCENTER,CK.CANGKBH
+				                 FROM ${dbSchemal4}CK_YAONBHL CK
+				                WHERE SHIFPZ = '1'
+				                  AND SUODPZ = '0'
+				                  AND YAOHLZT  in ('01','04') 
+				                  AND CK.USERCENTER =  #UC#
+				                  AND FAYSJ <=
+				                      TO_DATE(#DATE#, 'YYYY-MM-DD HH24:MI:SS')
+				                GROUP BY KEH,  CK.USERCENTER,CK.CANGKBH) T
+				            ) TMP
+				    ON TMP.USERCENTER = CPK.USERCENTER
+				   AND TMP.NEIBGYS_CANGKBH = CPK.CANGKBH
+				   AND TMP.KEH = CPK.KEHBH
+				 WHERE CPK.USERCENTER =  #UC#
+				 GROUP BY CPK.YUNSLXBH, CPK.CANGKBH
+				 ORDER BY CPK.YUNSLXBH, CPK.CANGKBH
+	  ]]>
+	</select>
+	<!-- 归集车辆申报资源  by 王冲 -->
+	<select id="queryCLBySB" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[ 
+				SELECT SB.USERCENTER, SB.YUNSSBM, SB.CHEX, TO_CHAR(SB.SHUL) SHUL, TO_CHAR(YS.ZUIDSL) ZUIDSL, '0' SYSL
+				  FROM ${dbSchemal2}FJ_CHELSB SB
+				  JOIN ${dbSchemal3}CKX_CHEX_YUNSS YS
+				    ON YS.YUNSSBH = SB.YUNSSBM
+				   AND YS.USERCENTER = #UC#
+				 WHERE SB.USERCENTER = #UC#
+				   AND SB.SHENBSJ LIKE
+				       TO_DATE(#DATE#, 'YYYY-MM-DD HH24:MI:SS')
+	    ]]>
+	</select>	
+	
+	<!-- 根据用户中心归集车辆资源  by 王冲 -->
+	<select id="queryCLByUC" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+				SELECT SB.USERCENTER, SB.YUNSSBM, SB.CHEX, TO_CHAR(SB.SHUL) SHUL, TO_CHAR(YS.ZUIDSL) ZUIDSL, '0' SYSL
+				  FROM ${dbSchemal2}FJ_CHELSB SB
+				  JOIN ${dbSchemal3}CKX_CHEX_YUNSS YS
+				    ON YS.YUNSSBH = SB.YUNSSBM
+				   AND YS.USERCENTER = #UC#
+				 WHERE SB.USERCENTER = #UC#
+				   AND SB.SHENBSJ LIKE
+				       TO_DATE(#DATE#, 'YYYY-MM-DD HH24:MI:SS')
+				UNION
+				SELECT YS.USERCENTER,
+				       YS.YUNSSBH,
+				       YS.CHEXBH,
+				       TO_CHAR(YS.ZUIDSL)     SHUL,
+				       TO_CHAR(YS.ZUIDSL)     ZUIDSL,
+				       '0'             SYSL
+				  FROM ${dbSchemal3}CKX_CHEX_YUNSS YS
+				 WHERE YS.USERCENTER = #UC#
+				   AND NOT EXISTS (SELECT 1
+				          FROM ${dbSchemal2}FJ_CHELSB S
+				         WHERE S.USERCENTER = YS.USERCENTER
+				           AND S.YUNSSBM = YS.YUNSSBH
+				           AND S.CHEX = YS.CHEXBH
+				           AND S.USERCENTER = #UC#
+						   AND S.SHENBSJ LIKE
+						       TO_DATE(#DATE#, 'YYYY-MM-DD HH24:MI:SS')
+				           )
+	    ]]>
+	</select>	
+	
+	
+	<!-- 归集客户要货令中对应的策略组  by 王冲 -->
+	<select id="queryCelZ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[ 
+				SELECT PZ.CELBH,
+				       PB.BAOZZBH,
+				       TO_CHAR(PB.BAOZSL) BAOZSL,
+				       PZ.CHEXBH,
+				       PZ.YOUXJ,
+				       TO_CHAR(BZ.BAOZBSJS) BAOZBSJS,
+				       CL.CHEXMC
+				  FROM ${dbSchemal3}CKX_PEIZCL PZ
+				  JOIN (select * from ${dbSchemal3}CKX_CHEX where biaos='1' ) CL
+				    ON CL.CHEXBH = PZ.CHEXBH
+				  JOIN ${dbSchemal3}CKX_PEIZCLZB PB
+				    ON PB.CELBH = PZ.CELBH
+				   AND PB.USERCENTER = #UC#
+				  JOIN (select * from ${dbSchemal3}CKX_PEIZBZ where biaos='1' ) BZ
+				    ON PB.BAOZZBH = BZ.BAOZZBH
+				   AND PZ.USERCENTER = PB.USERCENTER
+				 WHERE PZ.USERCENTER = #UC#
+				   AND EXISTS (SELECT 1
+				          FROM (SELECT PB.CELBH
+				                  FROM ${dbSchemal3}CKX_PEIZCLZB PB
+				                  JOIN (SELECT PE.BAOZZBH
+				                         FROM ${dbSchemal4}CK_YAONBHL CK
+				                         JOIN ${dbSchemal3}CKX_PEIZBZBH PE
+				                           ON PE.BAOZLX = CK.BAOZXH
+				                        WHERE CK.KEH = #KEH#
+				                          AND CK.USERCENTER = #UC#
+				                          AND SHIFPZ = '1'
+				                          AND SUODPZ = '0'
+				                          AND YAOHLZT  in ('01','04') 
+				                          AND CK.FAYSJ BETWEEN
+				                              TO_DATE(#KSSJTEMP#,
+				                                      'YYYY-MM-DD HH24:MI') AND
+				                              TO_DATE(#JSSJ#,
+				                                      'YYYY-MM-DD HH24:MI')
+				                        GROUP BY PE.BAOZZBH) TMP
+				                    ON TMP.BAOZZBH = PB.BAOZZBH) TT
+				         WHERE TT.CELBH = PZ.CELBH)
+				 ORDER BY PZ.YOUXJ
+	    ]]>
+	</select>	
+	
+	
+	 <!-- 归集要贷令  by 王冲 -->
+	<select id="queryYaoHL" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[ 
+		
+		SELECT 
+		CK.KEH,
+		CK.USERCENTER,
+		CK.BAOZXH,
+				       PH.BAOZZBH,
+				       CK.YAOHLH,
+				       CK.LINGJBH,
+				       CK.CANGKBH NEIBGYS_CANGKBH,
+				       to_char(CK.YAOHSL) YAOHSL,
+				       '-' AS LXZ
+				  FROM ${dbSchemal4}CK_YAONBHL CK
+				  JOIN ${dbSchemal3}CKX_PEIZBZBH PH
+				    ON PH.BAOZLX = CK.BAOZXH
+				 WHERE CK.KEH = #KEH#
+				   AND CK.USERCENTER = #UC#
+				   AND CK.SHIFPZ = '1'
+				   AND CK.SUODPZ = '0'
+				   AND CK.YAOHLZT  in ('01','04') 
+				   AND CK.FAYSJ BETWEEN TO_DATE(#KSSJ#, 'YYYY-MM-DD HH24:MI') AND
+				       TO_DATE(#JSSJ#, 'YYYY-MM-DD HH24:MI') 
+				   ORDER BY CK.YAOHLH
+				   
+				
+	    ]]>
+	</select>
+	
+	 <!-- 归集要贷令  by 王国首 -->
+	<select id="queryYaoHLGJ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[ 
+		
+		SELECT 
+		CK.KEH,
+		CK.USERCENTER,
+		CK.BAOZXH,
+				       PH.BAOZZBH,
+				       CK.YAOHLH,
+				       CK.LINGJBH,
+				       CK.CANGKBH NEIBGYS_CANGKBH,
+				       to_char(CK.YAOHSL) YAOHSL,
+				       '-' AS LXZ
+				  FROM ${dbSchemal4}CK_YAONBHL CK
+				  JOIN ${dbSchemal3}CKX_PEIZBZBH PH
+				    ON PH.BAOZLX = CK.BAOZXH
+				 WHERE CK.KEH = #KEH#
+				   AND CK.USERCENTER = #UC#
+				   AND CK.SHIFPZ = '1'
+				   AND CK.SUODPZ = '0'
+				   AND CK.YAOHLZT  in ('01','04') 
+				   AND CK.FAYSJ BETWEEN TO_DATE(#KSSJTEMP#, 'YYYY-MM-DD HH24:MI') AND
+				       TO_DATE(#JSSJ#, 'YYYY-MM-DD HH24:MI') 
+				   ORDER BY CK.YAOHLH
+				   
+				
+	    ]]>
+	</select>	
+	
+	 <!-- 归集用户中心   by 王冲 -->
+	<select id="queryUC"  resultClass="java.util.HashMap">
+		<![CDATA[ 
+		SELECT UC.USERCENTER FROM ${dbSchemal3}CKX_USERCENTER UC where biaos='1'
+	    ]]>
+	</select>		
+	
+	 <!-- 锁定要贷令配载 by 王冲 -->
+	<update id="lockYaoHL" parameterClass="java.util.Map">
+		<![CDATA[ 
+		UPDATE ${dbSchemal4}CK_YAONBHL CK
+		   SET CK.SUODPZ = '1'
+		 WHERE 
+		   CK.SHIFPZ = '1'
+		   AND CK.SUODPZ = '0'
+		   AND CK.YAOHLZT  in ('01','04') 
+		   AND CK.USERCENTER=#UC#
+		   AND CK.YAOHLH IN ($YAOHLHS$)
+	    ]]>
+	</update>
+	
+	<!-- 得到第二天发货的第一个发运时刻 -->
+	<select id="queryFirstJiaoFSK"  resultClass="java.util.HashMap">
+		<![CDATA[ 
+				 SELECT SK.YUNSLXBH,
+				 TO_CHAR(TO_DATE(#DATE#, 'YYYY-MM-DD HH24:MI:SS') + 1,
+                 'YYYY-MM-DD') || ' ' || min(SK.JIAOFSK) JIAOFSK 
+				  FROM ${dbSchemal3}CKX_YUNSLX_JIAOF SK
+				 WHERE SK.USERCENTER = #UC#
+				   AND SK.XINGQXH = CASE (TRIM(TO_CHAR(TO_DATE(#DATE#,
+				                              'YYYY-MM-DD HH24:MI:SS')+1,
+				                      'DAY',
+				                      'NLS_DATE_LANGUAGE = AMERICAN')))
+				         WHEN 'MONDAY' THEN
+				          '1'
+				         WHEN 'TUESDAY' THEN
+				          '2'
+				         WHEN 'WEDNESDAY' THEN
+				          '3'
+				         WHEN 'THURSDAY' THEN
+				          '4'
+				         WHEN 'FRIDAY' THEN
+				          '5'
+				         WHEN 'SATURDAY' THEN
+				          '6'
+				         WHEN 'SUNDAY' THEN
+				          '7'
+				       END
+				 group BY SK.YUNSLXBH
+		 
+	    ]]>
+	</select>	
+	 <!-- 锁定要贷令配载 by 王冲 -->
+	 <!-- 
+	<update id="updateYaoHlLockPZ" parameterClass="java.util.Map">
+		<![CDATA[ 
+		UPDATE ${dbSchemal4}CK_YAONBHL CK
+		   SET CK.SUODPZ = 1
+		 WHERE CK.KEH = #KEH#
+		   AND CK.FAYSJ = TO_DATE(#DATE#, 'YYYY-MM-DD HH24:MI')
+		   AND CK.SHIFPZ = 1
+		   AND CK.SUODPZ = 0
+	    ]]>
+	</update>
+	 -->
+	 
+	 <!-- 要车明细主键号 by 王冲 -->
+	<select id="queryYaoCMXPriKey"  resultClass="java.util.HashMap">
+		<![CDATA[ 
+		SELECT TO_CHAR(${dbSchemal2}SEQ_FJ_YAOCMX.NEXTVAL) PRIKEY FROM DUAL
+	    ]]>
+	</select>
+	 <!-- 车辆明细主键号 by 王冲 -->
+	<select id="queryCLMxPriKey"  resultClass="java.util.HashMap">
+		<![CDATA[ 
+		SELECT TO_CHAR(${dbSchemal2}SEQ_FJ_CHELMX.NEXTVAL) PRIKEY FROM DUAL
+	    ]]>
+	</select>
+
+	<!-- 新增要车明细 by 2012-02-15 -->
+	<insert id="insertYAOCMx" parameterClass="com.athena.fj.entity.YAOCMx">
+		<![CDATA[
+		INSERT INTO ${dbSchemal2}FJ_YAOCMX
+		  (ID, YAOCJHXH, YUNSLX,CANGKBH, JIHCX, DAOCSJ, FAYSJ, YAOCZT,CELBH,SHIFMZ,USERCENTER,CREATOR,CREATE_TIME)
+		VALUES
+		  (#ID#,
+		   #YAOCJHXH#,
+		   #YUNSLX#,
+		   #CANGKBH#,
+		   #JIHCX#,
+		   TO_DATE(#DAOCSJ#, 'YYYY-MM-DD HH24:MI'),
+		   TO_DATE(#FAYSJ#, 'YYYY-MM-DD HH24:MI'),
+		   #YAOCZT#,
+		   #CELBH#,
+		   #SHIFMZ#,
+		   #USERCENTER#,
+		   #CREATOR#,
+		   sysdate
+		   )
+		]]>
+	</insert>
+	<!-- 新增计划要贷令明细  by 2012-02-15 -->
+	<insert id="insertJhYaoHl" parameterClass="com.athena.fj.entity.JhYaoHl">
+		<![CDATA[
+		INSERT INTO ${dbSchemal2}FJ_JIHYHLMX (YAOHLBH, ID) VALUES (#YAOHLBH#, #ID#)
+		]]>
+	</insert>
+	<!--  新增要车计划总表 by 2012-02-15 -->
+	<insert id="insertYaoCJhZb" parameterClass="com.athena.fj.entity.YaoCJhZb">
+		<![CDATA[
+		INSERT INTO ${dbSchemal2}FJ_YAOCJHZB
+		  (YAOCJHXH, CHEXMC, ZONGCC,SHIFWC,USERCENTER,CREATOR,CREATE_TIME)
+		VALUES
+		  (#YAOCJHXH#, #CHEXMC#, #ZONGCC#,#SHIFWC#,#USERCENTER#,#CREATOR#,sysdate)
+		]]>
+	</insert>
+	<!--  新增车辆明细表 by 2012-02-15 -->
+	<insert id="insertClMx" parameterClass="com.athena.fj.entity.ClMx">
+		<![CDATA[
+		INSERT INTO ${dbSchemal2}FJ_CHELMX
+		  (ID, YAOCJHXH, CHEX, ZONGCC,USERCENTER)
+		VALUES
+		  (#ID#, #YAOCJHXH#, #CHEX#, #ZONGCC#,#USERCENTER#)
+		]]>
+	</insert>
+	
+</sqlMap>
+

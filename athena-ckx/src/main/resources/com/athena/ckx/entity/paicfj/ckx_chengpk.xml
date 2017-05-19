@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+<select id="queryCkx_chengpk" resultClass="com.athena.ckx.entity.paicfj.Ckx_chengpk">
+   select usercenter , shixts
+   from ${dbSchemal3}ckx_chengpk
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter
+</select>
+<insert id="insertCkx_chengpk" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chengpk">
+insert into ${dbSchemal3}ckx_chengpk
+(usercenter , shixts ,creator,create_time,editor,edit_time)
+values(#usercenter# , #shixts#, #creator# , #create_time# , #editor# , #edit_time# )
+</insert>
+
+<update id="updateCkx_chengpk" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chengpk">
+update ${dbSchemal3}ckx_chengpk
+set 
+   <![CDATA[shixts = #shixts#]]> ,
+   <![CDATA[editor = #editor#]]> ,
+   <![CDATA[edit_time = #edit_time#]]> 
+    	
+       where  <![CDATA[ usercenter = #usercenter#]]> 
+</update>
+<delete id="deleteCkx_chengpk" parameterClass="com.athena.ckx.entity.paicfj.Ckx_chengpk">
+delete ${dbSchemal3}ckx_chengpk
+where <![CDATA[ usercenter = #usercenter# ]]>
+</delete>
+</sqlMap>

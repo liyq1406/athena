@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ilorder">
+
+	<resultMap class="com.athena.xqjs.entity.ilorder.Maoxqhzp"
+		id="Maoxqhzp">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="LINGJBH" property="lingjbh" />
+		<result column="CHANX" property="chanx" />
+		<result column="ZHIZLX" property="zhizlx" />
+		<result column="SHIYCJ" property="shiycj" />
+		<result column="DANW" property="danw" />
+		<result column="P0" property="p0" />
+		<result column="P1" property="p1" />
+		<result column="P2" property="p2" />
+		<result column="P3" property="p3" />
+		<result column="P4" property="p4" />
+		<result column="P5" property="p5" />
+		<result column="P6" property="p6" />
+		<result column="P7" property="p7" />
+		<result column="P8" property="p8" />
+		<result column="P9" property="p9" />
+		<result column="P10" property="p10" />
+		<result column="P11" property="p11" />
+		<result column="XUQCFRQ" property="xuqcfrq" />
+		<result column="P0ZQXH" property="p0zqxh" />
+		<result column="waibms" property="waibms" />
+	</resultMap>  
+  
+<!-- xss_12970 -->
+	<select id="queryAllMaoxqhzp" resultClass="com.athena.xqjs.entity.ilorder.Maoxqhzp">
+select hz.usercenter as usercenter,
+       hz.lingjbh as lingjbh,
+       hz.chanx as chanx,
+       hz.zhizlx as zhizlx,
+       hz.shiycj as shiycj,
+       hz.danw as danw,
+       sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'), 0),
+                          'yyyymm'),
+                  hz.xuqsszq,
+                  hz.xuqsl,
+                  0)) as p0,
+       sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'), 1),
+                          'yyyymm'),
+                  hz.xuqsszq,
+                  hz.xuqsl,
+                  0)) as p1,
+       sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'), 2),
+                          'yyyymm'),
+                  hz.xuqsszq,
+                  hz.xuqsl,
+                  0)) as p2,
+       sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'), 3),
+                          'yyyymm'),
+                  hz.xuqsszq,
+                  hz.xuqsl,
+                  0)) as p3,
+       sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'), 4),
+                          'yyyymm'),
+                  hz.xuqsszq,
+                  hz.xuqsl,
+                  0)) as p4,
+       sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'), 5),
+                          'yyyymm'),
+                  hz.xuqsszq,
+                  hz.xuqsl,
+                  0)) as p5,
+       sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'), 6),
+                          'yyyymm'),
+                  hz.xuqsszq,
+                  hz.xuqsl,
+                  0)) as p6,
+       sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'), 7),
+                          'yyyymm'),
+                  hz.xuqsszq,
+                  hz.xuqsl,
+                  0)) as p7,
+       sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'), 8),
+                          'yyyymm'),
+                  hz.xuqsszq,
+                  hz.xuqsl,
+                  0)) as p8,
+       sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'), 9),
+                          'yyyymm'),
+                  hz.xuqsszq,
+                  hz.xuqsl,
+                  0)) as p9,
+       sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'), 10),
+                          'yyyymm'),
+                  hz.xuqsszq,
+                  hz.xuqsl,
+                  0)) as p10,
+       sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'), 11),
+                          'yyyymm'),
+                  hz.xuqsszq,
+                  hz.xuqsl,
+                  0)) as p11,
+       hz.xuqcfrq as xuqcfrq,
+       #nianzq# as p0zqxh,
+       hz.waibms
+  from (select distinct ad.usercenter,
+                        ad.lingjbh,
+                        ad.chanx,
+                        ad.zhizlx,
+                        ad.shiycj,
+                        ad.danw,
+                        ad.xuqsszq,
+                        ad.xuqsl,
+                        ad.xuqcfrq,
+                        cw.waibms
+          from (select q.usercenter as usercenter,
+                       q.lingjbh as lingjbh,
+                       q.chanx as chanx,
+                       q.zhizlx as zhizlx,
+                       x.dinghcj as shiycj, 
+                       q.danw as danw,
+                       q.xuqsszq,
+                       sum(q.xuqsl) as xuqsl,
+                       t.xuqcfsj as xuqcfrq
+                  from ${dbSchemal1}XQJS_maoxq t, ${dbSchemal1}XQJS_maoxqmx q , ${dbSchemal3}ckx_lingj x
+                 where t.xuqbc = q.xuqbc
+                   and q.usercenter = #usercenter#
+                   and q.usercenter = x.usercenter
+                   and q.lingjbh = x.lingjbh
+                   and q.xuqbc = #xuqbc#
+                   and q.zhizlx = #zhizlx# 
+                 group by q.usercenter,
+                          q.lingjbh,
+                          q.chanx,
+                          q.zhizlx,
+                          x.dinghcj,
+                          q.danw,
+                          q.xuqsszq,
+                          t.xuqcfsj) ad,
+               (select usercenter, lingjbh, shengcxbh, zhizlx, waibms
+                  from ${dbSchemal3}ckx_wullj
+                 where waibms = 'PP'
+                
+                ) cw
+         where ad.usercenter = cw.usercenter(+)
+           and ad.chanx = cw.shengcxbh(+)
+           and ad.lingjbh = cw.lingjbh(+)
+           and cw.zhizlx = #zhizlx#) hz
+ group by hz.usercenter,
+          hz.lingjbh,
+          hz.chanx,
+          hz.zhizlx,
+          hz.shiycj,
+          hz.danw,
+          hz.xuqcfrq,
+          hz.waibms
+
+union all (
+           
+           select hz.usercenter as usercenter,
+                   hz.lingjbh as lingjbh,
+                   hz.chanx as chanx,
+                   hz.zhizlx as zhizlx,
+                   hz.shiycj as shiycj,
+                   hz.danw as danw,
+                   sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'),
+                                                 0),
+                                      'yyyymm'),
+                              hz.xuqsszq,
+                              hz.xuqsl,
+                              0)) as p0,
+                   sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'),
+                                                 1),
+                                      'yyyymm'),
+                              hz.xuqsszq,
+                              hz.xuqsl,
+                              0)) as p1,
+                   sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'),
+                                                 2),
+                                      'yyyymm'),
+                              hz.xuqsszq,
+                              hz.xuqsl,
+                              0)) as p2,
+                   sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'),
+                                                 3),
+                                      'yyyymm'),
+                              hz.xuqsszq,
+                              hz.xuqsl,
+                              0)) as p3,
+                   sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'),
+                                                 4),
+                                      'yyyymm'),
+                              hz.xuqsszq,
+                              hz.xuqsl,
+                              0)) as p4,
+                   sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'),
+                                                 5),
+                                      'yyyymm'),
+                              hz.xuqsszq,
+                              hz.xuqsl,
+                              0)) as p5,
+                   sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'),
+                                                 6),
+                                      'yyyymm'),
+                              hz.xuqsszq,
+                              hz.xuqsl,
+                              0)) as p6,
+                   sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'),
+                                                 7),
+                                      'yyyymm'),
+                              hz.xuqsszq,
+                              hz.xuqsl,
+                              0)) as p7,
+                   sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'),
+                                                 8),
+                                      'yyyymm'),
+                              hz.xuqsszq,
+                              hz.xuqsl,
+                              0)) as p8,
+                   sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'),
+                                                 9),
+                                      'yyyymm'),
+                              hz.xuqsszq,
+                              hz.xuqsl,
+                              0)) as p9,
+                   sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'),
+                                                 10),
+                                      'yyyymm'),
+                              hz.xuqsszq,
+                              hz.xuqsl,
+                              0)) as p10,
+                   sum(decode(to_char(add_months(to_date(#nianzq#, 'yyyymm'),
+                                                 11),
+                                      'yyyymm'),
+                              hz.xuqsszq,
+                              hz.xuqsl,
+                              0)) as p11,
+                   hz.xuqcfrq as xuqcfrq,
+                   #nianzq# as p0zqxh,
+                   hz.waibms
+             from (select distinct ad.usercenter,
+                                    ad.lingjbh,
+                                    ad.chanx,
+                                    ad.zhizlx,
+                                    ad.shiycj,
+                                    ad.danw,
+                                    ad.xuqsszq,
+                                    ad.xuqsl,
+                                    ad.xuqcfrq,
+                                    cw.waibms
+                      from (select q.usercenter as usercenter,
+                                   q.lingjbh as lingjbh,
+                                   '' as chanx,
+                                   q.zhizlx as zhizlx,
+                                   '' as shiycj,
+                                   q.danw as danw,
+                                   q.xuqsszq,
+                                   sum(q.xuqsl) as xuqsl,
+                                   t.xuqcfsj as xuqcfrq
+                              from ${dbSchemal1}XQJS_maoxq   t,
+                                   ${dbSchemal1}XQJS_maoxqmx q
+                             where t.xuqbc = q.xuqbc
+                               and q.usercenter = #usercenter#
+                               and q.xuqbc = #xuqbc#
+                               and q.zhizlx = #zhizlx#
+                             group by q.usercenter,
+                                      q.lingjbh,
+                                      
+                                      q.zhizlx,
+                                      
+                                      q.danw,
+                                      q.xuqsszq,
+                                      t.xuqcfsj) ad,
+                           (select distinct usercenter,
+                                            lingjbh,
+                                            '' as shengcxbh,
+                                            zhizlx,
+                                            'NP' as waibms
+                              from ${dbSchemal3}ckx_wullj
+                             where waibms != 'PP'
+                            
+                            ) cw
+                     where ad.usercenter = cw.usercenter(+)
+                          
+                       and ad.lingjbh = cw.lingjbh(+)
+                       and cw.zhizlx = #zhizlx#) hz
+            group by hz.usercenter,
+                      hz.lingjbh,
+                      hz.chanx,
+                      hz.zhizlx,
+                      hz.shiycj,
+                      hz.danw,
+                      hz.xuqcfrq,
+                      hz.waibms
+           
+           )
+	</select>
+
+
+
+
+	<select id="queryMaoxqhzp" resultClass="com.athena.xqjs.entity.ilorder.Maoxqhzp">
+		select
+		P1,
+		P5,
+		P11,
+		P7,
+		SHIYCJ,
+		P8,
+		P6,
+		P3,
+		P9,
+		P0ZQXH,
+		USERCENTER,
+		CHANX,
+		DANW,
+		P10,
+		P4,
+		LINGJBH,
+		P2,
+		P0,
+		XUQCFRQ,
+		ZHIZLX,
+		ID,
+		WULGYYZ
+		from
+		${dbSchemal1}XQJS_maoxqhzp
+		where
+		1=1
+	</select>
+
+	<insert id="insertMaoxqhzp" parameterClass="com.athena.xqjs.entity.ilorder.Maoxqhzp">
+		insert into
+		${dbSchemal1}XQJS_maoxqhzp
+		(P1,P5,P11,P7,SHIYCJ,P8,P6,P3,P9,P0ZQXH,USERCENTER,CHANX,DANW,P10,P4,LINGJBH,P2,P0,XUQCFRQ,ZHIZLX,ID,WULGYYZ,WAIBMS)
+		values(
+		#p1#,
+		#p5#,
+		#p11#,
+		#p7#,
+		#shiycj#,
+		#p8#,
+		#p6#,
+		#p3#,
+		#p9#,
+		#p0zqxh#,
+		#usercenter#,
+		#chanx#,
+		#danw#,
+		#p10#,
+		#p4#,
+		#lingjbh#,
+		#p2#,
+		#p0#,
+		to_date(substr(#xuqcfrq#,0,10),'yyyy-mm-dd'),
+		#zhizlx#,
+		${dbSchemal1}MAOXQHZPFPXH_SEQ.nextval,
+		#wulgyyz#,
+		#waibms#)
+	</insert>
+
+	<update id="updateMaoxqhzp" parameterClass="com.athena.xqjs.entity.ilorder.Maoxqhzp">
+		update ${dbSchemal1}XQJS_maoxqhzp
+		set
+		P1=#p1#,
+		P5=#p5#,
+		P11=#p11#,
+		P7=#p7#,
+		SHIYCJ=#shiycj#,
+		P8=#p8#,
+		P6=#p6#,
+		P3=#p3#,
+		P9=#p9#,
+		P0ZQXH=#p0zqxh#,
+		USERCENTER=#usercenter#,
+		CHANX=#chanx#,
+		DANW=#danw#,
+		P10=#p10#,
+		P4=#p4#,
+		LINGJBH=#lingjbh#,
+		P2=#p2#,
+		P0=#p0#,
+		XUQCFRQ=#xuqcfrq#,
+		ZHIZLX=#zhizlx#,
+		ID=#id#
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<delete id="deleteMaoxqhzp" parameterClass="com.athena.xqjs.entity.ilorder.Maoxqhzp">
+		delete
+		from
+		${dbSchemal1}XQJS_maoxqhzp
+		where
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+
+	<delete id="deleteAllMaoxqhzp" >
+		truncate table 
+		${dbSchemal1}XQJS_maoxqhzp
+	</delete>
+	
+	<delete id="deleteMaoxqhzpById" parameterClass="java.util.Map">
+		delete
+		from
+		${dbSchemal1}XQJS_maoxqhzp
+		where
+		ID = #id#
+	</delete>
+	
+	<delete id="deleteOneOfMaoxqhzp" parameterClass="java.util.Map">
+		delete
+		from
+		${dbSchemal1}XQJS_maoxqhzp
+		where
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">LINGJBH = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="chanx">CHANX = #chanx#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+
+	<select id="checkXiaohblPP" resultClass="com.athena.xqjs.entity.common.Xiaohblzjb">
+		select xx.USERCENTER, xx.LINGJBH, xx.SHENGCXBH as Shengcxbh
+  from ${dbSchemal1}XQJS_XIAOHBLZJB xx, ${dbSchemal1}XQJS_MAOXQHZP t
+ where t.USERCENTER = xx.USERCENTER
+   and t.LINGJBH = xx.LINGJBH
+   and t.CHANX = xx.SHENGCXBH
+	</select>
+</sqlMap>

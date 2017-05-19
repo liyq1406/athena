@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="diaobl" extend="toft-default" namespace="/diaobl">
+		<!-- 调拨令申请 -->
+		<action name="diaobsq" class="diaobsqAction" method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/diaobl/diaobsq.jsp</result>
+		</action>
+		<!-- 调拨申请页面模板下载 -->
+		<action name="mubanxiazai" class="diaobsqAction" method="expMuban"></action>
+		<!-- 调拨申请页面错误数据下载 -->
+		<action name="errdownLoad" class="diaobsqAction" method="errdownLoad"></action>
+		<!-- 调拨令申请 回显零件名称 -->
+		<action name="getlingjmc" class="diaobsqAction" method="getLingjmc">
+		</action>
+		<!-- 调拨令申请 点击打印 -->
+		<action name="sqprint" class="diaobsqAction" method="initPrint">
+			<result name="success">/WEB-INF/pages/xqjs/diaobl/sqprint.jsp</result>
+		</action>
+		<action name="print" class="diaobsqAction" method="print">
+		</action>
+		<!-- 调拨令申请 新增 -->
+		<action name="insert" class="diaobsqAction" method="save">
+		</action>
+		<!-- 导入操作 -->
+		<action name="upload" class="diaobsqAction" method="uploadDiaobsq">
+		</action>
+		<!-- 初始化调拨令申请查询 -->
+		<action name="initSq" class="diaobsqOperationAction" method="initQuery">
+			<result name="init">/WEB-INF/pages/xqjs/diaobl/diaoblquery.jsp</result>
+		</action>
+		<!-- 取消操作 -->
+		<action name="docancle" class="diaobsqOperationAction" method="docancle">
+		</action>
+		<!-- 导出操作 -->
+		<action name="download" class="diaobsqOperationAction" method="downloadDiaobsq">
+		</action>
+		<!-- 调拨令申请查询 增删改页面 -->
+		<action name="initEdit" class="diaobsqOperationAction" method="initEdit">
+			<result name="success">/WEB-INF/pages/xqjs/diaobl/diaobsq_edit.jsp</result>
+			<!--已生效 -->
+			<result name="sqysx">/WEB-INF/pages/xqjs/diaobl/diaobsq_qrsx.jsp</result>
+		</action>
+		<!--查询 增删改页面 -->
+		<action name="searchsqmx" class="diaobsqOperationAction"
+			method="searchsqmx">
+		</action>
+		<!--调拨令申请查询 -增加 操作 -->
+		<action name="add" class="diaobsqOperationAction" method="save">
+		</action>
+		<!--调拨令申请查询 -修改操作 -->
+		<action name="update" class="diaobsqOperationAction" method="update">
+		</action>
+		<!--调拨令申请查询 -删除 操作 -->
+		<action name="delete" class="diaobsqOperationAction" method="delete">
+		</action>
+		<!-- 调拨审核主页面查询 -->
+		<action name="select" class="diaobsqOperationAction" method="querySq">
+		</action>
+		<!-- 初始化调拨令审核页面 -->
+		<action name="initDiaoblSh" class="diaoblShAction" method="init">
+			<result name="initSh">/WEB-INF/pages/xqjs/diaobl/diaobsh.jsp</result>
+		</action>
+		<!-- 查询调拨申请 -->
+		<action name="searchDiaobSq" class="diaoblShAction" method="searchDiaobSq">
+		</action>
+		<!-- 查询调拨申请明细 -->
+		<action name="initDiaobSqMx" class="diaoblShAction" method="initDiaobSqMx">
+			<result name="dbsqmx">/WEB-INF/pages/xqjs/diaobl/diaobdshqr.jsp</result>
+			<result name="dbsqzz">/WEB-INF/pages/xqjs/diaobl/diaobdshzz.jsp</result>
+		</action>
+		<!-- 查询调拨申请明细 -->
+		<action name="searchDiaobSqMx" class="diaoblShAction" method="searchDiaobSqMx">
+		</action>
+		<!-- 查询调拨单明细 -->
+		<action name="searchDiaobdMx" class="diaoblShAction" method="searchDiaobdMx">
+		</action>
+		<!-- 查询终止调拨申请明细 -->
+		<action name="searchZzDiaobSqMx" class="diaoblShAction" method="searchZzDiaobSqMx">
+		</action>
+		<!-- 查询终止调拨单明细 -->
+		<action name="searchZzDiaobdMx" class="diaoblShAction" method="searchZzDiaobdMx">
+		</action>
+		<action name="dodiaobsm" class="diaoblShAction" method="dodiaobsm">
+		</action>
+		<!-- 调拨令审核确认 -->
+		<action name="diaoblQr" class="diaoblShAction" method="diaoblQr">
+		</action>
+		<!-- 调拨令拒绝 -->
+		<action name="diaoblJj" class="diaoblShAction" method="diaoblJj">
+		</action>
+		<!-- 调拨令生效 -->
+		<action name="diaoblSx" class="diaoblShAction" method="diaoblSx">
+		</action>
+		<!-- 调拨令生效后打印 -->
+		<action name="sxprint" class="diaoblShAction" method="cangkprint">
+		</action>
+		<!-- 调拨令差异打印 -->
+		<action name="cyprint" class="diaoblShAction" method="chayiprint">
+		</action>
+		<!-- 调拨令按零件终止 -->
+		<action name="ljzz" class="diaoblShAction" method="ljzz">
+		</action>
+		<!-- 调拨令按零件终止 -->
+		<action name="ljckzz" class="diaoblShAction" method="ljckzz">
+		</action>
+		
+		<action name="getLjck" class="diaobsqAction" method="getLjck">
+		</action>
+		<!--校验零件制造路线是否存在 -->
+		<action name="querylucz" class="diaobsqAction" method="querylucz"></action>
+	</package>
+</toft>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+ 
+<!-- 
+	库存快照资源设置
+	@author wangyu
+	@date 2013-7-30
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryKuckzzysz" parameterClass="com.athena.ckx.entity.cangk.Kuckzzysz" resultClass="com.athena.ckx.entity.cangk.Kuckzzysz">
+	select usercenter,baozzt,zhuangtsx,shengxbs,baozzt as baozz1,zhuangtsx as zhuangts1,shengxbs as shengxb1
+    from ${dbSchemal3}ckx_kuckzzyszb 
+    where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="baozzt" prepend="and">
+	    		<![CDATA[baozzt = #baozzt#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="zhuangtsx" prepend="and">
+	    		<![CDATA[zhuangtsx = #zhuangtsx#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengxbs" prepend="and">
+	    		<![CDATA[shengxbs = #shengxbs#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	   order by USERCENTER, BAOZZT, ZHUANGTSX, SHENGXBS
+	</select>
+	
+	<insert id="insertKuckzzysz" parameterClass="com.athena.ckx.entity.cangk.Kuckzzysz">
+		insert into ${dbSchemal3}ckx_kuckzzyszb (usercenter,baozzt,zhuangtsx,shengxbs,beiz1,beiz2,beiz3,beiz4)
+		values(#usercenter#,#baozzt#,#zhuangtsx#,#shengxbs#,#beiz1#,#beiz2#,#beiz3#,#beiz4#)
+	</insert>
+	
+	<update id="updateKuckzzysz" parameterClass="com.athena.ckx.entity.cangk.Kuckzzysz">
+		update ${dbSchemal3}ckx_kuckzzyszb  
+		set usercenter = #usercenter#,
+			baozzt = #baozzt# ,
+			zhuangtsx = #zhuangtsx# ,
+			shengxbs = #shengxbs# 
+		where <![CDATA[usercenter = #usercenter# and baozzt = #baozz1# and zhuangtsx = #zhuangts1# and shengxbs = #shengxb1#]]> 
+	</update>
+	
+	<delete id="deleteKuckzzysz" parameterClass="com.athena.ckx.entity.cangk.Kuckzzysz">
+		delete from  ${dbSchemal3}ckx_kuckzzyszb where
+		<dynamic prepend="  ">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="baozz1" prepend="and">
+	    		<![CDATA[baozzt = #baozz1#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="zhuangts1"  prepend="and">
+	    		<![CDATA[zhuangtsx = #zhuangts1#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengxb1" prepend="and">
+	    		<![CDATA[shengxbs = #shengxb1#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+</sqlMap>

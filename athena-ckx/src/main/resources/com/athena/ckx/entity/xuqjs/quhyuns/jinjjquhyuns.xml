@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_jinjjquhyuns">
+
+	<!-- 紧急件取货运费参考系 -->
+	
+	<!-- 多数据查询 -->
+	<select id="queryJinjjQuhYuns" parameterClass="com.athena.ckx.entity.xuqjs.JinjjQuhYuns" resultClass="com.athena.ckx.entity.xuqjs.JinjjQuhYuns">
+		select jinjjid,usercenter,gongysmc,gongysdm ,  chengysmc ,chengysdm ,to_char(shengxsj, 'yyyy-MM-dd') shengxsj,to_char(shixsj, 'yyyy-MM-dd') shixsj,biaos,tangcdj,CREATOR,CREATE_TIME,EDITOR,EDIT_TIME from ${dbSchemal3}CKX_QUHYSFY_jinjj
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jinjjid"><![CDATA[jinjjid = #jinjjid#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="youxsj"><![CDATA[to_date(#youxsj#,'yyyy-MM-dd')>=shengxsj and to_date(#youxsj#,'yyyy-MM-dd')<=shixsj]]></isNotEmpty>
+			<isNotEmpty prepend="  and " property="uclist">usercenter in( $uclist$)</isNotEmpty>
+		</dynamic>
+		order by  usercenter, chengysdm,gongysdm,shengxsj
+	</select>
+	
+		<!-- 多数据查询 -->
+	<select id="getJinjjQuhYuns" parameterClass="com.athena.ckx.entity.xuqjs.JinjjQuhYuns" resultClass="com.athena.ckx.entity.xuqjs.JinjjQuhYuns">
+		select jinjjid,usercenter,GONGYSMC,gongysdm ,  CHENGYSMC ,chengysdm ,to_char(shengxsj, 'yyyy-MM-dd') shengxsj,to_char(shixsj, 'yyyy-MM-dd') shixsj,biaos,tangcdj,CREATOR,CREATE_TIME,EDITOR,EDIT_TIME from ${dbSchemal3}CKX_QUHYSFY_jinjj
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jinjjid"><![CDATA[jinjjid != #jinjjid#]]></isNotEmpty>
+		
+		</dynamic>
+		order by  usercenter, chengysdm,gongysdm,shengxsj
+	</select>
+	
+		<!-- 更新数据 -->
+	<update id="updateJinjjQuhYuns" parameterClass="com.athena.ckx.entity.xuqjs.JinjjQuhYuns">
+		update ${dbSchemal3}CKX_QUHYSFY_jinjj 
+		set 
+				<![CDATA[gongysdm=#gongysdm#]]> ,
+			<![CDATA[chengysdm=#chengysdm#]]> ,
+			tangcdj=#tangcdj# ,
+			shengxsj = to_date(#shengxsj#,'yyyy-MM-dd hh24:mi:ss') ,
+			shixsj = to_date(#shixsj#,'yyyy-MM-dd hh24:mi:ss'), 
+	    	biaos = #biaos#,
+	    	editor = #editor# ,
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+	    where  1=1 
+	    	<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jinjjid"><![CDATA[jinjjid = #jinjjid#]]></isNotEmpty>
+		</update>
+	
+	
+			<!-- 更新数据 -->
+	<update id="updateJinjjQuhYunsDownload" parameterClass="com.athena.ckx.entity.xuqjs.JinjjQuhYuns">
+		update ${dbSchemal3}CKX_QUHYSFY_jinjj 
+		set 
+			tangcdj=#tangcdj# ,
+	    	biaos = #biaos#,
+	    	chengysdm = #chengysdm#,
+	    	editor = #editor# ,
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+	    where  1=1 
+	        <isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengxsj"><![CDATA[to_date(#shengxsj#,'yyyy-MM-dd')=shengxsj ]]></isNotEmpty>
+		    <isNotEmpty prepend=" and " property="shixsj"><![CDATA[to_date(#shixsj#,'yyyy-MM-dd')=shixsj ]]></isNotEmpty>
+	
+		</update>
+	
+			<!-- 插入数据 -->
+	<insert id="insertJinjjQuhYuns" parameterClass="com.athena.ckx.entity.xuqjs.JinjjQuhYuns">
+		insert into ${dbSchemal3}CKX_QUHYSFY_jinjj (jinjjid,USERCENTER,gongysdm,chengysdm,tangcdj,shengxsj,shixsj,BIAOS,CREATOR,CREATE_TIME,EDITOR,EDIT_TIME)
+		values(QUHID_JINJJ_SEQ.NEXTVAL,<![CDATA[#usercenter#,#gongysdm#,#chengysdm#,#tangcdj#,to_date(#shengxsj#,'yyyy-MM-dd hh24:mi:ss'),to_date(#shixsj#,'yyyy-MM-dd hh24:mi:ss'),#biaos#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+	</insert>
+
+
+
+	<!-- 通过优先级顺序查找参考系 -->
+	<select id="queryJinjjQuhYunsByyouxj" parameterClass="com.athena.ckx.entity.xuqjs.JinjjQuhYuns" resultClass="com.athena.ckx.entity.xuqjs.JinjjQuhYuns">
+		select usercenter,gongysmc,gongysdm ,  chengysmc ,chengysdm ,to_char(shengxsj, 'yyyy-MM-dd') shengxsj,to_char(shixsj, 'yyyy-MM-dd') shixsj,biaos,tangcdj,creator,create_time,editor,edit_time from ${dbSchemal3}ckx_quhysfy_jinjj
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="youxsj"><![CDATA[to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')>=shengxsj and to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')<=shixsj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengxsj"><![CDATA[to_date(#shengxsj#,'yyyy-MM-dd')=shengxsj ]]></isNotEmpty>
+		    <isNotEmpty prepend=" and " property="shixsj"><![CDATA[to_date(#shixsj#,'yyyy-MM-dd')=shixsj ]]></isNotEmpty>
+		</dynamic>
+		order by EDIT_TIME desc
+	</select>
+	
+		<delete id="delJinjjQuhYuns"  parameterClass="com.athena.ckx.entity.xuqjs.JinjjQuhYuns">
+		delete from ${dbSchemal3}ckx_quhysfy_jinjj
+		where jinjjid=#jinjjid#
+	
+	</delete>
+</sqlMap>

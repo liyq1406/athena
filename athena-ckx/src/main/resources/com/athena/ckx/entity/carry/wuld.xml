@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="carry">
+	<!-- 查询物理点类型 -->
+	<select id="queryCkxWuldlx" resultClass="com.athena.ckx.entity.carry.CkxWuldlx">
+		select wuldlxbh,hany,qissxh,jiessxh,biaos,creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_wuldlx where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="wuldlxbh">wuldlxbh=#wuldlxbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos=#biaos#</isNotEmpty>
+		</dynamic>
+		order by wuldlxbh
+	</select>
+	<select id="getCkxWuldlx" resultClass="com.athena.ckx.entity.carry.CkxWuldlx">
+		select wuldlxbh,hany,qissxh,jiessxh,biaos,creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_wuldlx where wuldlxbh=#wuldlxbh#
+	</select>
+	<select id="getCountWuldlx" resultClass="java.lang.String">
+		select count(wuldlxbh) from ${dbSchemal3}ckx_wuldlx where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="wuldlxbh">wuldlxbh=#wuldlxbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos=#biaos#</isNotEmpty>
+		</dynamic>
+	</select>
+	<insert id="insertCkxWuldlx" parameterClass="com.athena.ckx.entity.carry.CkxWuldlx">
+		insert into ${dbSchemal3}ckx_wuldlx (
+			 wuldlxbh,hany,qissxh,jiessxh,biaos,creator,create_Time,editor,edit_Time
+		) values (
+			 #wuldlxbh#,#hany#,#qissxh#,#jiessxh#,1
+			,#creator#, to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		)
+	</insert>
+	<update id="updateCkxWuldlx" parameterClass="com.athena.ckx.entity.carry.CkxWuldlx">
+		update ${dbSchemal3}ckx_wuldlx set 
+		hany=#hany#,
+		biaos=#biaos#,
+		qissxh=#qissxh#,
+		jiessxh=#jiessxh#,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where wuldlxbh=#wuldlxbh#
+	</update>
+	<!-- 逻辑删除 -->
+	<update id="deleteLogicCkxWuldlx" parameterClass="com.athena.ckx.entity.carry.CkxWuldlx">
+		update ${dbSchemal3}ckx_wuldlx set 
+		biaos=0,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where wuldlxbh=#wuldlxbh#
+	</update>
+	<!-- 删除记录 -->
+	<delete id="deleteCkxWuldlx" parameterClass="com.athena.ckx.entity.carry.CkxWuldlx">
+		delete from ${dbSchemal3}ckx_wuldlx where wuldlxbh=#wuldlxbh#
+	</delete>
+	
+	<!-- 验证顺序号是否重复  mantis 0004526-->
+	<select id="checkWULDLXQSXSXH" parameterClass="com.athena.ckx.entity.carry.CkxWuldlx" resultClass="java.lang.Integer">
+ select count(wuldlxbh) 
+ from  ${dbSchemal3}ckx_wuldlx 
+ <![CDATA[where wuldlxbh <> #wuldlxbh# and biaos='1' and
+ ((to_number(qissxh) between to_number(#qissxh#) and to_number(#jiessxh#)) or (to_number(jiessxh) between to_number(#qissxh#) and to_number(#jiessxh#)) or (to_number(#qissxh#) between qissxh and jiessxh) or (to_number(#jiessxh#) between qissxh and jiessxh)) ]]>
+</select>
+	
+	
+	
+	
+	
+	<!-- 查询物理点 -->
+	<select id="queryCkxYunswld" resultClass="com.athena.ckx.entity.carry.CkxYunswld">
+		select wuldbh,wuldmc,wuldlx,shunxh,quy,biaos,creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_yunswld where 1=1  
+		<dynamic>
+			<isNotEmpty prepend=" and " property="wuldbh">wuldbh=#wuldbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wuldmc">wuldmc=#wuldmc#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wuldlx">wuldlx=#wuldlx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos=#biaos#</isNotEmpty>
+		</dynamic>
+		order by wuldbh
+	</select>
+	<select id="getCkxYunswld" resultClass="com.athena.ckx.entity.carry.CkxYunswld">
+		select wuldbh,wuldmc,wuldlx,shunxh,quy,creator,biaos,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_yunswld where wuldbh=#wuldbh#
+		<dynamic>
+			<isNotEmpty prepend=" and " property="biaos">biaos=#biaos#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getCountWuld" resultClass="java.lang.String">
+		select count(wuldbh) from ${dbSchemal3}ckx_yunswld where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="wuldbh">wuldbh=#wuldbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wuldmc">wuldmc=#wuldmc#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wuldlx">wuldlx=#wuldlx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos=#biaos#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<insert id="insertWuld" parameterClass="com.athena.ckx.entity.carry.CkxYunswld">
+		insert into ${dbSchemal3}ckx_yunswld (
+			 wuldbh,wuldmc,wuldlx,shunxh,quy,biaos,creator,create_Time,editor,edit_Time
+		) values (
+			 #wuldbh#,#wuldmc#,#wuldlx#,#shunxh#,#quy#,1
+			,#creator#, to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		)
+	</insert>
+	<update id="updateWuld" parameterClass="com.athena.ckx.entity.carry.CkxYunswld">
+		update ${dbSchemal3}ckx_yunswld set 
+		wuldmc=#wuldmc#,
+		wuldlx=#wuldlx#,
+		biaos=#biaos#,
+		shunxh=#shunxh#,
+		quy=#quy#,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where wuldbh=#wuldbh#
+	</update>
+	<!-- 逻辑删除 -->
+	<update id="deleteLogicWuld" parameterClass="com.athena.ckx.entity.carry.CkxYunswld">
+		update ${dbSchemal3}ckx_yunswld set 
+		biaos=0,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where wuldbh=#wuldbh#
+	</update>
+	<!-- 删除记录 -->
+	<delete id="deleteWuld" parameterClass="com.athena.ckx.entity.carry.CkxYunswld">
+		delete from ${dbSchemal3}ckx_yunswld where wuldbh=#wuldbh#
+	</delete>
+</sqlMap>

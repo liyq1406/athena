@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="carry">
+	<!-- 查询总表 -->
+	<select id="queryCkxWullj" resultClass="com.athena.ckx.entity.carry.CkxWullj">select 
+	 	 usercenter,fenpqh,lingjbh,gongysbh,shengcxbh,
+		 lujbh,lujmc,fahd,zhizlx,waibms,wjianglms,wshengxsj,gongyfe，zhidgys,jiaofm,beihzq,yunszq,gcbh,xiehztbh,songhpc,beihsjc,mudd,
+		 dinghck,mos2,jianglms2,shengxsj2,cangkshpc2,cangkshsj2,cangkfhsj2,beihsj2,ibeihsj2,pbeihsj2,
+		 xianbck,mos,jianglms,shengxsj,cangkshpc,cangkshsj,cangkfhsj,beihsj,ibeihsj,pbeihsj,
+		 GONGYSLX,DINGHCKLX,WULGYYZ2,WULGYYZ1,WULGYYZ,
+		 creator,create_Time,editor,edit_Time
+		 from ${dbSchemal3}ckx_wullj where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="fenpqh">fenpqh = #fenpqh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysbh">gongysbh = #gongysbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lujbh">lujbh = #lujbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="waibms">waibms = #waibms#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="mudd">mudd = #mudd#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dinghck">dinghck = #dinghck#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xianbck">xianbck = #xianbck#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shengcxbh">shengcxbh = #shengcxbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="mos">mos = #mos#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="mos2">mos2 = #mos2#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zhizlx">zhizlx = #zhizlx#</isNotEmpty>
+		</dynamic><!-- 排序 mantis 6200 -->
+		order by usercenter,lingjbh,fenpqh,gongysbh
+	</select>
+	
+	<!-- 插入记录 -->
+	<insert id="insertWulljshengcx" parameterClass="com.athena.ckx.entity.carry.CkxWullj">
+		 insert into ${dbSchemal3}ckx_wullj (usercenter,fenpqh,lingjbh,gongysbh,shengcxbh,
+		 lujbh,lujmc,fahd,zhizlx,waibms,wjianglms,wshengxsj,gongyfe，zhidgys,jiaofm,beihzq,yunszq,gcbh,xiehztbh,songhpc,beihsjc,mudd,
+		 dinghck,mos2,jianglms2,shengxsj2,cangkshpc2,cangkshsj2,cangkfhsj2,beihsj2,ibeihsj2,pbeihsj2,
+		 xianbck,mos,jianglms,shengxsj,cangkshpc,cangkshsj,cangkfhsj,beihsj,ibeihsj,pbeihsj,
+		 creator,create_Time,editor,edit_Time)
+		values(
+		 #usercenter#,#fenpqh#,#lingjbh#,#gongysbh#,#shengcxbh#,
+		 #lujbh#,#lujmc#,#fahd#,#zhizlx#,#waibms#,#wjianglms#,#wshengxsj#,#gongyfe#，#zhidgys#,#jiaofm#,#beihzq#,#yunszq#,#gcbh#,#xiehztbh#,#songhpc#,#beihsjc#,#mudd#,
+		 #dinghck#,#mos2#,#jianglms2#,#shengxsj2#,#cangkshpc2#,#cangkshsj2#,#cangkfhsj2#,#beihsj2#,#ibeihsj2#,#pbeihsj2#,
+		 #xianbck#,#mos#,#jianglms#,#shengxsj#,#cangkshpc#,#cangkshsj#,#cangkfhsj#,#beihsj#,#ibeihsj#,#pbeihsj#,
+		 #creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	
+	
+	<delete id="deleteWullj" parameterClass="com.athena.ckx.entity.carry.CkxWullj">
+		delete from ${dbSchemal3}ckx_wullj where 1=1
+	</delete>
+	
+	<!-- 生成物流路径总图 -->
+	<insert id="addWullj" parameterClass="java.util.Map">
+	
+	insert into   ${dbSchemal3}ckx_wullj (
+   	  usercenter,lingjbh,fenpqh,wulgyyz,shengcxbh,mos,jianglms,shengxsj,cangkshpc,cangkshsj,cangkfhsj,beihsj,ibeihsj,pbeihsj,xianbck,wulgyyz1
+     ,gongysbh,gongyfe,fenzxh
+     ,mos2,jianglms2,shengxsj2,cangkshpc2,cangkshsj2,cangkfhsj2,beihsj2,ibeihsj2,pbeihsj2,dinghck,wulgyyz2,dinghcklx
+     ,waibms,wjianglms,wshengxsj,zhidgys
+     ,lujbh,lujmc,fahd,mudd,jiaofm,beihzq,yunszq,zhizlx,gongyslx
+     ,xiehztbh
+     ,gcbh
+     ,songhpc
+     ,beihsjc
+     ,creator,create_Time,editor,edit_Time
+	)  
+	select 
+    n1.usercenter ,n1.lingjbh,n1.fenpqh,n1.wulgyyz_f,n1.shengcxbh,n1.mos,n1.jianglms,n1.jianglmssxsj,n1.cangkshpcf,n1.cangkshsj,n1.cangkfhsj,n1.beihsj,n1.ibeihsj,n1.pbeihsj,n1.qid xianbk,n1.wulgyyz_x
+     ,n1.gongysbh,n1.gongyfe,n1.fenzxh
+     ,n2.mos mos2,n2.jianglms jianglms2 ,n2.jianglmssxsj jianglmssxsj2,n2.cangkshpcf cangkshpcf2,n2.cangkshsj cangkshsj2,n2.cangkfhsj cangkfhsj2,n2.beihsj beihsj2,n2.ibeihsj ibeihsj2,n2.pbeihsj pbeihsj2,n2.qid dinghk,n2.wulgyyz_d,n2.cangklx_d
+     ,wm.MOS wMOS,wm.jianglms jianglms3,wm.shengxsj,wm.zhidgys
+     ,w.lujbh,w.lujmc,w.fahd,w.mudd,w.jiaofm,w.beihzq,w.panysj ,w.gonghlx,w.leix
+     ,xhzt.xiehztbh
+     ,wld.gcbh
+     ,g.shijpc
+     ,xie.beihsj beihsjc
+	,#creator#,sysdate,#creator#,sysdate
+   from (
+    <!--内部物流1 子仓库中是6位仓库编码，与仓库循环时间中的仓库编码匹配-->
+      select  s.lingjbh, s.fenpqh,f.shengcxbh, s.mos,s.jianglms,s.jianglmssxsj
+      ,lj.usercenter
+       ,lg.gongysbh,lg.gongyfe
+       ,lc.cangkbh qid,lc.cangkbh||lc.zickbh zick
+      , c.cangkbh,c.cangkshpcf,c.cangkshsj,c.cangkfhsj,c.beihsj,c.ibeihsj,c.pbeihsj
+      ,ck.wulgyyz wulgyyz_x,f.wulgyyz wulgyyz_f,f.fenzxh
+     
+      from ${dbSchemal3}ckx_shengcx_xianb s 
+      
+
+      <!--关联零件表，只取有效的零件-->
+	  inner join ${dbSchemal3}ckx_lingj lj on lj.usercenter=s.usercenter and lj.lingjbh=s.lingjbh  and lj.biaos='1'
+    <!-- 查询出有效的零件的供应商 -->
+    inner join  ${dbSchemal3}ckx_lingjgys lg 
+    on  s.usercenter=lg.usercenter and s.lingjbh=lg.lingjbh  and lg.biaos='1'
+  
+  <!--通过零件仓库关联出线边库的子仓库-->
+      inner join ${dbSchemal3}ckx_lingjck lc
+      on s.usercenter=lc.usercenter and s.lingjbh=lc.lingjbh and s.qid=lc.cangkbh
+
+    <!--仓库  （线边库物流工艺员组）-->
+      inner join ${dbSchemal3}ckx_cangk ck
+    on s.usercenter=ck.usercenter and s.qid=ck.cangkbh
+      <!--关联出仓库循环时间-->
+      LEFT join ${dbSchemal3}ckx_cangkxhsj c 
+      on s.usercenter = c.usercenter and s.mos = c.mos and s.fenpqh=c.fenpqhck and lc.cangkbh||lc.zickbh = c.cangkbh 
+      
+      <!--分配区  （物流工艺员组，分装线号）-->
+      left join ${dbSchemal3}ckx_fenpq f
+      on s.usercenter=f.usercenter and s.fenpqh=f.fenpqh
+      
+   ) n1  left join (
+    <!-- 内部物流2  仓库循环时间中的【分配区/仓库】存放的6位仓库编码，所以与内部物流2的线边库匹配时需要截取3位（内部物流2的线边库为3位） -->
+    select x1.* 
+    ,ck.wulgyyz wulgyyz_d,ck.cangklx cangklx_d
+       ,c.cangkbh ,c.cangkshpcf,c.cangkshsj,c.cangkfhsj,c.beihsj,c.ibeihsj,c.pbeihsj
+      
+      from (
+    <!--获取线边库，定货库及其子仓库-->
+      select x.usercenter,x.lingjbh,x.xianbk ,x.qid,x.mos,x.jianglms,x.jianglmssxsj
+        ,(select lc.cangkbh||lc.zickbh from ${dbSchemal3}ckx_lingjck lc where lc.usercenter=x.usercenter and x.xianbk=lc.cangkbh and x.lingjbh=lc.lingjbh) xzk
+        ,(select lc.cangkbh||lc.zickbh from ${dbSchemal3}ckx_lingjck lc where lc.usercenter=x.usercenter and x.qid=lc.cangkbh and x.lingjbh=lc.lingjbh) dzk
+        from ${dbSchemal3}Ckx_Xianb_Dingh x  ) x1
+  <!--仓库  （订货库物流工艺员组，定货库类型）-->
+    inner join ${dbSchemal3}ckx_cangk ck
+    on x1.usercenter=ck.usercenter and x1.qid=ck.cangkbh
+    <!--关联仓库循环时间-->
+    LEFT join ${dbSchemal3}ckx_cangkxhsj c
+    on x1.usercenter = c.usercenter and x1.mos = c.mos  and  x1.xzk = c.fenpqhck  and x1.dzk = c.cangkbh 
+         
+   ) n2
+  <!-- 内部物流1关联内部物流2  （原则：同用户中心下的同一个零件只有一个仓库，故物流1的循环起点=物流2的线边库,只需取仓库前3位）-->
+  on n1.usercenter = n2.usercenter and n1.lingjbh = n2.lingjbh and n1.qid = n2.xianbk
+  
+
+
+
+  <!-- 外部物流   外部物流的目的地是内部物流的起点 -->
+  inner join(
+    select wl.*, gcy.leix,gcy.gonghlx
+    from  ${dbSchemal3}ckx_waibwl wl 
+    left join  ${dbSchemal3}ckx_gongys gcy  on gcy.usercenter=wl.usercenter and gcy.gcbh=wl.gongysbh 
+  ) w on n1.usercenter=w.usercenter and n1.gongysbh=w.gongysbh  and case when n2.qid is null then n1.qid else n2.qid end=w.mudd
+ <!-- 零件仓库 :获取卸货站台编号 -->
+  left join ${dbSchemal3}ckx_lingjck l 
+  on w.usercenter=l.usercenter and n1.lingjbh=l.lingjbh and w.mudd=l.cangkbh 
+  <!--根据卸货站台取卸货站台组的编号-->
+  inner join ${dbSchemal3}ckx_xiehzt xhzt
+  on l.xiehztbh=xhzt.xiehztbh and l.usercenter=xhzt.usercenter and xhzt.biaos='1'
+  <!-- 外部模式  与物流路径1匹配 -->
+  left join   ${dbSchemal3}ckx_waibms wm
+  on n1.usercenter = wm.usercenter and  n1.lingjbh=wm.lingjbh and n1.fenpqh=wm.fenpqh
+  left join (
+    <!-- 每条外部物流路径最后一个物理点的承运商编号 -->
+    select w.lujbh,wx.gcbh
+    from  ${dbSchemal3}ckx_waibwl w , ${dbSchemal3}ckx_waibwlxx wx
+    where w.lujbh=wx.lujbh and xuh=(select  max(xuh) from  ${dbSchemal3}ckx_waibwlxx group by lujbh having lujbh=w.lujbh) and w.usercenter=wx.usercenter
+    group by w.lujbh,wx.gcbh<!-- 在外部路径表中路径编号可能重复，必须group -->
+  ) wld on w.lujbh=wld.lujbh
+  
+    
+  <!-- 送货频次  使用卸货站台编组号关联-->
+  left join  ${dbSchemal3}ckx_gongys_chengys_xiehzt g
+  on xhzt.xiehztbzh=g.xiehztbh and wld.gcbh=g.gcbh and xhzt.usercenter=g.usercenter
+  <!-- 卸货站台循环时间   取备货时间C   -->
+  left join  ${dbSchemal3}ckx_xiehztxhsj xie
+  on xhzt.usercenter=xie.usercenter 
+  and n1.zick =xie.cangkbh <!--仓库只取线边库-->
+  and case when n2.mos is null then wm.mos else n2.mos end =xie.mos<!--模式取定货库模式或外部模式-->
+  and xhzt.xiehztbzh=xie.xiehztbh<!--此处关联改为取卸货站台组的编号-->
+	</insert>
+	
+	<!-- 生效物流路径(从临时表生效) -->
+	<insert id="effectiveWullj" parameterClass="java.util.Map">
+	insert into ${dbSchemal3}ckx_wullj (
+		usercenter, fenpqh, lingjbh, gongysbh, shengcxbh, 
+		lujbh, lujmc, fahd, waibms, wjianglms, wshengxsj, gongyfe, zhidgys, jiaofm, beihzq, yunszq, gcbh, xiehztbh, songhpc, beihsjc, mudd, 
+		dinghck, mos2, jianglms2, shengxsj2, cangkshpc2, cangkshsj2, cangkfhsj2, beihsj2, ibeihsj2, pbeihsj2,
+		xianbck, mos, jianglms, shengxsj, cangkshpc, cangkshsj, cangkfhsj, beihsj, ibeihsj, pbeihsj, zhizlx, 
+		gongyslx, dinghcklx, wulgyyz2, wulgyyz1, wulgyyz,
+		 creator,create_Time,editor,edit_Time)
+	select 
+		usercenter, fenpqh, lingjbh, gongysbh, shengcxbh, 
+		lujbh, lujmc, fahd, waibms, wjianglms, wshengxsj, gongyfe, zhidgys, jiaofm, beihzq, yunszq, gcbh, xiehztbh, songhpc, beihsjc, mudd, 
+		dinghck, mos2, jianglms2, shengxsj2, cangkshpc2, cangkshsj2, cangkfhsj2, beihsj2, ibeihsj2, pbeihsj2,
+		xianbck, mos, jianglms, shengxsj, cangkshpc, cangkshsj, cangkfhsj, beihsj, ibeihsj, pbeihsj, zhizlx, 
+		gongyslx, dinghcklx, wulgyyz2, wulgyyz1, wulgyyz ,
+		#creator#,sysdate,#creator#,sysdate
+	from ${dbSchemal3}ckx_wullj_temp
+		
+	</insert>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 查询总表(临时表) -->
+	<select id="queryCkxWulljTemp" resultClass="com.athena.ckx.entity.carry.CkxWullj">select 
+	 	 usercenter,fenpqh,lingjbh,gongysbh,shengcxbh,
+		 lujbh,lujmc,fahd,zhizlx,waibms,wjianglms,wshengxsj,gongyfe，zhidgys,jiaofm,beihzq,yunszq,gcbh,xiehztbh,songhpc,beihsjc,mudd,
+		 dinghck,mos2,jianglms2,shengxsj2,cangkshpc2,cangkshsj2,cangkfhsj2,beihsj2,ibeihsj2,pbeihsj2,
+		 xianbck,mos,jianglms,shengxsj,cangkshpc,cangkshsj,cangkfhsj,beihsj,ibeihsj,pbeihsj,
+		 GONGYSLX,DINGHCKLX,WULGYYZ2,WULGYYZ1,WULGYYZ,
+		 creator,create_Time,editor,edit_Time
+		 from ${dbSchemal3}ckx_wullj_temp where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="fenpqh">fenpqh = #fenpqh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysbh">gongysbh = #gongysbh#</isNotEmpty>
+			
+			<isNotEmpty prepend="  and " property="lujbh">lujbh = #lujbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="waibms">waibms = #waibms#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="mudd">mudd = #mudd#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dinghck">dinghck = #dinghck#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xianbck">xianbck = #xianbck#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shengcxbh">shengcxbh = #shengcxbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="mos">mos = #mos#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="mos2">mos2 = #mos2#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zhizlx">zhizlx = #zhizlx#</isNotEmpty>
+		</dynamic>
+		<!-- 排序 mantis 6200 -->
+		order by usercenter,lingjbh,fenpqh,gongysbh
+	</select>
+	
+	<select id="checkTemp" resultClass="java.lang.String">
+		select decode(t.usercenter, null, ',usercenter')||
+			decode(t.gongysbh, null, ',gongysbh')||
+			decode(t.xianbck, null, ',xianbck')||
+			decode(t.wulgyyz1, null, ',wulgyyz1')||
+			decode(t.lujbh, null, ',lujbh')||
+			decode(t.xiehztbh, null, ',xiehztbh') mes
+  		from ${dbSchemal3}ckx_wullj_temp t
+		where usercenter = #usercenter# 
+	 		and fenpqh = #fenpqh# 
+			and  lingjbh = #lingjbh# 
+			and gongysbh = #gongysbh#
+	</select>
+	
+	
+	<!-- 生成物流路径总图 -->
+	<insert id="addWulljTemp" parameterClass="java.util.Map">
+	
+	insert into   ${dbSchemal3}ckx_wullj_temp (
+   	  usercenter,lingjbh,fenpqh,wulgyyz,shengcxbh,mos,jianglms,shengxsj,cangkshpc,cangkshsj,cangkfhsj,beihsj,ibeihsj,pbeihsj,xianbck,wulgyyz1
+     ,gongysbh,gongyfe,fenzxh
+     ,mos2,jianglms2,shengxsj2,cangkshpc2,cangkshsj2,cangkfhsj2,beihsj2,ibeihsj2,pbeihsj2,dinghck,wulgyyz2,dinghcklx
+     ,waibms,wjianglms,wshengxsj,zhidgys
+     ,lujbh,lujmc,fahd,mudd,jiaofm,beihzq,yunszq,zhizlx,gongyslx
+     ,xiehztbh
+     ,gcbh
+     ,songhpc
+     ,beihsjc
+     ,creator,create_Time,editor,edit_Time
+	)  
+	select 
+    n1.usercenter ,n1.lingjbh,n1.fenpqh,n1.wulgyyz_f,n1.shengcxbh,n1.mos,n1.jianglms,n1.jianglmssxsj,n1.cangkshpcf,n1.cangkshsj,n1.cangkfhsj,n1.beihsj,n1.ibeihsj,n1.pbeihsj,n1.qid xianbk,n1.wulgyyz_x
+     ,n1.gongysbh,n1.gongyfe,n1.fenzxh
+     ,n2.mos mos2,n2.jianglms jianglms2 ,n2.jianglmssxsj jianglmssxsj2,n2.cangkshpcf cangkshpcf2,n2.cangkshsj cangkshsj2,n2.cangkfhsj cangkfhsj2,n2.beihsj beihsj2,n2.ibeihsj ibeihsj2,n2.pbeihsj pbeihsj2,n2.qid dinghk,n2.wulgyyz_d,n2.cangklx_d
+     ,wm.MOS wMOS,wm.jianglms jianglms3,wm.shengxsj,wm.zhidgys
+     ,w.lujbh,w.lujmc,w.fahd,w.mudd,w.jiaofm,w.beihzq,w.panysj ,w.gonghlx,w.leix
+     ,xhzt.xiehztbh
+     ,wld.gcbh
+     ,g.shijpc
+     ,xie.beihsj beihsjc
+	,#creator#,sysdate,#creator#,sysdate
+   from (
+    <!--内部物流1 子仓库中是6位仓库编码，与仓库循环时间中的仓库编码匹配-->
+      select  s.lingjbh, s.fenpqh,s.shengcxbh, s.mos,s.jianglms,s.jianglmssxsj
+      ,lj.usercenter
+       ,lg.gongysbh,lg.gongyfe
+       ,lc.cangkbh qid,lc.cangkbh||lc.zickbh zick
+      , c.cangkbh,c.cangkshpcf,c.cangkshsj,c.cangkfhsj,c.beihsj,c.ibeihsj,c.pbeihsj
+      ,ck.wulgyyz wulgyyz_x,f.wulgyyz wulgyyz_f,f.fenzxh
+     
+      from ${dbSchemal3}ckx_shengcx_xianb s 
+      
+
+      <!--关联零件表，只取有效的零件-->
+	  left join ${dbSchemal3}ckx_lingj lj on lj.usercenter=s.usercenter and lj.lingjbh=s.lingjbh  and lj.biaos='1'
+    <!-- 查询出有效的零件的供应商 -->
+    left join  ${dbSchemal3}ckx_lingjgys lg 
+    on  s.usercenter=lg.usercenter and s.lingjbh=lg.lingjbh  and lg.biaos='1'
+  
+  <!--通过零件仓库关联出线边库的子仓库-->
+      left join ${dbSchemal3}ckx_lingjck lc
+      on s.usercenter=lc.usercenter and s.lingjbh=lc.lingjbh and s.qid=lc.cangkbh
+
+    <!--仓库  （线边库物流工艺员组）-->
+      left join ${dbSchemal3}ckx_cangk ck
+    on s.usercenter=ck.usercenter and s.qid=ck.cangkbh
+      <!--关联出仓库循环时间-->
+      LEFT join ${dbSchemal3}ckx_cangkxhsj c 
+      on s.usercenter = c.usercenter and s.mos = c.mos and s.fenpqh=c.fenpqhck and lc.cangkbh||lc.zickbh = c.cangkbh 
+      
+      <!--分配区  （物流工艺员组）-->
+      left join ${dbSchemal3}ckx_fenpq f
+      on s.usercenter=f.usercenter and s.fenpqh=f.fenpqh
+      
+   ) n1  left join (
+    <!-- 内部物流2  仓库循环时间中的【分配区/仓库】存放的6位仓库编码，所以与内部物流2的线边库匹配时需要截取3位（内部物流2的线边库为3位） -->
+    select x1.* 
+    ,ck.wulgyyz wulgyyz_d,ck.cangklx cangklx_d
+       ,c.cangkbh ,c.cangkshpcf,c.cangkshsj,c.cangkfhsj,c.beihsj,c.ibeihsj,c.pbeihsj
+      
+      from (
+    <!--获取线边库，定货库及其子仓库-->
+      select x.usercenter,x.lingjbh,x.xianbk ,x.qid,x.mos,x.jianglms,x.jianglmssxsj
+        ,(select lc.cangkbh||lc.zickbh from ${dbSchemal3}ckx_lingjck lc where lc.usercenter=x.usercenter and x.xianbk=lc.cangkbh and x.lingjbh=lc.lingjbh) xzk
+        ,(select lc.cangkbh||lc.zickbh from ${dbSchemal3}ckx_lingjck lc where lc.usercenter=x.usercenter and x.qid=lc.cangkbh and x.lingjbh=lc.lingjbh) dzk
+        from ${dbSchemal3}Ckx_Xianb_Dingh x  ) x1
+  <!--仓库  （订货库物流工艺员组，定货库类型）-->
+    left join ${dbSchemal3}ckx_cangk ck
+    on x1.usercenter=ck.usercenter and x1.qid=ck.cangkbh
+    <!--关联仓库循环时间-->
+    LEFT join ${dbSchemal3}ckx_cangkxhsj c
+    on x1.usercenter = c.usercenter and x1.mos = c.mos  and  x1.xzk = c.fenpqhck  and x1.dzk = c.cangkbh 
+         
+   ) n2
+  <!-- 内部物流1关联内部物流2  （原则：同用户中心下的同一个零件只有一个仓库，故物流1的循环起点=物流2的线边库,只需取仓库前3位）-->
+  on n1.usercenter = n2.usercenter and n1.lingjbh = n2.lingjbh and n1.qid = n2.xianbk
+  
+
+
+
+  <!-- 外部物流   外部物流的目的地是内部物流的起点 -->
+  left join(
+    select wl.*, gcy.leix,gcy.gonghlx
+    from  ${dbSchemal3}ckx_waibwl wl 
+    left join  ${dbSchemal3}ckx_gongys gcy  on gcy.usercenter=wl.usercenter and gcy.gcbh=wl.gongysbh 
+  ) w on n1.usercenter=w.usercenter and n1.gongysbh=w.gongysbh  and case when n2.qid is null then n1.qid else n2.qid end=w.mudd
+ <!-- 零件仓库 :获取卸货站台编号 -->
+  left join ${dbSchemal3}ckx_lingjck l 
+  on w.usercenter=l.usercenter and n1.lingjbh=l.lingjbh and w.mudd=l.cangkbh 
+  <!--根据卸货站台取卸货站台组的编号-->
+  left join ${dbSchemal3}ckx_xiehzt xhzt
+  on l.xiehztbh=xhzt.xiehztbh and l.usercenter=xhzt.usercenter and xhzt.biaos='1'
+  <!-- 外部模式  与物流路径1匹配 -->
+  left join   ${dbSchemal3}ckx_waibms wm
+  on n1.usercenter = wm.usercenter and  n1.lingjbh=wm.lingjbh and n1.fenpqh=wm.fenpqh
+  left join (
+    <!-- 每条外部物流路径最后一个物理点的承运商编号 -->
+    select w.lujbh,wx.gcbh
+    from  ${dbSchemal3}ckx_waibwl w , ${dbSchemal3}ckx_waibwlxx wx
+    where w.lujbh=wx.lujbh and xuh=(select  max(xuh) from  ${dbSchemal3}ckx_waibwlxx group by lujbh having lujbh=w.lujbh) and w.usercenter=wx.usercenter
+    group by w.lujbh,wx.gcbh<!-- 在外部路径表中路径编号可能重复，必须group -->
+  ) wld on w.lujbh=wld.lujbh
+  
+    
+  <!-- 送货频次  使用卸货站台编组号关联-->
+  left join  ${dbSchemal3}ckx_gongys_chengys_xiehzt g
+  on xhzt.xiehztbzh=g.xiehztbh and wld.gcbh=g.gcbh and xhzt.usercenter=g.usercenter
+  <!-- 卸货站台循环时间   取备货时间C   -->
+  left join  ${dbSchemal3}ckx_xiehztxhsj xie
+  on xhzt.usercenter=xie.usercenter 
+  and n1.zick =xie.cangkbh <!--仓库只取线边库-->
+  and case when n2.mos is null then wm.mos else n2.mos end =xie.mos<!--模式取定货库模式或外部模式-->
+  and xhzt.xiehztbzh=xie.xiehztbh<!--此处关联改为取卸货站台组的编号-->
+	</insert>
+	
+	
+	<delete id="deleteWulljTemp" parameterClass="com.athena.ckx.entity.carry.CkxWullj">
+		delete from ${dbSchemal3}ckx_wullj_temp where 1=1
+	</delete>
+	
+	<!-- 查询消耗点模式是否看板 -->
+	<select id="checkXiaohdmssfkb" resultClass="com.athena.ckx.entity.carry.CkxWullj">
+	select distinct usercenter,lingjbh,fenpqh,mos 
+	from ${dbSchemal3}ckx_wullj t 
+	where  
+		usercenter = #usercenter#		and lingjbh = #lingjbh#		and fenpqh = #fenpqh#
+		order by usercenter,lingjbh,fenpqh
+	</select>
+	<!-- 查询仓库模式是否看板 -->
+	<select id="checkcangkmssfkb" resultClass="com.athena.ckx.entity.carry.CkxWullj">
+		select  distinct  usercenter,lingjbh,mudd,mos from (
+		select distinct  usercenter,lingjbh,decode(t.dinghck,#xianbck#,t.dinghck,t.xianbck) mudd
+		            ,decode(t.dinghck,#xianbck#,t.waibms,t.mos2) mos 
+		from ${dbSchemal3}ckx_wullj t 
+		where t.usercenter=#usercenter# and t.lingjbh=#lingjbh# 
+		    and decode(t.dinghck,#xianbck#,t.dinghck,t.xianbck)=#xianbck# 
+		    and t.dinghck is not null
+		union all
+		select distinct  usercenter,lingjbh,t.xianbck,t.waibms mos 
+		from ${dbSchemal3}ckx_wullj t 
+		where t.usercenter=#usercenter# and t.lingjbh=#lingjbh# 
+		       and t.xianbck=#xianbck# and t.dinghck is  null
+		)
+	</select>
+	
+	<!-- 查询对于周期零件不齐的内部物流信息和物流路径信息进行补充 -->
+	<select id="queryWulljscxxb" resultClass="com.athena.ckx.entity.carry.CkxWullj">
+		select lingjbh,gcbh,usercenter,mudd,biaos,fenpqh,gonghlx,lujbh,lujmc,fahd,jiaofm,beihzq,panysj,gongyfe,chengysbh,xiehztbh,cangkbh
+  		from (select row_number() over(partition by usercenter, lingjbh,gonghlx order by usercenter, lingjbh,gonghlx desc) rn,
+               kb.*
+          from (
+          select distinct zb.lingjbh,zb.gcbh,zb.usercenter,zb.mudd,zb.biaos,zb.fenpqh,zb.gonghlx,zb.lujbh,zb.lujmc,zb.fahd,zb.jiaofm,zb.beihzq,zb.panysj,zb.gongyfe,zb.chengysbh,zb.xiehztbh,zb.cangkbh
+		from (select distinct sd.lingjbh,sd.gcbh,sd.usercenter,sd.mudd,sd.biaos,wj.fenpqh,sd.gonghlx,sd.lujbh,sd.lujmc,sd.fahd,sd.jiaofm,sd.beihzq,sd.panysj,sd.gongyfe,sd.chengysbh,sd.xiehztbh,sd.cangkbh
+		from (select distinct lj.lingjbh,ds.gcbh,lj.usercenter,ds.mudd,lj.biaos,ds.gonghlx,ds.lujbh,ds.lujmc,ds.fahd,ds.jiaofm,ds.beihzq,ds.panysj,ds.gongyfe,ds.chengysbh,ck.xiehztbh,ck.cangkbh
+		from (select distinct s.lingjbh,gs.gcbh,wb.usercenter,wb.mudd,gs.gonghlx,wb.lujbh,wb.lujmc,wb.fahd,wb.jiaofm,wb.beihzq,wb.panysj,s.gongyfe,wb.chengysbh
+		from ${dbSchemal3}ckx_waibwl wb
+		left join ${dbSchemal3}ckx_lingjgys s on wb.usercenter = s.usercenter
+		and wb.gongysbh = s.gongysbh and  s.biaos = '1'
+		left join ${dbSchemal3}ckx_gongys gs on s.usercenter=gs.usercenter and s.gongysbh = gs.gcbh and gs.biaos='1') ds
+		left join ${dbSchemal3}ckx_lingj lj on ds.usercenter = lj.usercenter
+		and ds.lingjbh = lj.lingjbh
+		join ${dbSchemal3}ckx_lingjck ck on ds.usercenter = ck.usercenter
+		and ds.mudd = ck.cangkbh
+		and ds.lingjbh = ck.lingjbh
+		where lj.biaos = '1') sd
+		left join ${dbSchemal3}ckx_wullj wj on sd.usercenter = wj.usercenter
+		and sd.lingjbh = wj.lingjbh
+		and sd.gcbh = wj.gongysbh
+		and sd.mudd = wj.mudd) zb
+  		where zb.fenpqh is null 
+                 ) kb
+        	) t
+ 		where t.rn = 1
+
+	</select>
+	
+	<delete id="deleteXulwulljbywaibms" parameterClass="com.athena.ckx.entity.carry.CkxWullj">
+		delete  from ${dbSchemal3}ckx_waibms t where t.fenpqh like '%97%'
+	</delete>
+	
+	<delete id="deleteXulwulljbyshengcxxb" parameterClass="com.athena.ckx.entity.carry.CkxWullj">
+		delete   from ${dbSchemal3}ckx_shengcx_xianb t where t.fenpqh like '%97%' and  t.shengcxbh like '%XLX'
+	</delete>
+	
+	<delete id="deleteXulwulljbywullj" parameterClass="com.athena.ckx.entity.carry.CkxWullj">
+		delete from ${dbSchemal3}ckx_wullj t where  t.fenpqh like '%97%' and  t.shengcxbh like '%XLX'
+	</delete>
+	
+</sqlMap>

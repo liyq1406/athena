@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="common">
+
+	<resultMap class="com.athena.xqjs.entity.common.Gongyzx" id="Gongyzx">
+		<result column="GONGYZX" property="gongyzx" />
+		<result column="KAISSJ" property="kaissj" />
+		<result column="JIESSJ" property="jiessj" />
+	</resultMap>
+
+	
+	<select id="queryTimeZx" resultClass="com.athena.xqjs.entity.common.Gongyzx"  >
+		SELECT 
+			gongyzx,
+			kaissj,
+			jiessj 
+		FROM 
+			${dbSchemal3}CKX_CALENDAR_GONGYZX
+		WHERE 
+		    1=1
+			<dynamic >
+			        <isNotEmpty prepend=" and " property="gongyzx"><![CDATA[gongyzx = #gongyzx# ]]></isNotEmpty>
+			        <isNotEmpty prepend=" and " property="rq"><![CDATA[#rq# between kaissj  and jiessj ]]></isNotEmpty>
+				    <isNotEmpty prepend=" and " property="kaissj">
+					<![CDATA[#kaissj# >= kaissj]]>
+				    </isNotEmpty>
+				    <isNotEmpty prepend=" and " property="kssj">
+					<![CDATA[(kaissj <= #kssj# and jiessj>=#kssj#) or kaissj >= #kssj#]]>
+				    </isNotEmpty>
+				    
+					<isNotEmpty prepend=" and " property="jiessj">
+						<![CDATA[#jiessj# <= jiessj]]>
+					</isNotEmpty>
+			        <isNotEmpty prepend=" and " property="apointzx"><![CDATA[gongyzx >= #apointzx# ]]></isNotEmpty>
+			</dynamic>
+            ORDER BY GONGYZX
+  	</select>
+  	
+  	<select id="queryVTimeZx" resultClass="com.athena.xqjs.entity.common.Gongyzx"  parameterClass="java.util.Map">
+		select min(t.riq) as kaissj, 
+		       max(t.riq) as jiessj, 
+		       t.nianzx as gongyzx
+  		  from ${dbSchemal3}CKX_CALENDAR_VERSION t
+ 		  where     t.banc = #rilbc#
+ 				and t.usercenter = #usercenter#
+	  			<dynamic>
+			         <isNotEmpty prepend=" and "   property="riq">riq=#riq#</isNotEmpty>
+			 	</dynamic>
+				 group by t.nianzx
+				 order by t.nianzx
+  	</select>
+  	
+  	
+
+</sqlMap>

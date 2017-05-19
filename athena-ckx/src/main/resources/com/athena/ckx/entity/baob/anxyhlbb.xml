@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="gbk"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- V4_041 -->
+<sqlMap namespace="ts_ckx">
+	<select id="queryAnxyhlbb" parameterClass="com.athena.ckx.entity.baob.Anxbb" resultClass="com.athena.ckx.entity.baob.Anxbb">
+		select factory,yaohllx,flag,shul,jihgcsl,tongjrq
+			from ${dbSchemal3}CK_ANXYHLBB
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="gongc"> <![CDATA[factory = #gongc#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="flag"> <![CDATA[flag = #flag#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="tongjrq"> <![CDATA[tongjrq = to_date(#tongjrq#,'YYYY-MM-DD')]]></isNotEmpty>
+		</dynamic>
+		order by tongjrq,yaohllx
+	</select>
+	<select id="getAnxyhl1" resultClass="com.athena.ckx.entity.baob.Anxbb">
+	 select sum(t.shul) as shul, t.yaohllx as yaohllx, t.tongjrq as tongjrq
+		  from ck_anxyhlbb t
+ 		where t.flag = '0'
+  		 and t.tongjrq > trunc(sysdate - 10)
+		 group by t.yaohllx, t.tongjrq
+ 		order by t.tongjrq, t.yaohllx
+	</select>
+	
+	<select id="queryrqyear" parameterClass="com.athena.ckx.entity.baob.Anxbb" resultClass="java.lang.String">
+		  select s.tongjrq as tongjrq
+  			from (select t.tongjrq from ck_anxyhlbb t where 1=1
+         	and t.flag = #flag#
+         	and t.factory=#factory#
+         	group by t.tongjrq
+  			order by t.tongjrq desc ) s
+ 			where <![CDATA[ rownum <= 15]]>
+ 		    group by s.tongjrq
+ 			order by s.tongjrq
+	</select>
+	
+	<select id="queryrq" parameterClass="com.athena.ckx.entity.baob.Anxbb" resultClass="java.lang.String">
+		  select substr(to_char(s.tongjrq,'YYYY-MM-DD'),6) as tongjrq
+  			from (select t.tongjrq from ck_anxyhlbb t where 1=1
+			and t.flag=#flag#
+			and t.factory=#factory#
+			group by t.tongjrq
+  			order by t.tongjrq desc ) s
+ 			where <![CDATA[ rownum <= 15]]>
+ 		    group by s.tongjrq
+ 			order by s.tongjrq
+	</select>
+	
+	
+	
+	<select id="querylx" parameterClass="com.athena.ckx.entity.baob.Anxbb" resultClass="java.lang.String">
+		select s.yaohllx as yaohllx
+  			from (select * from ck_anxyhlbb t where 1=1
+  			and t.flag=#flag#
+  			and t.factory=#factory#
+  			order by t.tongjrq desc) s
+ 			where <![CDATA[ rownum <=15]]>
+ 		    group by s.yaohllx
+ 			order by s.yaohllx
+	</select>
+	
+	<select id="querynum" parameterClass="com.athena.ckx.entity.baob.Anxbb" resultClass="com.athena.ckx.entity.baob.Anxbb">
+	 select nvl(t.shul,0) as shul
+		  from ck_anxyhlbb t
+ 		where 1=1
+ 		 	<dynamic> 
+				<isNotEmpty prepend=" and " property="flag"> <![CDATA[flag = #flag#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="yaohllx"> <![CDATA[yaohllx = #yaohllx#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="factory"> <![CDATA[factory = #factory#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="tongjrq"> <![CDATA[tongjrq = to_date(#tongjrq#,'YYYY-MM-DD')]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<select id="queryjihsl" parameterClass="com.athena.ckx.entity.baob.Anxbb" resultClass="com.athena.ckx.entity.baob.Anxbb">
+	 select decode(#biaos#,'0',nvl(t.shul,0),nvl(t.jihgcsl,0)) as shul
+		  from ck_anxyhlbb t
+ 		where 1=1
+ 		 	<dynamic> 
+				<isNotEmpty prepend=" and " property="flag"> <![CDATA[flag = #flag#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="factory"> <![CDATA[factory = #factory#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="tongjrq"> <![CDATA[tongjrq = to_date(#tongjrq#,'YYYY-MM-DD')]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="yaohllx"> <![CDATA[yaohllx = #yaohllx#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<select id="queryFactory" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		select t1.factory as KEY,t1.factory as VALUE
+		from ckx_anxjccssz t, ck_anxyhlbb t1 where t.gongc = t1.factory
+		 and t.usercenter = #usercenter#
+         group by t1.factory
+	</select>
+	
+</sqlMap>

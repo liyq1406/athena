@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+<!--rencong 0011937 -->	
+	<select id="queryDfpvfhtzd" parameterClass="com.athena.ckx.entity.baob.Dfpvfhtzd" resultClass="com.athena.ckx.entity.baob.Dfpvfhtzd">
+	select a.lingjbh,
+       b.blh,
+       b.tch,
+       a.lingjsl,
+       a.dingdh,
+       b.blscsj,
+       b.cangkbh,
+       a.uarl,
+       a.gongysdm,
+       a.yaohlh,
+       b.usercenter,
+       b.uth,
+       b.shiftb,
+       b.psasj,
+       decode(b.zhuangt, '2', '在途', '4', '已验收') as zhuangt
+  from CK_UABQ_DFPV a, CK_DAOHTZD_DFPV b
+ where b.usercenter = a.usercenter
+   AND b.UTH = a.UTH
+   AND (b.shiftb = 0
+    OR b.shiftb IS NULL)
+   
+   <isNotEmpty prepend=" and " property="usercenter"> <![CDATA[b.usercenter = #usercenter#]]></isNotEmpty>
+   <isNotEmpty prepend=" and " property="blh"> <![CDATA[b.blh = #blh#]]></isNotEmpty>
+   <isNotEmpty prepend=" and " property="tch"> <![CDATA[b.tch = #tch#]]></isNotEmpty>
+   <isNotEmpty prepend=" and " property="psasj_from">  <![CDATA[b.psasj between to_date(#psasj_from#,'yyyy-MM-dd hh24:mi:ss') and to_date(#psasj_to#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+   <isNotEmpty prepend=" and " property="gongysdm"> <![CDATA[a.gongysdm = #gongysdm#]]></isNotEmpty>
+   <isNotEmpty prepend=" and " property="blscsj_from">  <![CDATA[b.blscsj between to_date(#blscsj_from#,'yyyy-MM-dd hh24:mi:ss') and to_date(#blscsj_to#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+   <isNotEmpty prepend=" and " property="lingjbh"> <![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>  
+	</select>
+</sqlMap>

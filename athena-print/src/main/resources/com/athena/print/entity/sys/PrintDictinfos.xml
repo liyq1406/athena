@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sys">
+	
+	<!--查询单据初始化信息-->
+	<select id="queryPrintDictinfos" resultClass="com.athena.print.entity.sys.PrintDictinfos">
+		select * from 
+		(select c.usercenter,c.zidbm,c.zidmc,c.danjzbh,1 as biaos,fuwbh from ${dbSchemal3}ckx_print_dictinfos c where c.usercenter = #usercenter#
+		<dynamic>
+			<isNotEmpty prepend="  and " property="zidbm">c.zidbm = #zidbm#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zidmc">c.zidmc like #zidmc#||'%'</isNotEmpty>
+		</dynamic>
+		union
+		select t.usercenter,t.zidbm,t.zidmc,''as danjzbh, 0 as biaos,''as fuwbh from ${dbSchemal3}ckx_print_djlx t
+		where t.usercenter =#usercenter#
+		<dynamic>
+			<isNotEmpty prepend="  and " property="zidbm">t.zidbm = #zidbm#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zidmc">t.zidmc like #zidmc#||'%'</isNotEmpty>
+		</dynamic>
+		and not exists(select * from ${dbSchemal3}ckx_print_dictinfos c  where t.usercenter=c.usercenter and t.zidbm=c.zidbm))x
+		order by length(x.zidbm), x.zidbm
+	</select>
+	
+	
+	<select id="queryDcits" resultClass="com.athena.print.entity.sys.PrintDictinfos">
+		select t.usercenter,t.zidbm,t.zidmc, 0 as danjzbh from ${dbSchemal3}ckx_xitcsdy t 
+		where  t.zidlx='DJLX'
+		and not exists(select * from ${dbSchemal3}ckx_print_dictinfos c where t.usercenter=c.usercenter and t.zidbm=c.zidbm and t.zidmc=c.zidmc)
+	</select>
+	
+	<!--先查询出初始化表中是否有新的字典在参考系表中-->
+	<select id="deleteDcits" resultClass="com.athena.print.entity.sys.PrintDictinfos">
+		select t.usercenter,t.zidbm,t.zidmc  from ${dbSchemal3}ckx_print_dictinfos t
+		where  t.zidlx='DJLX' 
+		and not exists(select * from ${dbSchemal3}ckx_xitcsdy c where t.usercenter=c.usercenter and t.zidbm=c.zidbm and t.zidmc=c.zidmc)
+	</select>
+	
+	
+	<select id="queryPrintDictinfo" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDictinfos">
+		select  usercenter,zidbm,zidmc,danjzbh,zidlx,biaos
+		from ${dbSchemal3}ckx_print_dictinfos 
+		where usercenter=#usercenter#
+	</select>
+	
+	<select id="queryPrintDictinfos1" resultClass="com.athena.print.entity.sys.PrintDictinfos">
+		select  usercenter,zidbm,zidmc,danjzbh,zidlx,biaos
+		from ${dbSchemal3}ckx_print_dictinfos 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter=#usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zidbm">zidbm = #zidbm#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zidmc">zidmc like #zidmc#||'%'</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos = #biaos#</isNotEmpty>
+		</dynamic>
+		order by length(zidbm), zidbm
+	</select>
+	
+	<!--插入一条数据-->
+	<insert id="insertPrintDictinfos" parameterClass="com.athena.print.entity.sys.PrintDictinfos">
+		insert into
+		${dbSchemal3}ckx_print_dictinfos (usercenter,zidbm,zidmc,danjzbh,zidlx,biaos,creator,create_time)
+		values(#usercenter#,#zidbm#,#zidmc#,#danjzbh#,'DJLX','1',#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<!--插入一条数据-->
+	<insert id="insertPrintDictinfo" parameterClass="com.athena.print.entity.sys.PrintDictinfos">
+		insert into
+		${dbSchemal3}ckx_print_dictinfos (usercenter,zidbm,zidmc,danjzbh,biaos,creator,create_time)
+		values(#usercenter#,#zidbm#,#zidmc#,#danjzbh#,#biaos#,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<!--更新一条数据-->
+	<update id="updatePrintDictinfos" parameterClass="com.athena.print.entity.sys.PrintDictinfos">
+		update ${dbSchemal3}ckx_print_dictinfos set 
+		usercenter=#usercenter#,
+		zidbm=#zidbm#,
+		zidmc=#zidmc#,
+		edit_time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss'),
+		editor=#editor#,
+		danjzbh=#danjzbh#,
+		biaos = #biaos#
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zidbm">zidbm = #zidbm#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zidmc">zidmc = #zidmc#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 逻辑  删除一条数据 -->
+	<delete id="deleteDictinfos" parameterClass="com.athena.print.entity.sys.PrintDictinfos">
+		update ${dbSchemal3}ckx_print_dictinfos set
+		biaos = '0'
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zidbm">zidbm = #zidbm#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zidmc">zidmc = #zidmc#</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

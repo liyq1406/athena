@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.PostDataItem" id="PostDataItem">
+		<result column="ID" property="id" />
+		<result column="POST_CODE" property="postCode" />
+		<result column="VALUE" property="value" />
+		<result column="TEXT" property="text" />
+		<result column="DATA_ID" property="dataId" />
+		<result column="USERCENTER" property="usercenter" />
+	</resultMap>
+	
+	<!-- 多记录查询 -->
+	<select id="queryPostDataItem" resultMap="PostDataItem">select 
+		ID,
+		POST_CODE,
+		VALUE,
+		DATA_ID,
+		TEXT,
+		USERCENTER
+		from ${dbSchemal0}SYS_POST_DATA_ITEM where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="postCode">POST_ID = #postCode#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="listPostDataItemByDataId" resultMap="PostDataItem">select 
+		ID,
+		POST_CODE,
+		VALUE,
+		TEXT,
+		DATA_ID,
+		USERCENTER
+		from ${dbSchemal0}SYS_POST_DATA_ITEM where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dataId">DATA_ID = #dataId#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="postCode">POST_CODE = #postCode#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 单记录查询 -->
+	<select id="getPostDataItem" resultMap="PostDataItem">select 
+		ID,POST_CODE,
+		VALUE,TEXT,DATA_ID,USERCENTER from ${dbSchemal0}SYS_POST_DATA_ITEM where id=#ID#
+	</select>
+	
+		
+	<select id="getDataItem" resultMap="PostDataItem">select 
+		ID,POST_CODE,
+		VALUE,TEXT,DATA_ID,USERCENTER from ${dbSchemal0}SYS_POST_DATA_ITEM where
+			where VALUE=#value# and DATA_ID=#dataId#
+	</select>
+	
+	<!-- 插入记录 -->
+	<insert id="insertPostDataItem" parameterClass="com.athena.authority.entity.PostDataItem">insert into
+		${dbSchemal0}SYS_POST_DATA_ITEM (ID,POST_CODE,VALUE,TEXT,DATA_ID,USERCENTER)
+		values(
+			#id#,
+			#postCode#,
+			#value#,
+			#text#,
+			#dataId#,#usercenter#)
+	</insert>
+	<!-- 修改记录 -->
+	<update id="updatePostDataItem" parameterClass="com.athena.authority.entity.PostDataItem">
+		update ${dbSchemal0}SYS_POST_DATA_ITEM set 
+		ID=#id#,
+		VALUE=#value#,
+		TEXT=#text#,USERCENTER=#usercenter# where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	<!-- 删除记录 -->
+	<delete id="deletePostDataItem" parameterClass="com.athena.authority.entity.PostDataItem">
+		delete from ${dbSchemal0}SYS_POST_DATA_ITEM where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="postCode">POST_CODE = #postCode#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dataId">DATA_ID = #dataId#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

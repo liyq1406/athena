@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sys">
+
+	<!--查询用户组信息-->
+	<select id="queryPrintuser" resultClass="com.athena.print.entity.sys.Printuser">
+		select usercenter,userscode,users,creator,create_time,editor,edit_time,biaos
+		from ${dbSchemal3}ckx_print_users 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter=#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="userscode">userscode =#userscode#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="users">users like '%'||#users#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos=#biaos#</isNotEmpty>
+		</dynamic>
+		order by userscode
+	</select>
+	
+	<select id="queryPrintuser1" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.Printuser">
+		select usercenter,userscode,users,creator,create_time,editor,edit_time,biaos
+		from ${dbSchemal3}ckx_print_users 
+		where usercenter=#usercenter# and biaos='1'
+	</select>
+	
+	<!--查询用户组信息-->
+	<select id="queryPrintusers" resultClass="com.athena.print.entity.sys.Printuser">
+		select usercenter,userscode,users,creator,create_time,editor,edit_time,biaos
+		from ${dbSchemal3}ckx_print_users 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="userscode">userscode=#userscode#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos=#biaos#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter=#usercenter#</isNotEmpty>
+		</dynamic>
+		order by userscode
+	</select>
+	
+	<!--插入一条数据-->
+	<insert id="insertPrintuser" parameterClass="com.athena.print.entity.sys.Printuser">
+		insert into ${dbSchemal3}ckx_print_users  
+		(usercenter,userscode,users,creator,create_time,biaos)
+		values(#usercenter#,#userscode#,#users#,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'),1)
+	</insert>
+	
+	<!--更新一条数据-->
+	<update id="updatePrintuser" parameterClass="com.athena.print.entity.sys.Printuser">
+		update ${dbSchemal3}ckx_print_users  set 
+		userscode=#userscode#,
+		users=#users#,
+		editor=#editor#,
+		edit_time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss'),
+		biaos=#biaos#
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="userscode">userscode = #userscode#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--根据用户组编号来  执行 有效按钮的更新-->
+	<update id="updatePrintuser1" parameterClass="com.athena.print.entity.sys.Printuser">
+		update ${dbSchemal3}ckx_print_users set 
+		biaos='1'
+		where userscode=#userscode#  and usercenter = #usercenter#
+	</update>
+	
+	<!-- 逻辑删除用户组 -->
+	<delete id="deletePrintuser" parameterClass="com.athena.print.entity.sys.Printuser">
+		update ${dbSchemal3}ckx_print_users
+		set <![CDATA[biaos = 0]]> 
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="userscode">userscode = #userscode#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

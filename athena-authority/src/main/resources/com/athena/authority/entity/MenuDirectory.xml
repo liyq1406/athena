@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.MenuDirectory" id="MenuDirectory">
+		<result column="ID" property="id" />
+		<result column="DIR_CODE" property="dirCode" />
+		<result column="DIR_NAME" property="dirName" />
+		<result column="DIR_TYPE" property="dirType" />
+		<result column="PARENT_ID" property="parentId" />
+		<result column="ISITEM" property="isitem" />
+		<result column="DIR_ORDER" property="dirOrder" />
+		<result column="MENDER" property="mender" />
+		<result column="MODIFY_TIME" property="modifyTime" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="BIAOS" property="biaos" />
+		<result column="DIR_PATH" property="dirPath" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="DIR_IS_CK" property="dirIsCK"/>
+		<result column="AUTH_TREE_ID" property="treeId"/>
+		<result property="buttons" column="{menuId=ID}"
+			select="authority.getButtonsByMenu"/>
+		
+	</resultMap>
+	<!-- 子表：菜单按钮 -->
+	<resultMap class="com.athena.authority.entity.PageButton" id="PageButton">
+		<result column="BUTTON_CODE" property="buttonCode" />
+		<result column="BUTTON_NAME" property="buttonName" />
+		<result column="BUTTON_CAPTION" property="buttonCaption" />
+		
+	</resultMap>
+	
+	<select id="queryMenuDirectory" resultMap="MenuDirectory">
+		select 
+		   menu_.ID,
+		   DIR_CODE,
+		   DIR_NAME,
+		   DIR_TYPE,
+		   PARENT_ID,
+		   ISITEM,
+		   DIR_ORDER,
+		   menu_.MENDER,
+		   menu_.MODIFY_TIME,
+		   menu_.CREATOR,
+		   menu_.CREATE_TIME,
+		   menu_.BIAOS,
+		   DIR_PATH,
+		   USERCENTER,
+		   DIR_IS_CK,
+		   AUTH_TREE_ID
+	  from ${dbSchemal0}SYS_MENU_DIRECTORY menu_
+	  where 1=1 
+	  <dynamic>
+			<isNotEmpty prepend="  and " property="dirType">DIR_TYPE = #dirType#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dirIsCK">(DIR_IS_CK = #dirIsCK# or DIR_IS_CK IS NULL)
+			</isNotEmpty>
+	  </dynamic>
+	  order by PARENT_ID,DIR_ORDER ASC
+	</select>
+	
+	<select id="getChildMenuByparentid" resultClass="java.util.HashMap">
+		SELECT r_post_auth_.func_id FROM ${dbSchemal0}SYS_R_POST_AUTH r_post_auth_
+		LEFT OUTER JOIN ${dbSchemal0}sys_menu_directory directory_ ON r_post_auth_.func_id = directory_.ID
+		WHERE 1=1 and directory_.biaos = 1
+		<isNotEmpty prepend=" and "  property="parentId"> directory_.parent_id = #parentId#</isNotEmpty>
+		<isNotEmpty prepend=" and "  property="postGroupId"> r_post_auth_.POST_GROUP_ID = #postGroupId#</isNotEmpty>
+	</select>
+	<select id="getChildButtonByparentid" resultClass="java.util.HashMap">
+		SELECT r_post_auth_.func_id as func_id FROM ${dbSchemal0}SYS_R_POST_AUTH r_post_auth_
+		LEFT OUTER JOIN ${dbSchemal0}sys_page_button button_ ON r_post_auth_.func_id = button_.BUTTON_CODE
+		WHERE 1=1
+		<isNotEmpty prepend=" and "  property="parentId"> button_.menu_id = #parentId#</isNotEmpty>
+		<isNotEmpty prepend=" and "  property="postGroupId"> r_post_auth_.POST_GROUP_ID = #postGroupId#</isNotEmpty>
+	</select>
+	
+	<!-- start -->
+	<select id="queryMenuDirectoryAll" resultMap="MenuDirectory">
+		select 
+		   menu_.ID,
+		   DIR_CODE,
+		   DIR_NAME,
+		   DIR_TYPE,
+		   PARENT_ID,
+		   ISITEM,
+		   DIR_ORDER,
+		   menu_.MENDER,
+		   menu_.MODIFY_TIME,
+		   menu_.CREATOR,
+		   menu_.CREATE_TIME,
+		   menu_.BIAOS,
+		   DIR_PATH,
+		   USERCENTER,
+		   DIR_IS_CK,
+		   AUTH_TREE_ID
+	  from ${dbSchemal0}SYS_MENU_DIRECTORY menu_
+	  where 1=1 
+	  <dynamic>
+	  
+			<isNotEmpty prepend="  and " property="id">PARENT_ID = #id#
+			</isNotEmpty>
+			
+			<isEmpty prepend="  and " property="id"> PARENT_ID is null
+			</isEmpty>
+	  </dynamic>
+	  order by DIR_ORDER
+	</select>
+	<!-- end -->
+	
+	<!-- start -->
+	<select id="queryMenuDAll" resultMap="MenuDirectory">
+		select 
+		   menu_.ID,
+		   DIR_CODE,
+		   DIR_NAME,
+		   DIR_TYPE,
+		   PARENT_ID,
+		   ISITEM,
+		   DIR_ORDER,
+		   menu_.MENDER,
+		   menu_.MODIFY_TIME,
+		   menu_.CREATOR,
+		   menu_.CREATE_TIME,
+		   menu_.BIAOS,
+		   DIR_PATH,
+		   USERCENTER,
+		   DIR_IS_CK,
+		   AUTH_TREE_ID
+	  from ${dbSchemal0}SYS_MENU_DIRECTORY menu_
+	  where 1=1 
+	  order by DIR_ORDER
+	</select>	
+	
+	
+	
+	
+	<!-- 单记录查询 -->
+	<select id="getMenuDirectory" resultMap="MenuDirectory">
+		select  menu_.ID,
+		   DIR_CODE,
+		   DIR_NAME,
+		   DIR_TYPE,
+		   PARENT_ID,
+		   ISITEM,
+		   DIR_ORDER,
+		   menu_.MENDER,
+		   menu_.MODIFY_TIME,
+		   menu_.CREATOR,
+		   menu_.CREATE_TIME,
+		   menu_.BIAOS,
+		   DIR_PATH,
+		   USERCENTER,
+		   DIR_IS_CK,
+		   AUTH_TREE_ID
+	  from ${dbSchemal0}SYS_MENU_DIRECTORY menu_
+	  where menu_.ID=#id#
+	</select>
+	
+	<select id="getButtonsByMenu" resultMap="PageButton" >
+		select 
+			BUTTON_CODE,
+			MENU_ID,
+			BUTTON_CAPTION,
+			BUTTON_NAME
+		from ${dbSchemal0}SYS_PAGE_BUTTON where MENU_ID=#menuId#
+	</select>
+	
+	<insert id="insertMenuDirectory" parameterClass="com.athena.authority.entity.MenuDirectory">
+	    insert into
+		${dbSchemal0}SYS_MENU_DIRECTORY (ID,DIR_CODE,DIR_NAME,DIR_TYPE,PARENT_ID,ISITEM,DIR_ORDER,MENDER,MODIFY_TIME,CREATOR,CREATE_TIME,BIAOS,DIR_PATH,USERCENTER,DIR_IS_CK)
+		values(
+			#id#,
+			#dirCode#,
+			#dirName#,
+			#dirType#,
+			#parentId#,
+			#isitem#,
+			#dirOrder#,
+			#mender#,
+			#modifyTime#,
+			#creator#,
+			#createTime#,
+			#biaos#,
+			#dirPath#,
+			#usercenter#,
+			#dirIsCK#)
+	</insert>
+	
+	<update id="updateMenuDirectory" parameterClass="com.athena.authority.entity.MenuDirectory">
+		update ${dbSchemal0}SYS_MENU_DIRECTORY set 
+		DIR_CODE=#dirCode#,
+		DIR_NAME=#dirName#,
+		DIR_TYPE=#dirType#,
+		PARENT_ID=#parentId#,
+		ISITEM=#isitem#,
+		DIR_ORDER=#dirOrder#,
+		MENDER=#mender#,
+		MODIFY_TIME=#modifyTime#,
+		CREATOR=#creator#,
+		CREATE_TIME=#createTime#,
+		BIAOS=#biaos#,
+		DIR_PATH = #dirPath#,
+		USERCENTER = #usercenter#,
+		DIR_IS_CK = #dirIsCK# where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+		
+	<update id="changeMenuActive" parameterClass="java.util.HashMap">
+		UPDATE ${dbSchemal0}SYS_MENU_DIRECTORY SET BIAOS = #biaos# WHERE ID = #id# 
+	</update>	
+	
+	<delete id="deleteMenuDirectory" parameterClass="com.athena.authority.entity.MenuDirectory">
+		delete from ${dbSchemal0}SYS_MENU_DIRECTORY where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<select id="queryAllPosturl" resultClass="java.util.HashMap" >
+		SELECT 
+		R_POST_AUTH.POST_GROUP_ID,
+		MENU_D.DIR_PATH 
+		FROM ${dbSchemal0}SYS_R_POST_AUTH R_POST_AUTH 
+	    INNER JOIN ${dbSchemal0}SYS_MENU_DIRECTORY MENU_D 
+	    ON R_POST_AUTH.FUNC_ID=MENU_D.ID 
+	</select>
+	<select id="getUserMenuTree" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select distinct auth_.FUNC_ID,menu_.PARENT_ID,menu_.DIR_NAME,menu_.DIR_ORDER
+		  from ${dbSchemal0}sys_r_post_auth auth_ left outer join ${dbSchemal0}sys_menu_directory menu_ ON auth_.func_id = menu_.id 
+		 where auth_.post_group_id in
+		       (select post_.post_group_id
+		          from (select POST_CODE
+		                  from ${dbSchemal0}SYS_R_USER_POST user_post_
+		                 where user_id = #id#) user_post_
+		          left join ${dbSchemal0}SYS_POST post_ on post_.post_code =
+		                                             user_post_.POST_CODE )  and menu_.biaos = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="parentId">PARENT_ID = #parentId#
+			</isNotEmpty>
+			<isEmpty prepend="  and " property="parentId"> PARENT_ID is null
+			</isEmpty>
+	  </dynamic>
+	  order by menu_.DIR_ORDER	                                         
+	</select>
+	<update id="updateDirpath" parameterClass="java.util.HashMap">
+		UPDATE ${dbSchemal0}SYS_MENU_DIRECTORY SET DIR_PATH = #menuPath# WHERE RESOURCE_ID = #resourceId#
+	</update>
+	
+	
+	<!-- 仓库主页  参考系主页跳转的 权限拦截 -->
+	<!--1:判断是否有仓库的跳转权限  -->
+	 <select id="isHasCKSkip" resultClass="java.util.HashMap">
+		select distinct count(menu_.ID) id
+      		from ${dbSchemal0}sys_r_post_auth auth_ left outer join ${dbSchemal0}sys_menu_directory menu_ ON auth_.func_id = menu_.id and  menu_.DIR_IS_CK='1'
+     	where auth_.post_group_id in
+           (select post_.post_group_id
+              from (select user_post_.POST_CODE 
+                      from  ${dbSchemal0}SYS_R_USER_POST user_post_
+                      join  ${dbSchemal0}SYS_USER user_ on user_post_.USER_ID = user_.ID and user_.LOGINNAME=#username#) user_post_
+              left join ${dbSchemal0}SYS_POST post_ on post_.post_code =
+                                                 user_post_.POST_CODE )
+	</select>
+	<!--2:判断是否有参考系的跳转权限  -->
+	 <select id="isHasCKXSkip" resultClass="java.util.HashMap">
+		select distinct count(menu_.ID) id
+      		from ${dbSchemal0}sys_r_post_auth auth_ left outer join ${dbSchemal0}sys_menu_directory menu_ ON auth_.func_id = menu_.id and  menu_.DIR_IS_CK!='1'
+     	where auth_.post_group_id in
+           (select post_.post_group_id
+              from (select user_post_.POST_CODE 
+                      from  ${dbSchemal0}SYS_R_USER_POST user_post_
+                      join  ${dbSchemal0}SYS_USER user_ on user_post_.USER_ID = user_.ID and user_.LOGINNAME=#username#) user_post_
+              left join ${dbSchemal0}SYS_POST post_ on post_.post_code =
+                                                 user_post_.POST_CODE )
+	</select>
+
+	<!--  更新树形id -->
+	<update id="updateMenuDirectoryTree" parameterClass="com.athena.authority.entity.MenuDirectory">
+		UPDATE ${dbSchemal0}SYS_MENU_DIRECTORY SET AUTH_TREE_ID = #treeId# WHERE ID = #id# 
+	</update>	
+	
+	<resultMap class="java.util.HashMap" id="MenuDirectoryAuth">
+		<result column="ID" property="id" />
+		<result column="DIR_CODE" property="dirCode" />
+		<result column="DIR_NAME" property="dirName" />
+		<result column="PARENT_ID" property="parentId" />
+		<result column="DIR_ORDER" property="dirOrder" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="auth_tree_id" property="treeId" />
+		<result column="chkbox" property="chkbox" />
+		<result column="bid" property="bid" />
+	</resultMap>
+	
+	<!-- start -->
+	<select id="queryMenuAuth" resultMap="MenuDirectoryAuth">
+		<![CDATA[
+		   select 
+	       menu_.ID,
+	       menu_.DIR_CODE,
+	       menu_.DIR_NAME,
+	       menu_.PARENT_ID,
+	       menu_.DIR_ORDER,
+	       menu_.USERCENTER,
+	       menu_.auth_tree_id,
+	       coalesce(au_.checked,'0') as chkbox,
+	       '' as bid 
+		    from ${dbSchemal0}SYS_MENU_DIRECTORY menu_ left join (select auth_.post_group_id,auth_.func_id,auth_.usercenter,
+		    auth_.auth_tree_id,'1' checked from ${dbSchemal0}sys_r_post_auth auth_ where auth_.post_group_id = #postGroupId#)
+		     au_ on menu_.id = au_.func_id 
+		    where 1=1 and menu_.biaos = '1' ]]>
+			<dynamic>
+				<isNotEmpty prepend="  and " property="parentId">menu_.PARENT_ID = #parentId#
+				</isNotEmpty>
+				<isEmpty prepend="  and " property="parentId"> menu_.PARENT_ID is null
+				</isEmpty>
+			</dynamic>
+		 <![CDATA[ order by DIR_ORDER ]]>
+	</select>	
+	
+	<select id="queryLowerMenuAuth" resultMap="MenuDirectoryAuth">
+		<![CDATA[
+		   select 
+	       menu_.ID,
+	       menu_.DIR_CODE,
+	       menu_.DIR_NAME,
+	       menu_.PARENT_ID,
+	       menu_.DIR_ORDER,
+	       menu_.USERCENTER,
+	       menu_.auth_tree_id,
+	       '1' as chkbox,
+	       '' as bid 
+		    from ${dbSchemal0}SYS_MENU_DIRECTORY menu_ 
+		    where 1=1 and menu_.biaos = '1' ]]>
+			<dynamic>
+				<isNotEmpty prepend="  and " property="treeId">menu_.auth_tree_id like '$treeId$%'
+				</isNotEmpty>
+			</dynamic>
+		 <![CDATA[ order by DIR_ORDER ]]>
+	</select>	
+	
+	<!-- start -->
+	<select id="queryButtonAuth" resultMap="MenuDirectoryAuth">
+		<![CDATA[
+		   select 
+	       button_.BUTTON_CODE ID,
+	       button_.BUTTON_NAME DIR_CODE,
+	       button_.BUTTON_CAPTION DIR_NAME,
+	       button_.MENU_ID PARENT_ID,
+	       '0' DIR_ORDER,
+	       '' USERCENTER,
+	       button_.auth_tree_id,
+	       coalesce(au_.checked,'0') as chkbox,
+        	button_.bid 
+		    from (select bu_.BUTTON_CODE,bu_.BUTTON_NAME,bu_.BUTTON_CAPTION,bu_.menu_id,bu_.auth_tree_id,'1' checked,
+		     'button_'||bu_.button_code as bid from ${dbSchemal0}SYS_PAGE_BUTTON bu_
+        ) button_ left join (select auth_.post_group_id,auth_.func_id,auth_.usercenter,
+        auth_.auth_tree_id,'1' checked from ${dbSchemal0}sys_r_post_auth auth_ where auth_.post_group_id =#postGroupId# )
+         au_ on button_.bid = au_.func_id 
+		    where 1=1 ]]>
+			<dynamic>
+				<isNotEmpty prepend="  and " property="parentId">button_.MENU_ID = #parentId#
+				</isNotEmpty>
+				<isEmpty prepend="  and " property="parentId"> button_.MENU_ID is null
+				</isEmpty>
+			</dynamic>
+	</select>	
+	
+		<select id="queryLowerButtonAuth" resultMap="MenuDirectoryAuth">
+		<![CDATA[
+		select butt.ID,butt.DIR_CODE,butt.DIR_NAME,butt.PARENT_ID,butt.DIR_ORDER,butt.USERCENTER,butt.auth_tree_id,butt.chkbox,butt.bid from (
+		   select 
+	       button_.BUTTON_CODE ID,
+	       button_.BUTTON_NAME DIR_CODE,
+	       button_.BUTTON_CAPTION DIR_NAME,
+	       button_.MENU_ID PARENT_ID,
+	       '0' DIR_ORDER,
+	       '' USERCENTER,
+	       button_.auth_tree_id,
+	       '0' as chkbox,
+        	'button_'||button_.BUTTON_CODE bid 
+		    from (select bu_.BUTTON_CODE,bu_.BUTTON_NAME,bu_.BUTTON_CAPTION,bu_.menu_id,bu_.auth_tree_id,'1' checked,
+		     'button_'||bu_.button_code as bid from ${dbSchemal0}SYS_PAGE_BUTTON bu_
+        ) button_ 
+		    where 1=1 ]]>
+			<dynamic>
+				<isNotEmpty prepend="  and " property="treeId">button_.auth_tree_id like '$treeId$%'
+				</isNotEmpty>
+			</dynamic>
+		) butt inner join ${dbSchemal0}sys_menu_directory  menu_ on butt.PARENT_ID = menu_.id where menu_.biaos = '1'
+	</select>	
+</sqlMap>

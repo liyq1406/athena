@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	客户操作码
+	@author denggq
+	@date 2012-1-30
+ -->
+ 
+<sqlMap namespace="ts_ckx">
+	
+	<!-- 多记录查询 -->
+	<select id="queryKehczm" parameterClass="com.athena.ckx.entity.cangk.Kehczm" resultClass="com.athena.ckx.entity.cangk.Kehczm">
+		select usercenter,kehbh,kehlx,zhangh,caozm,biaos ,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_kehczm 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kehbh" prepend="and">
+	    		<![CDATA[kehbh = #kehbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="caozm" prepend="and">
+	    		<![CDATA[caozm = #caozm#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="zhangh" prepend="and">
+	    		<!-- [CDATA[zhangh like '$zhangh$%']] -->
+	    		<![CDATA[zhangh like #zhangh#||'%']]>  
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,kehbh
+	</select>
+	
+	<!-- 多记录查询 -->
+	<select id="queryKehczms" parameterClass="com.athena.ckx.entity.cangk.Kehczm" resultClass="com.athena.ckx.entity.cangk.Kehczm">
+		select usercenter,kehbh,kehlx,zhangh,caozm,biaos ,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_kehczm 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kehbh" prepend="and">
+	    		<![CDATA[kehbh = #kehbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,kehbh
+	</select>
+	
+	<!-- 单记录查询 -->
+	<select id="getKehczm" resultClass="com.athena.ckx.entity.cangk.Kehczm">
+		select usercenter,kehbh,kehlx,zhangh,caozm,biaos 
+		from ${dbSchemal3}ckx_kehczm 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kehbh" prepend="and">
+	    		<![CDATA[kehbh = #kehbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<!-- 插入记录 -->
+	<insert id="insertKehczm" parameterClass="com.athena.ckx.entity.cangk.Kehczm">
+		insert into ${dbSchemal3}ckx_kehczm(usercenter,kehbh,kehlx,zhangh,caozm,biaos,creator,create_time,editor,edit_time)
+		values(#usercenter#,#kehbh#,#kehlx#,#zhangh#,#caozm#,'1',#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<!-- 修改记录 -->
+	<update id="updateKehczm" parameterClass="com.athena.ckx.entity.cangk.Kehczm">
+		update ${dbSchemal3}ckx_kehczm 
+		set kehlx = #kehlx# ,
+			zhangh = #zhangh# ,
+			caozm = #caozm# ,
+			biaos = #biaos#,
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where <![CDATA[usercenter = #usercenter# and kehbh = #kehbh#]]> 
+	</update>
+	
+	<!--逻辑删除记录 -->
+	<delete id="deleteKehczm" parameterClass="com.athena.ckx.entity.cangk.Kehczm">
+		update ${dbSchemal3}ckx_kehczm set
+		<dynamic>
+	    	<isNotEmpty property="editor">
+	    		<![CDATA[editor = #editor# ]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="edit_time" prepend=",">
+	    		<![CDATA[edit_time =to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ,]]> 
+	    	</isNotEmpty>
+	    </dynamic> 
+		<![CDATA[biaos = '0']]>
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kehbh" prepend="and">
+	    		<![CDATA[kehbh = #kehbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+	<!--物理删除记录 -->
+	<delete id="deleteKehczms" parameterClass="com.athena.ckx.entity.cangk.Kehczm">
+		delete  from ${dbSchemal3}ckx_kehczm where
+		<dynamic prepend="  ">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kehbh" prepend="and">
+	    		<![CDATA[kehbh = #kehbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+</sqlMap>

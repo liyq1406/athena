@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="kc_pda">
+	
+	<!-- 根据卡车号、用户中心、区域编号、大站台 查询指定运单、流程及车位信息 -->
+	<select id="queryYundChewLiucdy" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		 SELECT TT.USERCENTER,
+			       TT.YUNDH,
+			       TT.QUYBH,
+			       TT.DAZTBH,
+			       TT.KACH,
+			       TT.ZHUANGT,
+			       TT.LIUCBH,
+			       TT.NLIUCBH,
+			       TT.CHEWBH,
+			       TT.JIJBS,
+			       TT.BEIZ,
+			       TT.TIQPDBS,
+			       TT.BIAOZSJ,
+			       TT.CHENGYSBH,
+			       NVL(LL.LIUCMC, '操作') LIUCMC,
+       			   REPLACE(NVL(LLN.LIUCMC, '操作'), '出厂', '已完成') NLIUCMC
+			  FROM (SELECT T.USERCENTER,
+			               T.YUNDH,
+			               T.QUYBH,
+			               T.DAZTBH,
+			               T.KACH,
+			               MIN(T.ZHUANGT) ZHUANGT,
+			               MIN(T.LIUCBH) LIUCBH,
+			               MIN(T.NLIUCBH) NLIUCBH,
+			               T.CHEWBH,
+			               T.JIJBS,
+			               T.BEIZ,
+			               T.TIQPDBS,
+			               MIN(T.BIAOZSJ) BIAOZSJ,
+			               T.CHENGYSBH
+			          FROM (SELECT Y.USERCENTER,
+			                       Y.YUNDH,
+			                       Y.QUYBH,
+			                       Y.DAZTBH,
+			                       Y.KACH,
+			                       Y.ZHUANGT,
+			                       Y.JIJBS,
+			                       Y.BEIZ,
+			                       Y.TIQPDBS,
+			                       L.LIUCBH,
+			                       LN.LIUCBH NLIUCBH,
+			                       L.BIAOZSJ,
+			                       P.CHEWBH,
+			                       P.CHENGYSBH
+			                  FROM ${dbSchemal3}KC_YUND Y, ${dbSchemal3}CKX_LIUCDY L, ${dbSchemal3}CKX_LIUCDY LN, ${dbSchemal3}KC_CHELPD P
+						         WHERE Y.USERCENTER = L.USERCENTER
+						           AND Y.QUYBH = L.QUYBH
+						           AND Y.DAZTBH = L.DAZTBH
+						           AND Y.ZHUANGT <![CDATA[>]]>= 3
+						           AND Y.ZHUANGT <![CDATA[<]]> 8
+						           AND L.BIAOS = '1'
+						           AND L.LIUCBH <![CDATA[>]]> Y.ZHUANGT
+						           AND L.USERCENTER = LN.USERCENTER(+)
+						           AND L.QUYBH = LN.QUYBH(+)
+						           AND L.DAZTBH = LN.DAZTBH(+)
+						           AND L.LIUCBH <![CDATA[<]]> LN.LIUCBH(+)
+						           AND L.BIAOS = LN.BIAOS(+)
+						           AND Y.USERCENTER = P.USERCENTER
+						           AND Y.YUNDH = P.YUNDH
+								   AND Y.KACH = #kach#
+						           <dynamic>
+					                  <isNotEmpty prepend=" and " property="quybh">
+					                    Y.QUYBH = #quybh#
+					                  </isNotEmpty>
+					                  <isNotEmpty prepend=" and " property="daztbh">
+					                    Y.DAZTBH = #daztbh#
+					                  </isNotEmpty>
+					                </dynamic>
+						           AND Y.USERCENTER = #trans_bran_code#) T
+			         GROUP BY T.USERCENTER,
+			                  T.YUNDH,
+			                  T.QUYBH,
+			                  T.DAZTBH,
+			                  T.KACH,
+			                  T.CHEWBH,
+			                  T.JIJBS,
+			                  T.BEIZ,
+			                  T.TIQPDBS,
+			                  T.CHENGYSBH) TT,
+			       ${dbSchemal3}CKX_LIUCDY LL,
+			       ${dbSchemal3}CKX_LIUCDY LLN
+			 WHERE TT.USERCENTER = LL.USERCENTER
+			   AND TT.QUYBH = LL.QUYBH
+			   AND TT.DAZTBH = LL.DAZTBH
+			   AND TT.LIUCBH = LL.LIUCBH
+			   AND TT.USERCENTER = LLN.USERCENTER(+)
+			   AND TT.QUYBH = LLN.QUYBH(+)
+			   AND TT.DAZTBH = LLN.DAZTBH(+)
+			   AND TT.NLIUCBH = LLN.LIUCBH(+)
+	</select>
+	
+	<!-- 删除车辆排队 -->
+	<delete id="deleteChelpd" parameterClass="java.util.Map">
+		DELETE FROM ${dbSchemal3}KC_CHELPD
+		 WHERE USERCENTER = #USERCENTER#
+		   AND YUNDH = #YUNDH#
+		   AND KACH = #KACH#
+		   AND PAIDZT = '1'
+	</delete>
+	
+	<!--修改车位状态 -->
+	<update id="updateChew" parameterClass="java.util.Map" >
+		UPDATE ${dbSchemal3}CKX_CHEW
+		   SET EDITOR = #EDITOR#, EDIT_TIME = SYSDATE, CHEWZT = '0'
+		 WHERE USERCENTER = #USERCENTER#
+		   AND CHEWBH = #CHEWBH#
+		   AND DAZTBH = #DAZTBH#
+	</update>
+	
+	 <!-- 修改运单状态 -->
+	<update id="updateYund" parameterClass="java.util.Map">
+		UPDATE ${dbSchemal3}KC_YUND Y
+		   SET EDITOR    = #EDITOR#,
+		       EDIT_TIME = SYSDATE,
+		       ZHUANGT   = #LIUCBH#,
+		       ZHUANGTMC =
+		       (SELECT LIUCMC
+		          FROM ${dbSchemal3}CKX_LIUCDY L
+		         WHERE L.USERCENTER = Y.USERCENTER
+		           AND Y.DAZTBH = L.DAZTBH
+		           AND L.QUYBH = Y.QUYBH
+		           AND L.LIUCBH = #LIUCBH#)
+		 WHERE USERCENTER = #USERCENTER#
+		   AND YUNDH = #YUNDH#
+	</update>
+	
+	<!-- 记录车辆排队表删除记录 -->
+    <insert id="insertChlepdls" parameterClass="java.util.Map">
+     	 INSERT INTO ${dbSchemal3}KC_CHELPD_HISTORY
+			  (ID,
+			   USERCENTER,
+			   QUYBH,
+			   DAZTBH,
+			   YUNDH,
+			   KACH,
+			   CHENGYSBH,
+			   CHEWBH,
+			   PAIDZT,
+			   PAIDXH,
+			   XIEHXH,
+			   PAIDSX,
+			   YUANPDSX,
+			   ZDCHEW,
+			   OPERATE,
+			   BEIZ,
+			   BEIZ1,
+			   BEIZ2,
+			   BEIZ3,
+			   CREATOR,
+			   CREATE_TIME)
+			  SELECT SEQ_CHELPD.NEXTVAL,
+			         USERCENTER,
+			         QUYBH,
+			         DAZTBH,
+			         YUNDH,
+			         KACH,
+			         CHENGYSBH,
+			         CHEWBH,
+			         PAIDZT,
+			         PAIDXH,
+			         XIEHXH,
+			         PAIDSX,
+			         YUANPDSX,
+			         ZDCHEW,
+			         'd',
+			         BEIZ,
+			         BEIZ1,
+			         BEIZ2,
+			         BEIZ3,
+			         #EDITOR#,
+			         SYSDATE
+			    FROM ${dbSchemal3}KC_CHELPD
+			   WHERE USERCENTER = #USERCENTER#
+			     AND YUNDH = #YUNDH#
+			     AND KACH = #KACH#
+    </insert>
+    
+    <!-- 车辆出入厂流水 -->
+	<insert id="insertChurcls" parameterClass="java.util.Map">
+	 	INSERT INTO ${dbSchemal3}KC_CHURCLS
+			  (USERCENTER,
+			   QUYBH,
+			   DAZTBH,
+			   YUNDH,
+			   LIUCBH,
+			   KACH,
+			   CHEWBH,
+			   BEIZ,
+			   OPERATOR,
+			   OPERATE_TIME,
+			   OPERATE_TYPE,
+			   BIAOZSJ,
+			   LASTOPERATE_TIME,
+			   CHENGYSBH,
+			   RONGQC,
+			   JIJBS,
+			   TIQPDBS)
+			VALUES
+			  (#USERCENTER#,
+			   #QUYBH#,
+			   #DAZTBH#,
+			   #YUNDH#,
+			   #LIUCBH#,
+			   #KACH#,
+			   #CHEWBH#,
+			   '',
+			   #EDITOR#,
+			   SYSDATE,
+			   '1',
+			   #BIAOZSJ#,
+			   SYSDATE,
+			   '',
+			   '',
+			   #JIJBS#,
+			   #TIQPDBS#)
+	</insert>
+	
+	<!-- 根据条件获取大站台编号集合 -->
+	<select id="getDaztByParam" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT D.DAZTBH "daztbh"
+		  FROM ${dbSchemal3}CKX_DAZT D
+		 WHERE D.USERCENTER = #trans_bran_code#
+		   AND D.QUYBH = #quybh#
+		 ORDER BY D.DAZTBH
+	</select>
+	
+	<!-- 根据条件获取区域编号集合 -->
+	<select id="getQuyByParam" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT G.QUYBH "quybh"
+		  FROM ${dbSchemal3}SYS_QY_GROUP G,
+		       ${dbSchemal3}SYS_POST P,
+		       ${dbSchemal3}CKX_DENGDQY D,
+		       (SELECT R.POST_CODE, C.USERCENTER
+		          FROM ${dbSchemal3}SYS_R_USER_POST       R,
+		               ${dbSchemal3}SYS_R_POST_USERCENTER C,
+		               ${dbSchemal3}SYS_USER              U
+		         WHERE R.USER_ID = U.ID
+		           AND R.POST_CODE = C.POST_CODE
+		           AND U.LOGINNAME = #oper_no#
+		           AND C.USERCENTER = #trans_bran_code#) T
+		 WHERE G.POST_ID = P.POST_CODE
+		   AND P.BIAOS = '1'
+		   AND G.USERCENTER = D.USERCENTER
+		   AND G.QUYBH = D.QUYBH
+		   AND D.BIAOS = '1'
+		   AND G.USERCENTER = T.USERCENTER
+		   AND G.POST_ID = T.POST_CODE
+		 ORDER BY G.QUYBH
+	</select>
+	
+	<!--查询对应区域流程定义数量 -->
+	<select id="countZDYLC" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(1)
+		  FROM ${dbSchemal3}CKX_LIUCDY C
+		 WHERE C.USERCENTER = #trans_bran_code#
+		   AND C.QUYBH = #quybh#
+		   AND C.DAZTBH = #daztbh#
+		   AND C.LIUCBH IN ('4', '5', '6', '7')
+	</select>
+	
+	<!-- 根据卡车号、用户中心、区域编号、大站台 查询指定运单、流程及车位信息 -->
+	<select id="queryYundChewLiucdyQuanx" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		 	SELECT C.USERCENTER,
+			       C.YUNDH,
+			       C.QUYBH,
+			       C.DAZTBH,
+			       C.KACH,
+			       C.ZHUANGT,
+			       C.LIUCBH,
+			       C.NLIUCBH,
+			       C.CHEWBH,
+			       C.JIJBS,
+			       C.BEIZ,
+			       C.TIQPDBS,
+			       C.BIAOZSJ,
+			       C.CHENGYSBH,
+			       C.LIUCMC,
+			       C.NLIUCMC,
+			       Q.QUYBH QUYQX
+			  FROM (SELECT TT.USERCENTER,
+			               TT.YUNDH,
+			               TT.QUYBH,
+			               TT.DAZTBH,
+			               TT.KACH,
+			               TT.ZHUANGT,
+			               TT.LIUCBH,
+			               TT.NLIUCBH,
+			               TT.CHEWBH,
+			               TT.JIJBS,
+			               TT.BEIZ,
+			               TT.TIQPDBS,
+			               TT.BIAOZSJ,
+			               TT.CHENGYSBH,
+			               NVL(LL.LIUCMC, '操作') LIUCMC,
+			               REPLACE(NVL(LLN.LIUCMC, '操作'), '出厂', '已完成') NLIUCMC
+			          FROM (SELECT T.USERCENTER,
+			                       T.YUNDH,
+			                       T.QUYBH,
+			                       T.DAZTBH,
+			                       T.KACH,
+			                       MIN(T.ZHUANGT) ZHUANGT,
+			                       MIN(T.LIUCBH) LIUCBH,
+			                       MIN(T.NLIUCBH) NLIUCBH,
+			                       T.CHEWBH,
+			                       T.JIJBS,
+			                       T.BEIZ,
+			                       T.TIQPDBS,
+			                       MIN(T.BIAOZSJ) BIAOZSJ,
+			                       T.CHENGYSBH
+			                  FROM (SELECT Y.USERCENTER,
+			                               Y.YUNDH,
+			                               Y.QUYBH,
+			                               Y.DAZTBH,
+			                               Y.KACH,
+			                               Y.ZHUANGT,
+			                               Y.JIJBS,
+			                               Y.BEIZ,
+			                               Y.TIQPDBS,
+			                               L.LIUCBH,
+			                               LN.LIUCBH NLIUCBH,
+			                               L.BIAOZSJ,
+			                               P.CHEWBH,
+			                               P.CHENGYSBH
+			                          FROM ${dbSchemal3}KC_YUND    Y,
+			                               ${dbSchemal3}CKX_LIUCDY L,
+			                               ${dbSchemal3}CKX_LIUCDY LN,
+			                               ${dbSchemal3}KC_CHELPD  P
+			                         WHERE Y.USERCENTER = L.USERCENTER
+			                           AND Y.QUYBH = L.QUYBH
+			                           AND Y.DAZTBH = L.DAZTBH
+			                           AND Y.ZHUANGT <![CDATA[>=]]> 3
+			                           AND Y.ZHUANGT <![CDATA[<]]> 8
+			                           AND L.BIAOS = '1'
+			                           AND L.LIUCBH <![CDATA[>]]> Y.ZHUANGT
+			                           AND L.USERCENTER = LN.USERCENTER(+)
+			                           AND L.QUYBH = LN.QUYBH(+)
+			                           AND L.DAZTBH = LN.DAZTBH(+)
+			                           AND L.LIUCBH <![CDATA[<]]> LN.LIUCBH(+)
+			                           AND L.BIAOS = LN.BIAOS(+)
+			                           AND Y.USERCENTER = P.USERCENTER
+			                           AND Y.YUNDH = P.YUNDH
+			                           AND Y.KACH = #kach#
+			                        <dynamic>
+					                  <isNotEmpty prepend=" and " property="quybh">
+					                    Y.QUYBH = #quybh#
+					                  </isNotEmpty>
+					                  <isNotEmpty prepend=" and " property="daztbh">
+					                    Y.DAZTBH = #daztbh#
+					                  </isNotEmpty>
+					                </dynamic>
+			                           AND Y.USERCENTER = #trans_bran_code#) T
+			                 GROUP BY T.USERCENTER,
+			                          T.YUNDH,
+			                          T.QUYBH,
+			                          T.DAZTBH,
+			                          T.KACH,
+			                          T.CHEWBH,
+			                          T.JIJBS,
+			                          T.BEIZ,
+			                          T.TIQPDBS,
+			                          T.CHENGYSBH) TT,
+			               ${dbSchemal3}CKX_LIUCDY LL,
+			               ${dbSchemal3}CKX_LIUCDY LLN
+			         WHERE TT.USERCENTER = LL.USERCENTER
+			           AND TT.QUYBH = LL.QUYBH
+			           AND TT.DAZTBH = LL.DAZTBH
+			           AND TT.LIUCBH = LL.LIUCBH
+			           AND TT.USERCENTER = LLN.USERCENTER(+)
+			           AND TT.QUYBH = LLN.QUYBH(+)
+			           AND TT.DAZTBH = LLN.DAZTBH(+)
+			           AND TT.NLIUCBH = LLN.LIUCBH(+)) C,
+			  		(SELECT G.QUYBH, G.USERCENTER
+			               FROM ${dbSchemal3}SYS_QY_GROUP G,
+			                    ${dbSchemal3}SYS_POST P,
+			                    ${dbSchemal3}CKX_DENGDQY D,
+			                    (SELECT R.POST_CODE, C.USERCENTER
+			                       FROM ${dbSchemal3}SYS_R_USER_POST       R,
+			                            ${dbSchemal3}SYS_R_POST_USERCENTER C,
+			                            ${dbSchemal3}SYS_USER              U
+			                      WHERE R.USER_ID = U.ID
+			                        AND R.POST_CODE = C.POST_CODE
+			                        AND U.LOGINNAME = #oper_no#
+			                        AND C.USERCENTER = #trans_bran_code#) T
+			              WHERE G.POST_ID = P.POST_CODE
+			                AND P.BIAOS = '1'
+			                AND G.USERCENTER = D.USERCENTER
+			                AND G.QUYBH = D.QUYBH
+			                AND D.BIAOS = '1'
+			                AND G.USERCENTER = T.USERCENTER
+			                AND G.POST_ID = T.POST_CODE
+			              ORDER BY G.QUYBH) Q
+			 WHERE C.USERCENTER = Q.USERCENTER(+)
+			   AND C.QUYBH = Q.QUYBH(+)
+  			ORDER BY C.CHENGYSBH, C.YUNDH
+	</select>
+	
+	<parameterMap id="pdafangkProMap" class="java.util.HashMap">
+        
+       <parameter property="CHEWBH" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="EDITOR" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="USERCENTER" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="YUNDH" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="KACH" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="LIUCBH" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="QUYBH" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="DAZTBH" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="CHEWBH" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="EDITOR" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="BIAOZSJ" jdbcType="VARCHAR" javaType="java.math.BigDecimal" mode="IN" />
+       <parameter property="JIJBS" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="TIQPDBS" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+        
+       <parameter property="RESULT" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT " />
+        
+    </parameterMap>
+	
+	<!-- 调用存储过程执行车位放空 -->
+	<procedure id="pro_truck_chewfk" parameterMap="pdafangkProMap" >	
+	{call ${dbSchemal0}pro_truck_chewfk (?,?,?,?,?,?,?,?,?,?,?,?,?,?)}
+	</procedure>
+
+</sqlMap>

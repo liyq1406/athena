@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="kaixjhmx">
+
+	<resultMap class="com.athena.xqjs.entity.laxkaix.Kaixjhmx"
+		id="Kaixjhmx">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="KAIXJHNO" property="kaixjhNo" />
+		<result column="ID" property="id" />
+		<result column="TCNO" property="tcNo" />
+		<result column="QIYSJ" property="qiysj" />
+		<result column="MUDD" property="mudd" />
+		<result column="WULD" property="wuld" />
+		<result column="KAIXZDSJ" property="kaixzdsj" />
+		<result column="ZHUANGT" property="zhuangt" />
+		<result column="BEIZ" property="beiz" />
+		<result column="SHENGXZT" property="shengxzt" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="EDITOR" property="editor" />
+		<result column="EDIT_TIME" property="editTime" />
+	</resultMap>
+	<insert id="insertKaixjhmx" parameterClass="com.athena.xqjs.entity.laxkaix.Kaixjhmx">
+		INSERT INTO ${dbSchemal1}XQJS_KAIXJHMX(
+		USERCENTER,
+		KAIXJHNO,
+		ID,
+		TCNO,
+		<dynamic>
+			<isNotEmpty property="qiysj">QIYSJ,</isNotEmpty>
+		</dynamic>
+		KAIXZDSJ,
+		WULD,
+		ZHUANGT,
+		BEIZ,
+		CREATOR,
+		CREATE_TIME
+		) VALUES(
+		#usercenter#,
+		#kaixjhNo#,
+		#id#,
+		#tcNo#,
+		<dynamic>
+			<isNotEmpty property="qiysj">to_date(#qiysj#,'yyyy-MM-dd HH24:mi:ss'),</isNotEmpty>
+		</dynamic>
+		to_date(#kaixzdsj#,'yyyy-MM-dd HH24:mi:ss'),
+		#wuld#,
+		#zhuangt#,
+		#beiz#,
+		#creator#,
+		to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss')
+		)
+  </insert>
+	<update id="updateKaixjhmx" parameterClass="com.athena.xqjs.entity.laxkaix.Kaixjhmx">
+		UPDATE ${dbSchemal1}XQJS_KAIXJHMX
+		SET SHENGXZT = #shengxzt#,
+		EDITOR=#editor#,
+		EDIT_TIME=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		WHERE USERCENTER = #usercenter# AND KAIXJHNO = #kaixjhNo# AND ID = #id# AND
+		TCNO = #tcNo#
+  </update>
+  <select id="queryKaixjhmxInfo"  parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.laxkaix.KaixjhmxBean">
+	  	SELECT mx_.USERCENTER,mx_.KAIXJHNO,mx_.ID,mx_.TCNO,
+	  	to_char(mx_.KAIXZDSJ,'yyyy-MM-dd') as KAIXZDSJ,
+	  	to_char(mx_.QIYSJ,'yyyy-MM-dd') as QIYSJ,
+	  	tc_.DINGHCJ,
+	  	mx_.WULD FROM ${dbSchemal1}XQJS_KAIXJHMX mx_ INNER JOIN ${dbSchemal1}XQJS_TC tc_
+  	ON mx_.TCNO=tc_.TCNO AND mx_.ID=tc_.ID
+  	WHERE 1=1 
+  	<dynamic>
+  		<isNotEmpty prepend="AND" property="kaixjhNo"> KAIXJHNO = #kaixjhNo#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="usercenter"> mx_.USERCENTER = #usercenter#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="tcNo"> mx_.TCNO = #tcNo#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="dinghcj"> tc_.DINGHCJ = #dinghcj#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="qiysj"> mx_.QIYSJ = to_date(#qiysj#,'yyyy-MM-dd HH24:mi:ss')</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="kaixzdsj"> mx_.KAIXZDSJ =  to_date(#kaixzdsj#,'yyyy-MM-dd HH24:mi:ss')</isNotEmpty>
+  	</dynamic>
+  </select>
+   <select id="queryKaixjhmxDownload"  parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	  	SELECT mx_.USERCENTER,mx_.KAIXJHNO,mx_.ID,mx_.TCNO,
+	  	to_char(mx_.KAIXZDSJ,'yyyy-MM-dd') as KAIXZDSJ,
+	  	to_char(mx_.QIYSJ,'yyyy-MM-dd') as QIYSJ,
+	  	tc_.DINGHCJ,
+	  	mx_.WULD FROM ${dbSchemal1}XQJS_KAIXJHMX mx_ INNER JOIN ${dbSchemal1}XQJS_TC tc_
+  	ON mx_.TCNO=tc_.TCNO AND mx_.ID=tc_.ID
+  	WHERE 1=1 
+  	<dynamic>
+  		<isNotEmpty prepend="AND" property="kaixjhNo"> KAIXJHNO = #kaixjhNo#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="usercenter"> mx_.USERCENTER = #usercenter#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="tcNo"> mx_.TCNO = #tcNo#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="dinghcj"> tc_.DINGHCJ = #dinghcj#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="qiysj"> mx_.QIYSJ = to_date(#qiysj#,'yyyy-MM-dd HH24:mi:ss')</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="kaixzdsj"> mx_.KAIXZDSJ =  to_date(#kaixzdsj#,'yyyy-MM-dd HH24:mi:ss')</isNotEmpty>
+  	</dynamic>
+  </select>
+  
+   <select id="queryKaixjhmx" resultClass="java.util.HashMap" remapResults="true">
+  	SELECT mx_.USERCENTER,mx_.KAIXJHNO,mx_.ID,
+  	mx_.TCNO,to_char(mx_.KAIXZDSJ,'yyyy-MM-dd') as KAIXZDSJ,
+	mx_.WULD,
+	tc_.DINGHCJ FROM ${dbSchemal1}XQJS_KAIXJHMX mx_ INNER JOIN ${dbSchemal1}XQJS_TC tc_    
+	ON mx_.TCNO=tc_.TCNO AND mx_.ID=tc_.ID    WHERE 1=1   
+  	<dynamic>
+  		<isNotEmpty prepend="AND" property="kaixjhNo"> KAIXJHNO = #kaixjhNo#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="usercenter"> USERCENTER = #usercenter#</isNotEmpty>
+  	</dynamic>
+  </select>
+  <delete id="deleteKaixjhmx">
+  	DELETE FROM ${dbSchemal1}XQJS_KAIXJHMX 
+  	WHERE 1=1 
+  	AND USERCENTER = #usercenter# AND KAIXJHNO = #kaixjhNo# AND ID = #id# AND TCNO = #tcNo#
+
+  </delete>
+	<delete id="deleteKaixjhmxOther" parameterClass="java.util.HashMap">
+		DELETE FROM ${dbSchemal1}XQJS_KAIXJHMX
+		WHERE 1=1
+		AND KAIXJHNO != #kaixjhNo# AND TCNO = #tcNo# AND TCNO IN (SELECT TCNO FROM ${dbSchemal1}XQJS_KAIXJHMX mx_ INNER JOIN ${dbSchemal1}XQJS_KAIXJHkaixjh_ ON mx_.KAIXJHNO = kaixjh_.KAIXJHH AND mx_.USERCENTER = kaixjh_.USERCENTER WHERE kaixjh_.SHENGXZT = '0')
+  </delete>
+	<update id="deleteKaixjhmxbyUc" parameterClass="java.util.HashMap">
+		UPDATE ${dbSchemal1}XQJS_KAIXJHMX
+		SET SHENGXZT = #shengxzt#,
+		EDITOR=#editor#,
+		EDIT_TIME=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		WHERE USERCENTER = #usercenter# AND KAIXJHNO = #kaixjhNo#
+  </update>
+  
+     <select id="validateKaixjhmxTcNo" parameterClass="java.util.HashMap"
+		resultClass="int">
+		SELECT COUNT(*) FROM ${dbSchemal1}XQJS_KAIXJHMX WHERE TCNO = #tcNo# AND KAIXJHNO = #kaixjhh#
+		AND ID=#id# AND USERCENTER = #usercenter#
+   </select>
+  
+
+</sqlMap>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="carry" extend="toft-default" namespace="/carry">
+		<!-- 仓库循环时间 -->
+		<action name="ckxCangkxhsj" 
+			class="ckxCangkxhsjAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/carry/ckxCangkxhsj.jsp</result>
+		</action>
+		<action name="queryCkxCangkxhsj" class="ckxCangkxhsjAction" method="query"/>
+		<action name="getCkxCangkxhsj" class="ckxCangkxhsjAction" method="get"/>
+		<action name="addCkxCangkxhsj" class="ckxCangkxhsjAction" method="addCkxCangkxhsj"/>
+		<action name="saveCkxCangkxhsj" class="ckxCangkxhsjAction" method="save"/>
+		<action name="removeCkxCangkxhsj" class="ckxCangkxhsjAction" method="remove"/>
+		<action name="deleteLogic" class="ckxCangkxhsjAction" method="deleteLogic"/>
+		<action name="listCangkXunh" class="ckxCangkxhsjAction" method="listCangkXunh"/>
+		<action name="listCangk" class="ckxCangkxhsjAction" method="listCangk"/>
+		<action name="downloadCkxhsjMob" class="ckxCangkxhsjAction" method="downloadMob"/><!-- 模板下载 -->
+		<!--xh 141219  10798 导入权限控制 -->
+		<action name="importAth_uploadCkxckxhsj" class="ckxCangkxhsjAction" method="upload"><!-- 导入数据据 -->
+   			<result name="upload">/WEB-INF/pages/ckx/carry/ckxCangkxhsj.jsp</result> 
+   		</action>
+		
+		<!-- 卸货站台循环时间 -->
+		<action name="ckxXiehztxhsj" 
+			class="ckxXiehztxhsjAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/carry/ckxXiehztxhsj.jsp</result>
+		</action>
+		<action name="queryCkxXiehztxhsj" class="ckxXiehztxhsjAction" method="query"/>
+		<action name="getCkxXiehztxhsj" class="ckxXiehztxhsjAction" method="get"/>
+		<action name="addCkxXiehztxhsj" class="ckxXiehztxhsjAction" method="addCkxXiehztxhsj"/>
+		<action name="saveCkxXiehztxhsj" class="ckxXiehztxhsjAction" method="save"/>
+		<action name="removeCkxXiehztxhsj" class="ckxXiehztxhsjAction" method="remove"/>
+		<action name="deleteLogicCkxXiehztxhsj" class="ckxXiehztxhsjAction" method="deleteLogic"/>
+		
+		
+		
+		
+		<!-- 物流路径总图 -->
+		<action name="ckxWullj"
+			class="ckxWulljAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/carry/ckxWullj.jsp</result>
+		</action>
+		<action name="queryCkxWullj" class="ckxWulljAction" method="query"/>
+		<action name="compute" class="ckxWulljAction" method="addWulljTemp"/>
+		<action name="effective" class="ckxWulljAction" method="effectiveWullj"/>
+		<action name="exports" class="ckxWulljAction" method="exports"/>
+		<action name="checkWulljTemp" class="ckxWulljAction" method="checkWulljTemp"/>
+		
+		
+		<!-- 物理点 -->
+		<action name="ckxWuld" class="ckxWuldAction" method="executeWuld">
+			<result name="selectWuld">/WEB-INF/pages/ckx/carry/ckxWuld.jsp</result>
+		</action>
+		<action name="queryWuld" class="ckxWuldAction" method="queryWuld" />
+		<action name="selectWuld" class="ckxWuldAction" method="selectWuld" />
+		
+		<action name="getPathNameByPathCode" class="ckxWuldAction" method="getPathNameByPathCode"></action>
+		<action name="saveWuld" class="ckxWuldAction" method="save" />
+		<!-- 物理点类型 -->
+		<action name="ckxWuldlx" class="ckxWuldAction" method="executeWuldlx">
+			<result name="selectWuldlx">/WEB-INF/pages/ckx/carry/ckxWuldlx.jsp</result>
+		</action>
+		<action name="queryWuldlx" class="ckxWuldAction" method="queryWuldlx" />
+		<action name="selectWuldlx" class="ckxWuldAction" method="selectWuldlx" />
+		<action name="saveType" class="ckxWuldAction" method="saveType" />
+		
+		
+		<!-- 内部物流路径 -->
+		<action name="ckxInnerPath" class="ckxInnerPathAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/carry/ckxInnerPath.jsp</result>
+		</action>
+		
+		<action name="queryCkxInnerPath" class="ckxInnerPathAction" method="query" />
+		<action name="getCkxInnerPath" class="ckxInnerPathAction" method="get"/>
+		<action name="addCkxInnerPath" class="ckxInnerPathAction" method="addCkxInnerPath"/>
+		<action name="addCkxInnerPath1" class="ckxInnerPathAction" method="addCkxInnerPath1"/>
+		<action name="saveCkxInnerPath" class="ckxInnerPathAction" method="saveCkxInnerPath"/>
+		<action name="removeCkxInnerPath" class="ckxInnerPathAction" method="removeCkxInnerPath"/>
+		<action name="deleteCkxInnerPath" class="ckxInnerPathAction" method="deleteCkxInnerPath"/>
+		<action name="checkUpdateInnerPath" class="ckxInnerPathAction" method="checkUpdateInnerPath"/>
+		<!-- 增加下载模板功能、导入权限控制  lc 2016.10.19 -->
+		<action name="downloadInnerpathMob" class="ckxInnerPathAction" method="downloadInnerpathMob"/>	
+		<action name="importAth_innerpath" class="ckxInnerPathAction" method="uploadInnerpath">
+	     <result name="upload">/WEB-INF/pages/ckx/carry/ckxInnerPath.jsp</result>
+		</action>
+		
+		
+		
+		<!-- 外部物流路径 -->
+		<action name="ckxOuterPath" class="ckxOuterPathAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/carry/ckxOuterPath.jsp</result>
+		</action>
+		
+		<action name="queryCkxOuterPath" class="ckxOuterPathAction" method="queryOut" />
+		<action name="getCkxOuterPath" class="ckxOuterPathAction" method="getOut"/>
+		<action name="addCkxOuterPath" class="ckxOuterPathAction" method="addCkxOuterPath"/>
+		<action name="saveCkxOuterPath" class="ckxOuterPathAction" method="saveCkxOuterPath"/>
+		<action name="removeCkxOuterPath" class="ckxOuterPathAction" method="removeCkxOuterPath"/>
+		<action name="deleteCkxOuterPath" class="ckxOuterPathAction" method="deleteCkxOuterPath"/>
+		<action name="checkEditCkxOuterPath" class="ckxOuterPathAction" method="checkEditCkxOuterPath"/>
+	    <action name="downloadOuterpathMob" class="ckxOuterPathAction" method="downloadOuterpathMob"/>
+	    <action name="importAth_outerpath" class="ckxOuterPathAction" method="uploadOuterpath">
+	     <result name="upload">/WEB-INF/pages/ckx/carry/ckxOuterPath.jsp</result>
+		</action>
+		<!-- 物流详细 -->
+		<action name="ckxWaibwlxx" class="ckxOutPathDetailAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/carry/ckxWulljxx.jsp</result>
+		</action>
+		
+		<action name="queryCkxWaibwlxx" class="ckxOutPathDetailAction" method="query"/>
+		<action name="getCkxWaibwlxx" class="ckxOutPathDetailAction" method="get"/>
+		<action name="saveCkxWaibwlxx" class="ckxOutPathDetailAction" method="save"/>
+		<action name="removeCkxWaibwlxx" class="ckxOutPathDetailAction" method="remove"/>
+		<!-- <action name="getFastWuldByLujbh" class="ckxOutPathDetailAction" method="getFastWuldByLujbh"/> -->
+		<action name="getSelectLujbhCode" class="ckxOutPathDetailAction" method="getSelectLujbhCode"></action>
+		<action name="getWaibwlxxMaxXuh" class="ckxOutPathDetailAction" method="getWaibwlxxMaxXuh"/>
+	</package>
+</toft>

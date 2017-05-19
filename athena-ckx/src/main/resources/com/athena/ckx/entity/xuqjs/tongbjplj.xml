@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 同步集配零件分类  qizhongtao 2012-4-11 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryTongbjplj" resultClass="com.athena.ckx.entity.xuqjs.Tongbjplj">
+			 select 
+			 	 usercenter,
+			     lingjbh,
+<!-- 			     (select zhongwmc from ${dbSchemal3}ckx_lingj where lingjbh= t.lingjbh and usercenter = t.usercenter) as lingjmc, -->
+				 lingjmc,
+			     shengcxbh,
+			     nclass,
+			     nvalue,
+			     peislx,
+			     qianhcbs,
+			     jipbzwz,creator,create_time,editor,edit_time
+			 from ${dbSchemal3}ckx_tongbjplj t 
+			 where 1=1 
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh=#shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="peislx"><![CDATA[peislx=#peislx#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="nclass"><![CDATA[nclass=#nclass#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,lingjbh,shengcxbh,nclass
+		</select>
+		
+		<!--单数据查询	 -->
+		<select id="getTongbjplj" resultClass="com.athena.ckx.entity.xuqjs.Tongbjplj">
+			 select 
+			 	 usercenter,
+			     lingjbh,
+			     shengcxbh,
+			     nclass,
+			     nvalue,
+			     peislx,
+			     qianhcbs,
+			     jipbzwz
+			 from ${dbSchemal3}ckx_tongbjplj t 
+			 where 1=1 
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh=#shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="nclass"><![CDATA[nclass=#nclass#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--单数据查询	 -->
+		<select id="getCountTongbjplj" resultClass="com.athena.ckx.entity.xuqjs.Tongbjplj" parameterClass="com.athena.ckx.entity.xuqjs.Tongbjplj">
+			 select 
+			 	 usercenter,
+			     lingjbh,
+			     shengcxbh,
+			     nclass,
+			     nvalue,
+			     peislx,
+			     qianhcbs,
+			     jipbzwz
+			 from ${dbSchemal3}ckx_tongbjplj t 
+			 where 1=1 
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh=#shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="nclass"><![CDATA[nclass=#nclass#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertTongbjplj" parameterClass="com.athena.ckx.entity.xuqjs.Tongbjplj" >
+			insert into ${dbSchemal3}ckx_tongbjplj(usercenter,lingjbh,lingjmc,shengcxbh,nclass,nvalue,peislx,qianhcbs,jipbzwz,creator,create_time,editor,edit_time)
+			values(<![CDATA[#usercenter#,#lingjbh#,#lingjmc#,#shengcxbh#,#nclass#,#nvalue#,#peislx#,#qianhcbs#,#jipbzwz#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="updateTongbjplj" parameterClass="com.athena.ckx.entity.xuqjs.Tongbjplj">
+			update ${dbSchemal3}ckx_tongbjplj
+			set lingjmc = #lingjmc#,
+				nvalue = #nvalue#,
+				peislx = #peislx#,
+				qianhcbs = #qianhcbs#,
+				jipbzwz = #jipbzwz#,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and shengcxbh = #shengcxbh# and nclass = #nclass#]]>
+		</update>
+		
+		<!-- 删除数据 -->
+		<delete id="deleteTongbjplj" parameterClass="com.athena.ckx.entity.xuqjs.Tongbjplj">
+			delete from ${dbSchemal3}ckx_tongbjplj where
+			<dynamic prepend=" ">
+				<isNotEmpty property="usercenter" prepend=" and ">
+					<![CDATA[usercenter = #usercenter#]]>
+				</isNotEmpty>
+				<isNotEmpty property="lingjbh" prepend=" and ">
+					<![CDATA[lingjbh = #lingjbh#]]>
+				</isNotEmpty>
+				<isNotEmpty property="shengcxbh" prepend=" and ">
+					<![CDATA[shengcxbh = #shengcxbh#]]>
+				</isNotEmpty>
+				<isNotEmpty property="nclass" prepend=" and ">
+					<![CDATA[nclass = #nclass#]]>
+				</isNotEmpty>
+			</dynamic>
+		</delete>
+	
+	  <!--查询零件名称 -->
+	  <select id="querylingjmc" parameterClass="java.util.Map" resultClass="java.lang.String">
+	  select  distinct zhongwmc as lingjmc
+        from ${dbSchemal3}ckx_lingj
+		where lingjbh = #lingjbh#  and usercenter =#usercenter# 
+	  </select>
+</sqlMap>

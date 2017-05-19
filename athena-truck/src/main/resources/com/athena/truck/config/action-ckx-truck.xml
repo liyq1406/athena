@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	
+	<package name="kac" namespace="/kac"  extend="toft-default" >
+              
+        <!-- 区域  -->   
+    	<action name="quydzt" class="dengdqyAction" method="execute">
+    		<result name="select">/WEB-INF/pages/kac/kacckx/dengdqy.jsp</result>
+    	</action>
+    	<action name="queryDengdqy" class="dengdqyAction" method="query"/>
+   		<action name="listDengdqy" class="dengdqyAction" method="list"/>
+   	 	<action name="removeDengdqy" class="dengdqyAction" method="remove"/>
+   	    <action name="saveShijdzts" class="dengdqyAction" method="saveShijdzts"/>
+   	 	
+   	    
+   		<!-- 实际大站台 chenpeng 20150108-->
+    	<action name="queryShijdzt" class="shijdztAction" method="query"/>
+   		<action name="listShijdzt" class="shijdztAction" method="list"/>
+   		<action name="deleteShijdzt" class="shijdztAction" method="remove"/>
+   		
+   		<action name="listDaztbh" class="shijdztAction" method="listDaztbh"/>
+    	<!-- 要货令调整查询 -->
+    	<action name="yaohltz" class="yaohltzcxAction" method="execute">
+    		<result name="select">/WEB-INF/pages/kac/yaohltzcx/yaohltzcx.jsp</result>
+    	</action>
+    	<action name="queryXiehzt" class="yaohltzcxAction" method="queryXiehzt"/>
+    	<action name="queryYaohltz" class="yaohltzcxAction" method="query"/>
+    	<action name="listYaohltz" class="yaohltzcxAction" method="list"/>
+   		
+   		<!-- 车位-承运商 wangliang 20150120 -->
+    	<action name="chewcys" class="chewChengysAction" method="execute">
+    		<result name="init">/WEB-INF/pages/kac/kacckx/cwcys.jsp</result>
+    	</action>
+    	
+    	<!-- 车位 -->
+    	<action name="queryChewxx" class="chewAction" method="query"/>
+    	<action name="removeChew" class="chewAction" method="remove"/>
+   		<action name="listChew" class="chewAction" method="list"/>
+    	
+    	<action name="saveChewChengys" class="chewAction" method="saveChewChengys"/>
+
+    	<action name="removeChachewCys" class="chewAction" method="removeChachewCys"/>
+    	<action name="removeChachew" class="chewAction" method="removeChachew"/>
+    	<action name="removechewCys" class="chewAction" method="removechewCys"/>
+    	<action name="queryChachew" class="chewAction" method="queryChachew"/>
+    	<action name="queryChewDaztbh" class="chewAction" method="queryChewDaztbh"/>
+    	<action name="removeChengys" class="chewAction" method="removeChengys"/>
+    	
+    	
+    	
+    	
+    	<!-- 承运商 -->
+   		<action name="listChewChengys" class="chewChengysAction" method="list"/>
+    	<action name="queryChewChengys" class="chewChengysAction" method="query"/>
+    	<action name="queryChewChengyx" class="chewChengysAction" method="listx"/>
+    	<action name="removeChewChengys" class="chewChengysAction" method="remove"/>
+    	<action name="queryGongys" class="chewChengysAction" method="querygys"/>
+    	
+   		
+   		<!-- 入厂申报 出厂标记 huilit 20150127 -->
+    	<action name="yundRucsb" class="yundAction" >
+    		<result name="success">/WEB-INF/pages/kac/churcsb/rucsb.jsp</result>
+    	</action>
+    	
+    	<action name="715" class="yundAction" >
+    		<result name="success">/WEB-INF/pages/kac/churcsb/715.jsp</result>
+    	</action>
+    	<action name="71501" class="yundAction" method="insertShenbaoQjp"/>
+    	
+    	<action name="715000" class="yundAction" method ="yundym" >
+    		<result name="select">/WEB-INF/pages/kac/churcsb/715001.jsp</result>
+    	</action>
+    	
+    	<action name="715001" class="yundAction" method ="yund" >
+    	</action>
+    	
+   		<!-- 出厂申报 huilit 20150130 -->
+    	<action name="716" class="yundAction" method="executeChuc" >
+    		<result name="success">/WEB-INF/pages/kac/churcsb/716.jsp</result>
+    	</action>
+    	<action name="71601" class="yundAction" method="updateChucShenbaoQjp"/>
+    	
+    	<action name="chaKanYD" class="yundAction" method="chaKanYD"/>
+    	<action name="yundSC" class="yundAction" method="yundSC"/>
+    	
+    <!-- 流程定义 hzg 20150128 -->
+    	<action name="liucdy" class="kacLcdyAction" method="accessLiucdy">
+    		<result name="success">/WEB-INF/pages/kac/kacckx/kacLcdy.jsp</result>
+    	</action>
+    	<action name="queryLiucdy" class="kacLcdyAction" method="queryKacLcdy"/>
+    	<action name="queryQuybh" class="kacLcdyAction" method="queryQuybh"/>
+    	<action name="queryDaztbh" class="kacLcdyAction" method="queryQyDaztbh"/>
+    	<action name="saveKac" class="kacLcdyAction" method="saveKac"/>
+    	<action name="removeKac" class="kacLcdyAction" method="removeKac"/>
+    	<action name="queryLiucbh" class="kacLcdyAction" method="queryLiucbh"/>
+    	
+    	<!-- 叉车车位  -->   
+    	<action name="chaccw" class="chacAction" method="execute">
+    		<result name="select">/WEB-INF/pages/kac/kacckx/chaccw.jsp</result>
+    	</action>
+    	<action name="queryChac" class="chacAction" method="queryChac"/>
+   		<action name="listChac" class="chacAction" method="list"/>
+   	 	<action name="removeChac" class="chacAction" method="remove"/>
+   	 	<action name="saveChac" class="chacAction" method="save"/>
+    	<action name="queryChew" class="chaccwAction" method="queryChew"/>
+    	<action name="queryChaccw" class="chaccwAction" method="queryChaccw"/>
+    	<action name="queryQuybhqc" class="dengdqyAction" method="listQuybhqc"/>
+    	<action name="listShijdztqc" class="shijdztAction" method="listShijdztqc"/>
+    	<action name="queryChewcc" class="chaccwAction" method="list"/>
+    	<action name="queryChacz" class="chacAction" method="queryChacz"/>
+    	<action name="queryYXChacz" class="chacAction" method="queryYXChacz"/>
+    	
+    	
+    	<!-- 车辆排队管理  xh-->
+    	<action name="kacpd" class="queueAction" >
+    		<result name="select">/WEB-INF/pages/kac/queue/queuecx.jsp</result>
+    	</action>
+    	<action name="dengdqyList" class="queueAction" method="dengdqyList" />
+    	<action name="daztList" class="queueAction" method="daztList" />
+    	<action name="queryQueue" class="queueAction" method="queryQueue" />
+    	<action name="chelpdTop" class="queueAction" method="chelpdTop" />
+    	<action name="queryChew" class="queueAction" method="queryChew" />
+    	<action name="zhidcw" class="queueAction" method="zhidcw" />
+    	<!-- 要货令整体提前/延误 -->
+    	<action name="tiqyw" class="yaohltzAction"  method="tqyw"> 
+    		<result name="select">/WEB-INF/pages/kac/yaohl/yaohl.jsp</result>
+    	</action>
+    	 <action name="queryYaohltqyw" class="yaohltzAction" method="queryYaohltqyw" />
+    	<action name="xiehztList" class="yaohltzAction" method="xiehztList" />
+    	<action name="xiehztbz" class="yaohltzAction" method="queryXiehztbz" />
+    	<action name="yaohltzcz" class="yaohltzAction" method="yaohltzcz" />
+    	<!-- 车辆放空 (流程操作)-->
+    	<action name="chewfk" class="liucczAction" > 
+    		<result name="select">/WEB-INF/pages/kac/liuccz/liuccz.jsp</result>
+    	</action>
+    	 <action name="queryYundzt" class="liucczAction" method="queryYundzt" />
+    	 <action name="queryChewyd" class="liucczAction" method="queryChewyd" />
+    	<action name="yundChex" class="liucczAction" method="yundChex" />
+    	<action name="liuccz" class="liucczAction" method="liuccz" />
+    	<!-- 大屏显示 -->
+    	<action name="dapxs" class="dapxsAction" > 
+    		<result name="select">/WEB-INF/pages/kac/dapxs/dapxs.jsp</result>
+    		<result name="error">/WEB-INF/pages/kac/dapxs/dapxs-error.jsp</result>
+    	</action>
+    	<action name="queryShenbpdxx" class="dapxsAction" method="queryShenbpdxx"></action>
+    	<action name="queryRucxx" class="dapxsAction" method="queryRucxx"></action>
+    	<!-- 运单跟踪  gswang-->
+    	<action name="yundgz" class="yundgzAction" method="execute">
+    		<result name="select">/WEB-INF/pages/kac/yundgz/yundgz.jsp</result>
+    	</action>
+     	<action name="queryPostDengdqy" class="yundgzAction" method="queryYundgzDengdqy" />   	
+    	<action name="queryPostDazt" class="yundgzAction" method="queryYundgzDazt" />   
+    	<action name="queryYundgzZhuangt" class="yundgzAction" method="queryYundgzZhuangt" />  
+    	<action name="queryYundgz" class="yundgzAction" method="queryYundgz" />   
+    	<action name="yundtiqpd" class="yundgzAction" method="yunDtiqpd" />
+    	<action name="yundDelete" class="yundgzAction" method="yundDelete" />
+    	<action name="yundRuc" class="yundgzAction" method="yundRuc" />
+    	<!-- 运单明细  gswang-->
+    	<action name="initYundMx" class="yundgzAction" method="initYundMx">
+    		<result name="selectmx">/WEB-INF/pages/kac/yundgz/yundgzmx.jsp</result>
+    	</action>
+    	<action name="queryYundgzmx" class="yundgzAction" method="queryYundgzmx" />  
+
+    	
+    	<!--总览平台   wangyu-->   
+    	<action name="zonglpt" class="zonglptAction" method="execute">
+    		<result name="select">/WEB-INF/pages/kac/zonglpt/zonglpt.jsp</result>
+    	</action>
+    	<action name="queryZonglpt" class="zonglptAction" method="queryZonglpt"/>
+    	<action name="selectquybh" class="zonglptAction" method="selectquybh"/>
+    </package>
+	
+</toft>

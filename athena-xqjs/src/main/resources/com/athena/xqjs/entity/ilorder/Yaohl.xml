@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ilorder">
+	<!-- 修改要货令状态 -->
+	<!-- 在表达的要货令 -->
+	<!-- 关联的零件明细不是执行完成状态 -->
+	<update id="updateYaohlZt" parameterClass="com.athena.xqjs.entity.yaohl.Yaohl">
+	<![CDATA[
+		update ${dbSchemal1}CK_YAOHL t1 set 
+		YAOHLZT = #yaohlzt#
+		
+		where YAOHLZT = '01' and
+		
+		((select ZHUANGT from ${dbSchemal1}xqjs_dingdmx t2 
+		where t1.USERCENTER = #usercenter# and t2.DINGDH = #dingdh# and t2.LINGJBH = #lingjbh#
+		
+		and t2.ID = t1.DINGDMXID) <> '8')
+	]]>
+	</update>
+</sqlMap>

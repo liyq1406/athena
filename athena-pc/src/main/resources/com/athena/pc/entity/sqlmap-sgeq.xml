@@ -1,0 +1,833 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="sgeq"> 
+	<!-- 工时查询查询  hzg 2012-6-20  -->
+	<select id="queryGongstz" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.LineTimeUpdate">
+		<![CDATA[	
+		select z.usercenter,appobj as lineNum,riq as startTime,zhoux,y.workTime,xingq, gongzbh from 
+		(
+		 select riq,s.xingq,s.zhoux,appobj,usercenter from(
+			select zhoux,count(zhoux) as xingq from(
+				select rl.riq,rl.zhoux from ${dbSchemal3}ckx_pc_calendar_version rl 
+				inner join ${dbSchemal3}ckx_pc_calendar_group rp 
+         		on rl.banc= rp.rilbc  and rl.usercenter = rp.usercenter
+				where   rl.riq>=#kaissj# and rl.riq<=#jiessj# and rp.appobj in($oppobj$) 
+				and rp.usercenter =#usercenter#  group by  rl.riq,rl.zhoux,rl.xingq order by riq )s 
+				group by zhoux order by zhoux) s
+		left join
+			(
+			select riq,xingq,zhoux,appobj,usercenter from (
+         		select rl.riq,rl.xingq,rl.zhoux,rp.appobj, rp.usercenter ,row_number() over(partition by zhoux,appobj order by appobj,xingq  ) cn 
+         		from ${dbSchemal3}ckx_pc_calendar_version rl
+         	inner join ${dbSchemal3}ckx_pc_calendar_group rp 
+         		on rl.banc= rp.rilbc  and rl.usercenter = rp.usercenter
+         	where rl.riq>=#kaissj# and rl.riq<=#jiessj#
+         	and  rp.appobj in($oppobj$) and rp.usercenter =#usercenter#
+          	group by zhoux,appobj,riq,xingq, rp.usercenter
+  		) r where cn=1
+		)p on s.zhoux=p.zhoux 
+	 ) z
+		left join
+		(
+		]]>
+		
+	   	<![CDATA[
+		  select p.usercenter, p.worktime ,p.chanxh, p.gongzbh,to_char(p.shij,'yyyy-MM-dd')as shij from (
+		]]>
+		<dynamic>
+		   	<isEqual prepend=" "  property="biaos"  compareValue="Y">
+			  select y.usercenter,y.shij,y.hour as worktime ,y.chanxh,y.gongzbh, row_number() over(partition by chanxh order by to_number(y.hour)   desc ) rn 
+		   	</isEqual>
+		   	<isEqual prepend=" "  property="biaos"  compareValue="G">
+			  select y.usercenter,y.shij,y.gundmngs as worktime,y.chanxh,y.gongzbh, row_number() over(partition by chanxh order by to_number(y.gundmngs)   desc ) rn 
+		   	</isEqual>
+	  	</dynamic>
+	   <![CDATA[
+		  from ${dbSchemal2}PC_YUEDMNJHMX y    
+		  where y.shij  between to_date(#kaissj#,'yyyy-MM-dd') 
+		  and to_date(#jiessj#,'yyyy-MM-dd') and y.usercenter=#usercenter# 
+		  and y.chanxh in($oppobj$) 
+		  ]]>
+		  <dynamic>
+		   	<isEqual prepend=" "  property="biaos"  compareValue="Y">
+			 	and y.hour is not null
+		   	</isEqual>
+		   	<isEqual prepend=" "  property="biaos"  compareValue="G">
+			  	and y.gundmngs is not null 
+		   	</isEqual>
+	  	</dynamic>
+	 <![CDATA[
+		  ) p 
+		)y
+		on  z.appobj = y.chanxh
+		and z.riq = y.shij
+		group by   z.usercenter,appobj,zhoux,worktime,riq,xingq,gongzbh order by zhoux
+		]]>
+	</select>
+	
+	
+	<!-- 查询期初库存 hzg 2012-7-1 -->
+	<select id="querySGQickcAll"  resultClass="com.athena.pc.entity.Qickc">
+	<![CDATA[
+	SELECT QCKC.USERCENTER,QCKC.LINGJBH,TO_CHAR(QCKC.SHIJ,'YYYY-MM-DD') AS SHIJ,QCKC.BIAOS,
+	coalesce(ymn.LINGJSL,0) AS LINGJSL ,
+    coalesce(QCKC.LINGJSL,0) AS MAOXQ,
+    coalesce(QCKC.QICKC,0) AS QICKC,
+    coalesce(QCKC.ANQKC,0) AS ANQKC
+	FROM ${dbSchemal2}PC_LINGJRXQHZB_B QCKC
+   	]]>
+   	<!-- 月模拟实际产量(即入库数量) -->
+   	<dynamic>
+	   	<isEqual prepend=" "  property="biaos"  compareValue="Y">
+	   	<![CDATA[
+	   	left join (
+	   	select t.lingjbh,sum(t.lingjsl) as lingjsl,t.shijscsl,p.shij,p.usercenter from ${dbSchemal2}PC_MONRGDLJCLB_B t 
+	   	inner join ${dbSchemal2}PC_YUEDMNJHMX_B p
+	   	on t.gongzbh=p.gongzbh
+	   	group by lingjbh,shijscsl,shij,usercenter
+	   	) ymn 
+	   	on qckc.lingjbh=ymn.lingjbh and qckc.shij=ymn.shij and qckc.usercenter=ymn.usercenter 
+	   	]]>
+	   	</isEqual> 
+   	</dynamic>
+   	<!-- 日滚动实际产量(即入库数量) -->
+   	<dynamic>
+	   	<isEqual prepend=" "  property="biaos"  compareValue="G">
+	   	<![CDATA[
+	   left join (
+	   	select t.lingjbh,sum(t.lingjsl) as lingjsl,t.shijscsl,p.shij,p.usercenter from ${dbSchemal2}PC_GUNDYMNRGDLJCLB_B t 
+	   	inner join ${dbSchemal2}PC_YUEDMNJHMX_B p
+	   	on t.gongzbh=p.gongzbh
+	   	group by lingjbh,shijscsl,shij,usercenter
+	   	) ymn 
+	   	on qckc.lingjbh=ymn.lingjbh and qckc.shij=ymn.shij and qckc.usercenter=ymn.usercenter 
+	   	]]>
+	   	</isEqual> 
+   	</dynamic>
+   	<!-- 计划员权限(获得计划员编号) -->
+   	<![CDATA[
+    WHERE  QCKC.USERCENTER=#usercenter# AND qckc.biaos = #biaos#
+    AND QCKC.SHIJ between to_date(#kaissj#,'yyyy-mm-dd') AND to_date(#jiessj#,'yyyy-mm-dd')
+    AND QCKC.lingjbh in (
+	SELECT LINGJBH FROM  ${dbSchemal3}CKX_SHENGCX_LINGJ CXLJ 
+    INNER JOIN ${dbSchemal3}CKX_SHENGCX SCX
+    ON CXLJ.SHENGCXBH=SCX.SHENGCXBH AND CXLJ.USERCENTER=SCX.USERCENTER
+    INNER JOIN ${dbSchemal3}CKX_CHANXZ CXZ
+    ON SCX.CHANXZBH=CXZ.CHANXZBH AND SCX.USERCENTER=CXZ.USERCENTER
+    WHERE CXZ.JIHYZBH=#jihyzbh# GROUP BY LINGJBH)
+    group by  QCKC.USERCENTER,QCKC.LINGJBH, QCKC.SHIJ,QCKC.BIAOS,ymn.LINGJSL,QCKC.LINGJSL,QCKC.QICKC,QCKC.ANQKC
+	]]>
+	<![CDATA[ order by SHIJ]]>
+	</select>
+	
+	
+	
+	<!-- 参考系产线查询  hzg 2012-6-20  -->
+	<select id="queryShengcx" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[select scx.shengcxbh,cxz.chanxzbh from ${dbSchemal3}ckx_shengcx scx inner join ${dbSchemal3}ckx_chanxz cxz  
+		on scx.usercenter = cxz.usercenter AND SCX.CHANXZBH = CXZ.CHANXZBH where cxz.usercenter = #USERCENTER#  and scx.biaos = '1' 
+		AND CXZ.JIHYZBH = #JIHYZBH# ]]>	
+	</select>
+	
+	<!-- 工业周期时间范围查询  hzg 2012-6-20  -->
+	<select id="queryGyzqfw" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		<![CDATA[
+		select gongyzq,kaissj,jiessj from ${dbSchemal3}ckx_calendar_gongyzq 
+		where gongyzq=#gongyzq# ]]>
+	</select>
+	
+	<!-- 月度模拟计划明细表B查询(用户中心下工业周期内产线的工作编号集合)  hzg 2012-6-21  -->
+	<select id="queryYuedmnjhmx_BOfGongzbh" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			select ymx.gongzbh from ${dbSchemal2}PC_YUEDMNJHMX ymx
+			where chanxh in ($chanxh$) and usercenter=#usercenter#
+			and shij>=to_date(#kaissj#,'yyyy-MM-dd') 
+			and shij<=to_date(#jiessj#,'yyyy-MM-dd')
+			group by gongzbh
+		]]>
+	</select>
+	<!-- 月度模拟计划明细表B查询(用户中心下工业周期内产线的工作编号集合)  hzg 2012-6-21  -->
+	<select id="queryYuedmnjhmx_BOJihh" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			select ymx.YUEMNJHH from  ${dbSchemal2}PC_YUEDMNJHMX ymx
+			where chanxh in ($chanxh$) and usercenter=#usercenter#
+			and shij>=to_date(#kaissj#,'yyyy-MM-dd') 
+			and shij<=to_date(#jiessj#,'yyyy-MM-dd')
+			group by YUEMNJHH
+		]]>
+	</select>
+	
+	<select id="queryCKX_SHENGCX_LINGJOFLingjbh" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			select m.lingjbh from ${dbSchemal3}ckx_shengcx_lingj m 
+			where m.shengcxbh in ($chanxh$) and m.usercenter=#usercenter#
+			group by m.lingjbh
+		]]>
+	</select>
+	
+	<!-- 1、删除模拟日零件产量表B中的记录  hzg 2012-6-21  -->
+	<delete id="deleteMONRGDLJCLB_B" parameterClass="java.util.Map" >
+		<![CDATA[
+			delete ${dbSchemal2}$PC_MONRGDLJCLB_B$ where GONGZBH in ($gongzbh$)
+		]]>
+	</delete>
+	
+	<!-- 2、删除滚动月模拟日零件产量表B中的记录  hzg 2012-6-21  -->
+	<delete id="deleteGUNDYMNRGDLJCLB_B" parameterClass="java.util.Map" >
+		<![CDATA[
+			delete ${dbSchemal2}$PC_GUNDYMNRGDLJCLB_B$ where GONGZBH in ($gongzbh$)
+		]]>
+	</delete>
+	
+	<!-- 3、删除月度模拟计划明细表B中的记录  hzg 2012-6-21  -->
+	<delete id="deletePC_YUEDMNJHMX_B" parameterClass="java.util.Map" >
+		<![CDATA[
+			delete ${dbSchemal2}$PC_YUEDMNJHMX_B$ where chanxh in ($chanxh$) and usercenter=#usercenter#
+			and shij>=to_date(#kaissj#,'yyyy-MM-dd') 
+			and shij<=to_date(#jiessj#,'yyyy-MM-dd')
+		]]>
+	</delete>
+	
+	<!-- 4、删除滚动月模拟日零件产量表B中的记录  hzg 2012-6-21  -->
+	<delete id="deletePC_YUEDMNJHB_B" parameterClass="java.util.Map" >
+		<![CDATA[
+			delete ${dbSchemal2}$PC_YUEDMNJHB_B$ where YUEMNJHH in ($yuemnjhh$)
+		]]>
+	</delete>
+	
+	<!-- 5、删除零件日需求汇总表B中的记录  hzg 2012-6-21  -->
+	<delete id="deletePC_LINGJRXQHZB_B" parameterClass="java.util.Map" >
+		<![CDATA[
+			delete ${dbSchemal2}$PC_LINGJRXQHZB_B$ where LINGJBH in ($lingjbh$) and usercenter=#usercenter#
+			and shij>=to_date(#kaissj#,'yyyy-MM-dd') 
+			and shij<=to_date(#jiessj#,'yyyy-MM-dd')
+			and biaos=#biaos#
+		]]>
+	</delete>
+	<!-- #########################  将主表记录插入辅表 ##########################  -->
+	<!-- 1、将主表记录插入记录到月度模拟计划表B中  hzg 2012-6-21  -->
+	<insert id="insertPC_YUEDMNJHB_B" parameterClass="java.util.Map" >
+		<![CDATA[
+			insert into ${dbSchemal2}PC_YUEDMNJHB_B
+			  (YUEMNJHH,
+			   USERCENTER,
+			   CHANXH,
+			   DINDDHS,
+			   KAISSJ,
+			   JIESSJ,
+			   SHIFQR,
+			   CHANXZBH,
+			   EDITOR,
+			   EDIT_TIME,
+			   CREATOR,
+			   CREATE_TIME)
+			  select p.YUEMNJHH,
+			         p.usercenter,
+			         p.chanxh,
+			         p.dinddhs,
+			         p.kaissj,
+			         p.jiessj,
+			         p.shifqr,
+			         p.chanxzbh,
+			         p.editor,
+			         p.edit_time,
+			         p.creator,
+			         p.create_time
+			    from ${dbSchemal2}PC_YUEDMNJHB p
+			   where YUEMNJHH in ($yuemnjhh$) and usercenter=#usercenter#
+
+		]]>
+	</insert>
+	
+	<!-- 2、将主表记录插入记录到月度模拟计划明细表B中  hzg 2012-6-21  -->
+	<insert id="insertPC_YUEDMNJHMX_B" parameterClass="java.util.Map" >
+		<![CDATA[
+			insert into ${dbSchemal2}PC_YUEDMNJHMX_B
+			  (GONGZBH,
+			   YUEMNJHH,
+			   CHANXH,
+			   SHIJ,
+			   USERCENTER,
+			   Beiz,
+			   HOUR,
+			   MEIRQBCN,
+			   GUNDMNGS,
+			   Gundqbcn,
+			   SHIFFB,
+			   CHANXZBH,
+			   EDITOR,
+			   EDIT_TIME,
+			   CREATOR,
+			   CREATE_TIME)
+			  select m.gongzbh,
+			         m.YUEMNJHH,
+			         m.chanxh,
+			         m.shij,
+			         m.usercenter,
+			         m.beiz,
+			         m.hour,
+			         m.meirqbcn,
+			         m.gundmngs,
+			         m.gundqbcn,
+			         m.shiffb,
+			         m.chanxzbh,
+			         m.editor,
+			         m.edit_time,
+			         m.creator,
+			         m.create_time
+			    from ${dbSchemal2}PC_YUEDMNJHMX m
+			   where m.gongzbh in ($gongzbh$) and usercenter=#usercenter#
+		]]>
+	</insert>
+	
+	<!-- 3、将主表记录插入记录到模拟日零件产量表B中  hzg 2012-6-21  -->
+	<insert id="insertPC_MONRGDLJCLB_B"  parameterClass="java.util.Map">
+		<![CDATA[
+			insert into ${dbSchemal2}PC_MONRGDLJCLB_B
+			  (GONGZBH,
+			   LINGJSL,
+			   LINGJBH,
+			   SHIJSCSL,
+			   DANTCE,
+			   LEIJCE,
+			   HOUR,
+			   YWHOUR,
+			   CHANXZBH,
+			   EDITOR,
+			   EDIT_TIME,
+			   CREATOR,
+			   ID,
+			   CREATE_TIME)
+			  select r.gongzbh,
+			         r.lingjsl,
+			         r.lingjbh,
+			         r.shijscsl,
+			         r.dantce,
+			         r.leijce,
+			         r.hour,
+			         r.ywhour,
+			         r.chanxzbh,
+			         r.editor,
+			         r.edit_time,
+			         r.creator,
+			         r.ID,
+			         r.create_time
+			    from ${dbSchemal2}PC_MONRGDLJCLB r
+			 where r.gongzbh in ($gongzbh$)
+		]]>
+	</insert>
+	
+	<!-- 4、将主表记录插入记录到滚动月模拟日零件产量表B中  hzg 2012-6-21  -->
+	<insert id="insertPC_GUNDYMNRGDLJCLB_B"  parameterClass="java.util.Map">
+		<![CDATA[
+			insert into ${dbSchemal2}PC_GUNDYMNRGDLJCLB_B
+			  (GONGZBH,
+			   LINGJSL,
+			   LINGJBH,
+			   SHIJSCSL,
+			   HOUR,
+			   CHANXZBH,
+			   EDITOR,
+			   EDIT_TIME,
+			   CREATOR,
+			   ID,
+			   CREATE_TIME)
+			  select g.gongzbh,
+			         g.lingjsl,
+			         g.lingjbh,
+			         g.shijscsl,
+			         g.hour,
+			         g.chanxzbh,
+			         g.editor,
+			         g.edit_time,
+			         g.creator,
+			         g.id,
+			         g.create_time
+			    from ${dbSchemal2}PC_GUNDYMNRGDLJCLB g
+			 where g.gongzbh in ($gongzbh$) 
+		]]>
+	</insert>
+	
+	<!-- 5、将主表记录插入记录到零件日需求汇总表B中  hzg 2012-6-21  -->
+	<insert id="insertPC_LINGJRXQHZB_B"  parameterClass="java.util.Map">
+		<![CDATA[
+			insert into ${dbSchemal2}PC_LINGJRXQHZB_B
+			  (LINGJBH, SHIJ, BIAOS, USERCENTER, LINGJSL, JINXQ, QICKC, ANQKC)
+			  select n.lingjbh,
+			         n.shij,
+			         n.biaos,
+			         n.usercenter,
+			         n.lingjsl,
+			         n.jinxq,
+			         n.qickc,
+			         n.anqkc
+			    from ${dbSchemal2}PC_LINGJRXQHZB n
+			  where LINGJBH in ($lingjbh$) 
+			  	and usercenter=#usercenter#
+				and shij>=to_date(#kaissj#,'yyyy-MM-dd') 
+				and shij<=to_date(#jiessj#,'yyyy-MM-dd')
+				and biaos=#biaos#
+		]]>
+	</insert>
+	
+	<!-- #########################  将辅表记录插入主表 ##########################  -->
+	<!-- 1、将辅表记录插入记录到月度模拟计划表中  hzg 2012-6-25  -->
+	<insert id="insertPC_YUEDMNJHB" parameterClass="java.util.Map" >
+		<![CDATA[
+			insert into ${dbSchemal2}PC_YUEDMNJHB
+			  (YUEMNJHH,
+			   USERCENTER,
+			   CHANXH,
+			   DINDDHS,
+			   KAISSJ,
+			   JIESSJ,
+			   SHIFQR,
+			   CHANXZBH,
+			   EDITOR,
+			   EDIT_TIME,
+			   CREATOR,
+			   CREATE_TIME)
+			  select p.YUEMNJHH,
+			         p.usercenter,
+			         p.chanxh,
+			         p.dinddhs,
+			         p.kaissj,
+			         p.jiessj,
+			         p.shifqr,
+			         p.chanxzbh,
+			         p.editor,
+			         p.edit_time,
+			         p.creator,
+			         p.create_time
+			    from ${dbSchemal2}PC_YUEDMNJHB_B p
+			   where YUEMNJHH in ($yuemnjhh$) and usercenter=#usercenter#
+
+		]]>
+	</insert>
+	
+	<!-- 2、将辅表记录插入记录到月度模拟计划明细表中  hzg 2012-6-25  -->
+	<insert id="insertPC_YUEDMNJHMX" parameterClass="java.util.Map" >
+		<![CDATA[
+			insert into ${dbSchemal2}PC_YUEDMNJHMX
+			  (GONGZBH,
+			   YUEMNJHH,
+			   CHANXH,
+			   SHIJ,
+			   USERCENTER,
+			   Beiz,
+			   HOUR,
+			   MEIRQBCN,
+			   GUNDMNGS,
+			   Gundqbcn,
+			   SHIFFB,
+			   CHANXZBH,
+			   EDITOR,
+			   EDIT_TIME,
+			   CREATOR,
+			   CREATE_TIME)
+			  select m.gongzbh,
+			         m.YUEMNJHH,
+			         m.chanxh,
+			         m.shij,
+			         m.usercenter,
+			         m.beiz,
+			         m.hour,
+			         m.meirqbcn,
+			         m.gundmngs,
+			         m.gundqbcn,
+			         m.shiffb,
+			         m.chanxzbh,
+			         m.editor,
+			         m.edit_time,
+			         m.creator,
+			         m.create_time
+			    from ${dbSchemal2}PC_YUEDMNJHMX_B m
+			   where m.gongzbh in ($gongzbh$) and usercenter=#usercenter#
+		]]>
+	</insert>
+	
+	<!-- 3、将辅表记录插入记录到模拟日零件产量表中  hzg 2012-6-25 -->
+	<insert id="insertPC_MONRGDLJCLB"  parameterClass="java.util.Map">
+		<![CDATA[
+			insert into ${dbSchemal2}PC_MONRGDLJCLB
+			  (GONGZBH,
+			   LINGJSL,
+			   LINGJBH,
+			   SHIJSCSL,
+			   DANTCE,
+			   LEIJCE,
+			   HOUR,
+			   YWHOUR,
+			   CHANXZBH,
+			   EDITOR,
+			   EDIT_TIME,
+			   CREATOR,
+			   ID,
+			   CREATE_TIME)
+			  select r.gongzbh,
+			         r.lingjsl,
+			         r.lingjbh,
+			         r.shijscsl,
+			         r.dantce,
+			         r.leijce,
+			         r.hour,
+			         r.ywhour,
+			         r.chanxzbh,
+			         r.editor,
+			         r.edit_time,
+			         r.creator,
+			         r.ID,
+			         r.create_time
+			    from ${dbSchemal2}PC_MONRGDLJCLB_B r
+			 where r.gongzbh in ($gongzbh$)
+		]]>
+	</insert>
+	
+	<!-- 4、将辅表记录插入记录到滚动月模拟日零件产量表中  hzg 2012-6-25  -->
+	<insert id="insertPC_GUNDYMNRGDLJCLB"  parameterClass="java.util.Map">
+		<![CDATA[
+			insert into ${dbSchemal2}PC_GUNDYMNRGDLJCLB
+			  (GONGZBH,
+			   LINGJSL,
+			   LINGJBH,
+			   SHIJSCSL,
+			   HOUR,
+			   CHANXZBH,
+			   EDITOR,
+			   EDIT_TIME,
+			   CREATOR,
+			   ID,
+			   CREATE_TIME)
+			  select g.gongzbh,
+			         g.lingjsl,
+			         g.lingjbh,
+			         g.shijscsl,
+			         g.hour,
+			         g.chanxzbh,
+			         g.editor,
+			         g.edit_time,
+			         g.creator,
+			         g.id,
+			         g.create_time
+			    from ${dbSchemal2}PC_GUNDYMNRGDLJCLB_B g
+			 where g.gongzbh in ($gongzbh$) 
+		]]>
+	</insert>
+	
+	<!-- 5、将辅表记录插入记录到零件日需求汇总表中  hzg 2012-6-25  -->
+	<insert id="insertPC_LINGJRXQHZB"  parameterClass="java.util.Map">
+		<![CDATA[
+			insert into ${dbSchemal2}PC_LINGJRXQHZB
+			  (LINGJBH, SHIJ, BIAOS, USERCENTER, LINGJSL, JINXQ, QICKC, ANQKC)
+			  select n.lingjbh,
+			         n.shij,
+			         n.biaos,
+			         n.usercenter,
+			         n.lingjsl,
+			         n.jinxq,
+			         n.qickc,
+			         n.anqkc
+			    from ${dbSchemal2}PC_LINGJRXQHZB_B n
+			  where LINGJBH in ($lingjbh$) 
+			  	and usercenter=#usercenter#
+				and shij>=to_date(#kaissj#,'yyyy-MM-dd') 
+				and shij<=to_date(#jiessj#,'yyyy-MM-dd')
+				and biaos=#biaos#
+		]]>
+	</insert>
+	
+	
+	<!--更新日滚动计划明细表-->
+	<update id="updateLineWorkTime" parameterClass="com.athena.pc.entity.LineTimeUpdate">
+	<![CDATA[
+	update ${dbSchemal2}PC_YUEDMNJHMX_B 
+	]]>
+	<dynamic>
+	   	<isEqual prepend=" " property="biaos"  compareValue="Y">
+	   	<![CDATA[ set HOUR=#workTime#  ]]>
+	   	</isEqual> 
+	   	<isEqual prepend=" " property="biaos"  compareValue="G">
+	   	<![CDATA[ set GUNDMNGS=#workTime#  ]]>
+	   	</isEqual> 
+   	</dynamic>
+	<![CDATA[
+	where CHANXH=#lineNum# and (SHIJ>=to_date(#startTime#,'yyyy-MM-dd') and SHIJ<=to_date(#endTime#,'yyyy-MM-dd')) 
+	and USERCENTER=#usercenter# and CHANXZBH=#linegroup#
+	]]>
+	</update> 
+
+	<!--更新日滚动计划明细表-->
+	<update id="updateLineWorkTimeTesu" parameterClass="com.athena.pc.entity.Yuemn">
+	<![CDATA[
+	update ${dbSchemal2}PC_YUEDMNJHMX_B 
+	]]>
+	<dynamic>
+	   	<isEqual prepend=" " property="biaos"  compareValue="Y">
+	   	<![CDATA[ set HOUR=#hour#  ]]>
+	   	</isEqual> 
+	   	<isEqual prepend=" " property="biaos"  compareValue="G">
+	   	<![CDATA[ set GUNDMNGS=#gundmngs#  ]]>
+	   	</isEqual> 
+   	</dynamic>
+	<![CDATA[
+	where gongzbh=#gongzbh# and SHIJ=to_date(#riq#,'yyyy-MM-dd')
+	]]>
+	</update>
+	
+	<!--查询产线组编号 hzg 2012-6-25-->
+	<select id="queryChanxzbh" parameterClass="java.util.Map" resultClass="java.lang.String">
+	<![CDATA[
+		select cxz.chanxzbh from  ${dbSchemal3}CKX_CHANXZ cxz
+		where cxz.usercenter = #USERCENTER#  AND cxz.jihyzbh = #JIHYZBH# 
+	]]>
+	</select>
+	
+	<!--查询调整工时的产线工作日 hzg 2012-6-25-->
+	<select id="queryLineTime" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.Yuemn">
+	<![CDATA[
+		select  pc.gongzbh,to_char(pc.shij,'yyyy-MM-dd') as riq,pc.hour,pc.gundmngs,ckx.cpshengcjp as beat from  ${dbSchemal2}PC_YUEDMNJHMX_B pc
+		left join ${dbSchemal3}ckx_shengcx ckx on pc.usercenter=ckx.usercenter and pc.chanxh=ckx.shengcxbh
+		where pc.usercenter = #usercenter#  AND pc.CHANXH=#lineNum# AND pc.CHANXZBH=#chanxzbh#
+		and (shij>=to_date(#startTime#,'yyyy-MM-dd') and shij<=to_date(#jiessj#,'yyyy-MM-dd')) order by riq
+	]]>
+	</select>
+	
+	<!--查询模拟日零件数量及工时  hzg 2012-6-25-->
+	<select id="queryMnrljcl"  parameterClass="java.util.Map" resultClass="com.athena.pc.entity.LingjDayVolume">
+	<![CDATA[
+	select s.gongzbh, s.lingjsl, s.lingjbh, s.hour,coalesce(y.qickc,0) as qickc from(
+		select pc.gongzbh,pc.lingjsl,pc.lingjbh,pc.hour from  ${dbSchemal2}PC_MONRGDLJCLB_B pc
+		where pc.GONGZBH=#gongzbh# group by gongzbh,lingjbh,lingjsl,hour) s
+	inner join
+		(select b.shij,b.lingjbh,b.qickc from ${dbSchemal2}PC_LINGJRXQHZB_B b
+  		where shij=to_date(#shij#,'yyyy-MM-dd') and biaos=#biaos# and usercenter=#usercenter#) y
+  	on s.lingjbh = y.lingjbh
+	]]>
+	</select>
+	
+	<!--查询滚动月模拟日零件数量及工时  hzg 2012-6-25-->
+	<select id="queryGdmnrljcl"  parameterClass="java.util.Map" resultClass="com.athena.pc.entity.LingjDayVolume">
+	<![CDATA[
+	select s.gongzbh, s.lingjsl, s.lingjbh, s.hour,coalesce(y.qickc,0) as qickc from(
+		select pc.gongzbh,pc.lingjsl,pc.lingjbh,pc.hour from  ${dbSchemal2}PC_GUNDYMNRGDLJCLB_B pc
+		where pc.GONGZBH=#gongzbh# group by gongzbh,lingjbh,lingjsl,hour) s
+	inner join
+		(select b.shij,b.lingjbh,b.qickc from ${dbSchemal2}PC_LINGJRXQHZB_B b
+  		where shij=to_date(#shij#,'yyyy-MM-dd') and biaos=#biaos# and usercenter=#usercenter#) y
+  	on s.lingjbh = y.lingjbh
+	]]>
+	</select>
+	
+	<!-- 查询零件的毛需求(消耗量)  hzg 2012-6-26 -->
+	<select id="queryMaoxq" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			SELECT TO_CHAR(LJ.SHIJ,'yyyy-MM-dd') SHIJ, LJ.LINGJBH, TO_CHAR(LJ.LINGJSL)  LINGJSL
+			  FROM ${dbSchemal2}PC_LINGJRXQHZB_B LJ
+			 WHERE LJ.USERCENTER = #usercenter#
+			   AND LJ.SHIJ = TO_DATE(#riq#, 'yyyy-MM-dd') 
+			   AND LJ.BIAOS = #biaos#
+			 ORDER BY LJ.LINGJBH
+ 		 ]]>
+	</select>
+	
+	<!-- 查询零件的期初库存  hzg 2012-6-26 -->
+	<select id="queryQickc" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			SELECT TO_CHAR(LJ.SHIJ,'yyyy-mm-dd') SHIJ, LJ.LINGJBH, coalesce(to_char(QICKC),'0') as QICKC
+			  FROM ${dbSchemal2}PC_LINGJRXQHZB_B  LJ
+			 WHERE LJ.USERCENTER = #usercenter#
+			   AND LJ.SHIJ = TO_DATE(#riq#, 'YYYY-MM-DD') 
+			   AND LJ.BIAOS = #biaos#
+			 ORDER BY LJ.LINGJBH
+ 		 ]]>
+	</select>
+	
+	
+	<!-- 查询产线的经济批量  hzg 2012-6-26 -->
+	<select id="queryChanxLJ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			SELECT (Y.USERCENTER||Y.SHENGCXBH||Y.LINGJBH) AS CHANXLJ ,to_char(Y.JINGJPL) as  JINGJPL
+			FROM ${dbSchemal3}CKX_SHENGCX_LINGJ Y 
+ 		 ]]>
+	</select>
+	
+	
+	
+	<!-- 更新模拟日滚动零件表B零件数量  hzg 2012-6-28 -->
+	<update id="updateMnrgdLingj" parameterClass="java.util.Map" >
+	<![CDATA[
+		UPDATE ${dbSchemal2}$pc_monrgdljclb_b$ T SET T.LINGJSL=#lingjsl# ,T.HOUR=#hour#
+		WHERE T.GONGZBH=#gongzbh# AND T.LINGJBH=#lingjbh#
+	]]>
+	</update>
+	
+	<!-- 更新日零件汇总表  hzg 2012-6-28 -->
+	<update id="updateLingjrxqzh" parameterClass="java.util.Map" >
+	<![CDATA[
+		UPDATE ${dbSchemal2}PC_LINGJRXQHZB_B T SET T.QICKC=#qickc# 
+		WHERE T.USERCENTER=#usercenter# AND T.LINGJBH=#lingjbh# AND T.SHIJ=to_date(#shij#,'yyyy-MM-dd') AND T.BIAOS=#biaos#
+	]]>
+	</update>
+	
+	<!--查询产线组工作日 hzg 2012-6-30 update hzg 2012-7-18-->
+	<select id="queryChanxGZR" parameterClass="java.util.Map" resultClass="java.lang.String">
+	<![CDATA[
+		select to_char(pc.shij,'yyyy-MM-dd') as shij from  ${dbSchemal2}PC_YUEDMNJHMX_B pc
+		where pc.usercenter = #usercenter#  AND pc.CHANXZBH=#chanxzbh#
+		and (shij>=to_date(#startTime#,'yyyy-MM-dd') and shij<=to_date(#jiessj#,'yyyy-MM-dd')) 
+		group by shij order by shij
+	]]>
+	</select>
+	
+	
+	<!-- 新增消息报警  hzg 2012-7-1  -->
+	<insert id="insertMessage" parameterClass="java.util.Map">
+		<![CDATA[
+			INSERT INTO ${dbSchemal2}PC_MESSAGE
+				(JIHH, USERCENTER,CHANXZBH, CHANXH, SHIJ, XIAOX, LEIX)
+			VALUES
+				(#jihh#, #usercenter#,#chanxzbh#, #chanxh#, to_date(#shij#,'yyyy-MM-dd'), #xiaox#, #leix#)
+		]]>
+	</insert>
+	
+	
+	<!-- 查询零件第一天的期初库存  hzg 2012-7-2 -->
+	<select id="queryQickcOfLingj" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			SELECT SHIJ,LINGJBH,coalesce(to_char(QICKC),'0') as QICKC FROM 
+			(
+				SELECT T.SHIJ,T.LINGJBH,T.QICKC,ROW_NUMBER() OVER(PARTITION BY USERCENTER,LINGJBH ORDER BY SHIJ) CN 
+				FROM ${dbSchemal2}PC_LINGJRXQHZB_B T WHERE T.SHIJ BETWEEN TO_DATE(#startTime#,'YYYY-MM-DD') 
+				AND TO_DATE(#jiessj#,'YYYY-MM-DD') 
+				AND BIAOS=#biaos# AND USERCENTER=#usercenter#
+			) S WHERE CN=1
+ 		 ]]>
+	</select>
+	
+	<!-- 查询产线组排产参数  hzg 2012-07-06-->
+	<select id="getPCArg" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	    select gundzq ,tiqq,fengbq,zengcts,	dagdw AS mintime from (
+	    select * from ${dbSchemal3}ckx_chanxz_paiccs
+	     where usercenter = #usercenter#
+	       and chanxzbh = #chanxzbh#
+	       and banb > to_date(#currDate#, 'yyyy-mm-dd') order by banb 
+	    ) where rownum <=1
+	]]>	
+	</select>
+	
+	
+	<!--查询调整工时的产线工作日 hzg 2012-6-25-->
+	<select id="queryDaysList" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.Yuemn">
+	<![CDATA[
+		select  pc.gongzbh,to_char(pc.shij,'yyyy-MM-dd') as riq,pc.hour,pc.gundmngs,ckx.cpshengcjp as beat from  ${dbSchemal2}PC_YUEDMNJHMX_B pc
+		left join ${dbSchemal3}ckx_shengcx ckx on pc.usercenter=ckx.usercenter and pc.chanxh=ckx.shengcxbh
+		where pc.usercenter = #usercenter#  AND pc.CHANXH=#lineNum# AND pc.CHANXZBH=#chanxzbh#
+		and (shij>=to_date(#startTime#,'yyyy-MM-dd') and shij<=to_date(#jiessj#,'yyyy-MM-dd')) order by riq
+	]]>
+	</select>
+	
+	<!-- 某天月模拟零件排产量  hzg 2012-7-18-->
+	<select id="querycurrYmnPCL" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+	SELECT T.LINGJBH, to_char(SUM(T.LINGJSL)) AS LINGJSL
+	  FROM ${dbSchemal2}PC_MONRGDLJCLB_B T
+	 WHERE T.GONGZBH IN ($gongzbhs$)
+	 GROUP BY T.LINGJBH
+	 ORDER BY T.LINGJBH
+	</select>
+	
+	<!-- 某天日滚动模拟零件排产量  hzg 2012-7-18-->
+	<select id="querycurrRgdPCL" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+	SELECT T.LINGJBH, to_char(SUM(T.LINGJSL)) AS LINGJSL
+	  FROM ${dbSchemal2}PC_GUNDYMNRGDLJCLB_B T
+	 WHERE T.GONGZBH IN ($gongzbhs$)
+	 GROUP BY T.LINGJBH
+	 ORDER BY T.LINGJBH
+	</select>
+	
+	
+	<!--查询调整产线某天的工时和节拍 hzg 2012-7-18-->
+	<select id="queryCurrLineTime" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.Yuemn">
+	<![CDATA[
+		select  pc.gongzbh,to_char(pc.shij,'yyyy-MM-dd') as riq,pc.hour,pc.gundmngs,ckx.cpshengcjp as beat from 
+		${dbSchemal2}PC_YUEDMNJHMX_B pc
+		left join ${dbSchemal3}ckx_shengcx ckx on pc.usercenter=ckx.usercenter and pc.chanxh=ckx.shengcxbh
+		where pc.usercenter = #usercenter#  AND pc.CHANXH=#lineNum# AND pc.CHANXZBH=#chanxzbh#
+		and shij=to_date(#riq#,'yyyy-MM-dd') order by riq
+	]]>
+	</select>
+	
+	<!-- 查询当天的工作编号 hzg 2012-7-18 -->
+	<select id="queryDayGongzbh" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT B.GONGZBH
+		 FROM ${dbSchemal2}PC_YUEDMNJHMX_B B
+		 WHERE B.USERCENTER = #usercenter#
+		  AND B.SHIJ = TO_DATE(#riq#, 'YYYY-MM-DD') 
+		   GROUP BY GONGZBH ORDER BY GONGZBH
+		
+	</select>
+	
+	<!-- 查询排产明细最大工时 hzg 2012-8-1 -->
+	<select id="queryPaicmx" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[	
+		select * from(
+	]]>	
+		<dynamic>
+		   	<isEqual prepend=" "  property="biaos"  compareValue="Y">
+					 select y.usercenter,
+                            y.shij,
+                            to_char(y.hour) as worktime,
+                            y.chanxh,
+                            y.gongzbh,
+                            row_number() over(partition by chanxh order by to_number(y.hour) desc) rn
+		   	</isEqual>
+		   	<isEqual prepend=" "  property="biaos"  compareValue="G">
+		   			select  y.usercenter,
+                            y.shij,
+                            to_char(y.gundmngs) as worktime,
+                            y.chanxh,
+                            y.gongzbh,
+                            row_number() over(partition by chanxh order by to_number(y.gundmngs) desc) rn
+		   	</isEqual>
+	  	</dynamic>
+	 <![CDATA[	 	  
+	 				 from ${dbSchemal2}PC_YUEDMNJHMX y
+                        where y.shij  between 
+                        		to_date(#kaissj#,'yyyy-MM-dd') and
+							    to_date(#jiessj#,'yyyy-MM-dd') 
+							    and y.usercenter=#usercenter# 
+							    and y.chanxh =#chanxh#
+					]]>	
+						<isEqual prepend=" and"  property="biaos"  compareValue="Y"><![CDATA[  y.hour is not null ]]></isEqual>
+						<isEqual prepend=" and"  property="biaos"  compareValue="G"><![CDATA[  y.gundmngs is not null ]]></isEqual>
+					<![CDATA[  )where  rn = 1 ]]>
+	</select>
+	
+	<!--查询出计划时间内的特殊时间-->
+	<select id="queryTeSuTime" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	select r.scxbh,r.riq,r.usercenter,r.xingq,scx.tessjxq1,scx.tessjxs1,scx.tessjxq2,scx.tessjxs2,scx.tessjxq3,scx.tessjxs3 from ( select rp.appobj as scxbh, rl.riq as riq,rl.shifgzr as gzr,rp.usercenter,rl.xingq  
+	from ${dbSchemal3}ckx_pc_calendar_version rl inner join ${dbSchemal3}ckx_pc_calendar_group rp on rl.banc= rp.rilbc and rl.usercenter= rp.usercenter where 1 = 1   and rl.usercenter = #usercenter# and rp.appobj in (#lineNum#) and  rl.shifgzr = '1' and rl.riq>=#startTime# and rl.riq<=#jiessj#) r 
+	left join (select cx.usercenter,cx.shengcxbh,cx.chanxzbh,cxz.tessjxq1,cxz.tessjxq2,cxz.tessjxq3,cxz.tessjxs1,cxz.tessjxs2,cxz.tessjxs3 from ${dbSchemal3}ckx_shengcx cx 
+  	inner join ${dbSchemal3}ckx_chanxz cxz on cx.usercenter = cxz.usercenter and cx.chanxzbh = cxz.chanxzbh) scx on r.usercenter = scx.usercenter and r.scxbh = scx.shengcxbh  where (r.xingq = scx.tessjxq1 or r.xingq = scx.tessjxq2 or r.xingq = scx.tessjxq3) order by r.scxbh ,r.riq   
+	]]>
+	</select>	
+	
+	<update id="updateYuedmnjhmxLingjsl" parameterClass="com.athena.pc.entity.LineTimeUpdate">
+	<![CDATA[
+	update ${dbSchemal2}PC_YUEDMNJHMX_B 
+	]]>
+	<dynamic>
+	   	<isEqual prepend=" " property="biaos"  compareValue="Y">
+	   	<![CDATA[ set meirqbcn=(select sum(b.lingjsl) from ${dbSchemal2}pc_monrgdljclb_b b where b.gongzbh = #gongzbh#)  ]]>
+	   	</isEqual> 
+	   	<isEqual prepend=" " property="biaos"  compareValue="G">
+	   	<![CDATA[ set gundqbcn=(select sum(b.lingjsl) from ${dbSchemal2}pc_gundymnrgdljclb_b b where b.gongzbh = #gongzbh#)  ]]>
+	   	</isEqual> 
+   	</dynamic>
+	<![CDATA[
+	where gongzbh=#gongzbh# 
+	]]>
+	</update>
+</sqlMap>

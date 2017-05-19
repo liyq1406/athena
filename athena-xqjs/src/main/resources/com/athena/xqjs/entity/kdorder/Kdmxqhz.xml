@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kdorder">
+
+	<!-- 路径：com.athena.xqjs.entity.kdorder.Kdmxqhz -->
+   <!--  
+	<select id="kdmxhzLineConvertRow" resultClass="com.athena.xqjs.entity.kdorder.Kdmxqhz"
+		parameterClass="java.util.Map">
+		select #s0sszxh# as s0sszxh,
+		mx.usercenter as usercenter,
+		mx.lingjbh as lingjbh,
+		mx.zhizlx as zhizlx,
+		mx.shiycj as shiycj,
+		sum(decode(#s0#, mx.xuqz, mx.xuqsl, 0)) as s0,
+		sum(decode(#s1#, mx.xuqz, mx.xuqsl, 0)) as s1,
+		sum(decode(#s2#, mx.xuqz, mx.xuqsl, 0)) as s2,
+		sum(decode(#s3#, mx.xuqz, mx.xuqsl, 0)) as s3,
+		sum(decode(#s4#, mx.xuqz, mx.xuqsl, 0)) as s4,
+		sum(decode(#s5#, mx.xuqz, mx.xuqsl, 0)) as s5,
+		sum(decode(#s6#, mx.xuqz, mx.xuqsl, 0)) as s6,
+		sum(decode(#s7#, mx.xuqz, mx.xuqsl, 0)) as s7,
+		sum(decode(#s8#, mx.xuqz, mx.xuqsl, 0)) as s8,
+		sum(decode(#s9#, mx.xuqz, mx.xuqsl, 0)) as s9,
+		sum(decode(#s10#, mx.xuqz, mx.xuqsl, 0)) as s10,
+		sum(decode(#s11#, mx.xuqz, mx.xuqsl, 0)) as s11,
+		sum(decode(#s12#, mx.xuqz, mx.xuqsl, 0)) as s12,
+		sum(decode(#s13#, mx.xuqz, mx.xuqsl, 0)) as s13,
+		sum(decode(#s14#, mx.xuqz, mx.xuqsl, 0)) as s14,
+		sum(decode(#s15#, mx.xuqz, mx.xuqsl, 0)) as s15,
+		sum(decode(#s16#, mx.xuqz, mx.xuqsl, 0)) as s16,
+		sum(decode(#s17#, mx.xuqz, mx.xuqsl, 0)) as s17,
+		sum(decode(#s18#, mx.xuqz, mx.xuqsl, 0)) as s18,
+		sum(decode(#s19#, mx.xuqz, mx.xuqsl, 0)) as s19,
+		sum(decode(#s20#, mx.xuqz, mx.xuqsl, 0)) as s20,
+		sum(decode(#s21#, mx.xuqz, mx.xuqsl, 0)) as s21,
+		sum(decode(#s22#, mx.xuqz, mx.xuqsl, 0)) as s22,
+		sum(decode(#s23#, mx.xuqz, mx.xuqsl, 0)) as s23,
+		sum(decode(#s24#, mx.xuqz, mx.xuqsl, 0)) as s24,
+		sum(decode(#s25#, mx.xuqz, mx.xuqsl, 0)) as s25,
+		sum(decode(#s26#, mx.xuqz, mx.xuqsl, 0)) as s26,
+		sum(decode(#s27#, mx.xuqz, mx.xuqsl, 0)) as s27,
+		sum(decode(#s28#, mx.xuqz, mx.xuqsl, 0)) as s28,
+		sum(decode(#s29#, mx.xuqz, mx.xuqsl, 0)) as s29,
+		sum(decode(#s30#, mx.xuqz, mx.xuqsl, 0)) as s30,
+		sum(decode(#s31#, mx.xuqz, mx.xuqsl, 0)) as s31,
+		sum(decode(#s32#, mx.xuqz, mx.xuqsl, 0)) as s32,
+		sum(decode(#s33#, mx.xuqz, mx.xuqsl, 0)) as s33,
+		sum(decode(#s34#, mx.xuqz, mx.xuqsl, 0)) as s34,
+		sum(decode(#s35#, mx.xuqz, mx.xuqsl, 0)) as s35,
+		sum(decode(#s36#, mx.xuqz, mx.xuqsl, 0)) as s36,
+		sum(decode(#s37#, mx.xuqz, mx.xuqsl, 0)) as s37,
+		sum(decode(#s38#, mx.xuqz, mx.xuqsl, 0)) as s38,
+		sum(decode(#s39#, mx.xuqz, mx.xuqsl, 0)) as s39,
+		sum(decode(#s40#, mx.xuqz, mx.xuqsl, 0)) as s40,
+		mx.danw as danw,
+		mx.chanx as chanx,
+		mx.XUQCFRQ as XUQCFRQ
+		from (select t.usercenter as usercenter,
+		t.lingjbh as lingjbh,
+		t.danw as danw,
+		t.xuqsl as xuqsl,
+		t.shiycj as shiycj,
+		t.chanx as chanx,
+		t.xuqz as xuqz,
+		t.xuqrq as xuqrq,
+		t.zhizlx as zhizlx,
+		t.xuqsszq as xuqsszq,
+		t.xuqksrq as xuqksrq,
+		t.xuqjsrq as xuqjsrq,
+		m.xuqcfsj as XUQCFRQ
+		from ${dbSchemal1}XQJS_MAOXQMX t,${dbSchemal1}Xqjs_Maoxq m
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				t.usercenter = #usercenter#
+								</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqbc">
+				t.xuqbc = #xuqbc#
+								</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqbc">
+				m.xuqbc = #xuqbc#
+								</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+				t.zhizlx = #zhizlx#
+								</isNotEmpty>
+		</dynamic>
+		) mx
+		group by
+		#s0sszxh# ,
+		mx.usercenter ,
+		mx.lingjbh ,
+		mx.zhizlx,
+		mx.shiycj ,
+		mx.danw ,
+		mx.chanx ,
+		mx.XUQCFRQ
+
+
+	</select>
+    -->
+
+	<select id="insertYcbj" resultClass="com.athena.xqjs.entity.kdorder.Kdmaoxq"
+		parameterClass="java.util.Map">
+		select hz.usercenter,hz.lingjbh,hz.shengcxbh as chanx,hz.xiaohblx from
+		(select mx.usercenter as usercenter, mx.lingjbh as
+		lingjbh,mx.shengcxbh,sum(x.xiaohbl) as xiaohblx
+		from (select distinct t.usercenter as usercenter, t.lingjbh as
+		lingjbh,t.chanx as shengcxbh
+		from ${dbSchemal1}xqjs_maoxqmx t
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				t.usercenter = #usercenter#
+					</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqbc">
+				t.xuqbc = #xuqbc#
+					</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+				t.zhizlx = #zhizlx#
+					</isNotEmpty>
+		</dynamic>
+		) mx
+		left join ${dbSchemal1}ckx_lingjxhd x
+		on mx.usercenter = x.usercenter
+		and mx.lingjbh = x.lingjbh
+		and mx.shengcxbh = x.shengcxbh
+		group by mx.usercenter, mx.lingjbh,mx.shengcxbh) hz
+		where hz.xiaohblx &lt;&gt; 1
+	</select>
+
+
+	<select id="queryAllKdmxqhz" resultClass="com.athena.xqjs.entity.kdorder.Kdmxqhz">
+		select
+		USERCENTER,
+		LINGJBH
+		from
+		${dbSchemal1}xqjs_kdmxqhz
+		where
+		1=1
+		group by
+		USERCENTER,
+		LINGJBH	
+	</select>
+
+	<select id="queryAllZiykzb" resultClass="com.athena.xqjs.entity.ilorder.Ziykzb"
+		parameterClass="java.util.Map">
+		select
+		sum(z.kucsl) as kucsl
+		from
+		${dbSchemal1}xqjs_ziykzb z
+		left join
+		(select
+		distinct
+		usercenter,
+		lingjbh,
+		xianbck ,
+		dinghck
+		from
+		${dbSchemal1}ckx_wullj) w
+		on z.usercenter = w.usercenter and
+		z.lingjbh = w.lingjbh and z.cangkdm=w.xianbck
+		where
+		w.dinghck = #dinghck#
+		and
+		z.ziyhqrq = to_date(#ziyhqrq#,'yyyy-mm-dd')
+		and
+		z.usercenter = #usercenter#
+		and
+		z.lingjbh = #lingjbh#
+		group by
+		w.dinghck
+	</select>
+
+	
+	<delete id="deleteKdmxqhz" parameterClass="com.athena.xqjs.entity.kdorder.Kdmxqhz">
+		delete
+		from
+		${dbSchemal1}xqjs_kdmxqhz
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	<delete id="deleteAllKdmxqhz">
+		truncate table
+		${dbSchemal1}xqjs_kdmxqhz
+	</delete>
+
+
+	<!-- 袁修瑞 -->
+	<select id="countByBeihAndfay" resultClass="com.athena.xqjs.entity.kdorder.Kdmxqhz">
+		select distinct beihzq,fayzq from ${dbSchemal1}xqjs_kdmxqhz
+		where  beihzq is not null and fayzq is not null
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xuqbc">
+				xuqbc=#xuqbc#
+			</isNotEmpty>
+
+		</dynamic>
+	</select>
+
+	<select id="sumNewXuqsl" resultClass="com.athena.xqjs.entity.kdorder.Kdmxqhz" parameterClass="java.util.Map">
+         select lingjbh, gongysbh, usercenter,sum(xuqsl) as xuqsl
+		     from ${dbSchemal1}xqjs_kdmxqhz
+		 where to_char(xuqrq,'yyyy-MM-dd') between #starttime# and #endtime# 
+		 group by lingjbh,gongysbh,usercenter
+	</select>
+	
+	<select id="sumDaixh" resultClass="java.math.BigDecimal">
+		select sum( xuqsl) as xuqsl
+		     from ${dbSchemal1}xqjs_kdmxqhz
+		 where to_char(xuqrq,'yyyy-MM-dd')  <![CDATA[ >= ]]> #starttime# and to_char(xuqrq,'yyyy-MM-dd')  <![CDATA[ < ]]> #endtime#
+		 <dynamic>
+			<isNotEmpty prepend="  and " property="banc">
+				xuqbc=#banc#
+			</isNotEmpty>
+            <isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh=#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysbh">
+				gongysbh=#gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter=#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+   <!-- 
+	<insert id="insertKdmxqhzcNew" parameterClass="com.athena.xqjs.entity.kdorder.Kdmxqhzc">
+		insert into
+		${dbSchemal1}xqjs_kdmxqhz
+		(
+		ID,
+		S0SSZXH,
+		USERCENTER,
+		LINGJBH ,
+		ZHIZLX,
+		S0,
+		S1,
+		S2,
+		S3,
+		S4,
+		S5,
+		S6,
+		S7,
+		S8,
+		S9,
+		S10,
+		S11,
+		S12,
+		S13,
+		S14,
+		S15,
+		S16,
+		S17,
+		S18,
+		S19,
+		S20,
+		S21,
+		S22,
+		S23,
+		danw,
+		xuqcfrq,
+		chanx
+		)
+		values(
+
+		${dbSchemal1}KDMXQHZ_SEQ.nextval ,
+		#s0sszxh# ,
+		#usercenter# ,
+		#lingjbh# ,
+		#zhizlx# ,
+		#s0# ,
+		#s1# ,
+		#s2# ,
+		#s3# ,
+		#s4# ,
+		#s5# ,
+		#s6# ,
+		#s7# ,
+		#s8# ,
+		#s9# ,
+		#s10# ,
+		#s11# ,
+		#s12# ,
+		#s13# ,
+		#s14# ,
+		#s15# ,
+		#s16# ,
+		#s17# ,
+		#s18# ,
+		#s19# ,
+		#s20# ,
+		#s21# ,
+		#s22# ,
+		#s23# ,
+		#danw#,
+		to_date(substr(#xuqcfrq#,1,10),'yyyy-MM-dd'),
+		#chanx#
+
+		)
+	</insert>
+	 -->
+</sqlMap>

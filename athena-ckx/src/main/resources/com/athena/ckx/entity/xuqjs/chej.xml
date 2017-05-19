@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- 车间  denggq 2012-7-5 -->
+	
+	<!-- 多数据查询 -->
+	<select id="queryChej" parameterClass="com.athena.ckx.entity.xuqjs.Chej" resultClass="com.athena.ckx.entity.xuqjs.Chej">
+		select usercenter,chejbm,chejmc,beiz,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_chej
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chejbm"><![CDATA[chejbm = #chejbm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chejmc"><![CDATA[chejmc = #chejmc#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,chejbm
+	</select>
+	
+	
+	<!-- 单数据查询 -->
+	<select id="getChej" parameterClass="com.athena.ckx.entity.xuqjs.Chej" resultClass="com.athena.ckx.entity.xuqjs.Xitcsdy">
+		select usercenter,chejbm,chejmc,beiz
+		from ${dbSchemal3}ckx_chej
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chejbm"><![CDATA[chejbm = #chejbm#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 插入数据 -->
+	<insert id="insertChej" parameterClass="com.athena.ckx.entity.xuqjs.Chej">
+		insert into ${dbSchemal3}ckx_chej (usercenter,chejbm,chejmc,beiz,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter#,#chejbm#,#chejmc#,#beiz#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+	</insert>
+	
+	
+	<!-- 更新数据 -->
+	<update id="updateChej" parameterClass="com.athena.ckx.entity.xuqjs.Chej">
+		update ${dbSchemal3}ckx_chej 
+		set chejmc = #chejmc#,
+			beiz = #beiz#,
+			editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+	    <dynamic prepend="where"> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chejbm"><![CDATA[chejbm = #chejbm#]]></isNotEmpty>
+		</dynamic>
+	</update>
+	
+	
+	<!-- 删除数据 -->
+	<delete id="deleteChej" parameterClass="com.athena.ckx.entity.xuqjs.Chej">
+		delete from ${dbSchemal3}ckx_chej where
+		<dynamic prepend=" ">
+			<isNotEmpty prepend=" and " property="usercenter">
+				<![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chejbm">
+				<![CDATA[chejbm = #chejbm#]]>
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+</sqlMap>

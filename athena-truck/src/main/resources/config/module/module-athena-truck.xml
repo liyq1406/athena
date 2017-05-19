@@ -1,0 +1,21 @@
+<components namespace="kac">
+
+	<component class="com.toft.core3.biz.module.ModuleConfig">
+		<property name="name" value="kac" />
+		<property name="path" value="com/athena/truck" />
+		<property name="actions">
+			<list>
+				<value>config/action-ckx-truck.xml</value>
+				<value>config/action-ckx-kcApp.xml</value>
+			</list>
+		</property>
+		<property name="sqlMaps">
+			<list>
+				<value>sqlmap-config-truck.xml</value>
+				<value>sqlmap-config-kcApp.xml</value>
+			</list>
+		</property>
+	</component>
+	
+</components>
+

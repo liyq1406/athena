@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="hlorder">
+
+  <resultMap id="Daxpcsl" class="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+    <result column="CHEJ" jdbcType="VARCHAR" property="chej" />
+    <result column="DAXXH" jdbcType="VARCHAR" property="daxxh" />
+    <result column="RIQ" jdbcType="TIMESTAMP" property="riq" />
+    <result column="USERCENTER" jdbcType="VARCHAR" property="usercenter" />
+    <result column="JIHSXL" jdbcType="DECIMAL" property="jihsxl" />
+    <result column="JIHXXL" jdbcType="DECIMAL" property="jihxxl" />
+    <result column="BEIZ" jdbcType="VARCHAR" property="beiz" />
+    <result column="CREATOR" jdbcType="VARCHAR" property="creator" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="WENJMC" jdbcType="VARCHAR" property="wenjmc" />
+    <result column="WENJLJ" jdbcType="VARCHAR" property="wenjlj" />
+  </resultMap>
+  
+  <!-- 获取计算开始日期到计算结束日期之间总装的上线日期及计划量集合  产线号5  不包含日期 -->
+  <select id="queryFindSppvZzjhlistzz" parameterClass="map" resultClass="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+  	select RIQ,JIHSXL,JIHXXL,DAXXH from ${dbSchemal5}in_daxpcsl 
+  	where USERCENTER=#usercenter# 
+  	and daxxh=#usercenter#||5||#scxh#
+  	and riq <![CDATA[ > ]]> #kaisrq#  order by riq	
+  </select>
+  
+    <select id="queryFindSppvZzjhlist" parameterClass="map" resultClass="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+  	select RIQ,JIHSXL,JIHXXL,DAXXH from ${dbSchemal5}in_daxpcsl 
+  	where USERCENTER=#usercenter# 
+  	and daxxh=#daxxh#
+  	and riq <![CDATA[ > ]]> #kaisrq#  order by riq	
+  </select>
+  
+  
+  <!-- 获取计算开始日期到计算结束日期之间总装的上线日期及计划量集合  产线号5  包含日期 -->
+  <select id="queryFindSppvZzjhlistzzbyminclddxx" parameterClass="map" resultClass="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+  	select RIQ,JIHSXL,JIHXXL,DAXXH from ${dbSchemal5}in_daxpcsl 
+  	where USERCENTER=#usercenter# 
+  	and daxxh=#usercenter#||5||#scxh#
+  	and riq <![CDATA[ >= ]]> trunc(#kaisrq#)  order by riq	
+  </select>
+  
+  <!-- 获取总装sppv的最小的上线时间（计算开始时间）5 -->
+  <select id="queryDaxpcslBYusercenterAndscxh" parameterClass="map" resultClass="java.util.Date" >
+		select  min(YJJZLSJ)  from  ${dbSchemal5}IN_CLDDXX
+		where USERCENTER=#usercenter# and SCXH=#scxh#
+  </select>
+  
+  <!-- 第一次计算时,的最小时间 取IN_CLDDXX和 in_daxpcsl 中最小时间-->
+   <select id="queryMaoxqcfdycKasrq" parameterClass="map" resultClass="java.util.Date" >
+		 select min(ksrq) from 
+			(select  max(YJSXSJ) as ksrq  from ${dbSchemal5}IN_CLDDXX2
+   			 where USERCENTER=#usercenter# and SCXH=#scxh# 
+    		 union 
+	    	 select min(RIQ) as ksrq from ${dbSchemal5}in_daxpcsl 
+  			where USERCENTER=#usercenter#	and daxxh=#daxxh#)
+  </select>
+  
+  <!-- 获取上线列表最大计算时间 -->
+  <select id="queryMaxClddxxSxsj" parameterClass="map" resultClass="java.util.Date" >
+		select  max(YJSXSJ) as ksrq  from ${dbSchemal5}IN_CLDDXX2 where USERCENTER=#usercenter# and scxh=#scxh#  and YJSXSJ>=to_date(#startdate#,'yyyy-MM-dd')
+  </select>
+  <!-- 获取涂装sppv的最小的上线时间（计算开始时间）3 -->
+  <select id="queryTzDaxpcslBYusercenterAndscxh" parameterClass="map" resultClass="java.util.Date" >
+		select  min(YJJZLSJ)  from  ${dbSchemal5}IN_CLDDXX 
+		where USERCENTER=#usercenter# and SCXH=#scxh#
+  </select>
+  <!-- 获取焊装sppv的最小的上线时间（计算开始时间）2 -->
+  <select id="queryHzDaxpcslBYusercenterAndscxh" parameterClass="map" resultClass="java.util.Date" >
+		select  min(YJJZLSJ)    from  ${dbSchemal5}IN_CLDDXX 
+		where USERCENTER=#usercenter# and SCXH=#scxh#
+  </select>
+  
+  
+    <!-- 获取计算开始日期到计算结束日期之间涂装的上线日期及计划量集合  产线号3   不带等于-->
+  <select id="queryFindSppvZzjhlistTz" parameterClass="map" resultClass="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+  	select RIQ,JIHSXL,JIHXXL,DAXXH from ${dbSchemal5}in_daxpcsl 
+  	where USERCENTER=#usercenter# 
+  	and daxxh=#usercenter#||3||#scxh#
+  	and riq <![CDATA[ > ]]> #kaisrq# order by riq	
+  </select>
+  
+  <!-- 获取计算开始日期到计算结束日期之间涂装的上线日期及计划量集合  产线号3   带等于-->
+  <select id="queryFindSppvZzjhlistTzbyminclddxx" parameterClass="map" resultClass="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+  	select RIQ,JIHSXL,JIHXXL,DAXXH from ${dbSchemal5}in_daxpcsl 
+  	where USERCENTER=#usercenter# 
+  	and daxxh=#usercenter#||3||#scxh#
+  	and riq <![CDATA[ >= ]]> trunc(#kaisrq#) order by riq	
+  </select>
+  
+
+  
+      <!-- 获取计算开始日期到计算结束日期之间焊装的上线日期及计划量集合  产线号2  不带等于 -->
+  <select id="queryFindSppvZzjhlistHz" parameterClass="map" resultClass="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+  	select RIQ,JIHSXL,JIHXXL,DAXXH,EDITOR,USERCENTER from ${dbSchemal5}in_daxpcsl 
+  	where USERCENTER=#usercenter# 
+  	and daxxh=#usercenter#||2||#scxh#
+  	and riq <![CDATA[ > ]]> #kaisrq# order by riq	
+  </select>
+  
+      <!-- 获取计算开始日期到计算结束日期之间焊装的上线日期及计划量集合  产线号2  带等于 -->
+  <select id="queryFindSppvZzjhlistHzbyminclddxx" parameterClass="map" resultClass="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+  	select RIQ,JIHSXL,JIHXXL,DAXXH,EDITOR,USERCENTER from ${dbSchemal5}in_daxpcsl 
+  	where USERCENTER=#usercenter# 
+  	and daxxh=#usercenter#||2||#scxh#
+  	and riq <![CDATA[ >= ]]> trunc(#kaisrq#) order by riq	
+  </select>
+  
+
+  
+  <insert id="insertDaxpcsl" parameterClass="com.athena.xqjs.entity.hlorder.Daxpcsl">
+    insert into ${dbSchemal5}IN_DAXPCSL (CHEJ, DAXXH, RIQ, 
+      USERCENTER, JIHSXL, JIHXXL, 
+      BEIZ, CREATOR, CREATE_TIME, EDITOR, EDIT_TIME,
+      WENJMC, WENJLJ)
+    values (#chej#, #daxxh#, #riq#, 
+      #usercenter#, #jihsxl#, #jihxxl#, 
+      #beiz#, #creator#, #createTime#, #editor#, #editTime#,
+      #wenjmc#, #wenjlj#)
+  </insert>
+  
+  
+  <update id="updatetDaxpcsl" parameterClass="com.athena.xqjs.entity.hlorder.Daxpcsl">
+    update ${dbSchemal5}in_daxpcsl set jihsxl = #jihsxl# ,jihxxl = #jihxxl# ,editor = #editor# ,edit_time = #editTime# 
+    where usercenter = #usercenter# and chej = #chej# and daxxh = #daxxh# and riq = #riq# and creator != '3250' and editor != '3250'  
+  </update>
+  
+  
+  <!-- 查询所有的大线排产数量 -->
+  <select id="queryAllDaxpcsl" resultClass="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+  	select RIQ,JIHSXL,JIHXXL,DAXXH,USERCENTER from ${dbSchemal5}in_daxpcsl 
+  	where riq <![CDATA[ >= ]]> to_date(to_char(sysdate, 'yyyy-MM-dd'), 'yyyy-MM-dd')  order by usercenter,daxxh,riq	
+  </select>
+  
+  
+  <!-- 查询JL计划的最近九天的每日排产数量  根据日期对应查询 -->
+  <select id="queryShulFromJtpcjh2"  resultClass="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+  <![CDATA[ 
+	select o.usercenter, o.daxxh, o.riq, o.jihsxl, o.jihxxl
+	  from (select c.usercenter,
+	               c.daxxh,
+	               c.riq,
+	               c.shul as jihsxl,
+	               c.shul as jihxxl,
+	               row_number() over(partition by c.usercenter, c.daxxh order by rownum) rn
+	          from (select j.usercenter,
+	                       s.shengcxbh as daxxh,
+	                       j.jtrq as riq,
+	                       count(1) as shul
+	                  from ${dbSchemal5}in_jtpcjh j
+	                 inner join ${dbSchemal5}ckx_shengcx s
+	                    on j.usercenter = s.usercenter
+	                   and s.shengcxbh in
+	                       (j.usercenter || 2 || j.zzx,
+	                        j.usercenter || 3 || j.zzx,
+	                        j.usercenter || 5 || j.zzx)
+	                 where j.jtrq >= trunc(sysdate)
+	                   and not exists
+	                 (select 1
+	                          from ${dbSchemal5}in_daxpcsl d
+	                         where s.usercenter = d.usercenter
+	                           and s.shengcxbh = d.daxxh
+	                           and (d.creator = '3250' or d.editor = '3250'))
+	                 group by j.usercenter, s.shengcxbh, j.jtrq
+	                 order by j.usercenter, s.shengcxbh, j.jtrq) c) o
+	 where o.rn <= 9
+	 	]]>
+  </select>
+  
+  <!-- 查询JL计划的最近九天的每日排产数量  由于业务更改sql已废弃 	现在使用queryShulFromJtpcjh2 -->
+  <select id="queryShulFromJtpcjh"  resultClass="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+  <![CDATA[ 
+	select l.usercenter, l.daxxh,  to_date(l.riq, 'yyyy-MM-dd') as riq, r.shul as jihsxl, r.shul as jihxxl
+	  from (select b.usercenter, b.daxxh, b.riq, b.cn
+	          from (select a.*,
+	                       row_number() over(partition by a.usercenter, a.daxxh order by rownum) cn
+	                  from (select g.usercenter, g.appobj as daxxh, v.riq
+	                          from ${dbSchemal5}ckx_calendar_group g
+	                         inner join ${dbSchemal5}ckx_calendar_version v
+	                            on v.usercenter = g.usercenter
+	                           and v.banc = g.rilbc
+	                         where v.riq > to_char(sysdate, 'yyyy-MM-dd')
+	                           and not exists (select 1 from ${dbSchemal5}in_daxpcsl d
+			                         where g.usercenter = d.usercenter
+			                           and g.appobj = d.daxxh
+			                           and (d.creator = '3250' or d.editor = '3250'))
+	                         order by g.usercenter, g.appobj, v.riq) a) b
+	         where b.cn <= 9) l
+	 inner join (select b.usercenter, b.zzx, b.jtrq, b.shul, b.cn
+	               from (select a.*,
+	                            row_number() over(partition by a.usercenter, a.zzx order by rownum) cn
+	                       from (select usercenter, zzx, jtrq, count(1) as shul
+	                               from ${dbSchemal5}in_jtpcjh
+	                              where jtrq >=
+	                                    to_date(to_char(sysdate, 'yyyy-MM-dd'),
+	                                            'yyyy-MM-dd')
+	                              group by usercenter, zzx, jtrq
+	                              order by usercenter, zzx, jtrq) a) b
+	              where b.cn <= 9) r
+	    on l.usercenter = r.usercenter
+	   and l.daxxh in (r.usercenter || 2 || r.zzx,
+	                   r.usercenter || 3 || r.zzx,
+	                   r.usercenter || 5 || r.zzx)
+	   and l.cn = r.cn
+	 order by l.usercenter, l.daxxh, l.riq	 	]]>
+  </select>
+  
+  
+  <!-- 查询JL计划的指定日期的每日排产数量 -->
+  <select id="queryShulByDate" parameterClass="java.util.Map"  resultClass="java.util.HashMap" >
+  	select usercenter,zzx,jtrq,count(1) shul
+	from ${dbSchemal5}in_jtpcjh where usercenter = #usercenter# and  zzx = #zzx# and 
+	<![CDATA[jtrq >= #beginDate# and jtrq <=#endDate# ]]>group by usercenter,zzx,jtrq order by jtrq
+  </select>
+  
+   <!-- 查询JL计划的指定日期的每日排产数量 -->
+  <select id="queryJtjhByDate" parameterClass="java.util.Map"  resultClass="java.util.HashMap" >
+  	select usercenter,zzx,jtrq,count(1) shul
+	from ${dbSchemal5}in_jtpcjh where usercenter = #usercenter# and  zzx = #zzx# and 
+	<![CDATA[jtrq > #beginDate# ]]>group by usercenter,zzx,jtrq order by jtrq
+  </select>
+  
+  <!-- 汇总当天生产的上线计划数量 -->
+  <select id="queryClddxx2ShulNow" parameterClass="java.util.Map"  resultClass="java.util.HashMap" >
+ 	select yjsxsj, count(1) as sxsl, scxh  from ${dbSchemal5}in_clddxx2
+ 	where <![CDATA[cj_date >= #getDate#]]> and whof !='whof' group by yjsxsj, scxh order by yjsxsj
+  </select>
+ 
+ <!-- 上线计划数量 -->
+  <select id="queryDaxpcShul" parameterClass="java.util.Map"  resultClass="java.math.BigDecimal" >
+ 	select jihsxl from in_daxpcsl where riq = #riq# and daxxh=#daxxh#
+  </select>
+  
+    <!-- 查询JL计划的指定日期的每日排产数量 -->
+  <select id="queryShulByDateR" parameterClass="java.util.Map"  resultClass="java.math.BigDecimal" >
+	select count(1) shul from ${dbSchemal5}in_jtpcjh
+	where usercenter =	#usercenter# and zzx = #zzx# and jtrq = #getDate# group by
+	usercenter,zzx,jtrq order by jtrq
+  </select>
+  
+  <!-- 查询JL计划的指定日期的每日排产数量（包含开始日期） -->
+  <select id="queryJtjhByDateContainsKaisrq" parameterClass="java.util.Map"  resultClass="java.util.HashMap" >
+  	select usercenter,zzx,jtrq,count(1) shul
+	from ${dbSchemal5}in_jtpcjh where usercenter = #usercenter# and  zzx = #zzx# and 
+	<![CDATA[jtrq >= trunc(#beginDate#) ]]>group by usercenter,zzx,jtrq order by jtrq
+  </select>
+  
+  <!-- 查询大线排产数量的指定日期的每日排产数量（包含开始日期） -->
+  <select id="queryFindSppvZzjhlistContainsKaisrq" parameterClass="map" resultClass="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+  	select RIQ,JIHSXL,JIHXXL,DAXXH from ${dbSchemal5}in_daxpcsl 
+  	where USERCENTER=#usercenter# 
+  	and daxxh=#daxxh#
+  	and riq <![CDATA[ >= ]]> trunc(#kaisrq#)  order by riq	
+  </select>
+  
+  <!-- 查询某日的大线排产数量 -->
+  <select id="queryDaxpcslByTargetDate" parameterClass="map" resultClass="com.athena.xqjs.entity.hlorder.Daxpcsl" >
+  	select RIQ,JIHSXL,JIHXXL,DAXXH from ${dbSchemal5}in_daxpcsl 
+  	where USERCENTER=#usercenter# 
+  	and daxxh=#daxxh#
+  	and riq = trunc(#targetDate#)
+  </select>
+ 
+</sqlMap>

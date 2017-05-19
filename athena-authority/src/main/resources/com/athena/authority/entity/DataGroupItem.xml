@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.DataGroupItem" id="DataGroupItem">
+		<result column="ID" property="id" />
+		<result column="GROUP_ID" property="groupId" />
+		<result column="VALUE" property="value" />
+		<result column="TEXT" property="text" />
+		<result column="USERCENTER" property="usercenter" />
+	</resultMap>
+	
+	<select id="queryDataGroupItem" resultMap="DataGroupItem">select 
+		ID,
+		GROUP_ID,
+		VALUE,
+		TEXT,
+		USERCENTER 
+		from ${dbSchemal0}SYS_DATA_GROUP_ITEM 
+		where 1=1
+	</select>
+	
+	<select id="listDataGroupItem" resultMap="DataGroupItem">select 
+		ID,
+		GROUP_ID,
+		VALUE,
+		TEXT,
+		USERCENTER 
+		from ${dbSchemal0}SYS_DATA_GROUP_ITEM 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="groupId">GROUP_ID = #groupId#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<insert id="insertDataGroupItem" parameterClass="com.athena.authority.entity.DataGroupItem">
+	    insert into
+		${dbSchemal0}SYS_DATA_GROUP_ITEM (ID,GROUP_ID,VALUE,TEXT,USERCENTER)
+		values(
+			#id#,
+			#groupId#,
+			#value#,
+			#text#,#usercenter#)
+	</insert>
+	
+	
+	<update id="updateDataGroupItem" parameterClass="com.athena.authority.entity.DataGroupItem">
+		update ${dbSchemal0}SYS_DATA_GROUP_ITEM set 
+		ID=#id#,
+		GROUP_ID=#groupId#,
+		VALUE=#value#,
+		TEXT=#text#,USERCENTER=#usercenter# where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deleteDataGroupItem" parameterClass="com.athena.authority.entity.DataGroupItem">
+		delete from ${dbSchemal0}SYS_DATA_GROUP_ITEM where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="groupId">GROUP_ID = #groupId#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+</sqlMap>

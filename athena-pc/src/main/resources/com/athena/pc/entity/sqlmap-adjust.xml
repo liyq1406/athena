@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="adjust">
+
+	<!-- 
+	需求计算:${dbSchemal1}
+	配载发交:${dbSchemal2}
+	参考系:${dbSchemal3}
+	仓库:${dbSchemal4}
+	BY : WANGCHONG  DATE: 2012-07-30
+	 -->
+	 
+	 <!-- 得到日期 -->
+	<select id="selectDate" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			  SELECT MAX(RIQ) RIQ
+			  FROM (SELECT R.RIQ
+			          FROM ${dbSchemal3}CKX_CALENDAR_CENTER R
+			         WHERE R.RIQ > #DATE#
+			           AND R.USERCENTER = #UC#
+			           AND R.BIAOS = '1'
+			           AND R.SHIFGZR = '1'
+			         ORDER BY R.RIQ)
+			 WHERE ROWNUM < #GZR#
+		 ]]>
+	</select>
+	
+	<!-- 1=1 => M.USERCENTER = #UC# -->
+			         
+	<!-- PP&&PJ 查询 -->
+	<select id="selectOrder" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.OrderAdjust">
+		<![CDATA[
+			SELECT *
+			  FROM (SELECT M.ID,
+			               M.USERCENTER,
+			               M.DINGDH,
+			               M.LINGJBH,
+			               TO_CHAR(M.SHUL) SHUL,
+			               TO_CHAR(M.PCKAISSJ, 'YYYY-MM-DD') PCKAISSJ,
+			               TO_CHAR(M.PCJIESSJ, 'YYYY-MM-DD') PCJIESSJ,
+						   TO_CHAR(M.PCKAISSJ, 'YYYY-MM-DD') KAISSJB,
+			               TO_CHAR(M.PCJIESSJ, 'YYYY-MM-DD') JIESSJB,
+			               0 KSSJENBLE
+			          FROM ${dbSchemal1}XQJS_DINGDMX_PC M
+			          JOIN ${dbSchemal1}XQJS_DINGD_PC X
+			            ON X.DINGDH = M.DINGDH
+			           AND (X.CHULLX = #BS# OR X.CHULLX = #BSN#)
+			           AND M.PCFLAG = '1' 
+			         WHERE 1=1
+			           AND M.PCKAISSJ < TO_DATE(#DATE#, 'YYYY-MM-DD')
+			           AND M.PCJIESSJ >= TO_DATE(#DATE#, 'YYYY-MM-DD')
+			           AND ((M.pckaissj <= to_date(#JSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj >= to_date(#JSSJ#, 'yyyy-mm-dd')) or
+					       (M.pckaissj <= to_date(#KSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj >= to_date(#KSSJ#, 'yyyy-mm-dd')) or
+					       (M.pckaissj > to_date(#KSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj < to_date(#JSSJ#, 'yyyy-mm-dd')))
+       		 ]]>
+       		<dynamic>
+			<isNotEmpty prepend=" AND " property="LJBH"><![CDATA[M.LINGJBH = #LJBH#]]></isNotEmpty>
+			</dynamic>
+			<![CDATA[
+			        UNION
+			        SELECT M.ID,
+			        	   M.USERCENTER,
+			               M.DINGDH,
+			               M.LINGJBH,
+			               TO_CHAR(M.SHUL) SHUL,
+			               TO_CHAR(M.PCKAISSJ, 'YYYY-MM-DD') PCKAISSJ,
+			               TO_CHAR(M.PCJIESSJ, 'YYYY-MM-DD') PCJIESSJ,
+			               TO_CHAR(M.PCKAISSJ, 'YYYY-MM-DD') KAISSJB,
+			               TO_CHAR(M.PCJIESSJ, 'YYYY-MM-DD') JIESSJB,
+			               1 KSSJENBLE
+			          FROM ${dbSchemal1}XQJS_DINGDMX_PC M
+			          JOIN ${dbSchemal1}XQJS_DINGD_PC X
+			            ON X.DINGDH = M.DINGDH
+			           AND (X.CHULLX = #BS# OR X.CHULLX = #BSN#)
+			           AND M.PCFLAG = '1' 
+			         WHERE 1=1
+			           AND M.PCKAISSJ >= TO_DATE(#DATE#, 'YYYY-MM-DD')
+			           AND M.PCJIESSJ >= TO_DATE(#DATE#, 'YYYY-MM-DD')
+			           AND ((M.pckaissj <= to_date(#JSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj >= to_date(#JSSJ#, 'yyyy-mm-dd')) or
+					       (M.pckaissj <= to_date(#KSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj >= to_date(#KSSJ#, 'yyyy-mm-dd')) or
+					       (M.pckaissj > to_date(#KSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj < to_date(#JSSJ#, 'yyyy-mm-dd')))
+       		 ]]>
+       		<dynamic>
+			<isNotEmpty prepend=" AND " property="LJBH"><![CDATA[M.LINGJBH = #LJBH#]]></isNotEmpty>
+			</dynamic>
+			<![CDATA[
+			        ) T
+			         WHERE EXISTS
+					 (SELECT 1
+					          FROM (SELECT Z.SHENGCXBH, Z.USERCENTER, Z.CHANXZBH, J.LINGJBH
+					                  FROM ${dbSchemal3}CKX_SHENGCX Z
+					                  JOIN ${dbSchemal3}CKX_CHANXZ C
+					                    ON Z.USERCENTER = C.USERCENTER
+					                   AND C.CHANXZBH = Z.CHANXZBH
+					                  JOIN ${dbSchemal3}CKX_SHENGCX_LINGJ J
+					                    ON J.USERCENTER = Z.USERCENTER
+					                   AND J.SHENGCXBH = Z.SHENGCXBH
+					                 WHERE C.USERCENTER = #UC#
+					                   AND C.JIHYZBH = #CXZ#) TMP
+					         WHERE T.LINGJBH = TMP.LINGJBH)
+			 		ORDER BY T.PCKAISSJ,T.ID
+			
+		    ]]>
+	</select>
+	
+	<!-- 要货令接口查询 -->
+	<select id="selectYHL" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.WBDDYGAdjust">
+		<![CDATA[
+			SELECT *
+			  FROM (
+			        
+			        SELECT M.USERCENTER,
+			                M.YAOHLH DINGDH,
+			                M.LINGJBH,
+			                '0' DDRQ,
+			                '0' XIANH,
+			                '0' LYXT,
+			                TO_CHAR(M.YAOHSL) SHUL,
+			                TO_CHAR(M.PCKAISSJ, 'YYYY-MM-DD') PCKAISSJ,
+			                TO_CHAR(M.PCJIESSJ, 'YYYY-MM-DD') PCJIESSJ,
+			                TO_CHAR(M.PCKAISSJ, 'YYYY-MM-DD') KAISSJB,
+			                TO_CHAR(M.PCJIESSJ, 'YYYY-MM-DD') JIESSJB,
+			                0 KSSJENBLE
+			          FROM ${dbSchemal2}PC_IN_GEVP_YAOHL M
+			         WHERE M.USERCENTER = #UC#
+			           AND M.PCKAISSJ < TO_DATE(#DATE#, 'YYYY-MM-DD')
+			           AND M.PCJIESSJ >= TO_DATE(#DATE#, 'YYYY-MM-DD')
+			           AND ((M.pckaissj <= to_date(#JSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj >= to_date(#JSSJ#, 'yyyy-mm-dd')) or
+					       (M.pckaissj <= to_date(#KSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj >= to_date(#KSSJ#, 'yyyy-mm-dd')) or
+					       (M.pckaissj > to_date(#KSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj < to_date(#JSSJ#, 'yyyy-mm-dd')))
+       		  ]]>
+       		<dynamic>
+			<isNotEmpty prepend=" AND " property="LJBH"><![CDATA[M.LINGJBH = #LJBH#]]></isNotEmpty>
+			</dynamic>
+			<![CDATA[
+			        UNION
+			        SELECT M.USERCENTER,
+			               M.YAOHLH DINGDH,
+			               M.LINGJBH,
+			               '0' DDRQ,
+			               '0' XIANH,
+			               '0' LYXT,
+			               TO_CHAR(M.YAOHSL) SHUL,
+			               TO_CHAR(M.PCKAISSJ, 'YYYY-MM-DD') PCKAISSJ,
+			               TO_CHAR(M.PCJIESSJ, 'YYYY-MM-DD') PCJIESSJ,
+			               TO_CHAR(M.PCKAISSJ, 'YYYY-MM-DD') KAISSJB,
+			               TO_CHAR(M.PCJIESSJ, 'YYYY-MM-DD') JIESSJB,
+			               1 KSSJENBLE
+			          FROM ${dbSchemal2}PC_IN_GEVP_YAOHL M
+			         WHERE M.USERCENTER = #UC#
+			           AND M.PCKAISSJ >= TO_DATE(#DATE#, 'YYYY-MM-DD')
+			           AND M.PCJIESSJ >= TO_DATE(#DATE#, 'YYYY-MM-DD')
+			           AND ((M.pckaissj <= to_date(#JSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj >= to_date(#JSSJ#, 'yyyy-mm-dd')) or
+					       (M.pckaissj <= to_date(#KSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj >= to_date(#KSSJ#, 'yyyy-mm-dd')) or
+					       (M.pckaissj > to_date(#KSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj < to_date(#JSSJ#, 'yyyy-mm-dd')))
+       		 ]]>
+       		<dynamic>
+			<isNotEmpty prepend=" AND " property="LJBH"><![CDATA[M.LINGJBH = #LJBH#]]></isNotEmpty>
+			</dynamic>
+			<![CDATA[
+			        
+			        ) T
+			        
+			         WHERE EXISTS
+					 (SELECT 1
+					          FROM (SELECT Z.SHENGCXBH, Z.USERCENTER, Z.CHANXZBH, J.LINGJBH
+					                  FROM ${dbSchemal3}CKX_SHENGCX Z
+					                  JOIN ${dbSchemal3}CKX_CHANXZ C
+					                    ON Z.USERCENTER = C.USERCENTER
+					                   AND C.CHANXZBH = Z.CHANXZBH
+					                  JOIN ${dbSchemal3}CKX_SHENGCX_LINGJ J
+					                    ON J.USERCENTER = Z.USERCENTER
+					                   AND J.SHENGCXBH = Z.SHENGCXBH
+					                 WHERE C.USERCENTER = #UC#
+					                   AND C.JIHYZBH = #CXZ#) TMP
+					         WHERE T.LINGJBH = TMP.LINGJBH)
+			 		ORDER BY T.PCKAISSJ ,T.DINGDH
+			
+		 ]]>
+	</select>
+	
+	<!-- 外部鱼告订单接口查询 -->
+	<select id="selectWBDDYG" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.WBDDYGAdjust">
+		<![CDATA[
+			SELECT *
+			  FROM (
+			        
+			        SELECT M.DINGDH,
+			                M.LINGJBH,
+			                M.DDRQ,
+			                M.XIANH,
+			                M.LYXT,
+			                M.USERCENTER,
+			                TO_CHAR(M.SHUL) SHUL,
+			                TO_CHAR(M.PCKAISSJ, 'YYYY-MM-DD') PCKAISSJ,
+			                TO_CHAR(M.PCJIESSJ, 'YYYY-MM-DD') PCJIESSJ,
+			                TO_CHAR(M.PCKAISSJ, 'YYYY-MM-DD') KAISSJB,
+			                TO_CHAR(M.PCJIESSJ, 'YYYY-MM-DD') JIESSJB,
+			                0 KSSJENBLE
+			          FROM ${dbSchemal2}PC_IN_WBDDYG M
+			         WHERE M.USERCENTER = #UC#
+			           AND M.PCKAISSJ < TO_DATE(#DATE#, 'YYYY-MM-DD')
+			           AND M.PCJIESSJ >= TO_DATE(#DATE#, 'YYYY-MM-DD')
+			           AND ((M.pckaissj <= to_date(#JSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj >= to_date(#JSSJ#, 'yyyy-mm-dd')) or
+					       (M.pckaissj <= to_date(#KSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj >= to_date(#KSSJ#, 'yyyy-mm-dd')) or
+					       (M.pckaissj > to_date(#KSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj < to_date(#JSSJ#, 'yyyy-mm-dd')))
+       		 ]]>
+       		<dynamic>
+			<isNotEmpty prepend=" AND " property="LJBH"><![CDATA[M.LINGJBH = #LJBH#]]></isNotEmpty>
+			</dynamic>
+			<![CDATA[
+			        UNION
+			        SELECT M.DINGDH,
+			               M.LINGJBH,
+			               M.DDRQ,
+			               M.XIANH,
+			               M.LYXT,
+			               M.USERCENTER,
+			               TO_CHAR(M.SHUL) SHUL,
+			               TO_CHAR(M.PCKAISSJ, 'YYYY-MM-DD') PCKAISSJ,
+			               TO_CHAR(M.PCJIESSJ, 'YYYY-MM-DD') PCJIESSJ,
+			               TO_CHAR(M.PCKAISSJ, 'YYYY-MM-DD') KAISSJB,
+			               TO_CHAR(M.PCJIESSJ, 'YYYY-MM-DD') JIESSJB,
+			               1 KSSJENBLE
+			          FROM ${dbSchemal2}PC_IN_WBDDYG M
+			         WHERE M.USERCENTER = #UC#
+			           AND M.PCKAISSJ >= TO_DATE(#DATE#, 'YYYY-MM-DD')
+			           AND M.PCJIESSJ >= TO_DATE(#DATE#, 'YYYY-MM-DD')
+			           AND ((M.pckaissj <= to_date(#JSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj >= to_date(#JSSJ#, 'yyyy-mm-dd')) or
+					       (M.pckaissj <= to_date(#KSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj >= to_date(#KSSJ#, 'yyyy-mm-dd')) or
+					       (M.pckaissj > to_date(#KSSJ#, 'yyyy-mm-dd') and
+					       M.pcjiessj < to_date(#JSSJ#, 'yyyy-mm-dd')))
+       		 ]]>
+       		<dynamic>
+			<isNotEmpty prepend=" AND " property="LJBH"><![CDATA[M.LINGJBH = #LJBH#]]></isNotEmpty>
+			</dynamic>
+			<![CDATA[
+			        ) T
+			         WHERE EXISTS
+					 (SELECT 1
+					          FROM (SELECT Z.SHENGCXBH, Z.USERCENTER, Z.CHANXZBH, J.LINGJBH
+					                  FROM ${dbSchemal3}CKX_SHENGCX Z
+					                  JOIN ${dbSchemal3}CKX_CHANXZ C
+					                    ON Z.USERCENTER = C.USERCENTER
+					                   AND C.CHANXZBH = Z.CHANXZBH
+					                  JOIN ${dbSchemal3}CKX_SHENGCX_LINGJ J
+					                    ON J.USERCENTER = Z.USERCENTER
+					                   AND J.SHENGCXBH = Z.SHENGCXBH
+					                 WHERE C.USERCENTER = #UC#
+					                   AND C.JIHYZBH = #CXZ#) TMP
+					         WHERE T.LINGJBH = TMP.LINGJBH)
+			 		ORDER BY T.PCKAISSJ,T.DINGDH 
+		 ]]>
+	</select>
+	
+	
+	<!-- PP&&PJ 更新 -->
+	<update id="updateOrder" parameterClass="com.athena.pc.entity.OrderAdjust">
+		<![CDATA[
+		
+		UPDATE ${dbSchemal1}XQJS_DINGDMX_PC M
+		   SET M.PCKAISSJ = TO_DATE(#PCKAISSJ#, 'YYYY-MM-DD'),
+		       M.PCJIESSJ = TO_DATE(#PCJIESSJ#, 'YYYY-MM-DD'),
+		       M.PCEDITOR = #PCEDITOR#,
+		       M.PCEDIT_TIME = TO_DATE(#PCEDIT_TIME#, 'YYYY-MM-DD HH24:MI:SS')
+		 WHERE M.ID = #ID#
+		   AND M.USERCENTER = #USERCENTER#
+		
+		  ]]>
+	</update>
+	
+	<!-- 要货令接口更新 -->
+	<update id="updateYHL" parameterClass="com.athena.pc.entity.WBDDYGAdjust">
+		<![CDATA[ 
+		
+		UPDATE ${dbSchemal2}PC_IN_GEVP_YAOHL M
+		   SET M.PCKAISSJ = TO_DATE(#PCKAISSJ#, 'YYYY-MM-DD'),
+		       M.PCJIESSJ = TO_DATE(#PCJIESSJ#, 'YYYY-MM-DD'),
+		       M.PCEDITOR = #PCEDITOR#,
+		       M.PCEDIT_TIME = TO_DATE(#PCEDIT_TIME#, 'YYYY-MM-DD HH24:MI:SS')
+		 WHERE M.USERCENTER = #USERCENTER#
+		   AND M.YAOHLH = #DINGDH#
+		
+		  ]]>
+	</update>
+	<!-- 外部鱼告订单接口更新 -->
+	<update id="updateWBDDYG" parameterClass="com.athena.pc.entity.WBDDYGAdjust">
+		<![CDATA[ 
+		UPDATE ${dbSchemal2}PC_IN_WBDDYG M
+		   SET M.PCKAISSJ = TO_DATE(#PCKAISSJ#, 'YYYY-MM-DD'),
+		       M.PCJIESSJ = TO_DATE(#PCJIESSJ#, 'YYYY-MM-DD'),
+		       M.PCEDITOR = #PCEDITOR#,
+		       M.PCEDIT_TIME = TO_DATE(#PCEDIT_TIME#, 'YYYY-MM-DD HH24:MI:SS')
+		 WHERE M.DINGDH = #DINGDH# AND M.LINGJBH = #LINGJBH# AND M.DDRQ = #DDRQ# AND  M.XIANH = #XIANH# AND 
+		 M.LYXT = #LYXT# AND  M.USERCENTER = #USERCENTER#
+		  ]]>
+	</update>
+	 
+</sqlMap>

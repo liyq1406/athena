@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 供应商-柔性比例  qizhongtao 2012-4-09 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryGongysRouxbl" resultClass="com.athena.ckx.entity.xuqjs.GongysRouxbl">
+			select  usercenter,gongysbh,guanjljjb,dinghzq,rouxbl*100 as rouxbl,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_gongys_rouxbl
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[gongysbh=#gongysbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="guanjljjb"><![CDATA[guanjljjb=#guanjljjb#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="dinghzq"><![CDATA[dinghzq=#dinghzq#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,gongysbh,guanjljjb,dinghzq
+		</select>
+		
+		<!--单数据查询	 -->
+		<select id="getGongysRouxbl" resultClass="com.athena.ckx.entity.xuqjs.GongysRouxbl">
+			select  usercenter,gongysbh,guanjljjb,dinghzq,rouxbl*100 as rouxbl
+			from ${dbSchemal3}ckx_gongys_rouxbl
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[gongysbh=#gongysbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="guanjljjb"><![CDATA[guanjljjb=#guanjljjb#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="dinghzq"><![CDATA[dinghzq=#dinghzq#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertGongysRouxbl" parameterClass="com.athena.ckx.entity.xuqjs.GongysRouxbl" >
+			insert into ${dbSchemal3}ckx_gongys_rouxbl(usercenter,gongysbh,guanjljjb,dinghzq,rouxbl,creator,create_time,editor,edit_time)
+			values(<![CDATA[#usercenter#,#gongysbh#,#guanjljjb#,#dinghzq#,#rouxbl#/100,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="updateGongysRouxbl" parameterClass="com.athena.ckx.entity.xuqjs.GongysRouxbl">
+			update ${dbSchemal3}ckx_gongys_rouxbl
+			set rouxbl = #rouxbl#/100,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and guanjljjb = #guanjljjb# and gongysbh = #gongysbh# and dinghzq = #dinghzq#]]>
+		</update>
+		
+		<!-- 删除数据 -->
+		<delete id="deleteGongysRouxbl" parameterClass="com.athena.ckx.entity.xuqjs.GongysRouxbl">
+			delete from ${dbSchemal3}ckx_gongys_rouxbl where
+			<dynamic prepend=" ">
+				<isNotEmpty property="usercenter" prepend=" and ">
+					<![CDATA[usercenter = #usercenter#]]>
+				</isNotEmpty>
+				<isNotEmpty property="gongysbh" prepend=" and ">
+					<![CDATA[gongysbh = #gongysbh#]]>
+				</isNotEmpty>
+				<isNotEmpty property="guanjljjb" prepend=" and ">
+					<![CDATA[guanjljjb = #guanjljjb#]]>
+				</isNotEmpty>
+				<isNotEmpty property="dinghzq" prepend=" and ">
+					<![CDATA[dinghzq = #dinghzq#]]>
+				</isNotEmpty>
+			</dynamic>
+		</delete>
+	
+</sqlMap>

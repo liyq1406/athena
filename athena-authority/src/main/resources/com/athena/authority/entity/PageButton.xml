@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.PageButton" id="PageButton">
+		<result column="BUTTON_CODE" property="buttonCode" />
+		<result column="BUTTON_CAPTION" property="buttonCaption" />
+		<result column="BUTTON_NAME" property="buttonName" />
+		<result column="AUTH_TREE_ID" property="treeId" />
+		<result column="MENU_ID" property="menuDirectory.id" />
+	</resultMap>
+	
+	<select id="queryPageButton" resultMap="PageButton">select 
+		BUTTON_CODE,
+		BUTTON_CAPTION,
+		BUTTON_NAME,
+		AUTH_TREE_ID,
+		MENU_ID
+		 from ${dbSchemal0}SYS_PAGE_BUTTON where 1=1
+	</select>
+	
+	<select id="getAllCachePageButton"  resultClass="com.athena.util.cache.CacheValue">select 
+		BUTTON_CODE||':'||BUTTON_NAME as value,
+		MENU_ID as key
+		 from ${dbSchemal0}SYS_PAGE_BUTTON where 1=1
+	</select>
+	
+	
+	<insert id="insertPageButton" parameterClass="com.athena.authority.entity.PageButton">insert into
+		${dbSchemal0}SYS_PAGE_BUTTON (BUTTON_CODE,BUTTON_NAME,BUTTON_CAPTION,MENU_ID)
+		values(
+			#buttonCode#,
+			#buttonName#,
+			#buttonCaption#,
+			#menuDirectory.id#)
+	</insert>
+	
+	<update id="updatePageButton" parameterClass="com.athena.authority.entity.PageButton">
+		update ${dbSchemal0}SYS_PAGE_BUTTON set 
+		BUTTON_CODE=#buttonCode#, 
+		BUTTON_NAME=#buttonName#,
+		BUTTON_CAPTION=#buttonCaption#,
+		MENU_ID=#menuDirectory.id#
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">BUTTON_CODE = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deletePageButton" parameterClass="com.athena.authority.entity.PageButton">
+		delete from ${dbSchemal0}SYS_PAGE_BUTTON where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="buttonCode">BUTTON_CODE = #buttonCode#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+		<!--  更新树形id -->
+	<update id="updatePageButtonTree" parameterClass="com.athena.authority.entity.PageButton">
+		UPDATE ${dbSchemal0}SYS_PAGE_BUTTON SET AUTH_TREE_ID = #treeId# WHERE BUTTON_CODE = #buttonCode# 
+	</update>
+	
+	
+</sqlMap>

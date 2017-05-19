@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="hlorder" >
+
+	<resultMap id="Clddxx2" class="com.athena.xqjs.entity.hlorder.Clddxx2">
+		 <result column="ID" property="id" jdbcType="VARCHAR" />
+	    <result column="USERCENTER" property="usercenter" jdbcType="VARCHAR" />
+	    <result column="WHOF" property="whof" jdbcType="VARCHAR" />
+	    <result column="LCDV24" property="lcdv24" jdbcType="VARCHAR" />
+	    <result column="YPLBJ" property="yplbj" jdbcType="VARCHAR" />
+	    <result column="YJSXSJ" property="yjsxsj" jdbcType="DATE" />
+	    <result column="SCXH" property="scxh" jdbcType="VARCHAR" />
+	    <result column="YJSYHSJ" property="yjsyhsj" jdbcType="VARCHAR" />
+	    <result column="SXSXH" property="sxsxh" jdbcType="DECIMAL" />
+	    <result column="LCDV" property="lcdv" jdbcType="VARCHAR" />
+	    <result column="LEIX" property="leix" jdbcType="CHAR" />
+	    <result column="CJ_DATE" property="cjDate" jdbcType="TIMESTAMP" />
+	    <result column="CLZT" property="clzt" jdbcType="CHAR" />
+	    <result column="LCDVBZK" property="lcdvbzk" jdbcType="VARCHAR" />
+	    <result column="SHUL" property="shul" jdbcType="VARCHAR"/>
+		<result column="LIUSH" property="liush" jdbcType="DECIMAL" />
+		<result column="NOOUTFLAG" property="nooutflag" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	
+
+	 <!-- 汇总上线计划根据 usercenter,lcdv24,scxh,yjsyhsj,lcdvbzk,yjsxsj 汇总数量(IN_CLDDXX2_tmp) -->
+   <select id="querymaoxqcfsxhz" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2" parameterClass="java.util.Map"  >
+    	select USERCENTER,LCDV24,LCDVBZK,YJSXSJ,YJSYHSJ,SCXH,count(*) SHUL 
+    	   from ${dbSchemal5}IN_CLDDXX2  where YJSXSJ <![CDATA[ >= ]]> to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')  group by USERCENTER,LCDV24,LCDVBZK,YJSXSJ,YJSYHSJ,SCXH
+  
+  </select>
+	
+	<!-- 总装最大上线日期 -->
+	<select id="queryKaisrqBYusercenterAndscxh" resultClass="java.util.Date" parameterClass="java.util.Map"  >
+		select max(yjsxsj) 
+		from ${dbSchemal5}IN_CLDDXX2 
+		where USERCENTER=#usercenter# and SCXH=#usercenter#||5||#scxh#
+	</select>
+	
+	<!-- 涂装最大上线日期 -->
+	<select id="queryTzKaisrqBYusercenterAndscxh" resultClass="java.util.Date"  parameterClass="java.util.Map" >
+		select max(YJSXSJ) 
+		from ${dbSchemal5}IN_CLDDXX2 
+		where USERCENTER=#usercenter# and SCXH=#usercenter#||3||#scxh#
+	</select>
+	
+	<!-- 焊装最大上线日期 -->
+	<select id="queryHzKaisrqBYusercenterAndscxh" resultClass="java.util.Date"  parameterClass="java.util.Map" >
+		select max(YJSXSJ) 
+		from ${dbSchemal5}IN_CLDDXX2
+		where USERCENTER=#usercenter# and SCXH=#usercenter#||2||#scxh#
+	</select>
+	
+	<!-- 根据产线和订单号查询 -->
+	<select id="queryComputeZzsxlistBYwokfAndScxh" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2" parameterClass="java.util.Map" >
+		select 
+		ID, USERCENTER, WHOF, LCDV24, YPLBJ, YJSXSJ, SCXH, YJSYHSJ, SXSXH, LCDV,
+		LEIX, CJ_DATE,	CLZT, LCDVBZK
+		from ${dbSchemal5}IN_CLDDXX2
+		where WHOF = #whof# 
+		and SCXH = #scxh#
+		and USERCENTER = #usercenter#
+		<isNotEmpty prepend=" and " property="sxsxh"><![CDATA[sxsxh = #sxsxh#]]></isNotEmpty>	
+	</select>
+	
+	<!-- 根据产线和订单号查询 -->
+	<select id="queryComputeZzsxlistBYInwokfAndScxh" resultClass="java.lang.String" parameterClass="java.util.Map" >
+		select 
+		 WHOF
+		from ${dbSchemal5}IN_CLDDXX2
+		where WHOF in ($whofs$)
+		and SCXH = #scxh#
+		and USERCENTER = #usercenter#
+	</select>
+	
+	
+	
+	<!-- 查询涂装中流水号<=流水号<总装流水好 -->
+	<select id="queryComputeZzsxlistBYtzxxhhzzxxh" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2" parameterClass="java.util.Map" >
+		select  t.ID, t.USERCENTER, t.WHOF,t.LCDV24, t.YPLBJ, t.YJSXSJ, t.SCXH, t.YJSYHSJ, t.SXSXH, t.LCDV,
+  		 t.LEIX, t.CJ_DATE,  t.CLZT, t.LCDVBZK
+   		 from ${dbSchemal5}IN_CLDDXX2 t,
+   		 (select LIUSH，SXSXH from ${dbSchemal5}IN_CLDDXX2 where  SCXH =#scxh#  and SXSXH=#tzxxh# ) t2，
+     (select LIUSH，SXSXH from ${dbSchemal5}IN_CLDDXX2 where  SCXH =#scxh# and SXSXH=#zzxxh# )  t3
+     where t.SCXH = #scxh# and t.LIUSH <![CDATA[ >= ]]> t2.LIUSH  and  t.LIUSH <![CDATA[ <= ]]> t3.LIUSH and USERCENTER = #usercenter# order by t.liush
+	
+		
+	</select>
+	
+		<!-- 查询涂装中流水号<=流水号<总装流水好 -->
+	<select id="queryComputeZzsxlistBYtzKsrq" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2" parameterClass="java.util.Map" >
+		select  t.ID, t.USERCENTER, t.WHOF,t.LCDV24, t.YPLBJ, t.YJSXSJ, t.SCXH, t.YJSYHSJ, t.SXSXH, t.LCDV,
+  		 t.LEIX, t.CJ_DATE,  t.CLZT, t.LCDVBZK
+   		 from ${dbSchemal5}IN_CLDDXX2 t
+
+     where t.SCXH = #scxh# and USERCENTER = #usercenter#  and SXSXH<![CDATA[ <= ]]>#zzxxh# 
+     AND NOT EXISTS ( SELECT * FROM ${dbSchemal5}IN_CLDDXX2 C WHERE C.USERCENTER=T.USERCENTER AND SCXH=#tzscxh# AND C.WHOF=T.WHOF)
+     and  YJSXSJ> #ksrq# order by t.liush
+	
+		
+	</select>
+	
+	<!-- 查询焊装中流水号<=流水号<涂装流水好 -->
+	<select id="queryComputeZzsxlistBYhzxxhhtzxxh" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2" parameterClass="java.util.Map" >
+		select  t.ID, t.USERCENTER, t.WHOF,t.LCDV24, t.YPLBJ, t.YJSXSJ, t.SCXH, t.YJSYHSJ, t.SXSXH, t.LCDV,
+  		 t.LEIX, t.CJ_DATE,  t.CLZT, t.LCDVBZK
+   		 from ${dbSchemal5}IN_CLDDXX2 t,
+   		 (select LIUSH，SXSXH from ${dbSchemal5}IN_CLDDXX2 where substr(SCXH,3,1) = '2'  and SXSXH=#tzxxh# and USERCENTER = #usercenter#) t2，
+   		 (select LIUSH，SXSXH from ${dbSchemal5}IN_CLDDXX2 where  substr(SCXH,3,1) = '3' and SXSXH=#zzxxh# and USERCENTER = #usercenter#)  t3
+    	 where substr(t.SCXH,3,1) = '3' and t.LIUSH <![CDATA[ >= ]]> t2.LIUSH  and  t.LIUSH <![CDATA[ <= ]]> t3.LIUSH and t.USERCENTER = #usercenter# order by t.liush
+	</select>
+	
+	
+	
+	
+	<insert id="insertcomputeZzsxlist" parameterClass="com.athena.xqjs.entity.hlorder.Clddxx2">
+		insert into ${dbSchemal5}IN_CLDDXX2 (ID, USERCENTER, WHOF,
+		LCDV24, YPLBJ, YJSXSJ,
+		SCXH, YJSYHSJ, SXSXH,
+		LCDV, LEIX, CJ_DATE,
+		CLZT, LCDVBZK,LIUSH)
+		values (#id#, #usercenter#,
+		#whof#,	#lcdv24#, #yplbj#, #yjsxsj#,
+		#scxh#, #yjsyhsj#,#sxsxh#,
+		#lcdv#, #leix#, #cjDate#,
+		#clzt#, #lcdvbzk#,DDBH_CLDDXX2_SXXH.nextval)
+  </insert>
+  
+  <!-- 通过转运中间表查询转运出去的记录 -->
+  <select id="queryClddxx2ByZyhcxzycq" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2" parameterClass="java.util.Map">
+  	 select b.*,'0' NOOUTFLAG from ${dbSchemal5}ckx_chexpt c ,${dbSchemal5}in_clddxx_zyhtmp b
+			where c.usercenter=b.usercenter and b.usercenter=#usercenter# and c.shengcxbhzz !=#scxh#
+			and c.shengcxbhhz=#scxh# and c.shengcxbhzz=substr(b.scxh,4,2) and c.lcdv=substr(b.lcdv24,0,6) and b.whof !='whof'
+			and not exists (select 1 from ${dbSchemal5}in_clddxx2 cld 
+			where cld.whof = b.whof and cld.scxh = #usercenter#||2||#scxh# and cld.usercenter = b.usercenter)
+			order by b.liush  
+	</select>
+	
+	  <!-- 通过转运中间表查询转运出去的记录 数-->
+  <select id="queryClddxx2ByZyhcxzycqSum" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2" parameterClass="java.util.Map">
+  	 select * from ${dbSchemal5}ckx_chexpt c ,${dbSchemal5}in_clddxx_zyhtmp b
+			where c.usercenter=b.usercenter and b.usercenter=#usercenter# and c.shengcxbhzz !=#scxh#
+			and c.shengcxbhhz=#scxh# and c.shengcxbhzz=substr(b.scxh,4,2) and c.lcdv=substr(b.lcdv24,0,6)
+			and not exists (select 1 from ${dbSchemal5}in_clddxx2 cld 
+			where cld.whof = b.whof and cld.scxh = #usercenter#||2||#scxh# and cld.usercenter = b.usercenter)
+			<dynamic>
+				<isEqual property="index" compareValue="0" prepend="and">
+		    		<![CDATA[b.yjsxsj <= #yjsxsj#]]> 
+		    	</isEqual>
+		    	<isNotEqual property="index" compareValue="0" prepend="and">
+		    		<![CDATA[b.yjsxsj = #yjsxsj#]]> 
+		    	</isNotEqual>
+	   		</dynamic>
+			order by b.liush  
+	</select>
+	
+		  <!-- 通过转运中间表查询转运进来的记录 数-->
+  <select id="queryClddxx2ByZyhcxzyjlSum" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2" parameterClass="java.util.Map">
+  	 select * from ${dbSchemal5}ckx_chexpt c ,${dbSchemal5}in_clddxx_zyhtmp b
+			where c.usercenter=b.usercenter and b.usercenter=#usercenter# and c.shengcxbhzz =#scxh#
+			and c.shengcxbhhz!=#scxh# and c.shengcxbhzz=substr(b.scxh,4,2) and c.lcdv=substr(b.lcdv24,0,6) and b.yjsxsj = #yjsxsj#
+			order by b.liush  
+	</select>
+	
+	<!-- 通过clddxx2中查询丢失的转运出去的记录 -->
+  <select id="queryClddxx2ByZyhcxzycqdius" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2" parameterClass="java.util.Map">
+  	 select b.*,'0' NOOUTFLAG from ${dbSchemal5}ckx_chexpt c ,${dbSchemal5}in_clddxx2 b
+			where c.usercenter=b.usercenter and b.usercenter=#usercenter# and c.shengcxbhzz =#scxh#
+			and c.shengcxbhhz != #scxh# and c.shengcxbhzz=substr(b.scxh,4,2) and c.lcdv=substr(b.lcdv24,0,6) 
+			and b.SXSXH   <![CDATA[ > ]]>  #minoutxxh# and b.SXSXH   <![CDATA[ < ]]>  #maxoutxxh# and b.LEIX = '3' 
+			and not exists (select 1 from ${dbSchemal5}in_clddxx2 cld 
+			where cld.whof = b.whof and cld.scxh = #usercenter#||2||#scxh# and cld.usercenter = b.usercenter)
+			and not exists (select 1  from ${dbSchemal5}IN_CLDDXX_ZYhTMP zyh where zyh.whof = b.whof
+            and zyh.scxh = #usercenter#||2||#scxh#  and zyh.usercenter = b.usercenter)
+			order by b.liush  
+	</select>
+	
+	<!-- 通过转运中间表查询没有转运出去的记录 -->
+  	<select id="queryClddxx2ByZyhcxmyzycq" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2" parameterClass="java.util.Map">
+  	select b.*,'1' NOOUTFLAG from ${dbSchemal5}in_clddxx_zyhtmp b
+      where  b.usercenter=#usercenter# and b.scxh=#usercenter#||2||#scxh# and b.whof !='whof' and not exists (
+      	select 1 from  ${dbSchemal5}ckx_chexpt c where c.usercenter=b.usercenter and c.shengcxbhzz=#scxh#  
+      and c.shengcxbhhz!=#scxh# and c.lcdv=substr(b.lcdv24,0,6) ) order by b.liush 
+   </select>
+
+  	
+</sqlMap>

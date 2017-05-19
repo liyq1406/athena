@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.DataType" id="DataType">
+		<result column="DATA_ID" property="dataId" />
+		<result column="DATA_NAME" property="dataName" />
+		<result column="DATA_DESC" property="dataDesc" />
+		<result column="DATA_PARAM" property="dataParam" />
+		<result column="DATA_CODE" property="dataCode" />
+		<result column="MENDER" property="mender" />
+		<result column="MODIFY_TIME" property="modifyTime" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="BIAOS" property="biaos" />
+		<result column="USERCENTER" property="usercenter" />
+	</resultMap>
+	
+	<select id="queryDataType" resultMap="DataType">select 
+		DATA_ID,
+		DATA_NAME,
+		DATA_DESC,
+		DATA_PARAM,
+		DATA_CODE,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		USERCENTER
+		from ${dbSchemal0}SYS_DATA_TYPE where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dataName">DATA_NAME like '%'||#dataName#||'%'
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getDataType" resultMap="DataType">select 
+		DATA_ID,
+		DATA_NAME,
+		DATA_DESC,
+		DATA_PARAM,
+		DATA_CODE,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		USERCENTER
+		from ${dbSchemal0}SYS_DATA_TYPE where DATA_ID=#dataId#
+	</select>
+	
+
+	<insert id="insertDataType" parameterClass="com.athena.authority.entity.DataType">
+		insert into
+		${dbSchemal0}SYS_DATA_TYPE (DATA_ID,DATA_NAME,DATA_DESC,DATA_PARAM,DATA_CODE,
+		CREATOR,CREATE_TIME,BIAOS,USERCENTER)
+		values(
+			#dataId#,
+			#dataName#,
+			#dataDesc#,
+			#dataParam#,
+			#dataCode#,
+			#creator#,
+			to_date(#createTime#,'YYYY-MM-DD HH24:MI:SS'),
+			#biaos#,
+			#usercenter#)
+	</insert>
+	
+	<update id="updateDataType" parameterClass="com.athena.authority.entity.DataType">
+		update ${dbSchemal0}SYS_DATA_TYPE set 
+		DATA_ID = #dataId#,
+		DATA_NAME = #dataName#,
+		DATA_DESC = #dataDesc#,
+		DATA_PARAM = #dataParam#,
+		DATA_CODE =	#dataCode#,
+		MENDER = #mender#,
+		BIAOS = #biaos#,
+		MODIFY_TIME	= to_date(#modifyTime#,'YYYY-MM-DD HH24:MI:SS'),
+		USERCENTER = #usercenter# 
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dataId">DATA_ID = #dataId#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deleteDataType" parameterClass="com.athena.authority.entity.DataType">
+		delete from ${dbSchemal0}SYS_DATA_TYPE where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">DATA_ID = #dataId#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<select id="getDataTypeByCode" resultMap="DataType">
+	    select 
+		DATA_ID,
+		DATA_NAME,
+		DATA_DESC,
+		DATA_PARAM,
+		DATA_CODE,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,USERCENTER from ${dbSchemal0}SYS_DATA_TYPE where DATA_CODE=#dataCode#
+	</select>
+	
+	<resultMap class="java.util.HashMap" id="DataItem">
+		<result column="VALUE" property="value" />
+		<result column="TEXT" property="text" />
+	</resultMap>
+	
+	<select id="getDataItems" resultMap="DataItem">
+		$itemSql$
+	</select>
+	<select id="validatedataParam">
+		$dataParam$
+	</select>
+	<select id="validateOnlyDataType"  parameterClass="com.athena.authority.entity.DataType" resultClass="int">
+		SELECT COUNT(*) as COUNT FROM ${dbSchemal0}SYS_DATA_TYPE WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="dataCode"> DATA_CODE = #dataCode#</isNotEmpty>
+			<isNotEmpty prepend="and" property="dataName"> DATA_NAME = #dataName#</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>

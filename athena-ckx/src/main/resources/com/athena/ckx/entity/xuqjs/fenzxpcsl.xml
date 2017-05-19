@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+	
+	<!-- 查询分装线排产数量-->
+	<select id="queryFenzxpcsl" parameterClass="java.util.HashMap" resultClass="com.athena.ckx.entity.xuqjs.Fenzxpcsl">
+		select usercenter,daxxh,fenzxh,to_char(riq,'yyyy-MM-dd') riq,jihsxl,jihxxl,beiz,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_fenzxpcsl
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="daxxh"><![CDATA[daxxh = #daxxh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenzxh"><![CDATA[fenzxh = #fenzxh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="kaissj"><![CDATA[riq >= to_date(#kaissj#,'yyyy-MM-dd')]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="jiessj"><![CDATA[riq <= to_date(#jiessj#,'yyyy-MM-dd')]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,daxxh,fenzxh,riq
+	</select>
+	
+	<!-- 新增分装线排产数量-->
+	<insert id="insertFenzxpcsl" parameterClass="com.athena.ckx.entity.xuqjs.Fenzxpcsl">
+		insert into ${dbSchemal3}ckx_fenzxpcsl(usercenter,daxxh,fenzxh,riq,jihsxl,jihxxl,beiz,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter#,#daxxh#,#fenzxh#,to_date(#riq#,'yyyy-MM-dd hh24:mi:ss'),#jihsxl#,#jihxxl#,#beiz#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]> )
+	</insert>
+	
+	<!-- 修改分装线排产数量-->
+	<update id="updateFenzxpcsl" parameterClass="com.athena.ckx.entity.xuqjs.Fenzxpcsl">
+		update ${dbSchemal3}ckx_fenzxpcsl set 
+		jihsxl = #jihsxl# ,
+		jihxxl = #jihxxl# ,
+		beiz = #beiz# ,
+		editor = #editor# ,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  usercenter = #usercenter# and  daxxh = #daxxh# and  fenzxh = #fenzxh# and riq = to_date(#riq#,'yyyy-MM-dd hh24:mi:ss')
+	</update>
+	
+	<!-- 清空表数据 -->
+	<delete id="deleteFenzxpcsl" parameterClass="com.athena.ckx.entity.xuqjs.Fenzxpcsl">
+		delete from ${dbSchemal3}ckx_fenzxpcsl where
+		usercenter = #usercenter# and 
+		daxxh = #daxxh# and 
+		fenzxh = #fenzxh# and 
+		riq = to_date(#riq#,'yyyy-MM-dd hh24:mi:ss')
+	</delete>	
+	
+</sqlMap>

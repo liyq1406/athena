@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+
+	<properties resource="com/athena/ckx/config/sqlmap.properties" />
+
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="10"
+		maxTransactions="5" useStatementNamespaces="true" />
+		
+		<!-- hj  -->		
+		<!-- 零件-计划员-供应商-->
+		<sqlMap resource="com/athena/ckx/entity/baob/lingjjhygys.xml"/>
+		<!-- 零件-消耗点-循环-->
+		<sqlMap resource="com/athena/ckx/entity/baob/lingjxhdxh.xml"/>
+		<!-- 同步-集配-跟踪-->
+		<sqlMap resource="com/athena/ckx/entity/baob/tongbjpgz.xml"/>		
+		<!-- 实时延误要货令-->
+		<sqlMap resource="com/athena/ckx/entity/baob/shisywyhl.xml"/>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<!-- wy 有效期零件报警查询 -->
+		<sqlMap resource="com/athena/ckx/entity/baob/yxqljbj.xml"/>
+		
+		<!-- wy 看板循环规模 -->
+		<sqlMap resource="com/athena/ckx/entity/baob/kbxhk.xml"/>
+		
+		<!-- wy 备货令跟踪 -->
+		<sqlMap resource="com/athena/ckx/entity/baob/beihlgz.xml"/>
+		
+		<!-- wy 发货通知查询 -->
+		<sqlMap resource="com/athena/ckx/entity/baob/fhtzcx.xml"/>
+		
+		<!-- 零件US -->
+		<sqlMap resource="com/athena/ckx/entity/baob/lingjus.xml"/>
+		
+		<!-- 开箱入库集装箱报表 -->
+		<sqlMap resource="com/athena/ckx/entity/baob/kaixrukjizx.xml"/>
+		
+		<!-- 有发货通知且入库报表 -->
+		<sqlMap resource="com/athena/ckx/entity/baob/fahruk.xml"/>
+		
+		<!-- 发运超过100天汇总零件清单 -->
+		<sqlMap resource="com/athena/ckx/entity/baob/faycg100t.xml"/>
+		<!-- 流量报表 -->
+		<sqlMap resource="com/athena/ckx/entity/baob/liulbb.xml"/>
+		<!-- 11458 -->
+		<sqlMap resource="com/athena/ckx/entity/baob/shisywyhlconfig.xml"/>
+		<!--rencong 0011937 DFPV发货通知单查询 -->
+		<sqlMap resource="com/athena/ckx/entity/baob/dfpvfhtzd.xml"/>
+		
+		<!-- lc -->		
+		<!-- 零件收货和报废统计  -->
+		<sqlMap resource="com/athena/ckx/entity/baob/lingjshhbftj.xml"/>
+		
+		<!-- lc -->		
+		<!-- 取货计划查询  -->
+		<sqlMap resource="com/athena/ckx/entity/baob/quhjhcx.xml"/>
+</sqlMapConfig>

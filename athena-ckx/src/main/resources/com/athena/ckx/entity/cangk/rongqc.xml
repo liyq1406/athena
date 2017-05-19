@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	空容器场
+	@author denggq
+	@date 2012-2-2
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryRongqc" parameterClass="com.athena.ckx.entity.cangk.Rongqc" resultClass="com.athena.ckx.entity.cangk.Rongqc">
+		select usercenter,rongqcbh,jizqbh,shiffk,shiffk as ycshiffk,miaos,biaos ,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_rongqc 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="rongqcbh" prepend="and">
+	    		<![CDATA[rongqcbh = #rongqcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shiffk" prepend="and">
+	    		<![CDATA[shiffk = #shiffk#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="jizqbh" prepend="and">
+	    		<![CDATA[jizqbh = #jizqbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,rongqcbh
+	</select>
+	
+	<!-- 获取数量 -->
+	<select id="getCountRongqc" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_rongqc  where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="rongqcbh" prepend="and">
+	    		<![CDATA[rongqcbh = #rongqcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shiffk" prepend="and">
+	    		<![CDATA[shiffk = #shiffk#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<!-- 记账区编号存在型 -->
+	<select id="getCountJizq" resultClass="java.lang.String" parameterClass="com.athena.ckx.entity.cangk.Rongqc">
+		select count(usercenter) from ${dbSchemal3}ckx_rongqc  where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shiffk" prepend="and">
+	    		<![CDATA[shiffk = #shiffk#]]>  
+	    	</isNotEmpty>
+	    	<isNotEmpty property="rongqcbh" prepend="and">
+	    		<![CDATA[rongqcbh = #rongqcbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<select id="getRongqzz" resultClass="java.lang.String"  parameterClass="com.athena.ckx.entity.cangk.Rongqzz">
+		select sum(rongqsl) as rongqsl from ${dbSchemal3}ck_rongqzz 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="wuld" prepend="and">
+	    		<![CDATA[wuld = #wuld#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	
+	<select id="getRongqc"  resultClass="com.athena.ckx.entity.cangk.Rongqc">
+		select usercenter,rongqcbh,jizqbh,shiffk,miaos,biaos 
+		from ${dbSchemal3}ckx_rongqc 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="jizqbh" prepend="and">
+	    		<![CDATA[jizqbh = #jizqbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	
+	<select id="getRongqcs" parameterClass="java.util.Map" resultClass="com.athena.ckx.entity.cangk.Rongqc">
+		select usercenter,rongqcbh,jizqbh,shiffk,miaos,biaos 
+		from ${dbSchemal3}ckx_rongqc 
+		where usercenter = #usercenter# and jizqbh = #jizqbh#
+	</select>
+	
+	<insert id="insertRongqc" parameterClass="com.athena.ckx.entity.cangk.Rongqc">
+		insert into ${dbSchemal3}ckx_rongqc(usercenter,rongqcbh,jizqbh,shiffk,miaos,biaos,creator,create_time,editor,edit_time)
+		values(#usercenter#,#rongqcbh#,#jizqbh#,#shiffk#,#miaos#,'1',#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<update id="updateRongqc" parameterClass="com.athena.ckx.entity.cangk.Rongqc">
+		update ${dbSchemal3}ckx_rongqc 
+		set miaos = #miaos# ,
+			jizqbh = #jizqbh#,
+			shiffk = #shiffk#,
+			biaos = #biaos# ,
+			editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+		where <![CDATA[usercenter = #usercenter# and rongqcbh = #rongqcbh#]]> 
+	</update>
+	
+	<delete id="deleteRongqc" parameterClass="com.athena.ckx.entity.cangk.Rongqc">
+		update ${dbSchemal3}ckx_rongqc
+		set <![CDATA[biaos = '0', editor = #editor# , edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ]]>
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="rongqcbh" prepend="and">
+	    		<![CDATA[rongqcbh = #rongqcbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+	<delete id="deleteRongqcs" parameterClass="com.athena.ckx.entity.cangk.Rongqc">
+		delete from  ${dbSchemal3}ckx_rongqc where
+		<dynamic prepend="  ">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="rongqcbh" prepend="and">
+	    		<![CDATA[rongqcbh = #rongqcbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+</sqlMap>

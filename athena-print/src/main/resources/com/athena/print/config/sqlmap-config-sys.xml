@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<properties resource="com/athena/print/config/sqlmap.properties"/>
+	
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="10"
+		maxTransactions="5" useStatementNamespaces="true" />
+		
+		<sqlMap resource="com/athena/print/entity/athena/select.xml" /> 
+		<sqlMap resource="com/athena/print/entity/sys/Printuser.xml" />
+		<sqlMap resource="com/athena/print/entity/sys/Printuserinfo.xml" />
+		<sqlMap resource="com/athena/print/entity/sys/PrintDevice.xml" />
+		<sqlMap resource="com/athena/print/entity/sys/PrintDictinfos.xml" />
+		<sqlMap resource="com/athena/print/entity/sys/PrintStrogdict.xml" />
+		<sqlMap resource="com/athena/print/entity/sys/xitcsdy.xml" />
+		<sqlMap resource="com/athena/print/entity/sys/cangk.xml" />
+		<sqlMap resource="com/athena/print/entity/sys/Printright.xml" />
+		<sqlMap resource="com/athena/print/entity/sys/PrintDevicegroup.xml" />
+		<sqlMap resource="com/athena/print/entity/sys/Printlog.xml" />
+		<sqlMap resource="com/athena/print/entity/sys/PrintDevicestatus.xml" />
+		<sqlMap resource="com/athena/print/entity/sys/Danjlx.xml" />
+		<sqlMap resource="com/athena/print/entity/pcenter/PrintQtaskmain.xml" />
+		<sqlMap resource="com/athena/print/entity/pcenter/PrintQtaskinfo.xml" />
+		<sqlMap resource="com/athena/print/entity/sys/Printcontrol.xml" />
+		
+</sqlMapConfig>

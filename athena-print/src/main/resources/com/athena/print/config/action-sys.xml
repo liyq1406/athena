@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="sys" extend="toft-default" namespace="/sys">
+	
+		<!-- 用户组-->
+		 <action name="printPost" 
+			class="printuserAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/sys/printPost/printPost.jsp</result>
+		</action>
+		<action name="queryPrintPost" class="printuserAction" method="query"/>
+		<action name="queryPrintPostGroup" class="printuserAction" method="queryGroup"/>
+		<action name="listPrintPost" class="printuserAction" method="list"/>
+		<action name="disablePrintPost" class="printuserAction" method="disable"/>
+		<action name="nodisablePrintPost" class="printuserAction" method="nodisable"/>
+		<action name="addPrintPost" class="printuserAction" method="addPrintPost"/>
+		<action name="savePrintPost" class="printuserAction" method="save"/>
+		<action name="removePrintPost" class="printuserAction" method="remove"/>
+		
+		<!-- 用户明细-->
+		<action name="printPostinfo" 
+			class="printuserinfoAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/sys/printPost/printPost.jsp</result>
+		</action>
+		<action name="queryPrintPostinfo" class="printuserinfoAction" method="query"/>
+		<action name="listPrintPostinfo" class="printuserinfoAction" method="list"/>
+		<action name="getPrintPostinfo" class="printuserinfoAction" method="get"/>
+		<action name="savePrintPostinfo" class="printuserinfoAction" method="save"/>
+		<action name="removePrintPostinfo" class="printuserinfoAction" method="remove"/>
+		
+		
+		<!-- 设置权限 -->
+		<action name="printRight" 
+			class="printrightAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/sys/printPost/printPostInfo.jsp</result>
+		</action>
+		<action name="printRightgly" 
+			class="printrightAction" method="executegly">
+			<result name="select">/WEB-INF/pages/print/sys/printPost/printPostInfoGly.jsp</result>
+		</action>
+		<action name="queryPrintright" class="printrightAction" method="query"/>
+		<action name="queryPrintrightGly" class="printrightAction" method="queryGly"/>
+		<action name="queryPrintrights" class="printrightAction" method="querys"/>
+		<action name="savePrintright" class="printrightAction" method="save"/>
+		<action name="savesPrintrightGly" class="printrightAction" method="savesgly"/>
+		<action name="savesPrintright" class="printrightAction" method="saves"/>
+		<action name="jiaoyuserscode" class="printrightAction" method="jyuserscode"/>
+		<action name="jiaoyscodes" class="printrightAction" method="jyscodes"/>
+		<action name="jiaoystoragescode" class="printrightAction" method="jystoragescode"/>
+		<action name="jiaoyspcodes" class="printrightAction" method="jyspcodes"/>
+		<action name="jiaoystoragescodegly" class="printrightAction" method="jystoragescodegly"/>
+		
+		
+		<!-- 打印设备 -->
+		<action name="printDevice" 
+			class="printDeviceAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/sys/printDevice/printDevice.jsp</result>
+		</action>
+		<action name="queryPrintDevice" class="printDeviceAction" method="query"/>
+		<action name="queryPrintDevices" class="printDeviceAction" method="querys"/>
+		<action name="listPrintDevice" class="printDeviceAction" method="list"/>
+		<action name="getPrintDevice" class="printDeviceAction" method="get"/>
+		<action name="savePrintDevice" class="printDeviceAction" method="save"/>
+		<action name="removePrintDevice" class="printDeviceAction" method="remove"/>
+		
+		
+		<!-- 打印设备组-->	
+		<action name="printDevicegroup" 
+			class="printDevicegroupAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/sys/printDevicegroup/printDevicegroup.jsp</result>
+		</action>
+		<action name="queryPrintDevicegroup" class="printDevicegroupAction" method="query"/>
+		<action name="disablePrintDevicegroup" class="printDevicegroupAction" method="disable"/>
+		<action name="nodisablePrintDevicegroup" class="printDevicegroupAction" method="nodisable"/>
+		<action name="addPrintDevicegroup" class="printDevicegroupAction" method="addPrintDevicegroup"/>
+		<action name="savePrintDevicegroup" class="printDevicegroupAction" method="save"/>
+		<action name="removePrintDevicegroup" class="printDevicegroupAction" method="remove"/>
+		<action name="jiaoyreplacespcode" class="printDevicegroupAction" method="jyreplacespcode"/>
+		
+		
+		<!-- 打印设备状态 -->
+		<action name="printDevicestatus" 
+			class="printDevicestatusAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/sys/printDevicestatus/printDevicestatus.jsp</result>
+		</action>
+		<action name="queryPrintDevicestatus" class="printDevicestatusAction" method="query"/>
+		<action name="queryPrintstatus" class="printDevicestatusAction" method="queryStatus"/>
+		
+		<!-- 打印日志-->
+		<action name="printLog" 
+			class="printlogAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/sys/printlog/printlog.jsp</result>
+		</action>
+		<action name="queryPrintlog" class="printlogAction" method="query"/>
+		
+		<!-- 单据初始化-->
+		<action name="printDictinfos" 
+			class="printDictinfosAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/sys/printDict/printDictinfos.jsp</result>
+		</action>
+		<action name="queryPrintDictinfos" class="printDictinfosAction" method="query"/>
+		<action name="savesPrintDictinfos" class="printDictinfosAction" method="saves"/>
+		
+		<!-- 仓库-单据-->
+		<action name="printStrogdict" 
+			class="printStrogdictAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/sys/printDict/printDictinfos.jsp</result>
+		</action>
+		<action name="printStrogdict" class="printStrogdictAction" method="query"/>
+		<action name="savesPrintStrogdict" class="printStrogdictAction" method="saves"/>
+		<action name="disablePrintStrogdict" class="printStrogdictAction" method="disable"/>
+		<action name="nodisablePrintStrogdict" class="printStrogdictAction" method="nodisable"/>
+		
+		<!-- 打印机状态-->
+		<action name="printDevicestatus" 
+			class="printDevicestatusAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/pcenter/printDevicestatus/printDevicestatus.jsp</result>
+		</action>
+		<action name="queryPrintDevicestatus" class="printDevicestatusAction" method="queryDevice"/>
+		
+		<!-- 用户明细-->
+		<action name="printDjlx" 
+			class="djlxAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/sys/printDjlx/printDjlx.jsp</result>
+		</action>
+		<action name="queryPrintDjlx" class="djlxAction" method="query"/>
+		<action name="savePrintDjlx" class="djlxAction" method="save"/>
+		<action name="removePrintDjlx" class="djlxAction" method="remove"/>
+		
+		<!-- 打印单据控制 -->
+		<action name="printControl" 
+			class="printcontrolAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/sys/printPost/printcontrol.jsp</result>
+		</action>
+		<action name="queryPrintcontrol" class="printcontrolAction" method="query"/>
+		<action name="savePrintcontrol" class="printcontrolAction" method="save"/>
+		<action name="removePrintcontrol" class="printcontrolAction" method="remove"/>
+		<action name="jiaoycangkbh" class="printcontrolAction" method="jycangkbh"/>
+		<action name="jiaoydanjbh" class="printcontrolAction" method="jydanjbh"/>
+		<action name="jiaoyjiaoym" class="printcontrolAction" method="jyjiaoym"/>
+	</package>
+</toft>

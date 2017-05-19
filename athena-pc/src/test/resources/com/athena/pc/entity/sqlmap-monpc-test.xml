@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="monpcTest">
+
+	<!--查询备储拆分结果-->
+	<select id="queryParseBeic" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	select to_char(shij, 'yyyy-mm-dd') as shij,lingjbh,chanxh,lingjsl from ${dbSchemal2}pc_lingjrxqb where lingjbh = #lingjbh#
+	and chanxh = #chanxh# and shij >= to_date(#kaissj#,'yyyy-mm-dd') and shij <=to_date(#jiessj#,'yyyy-mm-dd') order by shij
+	]]>
+	</select>
+
+	<!--查询备储拆分结果-->
+	<select id="queryParseRxq" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	select to_char(shij, 'yyyy-mm-dd') as shij,lingjbh,chanxh,lingjsl from ${dbSchemal2}pc_lingjrxqb where lingjbh = #lingjbh#
+	and chanxh in ($shengcx$) and shij >= to_date(#kaissj#,'yyyy-mm-dd') and shij <=to_date(#jiessj#,'yyyy-mm-dd') order by chanxh,shij
+	]]>
+	</select>
+	
+	<!--查询一天零件每日净需求-->
+	<select id="queryCalDailyJXQ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	select lingjbh,shij,jinxq from ${dbSchemal2}pc_lingjrxqhzb 
+	where shij>= to_date(#testkssj#,'yyyy-mm-dd') and shij<= to_date(#testjssj#,'yyyy-mm-dd') order by shij,lingjbh
+	]]>
+	</select>
+	
+	<!--查询一天产线零件净需求-->
+	<select id="queryCalDailyCXJXQ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select lingjbh,chanxh,jinxq,shij from ${dbSchemal2}pc_cangxljhzb where  shij= to_date(#testkssj#,'yyyy-mm-dd') 
+		order by shij,lingjbh,chanxh
+	]]>
+	</select>
+	
+	<!--查询模拟日零件产量-->
+	<select id="queryCalDailyTime" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select a.lingjsl,a.lingjbh,a.hour,b.chanxh,b.shij,b.hour as allhour from ${dbSchemal2}pc_monrgdljclb a ,pc_yuedmnjhmx b where a.gongzbh = b.gongzbh and b.shij >=to_date(#testkssj#,'yyyy-mm-dd') and b.shij <=to_date(#testjssj#,'yyyy-mm-dd') 
+		order by b.shij,b.chanxh,a.lingjbh
+	]]>
+	</select>
+		
+	<!--跟新净需求到产线零件汇总表-->
+	<update id="updateRiLi" parameterClass="java.util.Map">
+	update ${dbSchemal3}ckx_calendar_version set
+	<![CDATA[
+    SHIFGZR = #SHIFGZR# 
+	where usercenter = #USERCENTER# and banc = #BANC# and RIQ = #RIQ# 
+	]]>
+	</update>
+
+	<!--查询一天这天产线的月模拟计划明细-->
+	<select id="queryDailyTimeChanxMx" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from ${dbSchemal2}pc_yuedmnjhmx where chanxh = #CHANXH# and shij = to_date(#SHIJ#, 'yyyy-mm-dd') order by GONGZBH
+	]]>
+	</select>
+
+	<!--查询报警消息-->
+	<select id="queryYuemnjhh" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		 SELECT CHANXH FROM ${dbSchemal2}PC_MESSAGE WHERE CHANXH = 'UW5L3' AND JIHH = 'UWUW5L3201203'  AND LEIX = '2' AND SHIJ = to_date('2012-03-19','yyyy-mm-dd')
+	]]>
+	</select>
+	
+	<!--跟新净月模拟计划为确认状态-->
+	<update id="updateYmnQR" parameterClass="java.util.Map">
+	update ${dbSchemal2}pc_yuedmnjhb set
+	<![CDATA[
+    shifqr = #shifqr# 
+	]]>
+	</update>
+	
+		<!--查询包装信息-->
+	<select id="queryBaozxh" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		 SELECT * FROM ${dbSchemal2}PC_BAOZXHB WHERE USERCENTER = #USERCENTER# AND CHANXH in ($shengcx$) and jiessj = to_date(#jiessj#,'yyyy-mm-dd') order by yuemnjhh
+	]]>
+	</select>
+	
+	<!--查询解析日订单毛需求-->
+	<select id="queryParseRiMaoxq" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		 select * from ${dbSchemal2}pc_lingjrxqb where lingjbh = #LINGJBH# and shij = to_date(#RIQ#, 'yyyy-mm-dd') and biaos = #biaos#  order by shij ,lingjsl desc
+	]]>
+	</select>
+	
+	<!--查询日滚动排产计划明细-->
+	<select id="queryCalBlockDailyXQ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		 select LINGJBH,LINGJSL,CHANXH,to_char(shij, 'yyyy-mm-dd') shij from ${dbSchemal2}pc_rigdpcjhmx where shij >=to_date(#kaissj#, 'yyyy-mm-dd') and lingjbh = #LINGJBH# and chanxh = #CHANXH# order by shij ,chanxh,lingjbh
+	]]>
+	</select>
+	
+	<!--查询月模拟的每日确保产能-->
+	<select id="queryMeirqbcl" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		 select shij,chanxh,meirqbcn LINGJSL from ${dbSchemal2}pc_yuedmnjhmx where  shij >=to_date(#riq#, 'yyyy-mm-dd') and chanxh = #CHANXH# 
+		order by shij,chanxh
+	]]>
+	</select>
+	
+	<!--查询日滚动生产线的预计排产量和零件数量-->
+	<select id="queryRIGDPCJHMX" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select shij,chanxh,sum(yujpcl) YUJPCL,sum(lingjsl) LINGJSL from ${dbSchemal2}pc_rigdpcjhmx where shij >=to_date(#riq#, 'yyyy-mm-dd') AND chanxh = #CHANXH#  group by shij,chanxh
+		order by shij,chanxh
+	]]>
+	</select>
+	
+	<!--查询日滚动生产线的排班-->
+	<select id="queryNullBan" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from ${dbSchemal2}pc_bancmx where chanxh = #CHANXH# and shij = to_date(#RIQ#,'yyyy-mm-dd') order by lingjbh,lingjsl
+	]]>
+	</select>
+	
+	<!--查询日滚动生产线的排班-->
+	<select id="queryParseBanc" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from ${dbSchemal2}pc_bancmx where chanxh = #CHANXH# and shij = to_date(#RIQ#,'yyyy-mm-dd') order by shij ,chanxh,ban,lingjbh
+	]]>
+	</select>
+	
+	<!--查询一条生产线需要排产的零件同时关联对于的班-->
+	<select id="queryParseBancRIGDPCJHMX" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT coalesce(cxlj.youxbc,'NB') banc,ri.Chanxh,ri.lingjbh,to_char(ri.shij,'yyyy-mm-dd') shij,ri.usercenter,ri.rigdjhh,ri.lingjsl,ri.hour,cxlj.shengcjp FROM ${dbSchemal2}PC_RIGDPCJHMX ri inner join ${dbSchemal3}ckx_shengcx_lingj cxlj on ri.usercenter = cxlj.usercenter and ri.chanxh = cxlj.shengcxbh and ri.lingjbh = cxlj.lingjbh    
+		WHERE ri.lingjsl>0 and ri.SHIJ=to_date(#RIQ#,'yyyy-mm-dd') and ri.chanxh =#CHANXH# and ri.usercenter = #USERCENTER#    order by cxlj.youxbc ,ri.hour ,ri.lingjbh
+	]]>
+	</select>
+	
+	<!--查询解析外部订单预告接口数据-->
+	<select id="queryParseWbddyg" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		 select * from ${dbSchemal2}pc_lingjrxqb where shij >= to_date(#kaissj#, 'yyyy-mm-dd') and shij <= to_date(#jiessj#, 'yyyy-mm-dd') and biaos = #biaos#  order by shij ,lingjbh,chanxh,lingjsl desc
+	]]>
+	</select>
+</sqlMap>

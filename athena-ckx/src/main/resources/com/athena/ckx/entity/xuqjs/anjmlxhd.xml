@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+	按件目录卸货点
+	@author WL
+	@date 2014-3-25
+-->
+<sqlMap namespace="anjmlxhd">
+	
+	<!-- 查询按件目录卸货点 -->
+	<select id="queryAnjmlxhd" resultClass="com.athena.ckx.entity.xuqjs.Anjmlxhd">
+		select usercenter,anjmlxhd,cangkbh,biaos from ${dbSchemal3}ckx_anjmlxhd where 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">
+				usercenter = #usercenter#
+			</isNotNull>
+			<isNotNull property="anjmlxhd" prepend=" and ">
+				anjmlxhd = #anjmlxhd#
+			</isNotNull>
+			<isNotNull property="cangkbh" prepend=" and ">
+				cangkbh = #cangkbh#
+			</isNotNull>
+			<isNotNull property="biaos" prepend=" and ">
+				biaos = #biaos#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 保存按件目录卸货点 -->
+	<insert id="saveAnjmlxhd">
+		insert into ${dbSchemal3}ckx_anjmlxhd(usercenter,anjmlxhd,cangkbh,biaos,creator,create_time)
+		values(#usercenter#,#anjmlxhd#,#cangkbh#,#biaos#,#creator#,to_timestamp(#create_time#,'yyyy-mm-dd HH24:MI:SS:FF3'))
+	</insert>
+	
+	<!-- 保存按件目录卸货点 -->
+	<insert id="updateAnjmlxhd">
+		update 
+			${dbSchemal3}ckx_anjmlxhd
+		set
+			cangkbh = #cangkbh#,biaos = #biaos#,editor = #editor#,edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:MI:SS:FF3')
+		where 
+			usercenter = #usercenter# and anjmlxhd = #anjmlxhd#
+	</insert>
+	
+	<!-- 校验卸货站台编号是否存在 -->
+	<select id="checkCangkbh" resultClass="java.lang.String">
+		select count(xiehztbh) as count from ${dbSchemal3}ckx_xiehzt where 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">
+				usercenter = #usercenter#
+			</isNotNull>
+			<isNotNull property="cangkbh" prepend=" and ">
+				xiehztbh = #cangkbh# and biaos='1'
+			</isNotNull>
+		</dynamic>
+	</select>
+</sqlMap>

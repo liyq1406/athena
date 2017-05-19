@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+	
+	<!--未来几日剔除休息时间   denggq  2012-4-7 -->
+	<select id="queryTicxxsj" parameterClass="com.athena.ckx.entity.xuqjs.Ticxxsj" resultClass="com.athena.ckx.entity.xuqjs.Ticxxsj">
+		select usercenter,chanxck,riq,shunxh,shijdkssj,shijdjssj,shijcd,gongzr,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_ticxxsj
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanxck"><![CDATA[chanxck = #chanxck#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lxLength">length(chanxck) = $lxLength$</isNotEmpty>
+			<isNotEmpty prepend=" and " property="riq"><![CDATA[riq = #riq#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongzr"><![CDATA[gongzr = #gongzr#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,chanxck,gongzr,shunxh
+	</select>
+	<!--未来几日剔除休息时间   hj  2014-2-20 -->
+	<select id="queryTicxxsjByGzsjmb" parameterClass="com.athena.ckx.entity.xuqjs.Ticxxsj" resultClass="com.athena.ckx.entity.xuqjs.Ticxxsj">
+		select usercenter,chanxck,riq,shunxh,shijdkssj,shijdjssj,shijcd,gongzr,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_ticxxsj
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanxck"><![CDATA[chanxck = #chanxck#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lxLength">length(chanxck) = $lxLength$</isNotEmpty>
+			<isNotEmpty prepend=" and " property="riq"><![CDATA[riq = #riq#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongzr"><![CDATA[gongzr = #gongzr#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shunxh"><![CDATA[shunxh >= #shunxh#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,chanxck,gongzr,shunxh
+	</select>
+	<!-- 计算未来几日剔除休息时间           无未来编组号方法 hj 2012-11-5-->
+	<insert id="insertTicxxsjByBianzh" parameterClass="com.athena.ckx.entity.xuqjs.Ticxxsj">
+	
+		insert into ${dbSchemal3}ckx_ticxxsj(usercenter,chanxck,riq,shunxh,shijdkssj,shijdjssj,shijcd,gongzr,creator,create_time,editor,edit_time)
+		
+		select usercenter,chanxck,riq,shunxh,shijdkssj,shijdjssj,shijcd,gongzr,#creator# as creator,sysdate as create_time,#editor# as editor, sysdate as edit_time from(
+			
+			  select a.usercenter as usercenter,b.appobj as chanxck,
+            case when c.tiaozsj = '1' then  to_char(to_date(a.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd') else a.riq end riq,
+                to_char(c.xuh, '00') as shunxh,
+                c.kaissj as shijdkssj,  c.jiezsj as shijdjssj,
+                (to_date(c.jiezsj, 'hh24:mi:ss') -    to_date(c.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd,
+                a.riq as gongzr              
+          from ${dbSchemal3}ckx_calendar_version a
+         inner join ${dbSchemal3}ckx_calendar_group b
+            on a.usercenter = b.usercenter  and a.banc = b.rilbc   and a.shifgzr = '1' and b.biaos = '1'
+         inner join ${dbSchemal3}ckx_calendar_team c
+            on b.bianzh = c.bianzh     and to_char(a.xingq, '00') = to_char(c.xingqxh, '00')     
+           and a.riq in ( select riq from (select distinct riq,banc,usercenter      
+                                                             from ${dbSchemal3}ckx_calendar_version 
+                                               <![CDATA[     where shifgzr = '1' and  riq >= #riq#  order by riq) v ]]> 
+                        <![CDATA[  where  v.usercenter = b.usercenter and v.banc = a.banc    ]]>                                    
+                        <![CDATA[  and  rownum < 19 ]]>
+                          union  all  
+                          select riq from (select distinct riq,banc,usercenter       
+                                                                     from ${dbSchemal3}ckx_calendar_version  
+                                                          <![CDATA[   where shifgzr = '1' and riq < #riq#   order by riq desc) v1 ]]> 
+                          <![CDATA[where   v1.usercenter = b.usercenter and v1.banc = a.banc   ]]>                                      
+                        <![CDATA[  and  rownum < 3    )      ]]>                          
+                            where b.weilbzh is   null      ) 
+	</insert>
+	<!-- 计算未来几日剔除休息时间           有未来编组号方法 hj 2012-11-5 modify by hanwu 20160104 	0011972：支持多个未来编组-->
+	<insert id="insertTicxxsjByWeilbzh" parameterClass="com.athena.ckx.entity.xuqjs.Ticxxsj">
+	
+		insert into ${dbSchemal3}ckx_ticxxsj(usercenter,chanxck,riq,shunxh,shijdkssj,shijdjssj,shijcd,gongzr,creator,create_time,editor,edit_time)
+		<!-- 前两日~生效时间之间的剔除休息时间 -->
+		select usercenter,chanxck,riq,shunxh,shijdkssj,shijdjssj,shijcd,gongzr,#creator# as creator,sysdate as create_time,#editor# as editor,sysdate as edit_time from(
+			  select a.usercenter as usercenter,b.appobj as chanxck,
+            case when c.tiaozsj = '1' then  to_char(to_date(a.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd') else a.riq end riq,
+                to_char(c.xuh, '00') as shunxh,
+                c.kaissj as shijdkssj,  c.jiezsj as shijdjssj,
+                (to_date(c.jiezsj, 'hh24:mi:ss') -   to_date(c.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd,
+                a.riq as gongzr
+          from ${dbSchemal3}ckx_calendar_version a
+         inner join ${dbSchemal3}ckx_calendar_group b
+            on a.usercenter = b.usercenter      and a.banc = b.rilbc       and a.shifgzr = '1'        and b.biaos = '1'
+         inner join ${dbSchemal3}ckx_calendar_team c
+            on b.bianzh = c.bianzh         and to_char(a.xingq, '00') = to_char(c.xingqxh, '00')
+           and c.biaos='1'      
+           and a.riq in ( select riq from (select distinct riq,banc,usercenter       
+												           from ${dbSchemal3}ckx_calendar_version  
+							<![CDATA[					    where shifgzr = '1' and  riq >= #riq#      order by riq) v ]]> 
+                         <![CDATA[ where   v.riq <b.shengxsj ]]> 
+                          and v.usercenter = b.usercenter     and v.banc = a.banc                                        
+                         <![CDATA[ and  rownum < 19 ]]> 
+                          union all
+                          select riq from (select distinct riq,banc,usercenter       
+                                                  from ${dbSchemal3}ckx_calendar_version  
+                                     <![CDATA[    where shifgzr = '1'  and  riq < #riq#     order by riq desc) v1  ]]> 
+                          <![CDATA[ where   
+                           v1.usercenter = b.usercenter   and v1.banc = a.banc ]]>                                        
+                         <![CDATA[  and  rownum < 3 ]]> 
+                            ) where b.weilbzh is not  null     
+          union  all
+          <!-- 生效时间~生效时间2之间的剔除休息时间 -->
+            select a.usercenter as usercenter,b.appobj as chanxck,
+            case when c.tiaozsj = '1' then  to_char(to_date(a.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd') else a.riq end riq,
+                to_char(c.xuh, '00') as shunxh,
+                c.kaissj as shijdkssj,  c.jiezsj as shijdjssj,
+                (to_date(c.jiezsj, 'hh24:mi:ss') -  to_date(c.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd,
+                a.riq as gongzr              
+          from ${dbSchemal3}ckx_calendar_version a
+         inner join ${dbSchemal3}ckx_calendar_group b
+            on a.usercenter = b.usercenter  and a.banc = b.rilbc   and a.shifgzr = '1'   and b.biaos = '1'
+         inner join ${dbSchemal3}ckx_calendar_team c
+            on b.weilbzh = c.bianzh      and to_char(a.xingq, '00') = to_char(c.xingqxh, '00')  
+           and c.biaos='1'              
+           and a.riq in ( select riq from (select distinct riq,banc,usercenter       from ${dbSchemal3}ckx_calendar_version  where shifgzr = '1'       order by riq) v2
+                        <![CDATA[  where   v2.riq >=b.shengxsj ]]>
+                          and v2.usercenter = b.usercenter
+                          and v2.banc = a.banc                                        
+                        <![CDATA[  and  rownum <= case 
+                        when (select count(riq) from 
+	                        ${dbSchemal3}ckx_calendar_version e where e.shifgzr = '1' and e.banc = v2.banc and e.usercenter = v2.usercenter 
+	                        and  e.riq >= #riq# and e.riq <b.shengxsj)>=18 then 0
+                        when b.weilbzh2 is null 
+                        then (select 18-count(riq) from 
+	                        ${dbSchemal3}ckx_calendar_version e where e.shifgzr = '1' and e.banc = v2.banc and e.usercenter = v2.usercenter 
+	                        and  e.riq >= #riq# and e.riq <b.shengxsj)
+                        else                           case
+                                     when (select count(riq)
+                                             from ZBC_TEST.ckx_calendar_version e
+                                            where e.shifgzr = '1'
+                                              and e.banc = v2.banc
+                                              and e.usercenter = v2.usercenter
+                                              and e.riq >= b.shengxsj
+                                              and e.riq < b.shengxsj2) >=
+                                          (select 18 - count(riq)
+                                             from ZBC_TEST.ckx_calendar_version e
+                                            where e.shifgzr = '1'
+                                              and e.banc = v2.banc
+                                              and e.usercenter = v2.usercenter
+                                              and e.riq >= #riq#
+                                              and e.riq < b.shengxsj) then
+                                      (select 18 - count(riq)
+                                         from ZBC_TEST.ckx_calendar_version e
+                                        where e.shifgzr = '1'
+                                          and e.banc = v2.banc
+                                          and e.usercenter = v2.usercenter
+                                          and e.riq >= #riq#
+                                          and e.riq < b.shengxsj)
+                                     else
+                                      (select count(riq)
+                                         from ZBC_TEST.ckx_calendar_version e
+                                        where e.shifgzr = '1'
+                                          and e.banc = v2.banc
+                                          and e.usercenter = v2.usercenter
+                                          and e.riq >= b.shengxsj
+                                          and e.riq < b.shengxsj2)
+                                   end
+	                    end ]]>  
+                        )where b.weilbzh is not  null 
+          union  all
+          <!-- 生效时间2~生效时间3之间的剔除休息时间 -->
+            select a2.usercenter as usercenter,b2.appobj as chanxck,
+            case when c2.tiaozsj = '1' then  to_char(to_date(a2.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd') else a2.riq end riq,
+                to_char(c2.xuh, '00') as shunxh,
+                c2.kaissj as shijdkssj,  c2.jiezsj as shijdjssj,
+                (to_date(c2.jiezsj, 'hh24:mi:ss') -  to_date(c2.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd,
+                a2.riq as gongzr              
+          from ${dbSchemal3}ckx_calendar_version a2
+         inner join ${dbSchemal3}ckx_calendar_group b2
+            on a2.usercenter = b2.usercenter  and a2.banc = b2.rilbc   and a2.shifgzr = '1'   and b2.biaos = '1'
+         inner join ${dbSchemal3}ckx_calendar_team c2
+            on b2.weilbzh2 = c2.bianzh      and to_char(a2.xingq, '00') = to_char(c2.xingqxh, '00')
+           and c2.biaos='1'          
+           and a2.riq in (<![CDATA[ select riq from (select distinct riq,banc,usercenter       from ${dbSchemal3}ckx_calendar_version  where shifgzr = '1'       order by riq) v3
+                          where   v3.riq >=b2.shengxsj2 
+                          and v3.usercenter = b2.usercenter
+                          and v3.banc = a2.banc                                        
+                          and  rownum <=  
+                     case 
+                     when (select count(riq) from 
+                       ${dbSchemal3}ckx_calendar_version e where e.shifgzr = '1' and e.banc = v3.banc and e.usercenter = v3.usercenter 
+                       and  e.riq >=  #riq# and e.riq <b2.shengxsj2)>=18 then 0           
+                     when b2.weilbzh2 is null and b2.weilbzh3 is null
+                       then 0
+                     when b2.weilbzh2 is not null and b2.weilbzh3 is null
+                       then (select 18-count(riq) from 
+                       ${dbSchemal3}ckx_calendar_version e where e.shifgzr = '1' and e.banc = v3.banc and e.usercenter = v3.usercenter 
+                       and  e.riq >=  #riq# and e.riq <b2.shengxsj2)
+                     else  case
+                            when (select count(riq)
+                                    from ZBC_TEST.ckx_calendar_version e
+                                   where e.shifgzr = '1'
+                                     and e.banc = v3.banc
+                                     and e.usercenter = v3.usercenter
+                                     and e.riq >= b2.shengxsj2
+                                     and e.riq < b2.shengxsj3) >=
+                                 (select 18 - count(riq)
+                                    from ZBC_TEST.ckx_calendar_version e
+                                   where e.shifgzr = '1'
+                                     and e.banc = v3.banc
+                                     and e.usercenter = v3.usercenter
+                                     and e.riq >= #riq#
+                                     and e.riq < b2.shengxsj2) then
+                             (select 18 - count(riq)
+                                from ZBC_TEST.ckx_calendar_version e
+                               where e.shifgzr = '1'
+                                 and e.banc = v3.banc
+                                 and e.usercenter = v3.usercenter
+                                 and e.riq >= #riq#
+                                 and e.riq < b2.shengxsj2)
+                            else
+                            
+                             (select count(riq)
+                                from ZBC_TEST.ckx_calendar_version e
+                               where e.shifgzr = '1'
+                                 and e.banc = v3.banc
+                                 and e.usercenter = v3.usercenter
+                                 and e.riq >= b2.shengxsj2
+                                 and e.riq < b2.shengxsj3)
+                          end
+                     end ]]>
+                      ) where b2.weilbzh is not  null
+           union  all
+           <!-- 生效时间3~生效时间4之间的剔除休息时间 -->
+            select a3.usercenter as usercenter,b3.appobj as chanxck,
+            case when c3.tiaozsj = '1' then  to_char(to_date(a3.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd') else a3.riq end riq,
+                to_char(c3.xuh, '00') as shunxh,
+                c3.kaissj as shijdkssj,  c3.jiezsj as shijdjssj,
+                (to_date(c3.jiezsj, 'hh24:mi:ss') -  to_date(c3.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd,
+                a3.riq as gongzr              
+          from ${dbSchemal3}ckx_calendar_version a3
+         inner join ${dbSchemal3}ckx_calendar_group b3
+            on a3.usercenter = b3.usercenter  and a3.banc = b3.rilbc   and a3.shifgzr = '1'   and b3.biaos = '1'
+         inner join ${dbSchemal3}ckx_calendar_team c3
+            on b3.weilbzh3 = c3.bianzh      and to_char(a3.xingq, '00') = to_char(c3.xingqxh, '00')
+           and c3.biaos='1'          
+           and a3.riq in ( <![CDATA[select riq from (select distinct riq,banc,usercenter       from ${dbSchemal3}ckx_calendar_version  where shifgzr = '1'       order by riq) v4
+                          where   v4.riq >=b3.shengxsj3 
+                          and v4.usercenter = b3.usercenter
+                          and v4.banc = a3.banc                                        
+                          and  rownum <=  
+                     case when  (select count(riq) from 
+                       ${dbSchemal3}ckx_calendar_version e where e.shifgzr = '1' and e.banc = v4.banc and e.usercenter = v4.usercenter 
+                       and  e.riq >=  #riq# and e.riq <b3.shengxsj3)>=18  then 0
+                     when b3.weilbzh3 is null and b3.weilbzh4 is null
+                       then 0
+                     when b3.weilbzh3 is not null and b3.weilbzh4 is null
+                       then (select 18-count(riq) from 
+                       ${dbSchemal3}ckx_calendar_version e where e.shifgzr = '1' and e.banc = v4.banc and e.usercenter = v4.usercenter 
+                       and  e.riq >=  #riq# and e.riq <b3.shengxsj3)
+                     else  case
+                            when (select count(riq)
+                                    from ZBC_TEST.ckx_calendar_version e
+                                   where e.shifgzr = '1'
+                                     and e.banc = v4.banc
+                                     and e.usercenter = v4.usercenter
+                                     and e.riq >= b3.shengxsj3
+                                     and e.riq < b3.shengxsj4) >=
+                                 (select 18 - count(riq)
+                                    from ZBC_TEST.ckx_calendar_version e
+                                   where e.shifgzr = '1'
+                                     and e.banc = v4.banc
+                                     and e.usercenter = v4.usercenter
+                                     and e.riq >= #riq#
+                                     and e.riq < b3.shengxsj3) then
+                             (select 18 - count(riq)
+                                from ZBC_TEST.ckx_calendar_version e
+                               where e.shifgzr = '1'
+                                 and e.banc = v4.banc
+                                 and e.usercenter = v4.usercenter
+                                 and e.riq >= #riq#
+                                 and e.riq < b3.shengxsj3)
+                            else
+                             (select count(riq)
+                                from ZBC_TEST.ckx_calendar_version e
+                               where e.shifgzr = '1'
+                                 and e.banc = v4.banc
+                                 and e.usercenter = v4.usercenter
+                                 and e.riq >= b3.shengxsj3
+                                 and e.riq < b3.shengxsj4)
+                          end
+                     end ]]>
+                      ) where b3.weilbzh is not  null  
+           union  all
+           <!-- 生效时间4~后18日之间的剔除休息时间 -->
+            select a4.usercenter as usercenter,b4.appobj as chanxck,
+            case when c4.tiaozsj = '1' then  to_char(to_date(a4.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd') else a4.riq end riq,
+                to_char(c4.xuh, '00') as shunxh,
+                c4.kaissj as shijdkssj,  c4.jiezsj as shijdjssj,
+                (to_date(c4.jiezsj, 'hh24:mi:ss') -  to_date(c4.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd,
+                a4.riq as gongzr              
+          from ${dbSchemal3}ckx_calendar_version a4
+         inner join ${dbSchemal3}ckx_calendar_group b4
+            on a4.usercenter = b4.usercenter  and a4.banc = b4.rilbc   and a4.shifgzr = '1'   and b4.biaos = '1'
+         inner join ${dbSchemal3}ckx_calendar_team c4
+            on b4.weilbzh4 = c4.bianzh      and to_char(a4.xingq, '00') = to_char(c4.xingqxh, '00') 
+               and c4.biaos='1'         
+           and a4.riq in ( <![CDATA[select riq from (select distinct riq,banc,usercenter       from ${dbSchemal3}ckx_calendar_version  where shifgzr = '1'       order by riq) v5
+                          where   v5.riq >=b4.shengxsj4 
+                          and v5.usercenter = b4.usercenter
+                          and v5.banc = a4.banc                                        
+                          and  rownum <=  
+                     case when b4.weilbzh4 is null
+                       then 0
+                     else (select 18-count(riq) from 
+                       ${dbSchemal3}ckx_calendar_version e where e.shifgzr = '1' and e.banc = v5.banc and e.usercenter = v5.usercenter 
+                       and  e.riq >=  #riq# and e.riq <b4.shengxsj4)
+                     end ]]>
+                      ) where b4.weilbzh is not  null  ) 
+	</insert>
+	<!-- 清空表数据 -->
+	<delete id="deleteTicxxsj" parameterClass="java.lang.String">
+		truncate table ${dbSchemal3}ckx_ticxxsj 
+	</delete>	
+	
+	
+	<!-- 获得前两天天，未来18天的工作工作日期      小火车运输时刻表-->
+	<select id="queryGongzr" parameterClass="com.athena.ckx.entity.xuqjs.Ticxxsj" resultClass="com.athena.ckx.entity.xuqjs.Ticxxsj">
+		select distinct gongzr 
+		from ${dbSchemal3}ckx_ticxxsj 
+		where usercenter = #usercenter# and chanxck = #chanxck# 
+		<!-- 0007569按照工作日升序-->
+		order by gongzr asc
+	</select>
+	
+	
+		<!-- 清空表数据 -->
+	<delete id="deleteTicxxsjTemp" parameterClass="java.lang.String">
+		truncate table ${dbSchemal3}CKX_TICXXSJ_new_temp 
+	</delete>	
+	
+	
+	<!-- 计算未来几日剔除休息时间           无未来编组号方法 hj 2012-11-5-->
+	<insert id="insertTicxxsjTempByBianzh" parameterClass="com.athena.ckx.entity.xuqjs.Ticxxsj">
+	
+		insert into ${dbSchemal3}CKX_TICXXSJ_new_temp(usercenter,chanxck,riq,shunxh,shijdkssj,shijdjssj,shijcd,gongzr,creator,create_time,editor,edit_time)
+		
+		select usercenter,chanxck,riq,shunxh,shijdkssj,shijdjssj,shijcd,gongzr,#creator# as creator,sysdate as create_time,#editor# as editor, sysdate as edit_time from(
+			
+			  select a.usercenter as usercenter,b.appobj as chanxck,
+            case when c.tiaozsj = '1' then  to_char(to_date(a.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd') else a.riq end riq,
+                to_char(c.xuh, '00') as shunxh,
+                c.kaissj as shijdkssj,  c.jiezsj as shijdjssj,
+                (to_date(c.jiezsj, 'hh24:mi:ss') -    to_date(c.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd,
+                a.riq as gongzr              
+          from ${dbSchemal3}ckx_calendar_version a
+         inner join ${dbSchemal3}CKX_CALENDAR_GROUP_temp b
+            on a.usercenter = b.usercenter  and a.banc = b.rilbc   and a.shifgzr = '1' and b.biaos = '1'
+         inner join ${dbSchemal3}ckx_calendar_team c
+            on b.bianzh = c.bianzh     and to_char(a.xingq, '00') = to_char(c.xingqxh, '00')     
+     
+           and a.riq in ( select riq from (select distinct riq,banc,usercenter      
+                                                             from ${dbSchemal3}ckx_calendar_version 
+                                               <![CDATA[     where shifgzr = '1' and  riq >= #riq#  order by riq) v ]]> 
+                        <![CDATA[  where  v.usercenter = b.usercenter and v.banc = a.banc    ]]>                                    
+                        <![CDATA[  and  rownum < 19 ]]>
+                          union  all  
+                          select riq from (select distinct riq,banc,usercenter       
+                                                                     from ${dbSchemal3}ckx_calendar_version  
+                                                          <![CDATA[   where shifgzr = '1' and riq < #riq#   order by riq desc) v1 ]]> 
+                          <![CDATA[where   v1.usercenter = b.usercenter and v1.banc = a.banc   ]]>                                      
+                        <![CDATA[  and  rownum < 3    )      ]]>                          
+                            where b.weilbzh is   null      ) 
+	</insert>
+	
+
+
+		<!--未来几日剔除休息时间   denggq  2012-4-7 -->
+	<select id="queryTicxxsjSgjs" parameterClass="com.athena.ckx.entity.xuqjs.Ticxxsj" resultClass="com.athena.ckx.entity.xuqjs.Ticxxsj">
+		select usercenter,chanxck,riq,shunxh,shijdkssj,shijdjssj,shijcd,gongzr,creator,create_time,editor,edit_time
+		from ${dbSchemal3}CKX_TICXXSJ_new_temp
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanxck"><![CDATA[chanxck = #chanxck#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lxLength">length(chanxck) = $lxLength$</isNotEmpty>
+			<isNotEmpty prepend=" and " property="riq"><![CDATA[riq = #riq#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongzr"><![CDATA[gongzr = #gongzr#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,chanxck,gongzr,shunxh
+	</select>
+</sqlMap>

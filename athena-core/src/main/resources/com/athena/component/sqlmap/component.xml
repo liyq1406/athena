@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="component">
+	<!-- insert into PD_DATA(f001,f002,f003,f004,f005,f006,f007,f008,f009) values (?,?,?,?,?,?,?,?,?) -->
+	<insert id="dbWriter_insert" parameterClass="com.athena.component.exchange.db.TableRecord">
+		insert into $tableName$(
+		<dynamic>
+			<iterate property="fields">
+				<isNotEmpty property="fields[]">
+					$fields[]$
+				</isNotEmpty>
+			</iterate>
+		</dynamic>
+		) values(
+		<dynamic>
+			<iterate property="fields">
+				<isNotEmpty property="fields[]">
+					#fields[]#
+				</isNotEmpty>
+			</iterate>
+		</dynamic>
+		)
+	</insert>
+ 	<!-- 查询序列 -->
+ 	<select id="getSequence" parameterClass="java.util.HashMap" resultClass="Long">  
+     	 select $seqName$.nextval from dual  
+    </select>
+    <!-- 清除测试数据 -->
+    <delete id="clearTestData">
+    	truncate table $tableName$
+    </delete>
+    <!-- 插入测试数据 -->
+    <insert id="insertTestData">
+		insert  all
+		<iterate property="inserts">
+			<iterate property="inserts[].rowValues">
+				into $inserts[].tableName$(
+				<iterate property="inserts[].headers"  conjunction=","
+					>$inserts[].headers[]$</iterate>
+				) values(
+				<iterate property="inserts[].rowValues[].values" conjunction=","
+				>$inserts[].rowValues[].values[]$
+				</iterate>
+				)
+			</iterate>
+		</iterate>
+	   select 1 from dual
+    </insert>
+    <!-- 按行插入数据 -->
+    <insert id="insertTestRowData">
+    	insert into $tableName$(
+    	<iterate property="headers"  conjunction=","
+			>$headers[]$</iterate>
+		) values(
+		<iterate property="values" conjunction=","
+		>$values[]$
+		</iterate>
+    	)
+    </insert>
+</sqlMap>

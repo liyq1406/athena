@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<select id="queryGongcy" parameterClass="com.athena.ckx.entity.xuqjs.Gongcy"  resultClass="com.athena.ckx.entity.xuqjs.Gongcy">
+	   	select usercenter,gcbh,leix,gonghlx,gongsmc,diz,youb,lianxr,dianh,chuanz,beihzq,fayzq,kacbztj,songhzdpc,songhzxpc,neibgys_cangkbh,edzzl,
+	   		bodfdxs,fayd,neibyhzx,biaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_gongys
+	   	where 1=1 and leix != '4'
+	    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh"><![CDATA[gcbh = #gcbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="leix"><![CDATA[leix = #leix#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghlx"><![CDATA[gonghlx = #gonghlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,leix,gcbh
+	</select>
+	
+	<select id="queryGongcyEXport" parameterClass="com.athena.ckx.entity.xuqjs.Gongcy"  resultClass="com.athena.ckx.entity.xuqjs.Gongcy">
+	   	select usercenter,gcbh,leix,gonghlx,gongsmc,diz,youb,lianxr,dianh,chuanz,beihzq,fayzq,kacbztj,songhzdpc,songhzxpc,neibgys_cangkbh,edzzl,
+	   		bodfdxs,fayd,neibyhzx,biaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_gongys
+	   	where 1=1 
+	    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh"><![CDATA[gcbh = #gcbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,leix,gcbh
+	</select>
+	<!-- 导出 -->
+	<select id="queryGongcyImport" parameterClass="com.athena.ckx.entity.xuqjs.Gongcy"  resultClass="com.athena.ckx.entity.xuqjs.Gongcy">
+	   	select usercenter,gcbh,
+	   	decode(leix,'1','内部供应商','2','外部供应商','承运商' )leix, 
+	   	gonghlx,gongsmc,diz,youb,lianxr,dianh,chuanz,beihzq,fayzq,kacbztj,songhzdpc,songhzxpc,neibgys_cangkbh,edzzl,
+	   		bodfdxs,fayd,neibyhzx,
+	   		decode(biaos,'1','有效','0','无效') biaos
+	   		,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_gongys
+	   	where 1=1 and leix != '4'
+	    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh"><![CDATA[gcbh = #gcbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="leix"><![CDATA[leix = #leix#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghlx"><![CDATA[gonghlx = #gonghlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,leix,gcbh
+	</select>
+	
+	<select id="getGongcy" parameterClass="com.athena.ckx.entity.xuqjs.Gongcy"  resultClass="com.athena.ckx.entity.xuqjs.Gongcy">
+	   	select usercenter,gcbh,leix,gonghlx,gongsmc,diz,youb,lianxr,dianh,chuanz,beihzq,fayzq,kacbztj,songhzdpc,songhzxpc,neibgys_cangkbh,edzzl,bodfdxs,fayd,neibyhzx,biaos
+		from ${dbSchemal3}ckx_gongys
+	   	where usercenter = #usercenter# and gcbh = #gcbh# 
+	   	<dynamic>
+	   	    <isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh"><![CDATA[gcbh = #gcbh#]]></isNotEmpty>
+	   	    <isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+	   	</dynamic>
+	</select>
+	
+	<select id="getCountGongys" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_gongys where 1=1
+		 <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh"><![CDATA[gcbh = #gcbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="leix"><![CDATA[leix != #leix#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询发运地 -->
+	<select id="selectFayd" parameterClass="com.athena.ckx.entity.xuqjs.Gongcy"  resultClass="java.lang.String">
+		select distinct fayd from ${dbSchemal3}ckx_gongys where usercenter = #usercenter# and gcbh = #gcbh# 
+	</select>
+	
+	<!-- 根据id查供应商 -->
+	<select id="checkGongys" resultClass="com.athena.ckx.entity.xuqjs.Gongcy">
+		select
+			 usercenter,gcbh,leix,gonghlx,gongsmc,diz,youb,lianxr,dianh,chuanz,beihzq,fayzq,kacbztj,songhzdpc,songhzxpc,neibgys_cangkbh,edzzl,
+	   		bodfdxs,fayd,neibyhzx,biaos,creator,create_time,editor,edit_time
+		from 
+			${dbSchemal3}ckx_gongys
+		where 1=1
+			 <dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gcbh"><![CDATA[gcbh = #gcbh#]]></isNotEmpty>				
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = '1']]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<insert id="insertGongys" parameterClass="com.athena.ckx.entity.xuqjs.Gongcy">
+		insert into ${dbSchemal3}ckx_gongys(usercenter,gcbh,leix,gonghlx,gongsmc,diz,youb,lianxr,dianh,chuanz,beihzq,fayzq,kacbztj,songhzdpc,songhzxpc,neibgys_cangkbh,edzzl,bodfdxs,fayd,neibyhzx,biaos,creator,create_time,editor,edit_time)
+		values(#usercenter#,#gcbh#,#leix#,#gonghlx#,#gongsmc#,#diz#,#youb#,#lianxr#,#dianh#,#chuanz#,#beihzq#,#fayzq#,#kacbztj#,#songhzdpc#,#songhzxpc#,#neibgys_cangkbh#,#edzzl#,#bodfdxs#,#fayd#,#neibyhzx#,'1',#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	
+	<update id="updateGongys" parameterClass="com.athena.ckx.entity.xuqjs.Gongcy">
+		update ${dbSchemal3}ckx_gongys
+		set gonghlx = #gonghlx#,
+	    	gongsmc = #gongsmc#,
+	    	diz = #diz#,
+	    	youb = #youb#,
+	    	lianxr = #lianxr#,
+	    	dianh = #dianh#,
+	    	chuanz = #chuanz#,
+	    	beihzq = #beihzq#,
+	    	fayzq = #fayzq#,
+	    	kacbztj = #kacbztj#,
+	    	songhzdpc = #songhzdpc#,
+	    	songhzxpc = #songhzxpc#,
+	    	neibgys_cangkbh = #neibgys_cangkbh#,
+	    	edzzl = #edzzl#,
+	    	bodfdxs = #bodfdxs#,
+	    	fayd = #fayd#,
+	    	neibyhzx = #neibyhzx#,
+	    	editor = #editor#,
+	    	edit_time = to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+	    where  <![CDATA[ usercenter = #usercenter# and gcbh = #gcbh# ]]> 
+	</update>
+	
+	
+	<update id="deleteGongys" parameterClass="com.athena.ckx.entity.xuqjs.Gongcy">
+		update ${dbSchemal3}ckx_gongys 
+		set biaos=#biaos# ,editor = #editor#, edit_time = to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+		where <![CDATA[ usercenter = #usercenter# and gcbh = #gcbh# ]]>
+	</update>
+	
+</sqlMap>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.DataTable" id="DataTable">
+		<result column="ID" property="id" />
+		<result column="DATA_ID" property="dataId" />
+		<result column="TABLE_CODE" property="tableCode" />
+		<result column="TABLE_NAME" property="tableName" />
+		<result column="POST_FIELD" property="postField" />
+		<result column="DATA_FIELD" property="dataField" />
+		<result column="MENDER" property="mender" />
+		<result column="MODIFY_TIME" property="modifyTime" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="BIAOS" property="biaos" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="TABLE_CL" property="tableCl"/>
+	</resultMap>
+	
+	<select id="queryDataTable" resultMap="DataTable"> 
+		select data_table_.ID,
+               data_table_.DATA_ID,
+               TABLE_CODE,
+               TABLE_NAME,
+               POST_FIELD,
+               DATA_FIELD,
+               data_table_.MENDER,
+               data_table_.MODIFY_TIME,
+               data_table_.CREATOR,
+               data_table_.CREATE_TIME,
+               data_table_.BIAOS,
+               data_table_.USERCENTER,
+               data_table_.TABLE_CL
+              from ${dbSchemal0}SYS_DATA_TABLE data_table_
+         where 1 = 1
+         <dynamic>
+         	<isNotEmpty property="tableCode">
+         		and TABLE_CODE = #tableCode#
+         	</isNotEmpty>
+         </dynamic>
+	</select>
+	
+	<select id="getDataTable" resultMap="DataTable"> 
+		select data_table_.ID,
+               data_table_.DATA_ID,
+               TABLE_CODE,
+               TABLE_NAME,
+               POST_FIELD,
+               DATA_FIELD,
+               data_table_.MENDER,
+               data_table_.MODIFY_TIME,
+               data_table_.CREATOR,
+               data_table_.CREATE_TIME,
+               data_table_.BIAOS,
+               data_table_.USERCENTER,
+               data_table_.TABLE_CL
+              from ${dbSchemal0}SYS_DATA_TABLE data_table_
+		where data_table_.ID=#id#
+	</select>
+	
+	<select id="getDataTableByGroupId" resultMap="DataTable">select 
+		data_table_.ID,
+		data_table_.DATA_ID,
+		TABLE_CODE,
+		TABLE_NAME,
+		POST_FIELD,
+		DATA_FIELD,
+		data_table_.MENDER,
+		data_table_.MODIFY_TIME,
+		data_table_.CREATOR,
+		data_table_.CREATE_TIME,
+		data_table_.BIAOS,
+		data_table_.USERCENTER,
+        data_table_.TABLE_CL
+		from ${dbSchemal0}SYS_DATA_TABLE data_table_
+		where 1=1
+		AND data_table_.DATA_ID = #dataId#
+	</select>
+	
+	
+	<insert id="insertDataTable" parameterClass="com.athena.authority.entity.DataTable">
+	    insert into
+		${dbSchemal0}SYS_DATA_TABLE (ID,DATA_ID,TABLE_CODE,TABLE_NAME,
+		POST_FIELD,DATA_FIELD,CREATOR,CREATE_TIME,BIAOS,USERCENTER,TABLE_CL)
+		values(
+			#id#,
+			#dataId#,
+			#tableCode#,
+			#tableName#,
+			#postField#,
+			#dataField#,
+			#creator#,
+			to_date(#createTime#,'YYYY-MM-DD HH24:MI:SS'),#biaos#,#usercenter#,#tableCl#)
+	</insert>
+	
+	<update id="updateDataTable" parameterClass="com.athena.authority.entity.DataTable">
+		update ${dbSchemal0}SYS_DATA_TABLE set 
+		ID = #id#,
+		DATA_ID = #dataId#,
+		TABLE_CODE = #tableCode#,
+		TABLE_NAME = #tableName#,
+		POST_FIELD = #postField#,
+		DATA_FIELD = #dataField#,
+		USERCENTER = #usercenter#,
+		MENDER = #mender#,
+		MODIFY_TIME = to_date(#modifyTime#,'YYYY-MM-DD HH24:MI:SS'),
+		BIAOS = #biaos# ,
+		TABLE_CL = #tableCl#
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deleteDataTable" parameterClass="com.athena.authority.entity.DataTable">
+		delete from ${dbSchemal0}SYS_DATA_TABLE where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<update id="updateTablePost">$sqlParam$
+	</update>
+	<update id="delTablePost">$delSqlParam$
+	</update>
+	<select id="countDataTableByGroupId" parameterClass="com.athena.authority.entity.DataTable" resultClass="int">
+		SELECT COUNT(*) as COUNT FROM ${dbSchemal0}SYS_DATA_TABLE WHERE 1=1 AND POST_GROUP_ID=#postGroupId# AND USERCENTER = #usercenter#
+	</select>
+</sqlMap>

@@ -1,0 +1,21 @@
+<components namespace="fj">
+
+	<component class="com.toft.core3.biz.module.ModuleConfig">
+		<property name="name" value="fj" />
+		<property name="path" value="com/athena/fj" />
+		<property name="actions">
+			<list>
+				<value>config/action-fj.xml</value>
+				<value>config/action-peizai.xml</value>
+				
+			</list>
+		</property>
+		<property name="sqlMaps">
+			<list>
+				<value>sqlmap-config-fj.xml</value>
+			</list>
+		</property>
+	</component>
+	
+</components>
+

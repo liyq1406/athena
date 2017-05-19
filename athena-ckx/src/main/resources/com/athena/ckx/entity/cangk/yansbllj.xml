@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	零件验收比例设置
+	@author denggq
+	@date 2012-2-6
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryYansbllj" parameterClass="com.athena.ckx.entity.cangk.Yansbllj" resultClass="com.athena.ckx.entity.cangk.Yansbllj">
+		select usercenter,lingjbh,(select zhongwmc from ${dbSchemal3}ckx_lingj where usercenter = a.usercenter and lingjbh = a.lingjbh) as lingjmc,
+		gongysbh,yansxbh,a.yansxsm,
+		creator,to_char(create_time,'yyyy-MM-dd hh24:mi:ss') as create_time,editor,to_char(edit_time,'yyyy-MM-dd hh24:mi:ss') as edit_time
+		from ${dbSchemal3}ckx_yansbllj a
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjbh" prepend="and">
+	    		<![CDATA[lingjbh = #lingjbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="gongysbh" prepend="and">
+	    		<![CDATA[gongysbh = #gongysbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="yansxbh" prepend="and">
+	    		<![CDATA[yansxbh = #yansxbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,lingjbh,gongysbh,yansxbh
+	</select>
+	
+	<select id="getYansbllj" resultClass="com.athena.ckx.entity.cangk.Yansbllj">
+		select usercenter,lingjbh,gongysbh,yansxbh,yansxsm
+		from ${dbSchemal3}ckx_yansbllj
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjbh" prepend="and">
+	    		<![CDATA[lingjbh = #lingjbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="gongysbh" prepend="and">
+	    		<![CDATA[gongysbh = #gongysbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="yansxbh" prepend="and">
+	    		<![CDATA[yansxbh = #yansxbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<insert id="insertYansbllj" parameterClass="com.athena.ckx.entity.cangk.Yansbllj">
+		insert into ${dbSchemal3}ckx_yansbllj(usercenter,lingjbh,gongysbh,yansxbh,yansxsm,creator,create_time,editor,edit_time)
+		values(#usercenter#,#lingjbh#,#gongysbh#,#yansxbh#,#yansxsm#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<update id="updateYansbllj" parameterClass="com.athena.ckx.entity.cangk.Yansbllj">
+		update ${dbSchemal3}ckx_yansbllj 
+		set editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+		<dynamic prepend="where">
+			<isNotEmpty property="gongysbh"  prepend="and">
+	    		<![CDATA[gongysbh = #gongysbh#]]> 
+	    	</isNotEmpty>
+			<isNotEmpty property="yansxbh"  prepend="and">
+	    		<![CDATA[yansxbh = #yansxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjbh"  prepend="and">
+	    		<![CDATA[lingjbh = #lingjbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic> 
+	</update>
+	
+	<delete id="deleteYansbllj" parameterClass="com.athena.ckx.entity.cangk.Yansbllj">
+		delete from ${dbSchemal3}ckx_yansbllj  where
+		<dynamic prepend=" ">
+			<isNotEmpty property="gongysbh"  prepend="and">
+	    		<![CDATA[gongysbh = #gongysbh#]]> 
+	    	</isNotEmpty>
+			<isNotEmpty property="yansxbh"  prepend="and">
+	    		<![CDATA[yansxbh = #yansxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjbh"  prepend="and">
+	    		<![CDATA[lingjbh = #lingjbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+	<!-- 根据模板生成数据 -->
+	<insert id="insertByMob" parameterClass="com.athena.ckx.entity.cangk.Yansxlj">
+		insert into ${dbSchemal3}ckx_yansbllj(usercenter,lingjbh,gongysbh,yansxbh,yansxsm,creator,create_time,editor,edit_time)
+		select c.usercenter,
+	       c.lingjbh,
+	       c.gongysbh,
+	       a.yansxbh,
+	       (select yansxsm from ${dbSchemal3}ckx_xingzysts where yansxbh = a.yansxbh) as yansxsm,
+	       #creator# as creator,
+	       to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss') as create_time,
+	       #editor# as editor,
+	       to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') as edit_time
+	  	from ${dbSchemal3}ckx_yansxlj a
+	
+	 	inner join ${dbSchemal3}ckx_lingj b
+	    on a.usercenter = b.usercenter
+	   	and a.lingjlx = b.lingjlx
+	
+	 	inner join ${dbSchemal3}ckx_lingjgys c
+	    on b.usercenter = c.usercenter
+	   	and b.lingjbh = c.lingjbh
+	   	
+	   	where a.usercenter = #usercenter# and a.lingjlx=#lingjlx# and a.yansxbh = #yansxbh#
+	</insert>
+	
+	<!-- 零件供应商关系 -->
+	<insert id="insertByLingjgys" parameterClass="com.athena.ckx.entity.cangk.Yansbllj">
+		insert into ${dbSchemal3}ckx_yansbllj(usercenter,lingjbh,gongysbh,yansxbh,yansxsm,yansbl,creator,create_time,editor,edit_time)
+		select usercenter,
+	       #lingjbh# as lingjbh,
+	       #gongysbh# as gongysbh,
+	       yansxbh,
+	       (select yansxsm from ${dbSchemal3}ckx_xingzysts where yansxbh = a.yansxbh) as yansxsm,
+	       yansbl,
+	       #creator# as creator,
+	       to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss') as create_time,
+	       #editor# as editor,
+	       to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') as edit_time
+	  	from ${dbSchemal3}ckx_yansblsz a
+	 	where usercenter = #usercenter#
+	   	and lingjlx = (select lingjlx 
+	   				   from ${dbSchemal3}ckx_lingj
+	                   where usercenter = #usercenter# 
+	                   and lingjbh = #lingjbh#)
+	</insert>
+	
+	<!-- 删除所有模板数据 -->
+	<delete id="deleteByMob" parameterClass="com.athena.ckx.entity.cangk.Yansxlj">
+		delete from ${dbSchemal3}ckx_yansbllj t
+	 	where (usercenter, yansxbh,lingjbh) in
+       	(select distinct a.usercenter, a.yansxbh,b.lingjbh
+          	from ${dbSchemal3}ckx_yansxlj a
+         	inner join ${dbSchemal3}ckx_lingj b
+         	on a.usercenter = b.usercenter
+         	and a.lingjlx = b.lingjlx
+          	 and a.usercenter = #usercenter# 
+           	and a.lingjlx=#lingjlx# 
+          	 and a.yansxbh=#yansxbh# )
+          	 and t.yansxbh=#yansxbh# 
+	</delete>
+</sqlMap>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="leijce">
+	<!-- 查询 hzg 2012-6-14 -->
+	<select id="queryLeijjf"  resultClass="com.athena.pc.entity.Leijce">
+	<![CDATA[
+		SELECT USERCENTER,LINGJBH,to_char(SHIJ,'yyyy-MM-dd') AS SHIJ,MAOXQ,SJJF,LEIJJFCE 
+		FROM ${dbSchemal2}PC_LEIJFCEB
+		WHERE 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+	<![CDATA[ order by SHIJ DESC ,USERCENTER,LINGJBH ]]>
+	</select>
+	
+	<!-- 删除 hzg 2012-6-14 -->
+	<delete id="deleteLeijce" parameterClass="com.athena.pc.entity.Leijce">
+	<![CDATA[
+		DELETE FROM ${dbSchemal2}PC_LEIJFCEB 
+		WHERE USERCENTER=#usercenter# AND LINGJBH=#lingjbh# AND SHIJ=to_date(#shij#,'yyyy-MM-dd')
+	]]>
+	</delete>
+	
+	<!-- 更新 hzg 2012-6-14 -->
+	<update id="updateLeijce" parameterClass="com.athena.pc.entity.Leijce">
+		<![CDATA[
+			UPDATE ${dbSchemal2}PC_LEIJFCEB SET
+			LEIJJFCE = #leijjfce# 
+			WHERE USERCENTER=#usercenter# AND LINGJBH=#lingjbh# AND SHIJ=to_date(#shij#,'yyyy-MM-dd') 
+		]]>
+	</update>
+
+	<!--得到用户中心下运行当天的前一天所对应的月模拟计划所在的产线组-->
+	<select id="queryProduceUserChanxz" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+    select a.usercenter,to_char(a.kaissj,'yyyy-mm-dd') as kaissj , to_char(a.jiessj,'yyyy-mm-dd') as jiessj ,b.chanxzbh from     ${dbSchemal2}pc_yuedmnjhb a inner join 
+    ${dbSchemal3}ckx_shengcx b on a.usercenter = b.usercenter and a.chanxh = b.shengcxbh  where  b.biaos = '1'
+    and ( a.kaissj <= (to_date(#today#,'yyyy-mm-dd')-1) and a.jiessj >= (to_date(#today#,'yyyy-mm-dd')-1))
+    group by a.usercenter,b.chanxzbh,a.kaissj,a.jiessj 
+	]]>
+	</select>
+	
+		<!--得到累计交付差额产线组下零件上一次更新的日期-->
+	<select id="queryLastDate" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select to_char(shij,'yyyy-mm-dd') shij ,rownum from (
+		select lj.shij from ${dbSchemal2}pc_leijfceb lj inner join ${dbSchemal3}ckx_shengcx_lingj cxlj on lj.usercenter = cxlj.usercenter and lj.lingjbh = cxlj.lingjbh 
+		inner join ${dbSchemal3}ckx_shengcx scx on cxlj.usercenter = scx.usercenter and cxlj.shengcxbh = scx.shengcxbh 
+		where  lj.usercenter = #USERCENTER# and scx.chanxzbh = #chanxzbh# group by shij order by shij desc ) where rownum = 1
+	]]>
+	</select>
+	
+	<!--得到上一天的累计交付差额 xss20160905 0012860-->
+	<select id="queryLeijfceb" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select #kaissj# SHIJ,lj.usercenter,lj.lingjbh,'0' leijjfce,'0' MAOXQ,'0' SJJF from ${dbSchemal2}pc_leijfceb lj inner join ${dbSchemal3}ckx_shengcx_lingj cxlj on lj.usercenter = cxlj.usercenter and lj.lingjbh = cxlj.lingjbh 
+		inner join ${dbSchemal3}ckx_shengcx scx on cxlj.usercenter = scx.usercenter and cxlj.shengcxbh = scx.shengcxbh 
+		where  lj.usercenter = #USERCENTER# and scx.chanxzbh = #chanxzbh# AND lj.shij =to_date(#lastDate#,'yyyy-mm-dd') group by lj.shij,lj.usercenter,lj.lingjbh,lj.leijjfce
+	]]>
+	</select>
+	
+		<!--得到上一天的累计交付差额
+	<select id="queryLeijfceb" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select #kaissj# SHIJ,lj.usercenter,lj.lingjbh,lj.leijjfce,'0' MAOXQ,'0' SJJF from ${dbSchemal2}pc_leijfceb lj inner join ${dbSchemal3}ckx_shengcx_lingj cxlj on lj.usercenter = cxlj.usercenter and lj.lingjbh = cxlj.lingjbh 
+		inner join ${dbSchemal3}ckx_shengcx scx on cxlj.usercenter = scx.usercenter and cxlj.shengcxbh = scx.shengcxbh 
+		where  lj.usercenter = #USERCENTER# and scx.chanxzbh = #chanxzbh# AND lj.shij =to_date(#lastDate#,'yyyy-mm-dd') group by lj.shij,lj.usercenter,lj.lingjbh,lj.leijjfce
+	]]>
+	</select>
+	-->
+	
+	<!--得到上一天的实际交付数量
+	<select id="querySjjf" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	  select yhl.usercenter,yhl.yaohlh,yhl.lingjbh,yhl.yaohsl sjjf,#kaissj# SHIJ,'0' MAOXQ 
+	  from ${dbSchemal4}ck_yaonbhl yhl inner join ${dbSchemal3}ckx_shengcx_lingj cxlj on yhl.usercenter = cxlj.usercenter and yhl.lingjbh = cxlj.lingjbh  
+	  where (yhl.YAOHLZT = '00' or yhl.YAOHLZT = '66')  and yhl.usercenter = #USERCENTER# and cxlj.shengcxbh in ($shengcx$)
+	  and yhl.edit_time >= to_date(#kaissjhms#, 'yyyy-mm-dd hh24:mi:ss')
+	  and yhl.edit_time <= to_date(#jiessjhms#, 'yyyy-mm-dd hh24:mi:ss')
+	  group by yhl.usercenter,yhl.yaohlh,yhl.lingjbh,yhl.yaohsl
+	]]>
+	</select>
+	-->
+	
+	<!--得到上一天的实际交付数量  xss-2015-12-3-->
+	<select id="querySjjf" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	  select yhl.usercenter,yhl.lingjbh,sum(yhl.yaohsl) sjjf,#kaissj# SHIJ,'0' MAOXQ 
+	  from ${dbSchemal4}ck_yaonbhl yhl inner join ${dbSchemal3}ckx_shengcx_lingj cxlj on yhl.usercenter = cxlj.usercenter and yhl.lingjbh = cxlj.lingjbh  
+	  where (yhl.YAOHLZT = '00' or yhl.YAOHLZT = '66')  and yhl.usercenter = #USERCENTER# and cxlj.shengcxbh in ($shengcx$)
+	  and yhl.edit_time >= to_date(#kaissjhms#, 'yyyy-mm-dd hh24:mi:ss')
+	  and yhl.edit_time <= to_date(#jiessjhms#, 'yyyy-mm-dd hh24:mi:ss')
+	  and cxlj.zhuxfx='0'
+	  group by yhl.usercenter,yhl.lingjbh 
+	]]>
+	</select>
+	
+	
+	
+	<!--得到昨天的毛需求数量-->
+	<select id="queryMaoxq" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select mx.usercenter,mx.lingjbh,sum(mx.maoxq) maoxq,'0' sjjf,#kaissj# SHIJ from ${dbSchemal2}pc_rigdpcjhmx mx 
+		where mx.usercenter = #USERCENTER# AND mx.SHIJ =  to_date(#kaissj#, 'yyyy-mm-dd') AND mx.chanxh in ($shengcx$) 
+		group by  mx.usercenter,mx.lingjbh
+	]]>
+	</select>
+	
+	<insert id="insertLeijce" parameterClass="java.util.Map">
+		<![CDATA[
+			insert into ${dbSchemal2}PC_LEIJFCEB(USERCENTER,SHIJ,LINGJBH,MAOXQ,SJJF,LEIJJFCE,CREATE_TIME,EDIT_TIME) 
+			values(#USERCENTER#,to_date(#SHIJ#, 'yyyy-mm-dd'),#LINGJBH#,#MAOXQ#,#SJJF#,#LEIJJFCE#,to_date(#todayhms#, 'yyyy-mm-dd hh24:mi:ss'),to_date(#todayhms#, 'yyyy-mm-dd hh24:mi:ss'))
+
+		]]>
+	</insert>
+	
+		<!-- 根据用户中心，计划员查询计划所对应的生产线-->
+	<select id="queryChanx" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select SHENGCXBH,CPSHENGCJP AS SHENGCJP ,ROUND(1/CPSHENGCJP,3) as everytime from ${dbSchemal3}ckx_shengcx where usercenter = #USERCENTER# and chanxzbh=#chanxzbh# and biaos = '1'
+	]]>	
+	</select>
+</sqlMap>

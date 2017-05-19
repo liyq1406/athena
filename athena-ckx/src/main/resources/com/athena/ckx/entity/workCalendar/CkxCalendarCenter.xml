@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="workCalendar">
+	<!-- 多记录查询 -->
+	<select id="queryCkxCalendarCenter" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarCenter" >select 
+		nianzq, nianzx, zhoux, xingq, shifjfr, shifgzr, biaos, xis, riq,creator,create_Time,editor,edit_Time,
+		usercenter from ${dbSchemal3}ckx_calendar_center where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="riq">riq = #riq#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xingq">xingq = #xingq#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifjfr">shifjfr = #shifjfr#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifgzr">shifgzr = #shifgzr#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos = #biaos#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="beginDate">
+				<![CDATA[riq >= #beginDate#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="endDate">
+				<![CDATA[riq <= #endDate#]]>
+			</isNotEmpty>
+		</dynamic>
+		order by usercenter ,riq
+	</select>
+	
+	<!-- 根据年份模糊查询, 用于添加版次-->
+	<select id="queryCkxCalendarCenterForVersion" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarCenter" >select 
+		nianzq, nianzx, zhoux, xingq, shifjfr, shifgzr, biaos, xis, riq,creator,create_Time,editor,edit_Time,
+		usercenter from ${dbSchemal3}ckx_calendar_center where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="riq">
+				<![CDATA[riq like '$riq$%']]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xingq">xingq = #xingq#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifjfr">shifjfr = #shifjfr#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifgzr">shifgzr = #shifgzr#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 单记录查询 -->
+	<select id="getCkxCalendarCenter" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarCenter">select 
+		nianzq, nianzx, zhoux, xingq, shifjfr, shifgzr, biaos, xis, riq,creator,create_Time,editor,edit_Time,
+		usercenter from ${dbSchemal3}ckx_calendar_center where riq=#riq# and usercenter = #usercenter#
+	</select>
+	
+	<select id="getCountCkxCalendarCenter" resultClass="java.lang.String" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarCenter">
+		select count(usercenter) from ${dbSchemal3}ckx_calendar_center where 1=1 and biaos ='1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter=#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="riq">riq like #year#||'%'</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+	<!-- 插入记录 -->
+	<insert id="insertCkxCalendarCenter" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarCenter">insert into
+		${dbSchemal3}ckx_calendar_center (nianzq,nianzx,zhoux,xingq,shifjfr,shifgzr,biaos,xis,riq,usercenter,creator,create_Time,editor,edit_Time)
+		values(
+			#nianzq#, #nianzx#, #zhoux#, #xingq#, #shifjfr#, #shifgzr#, 1, #xis#, #riq#, #usercenter#
+			,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	<!-- 修改记录 -->
+	<update id="updateCkxCalendarCenter" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarCenter">
+		update ${dbSchemal3}ckx_calendar_center set 
+		nianzq=#nianzq#,
+		nianzx=#nianzx#,
+		zhoux=#zhoux#,
+		xingq=#xingq#,
+		shifjfr=#shifjfr#,
+		shifgzr=#shifgzr#,
+		xis=#xis#,
+		riq=#riq#,
+		usercenter=#usercenter#,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="riq">riq = #riq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+		
+			
+		
+	</update>
+	<!-- 逻辑删除 -->
+	<update id="deleteCkxCalendarCenterLogic" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarCenter">
+		update ${dbSchemal3}ckx_calendar_center set 
+		biaos=0,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="riq">
+				<![CDATA[riq like '$riq$%']]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 删除记录 -->
+	<delete id="deleteCkxCalendarCenter" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarCenter">
+		delete from ${dbSchemal3}ckx_calendar_center where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="riq">
+				<![CDATA[riq like '$riq$%']]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

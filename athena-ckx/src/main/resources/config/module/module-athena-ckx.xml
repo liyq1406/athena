@@ -1,0 +1,26 @@
+<components namespace="ckx">
+
+	<component class="com.toft.core3.biz.module.ModuleConfig">
+		<property name="name" value="ckx" />
+		<property name="path" value="com/athena/ckx" />
+		<property name="actions">
+			<list>
+				<value>config/action-ckx-cangk.xml</value>
+				<value>config/action-ckx-paicfj.xml</value>
+				<value>config/action-ckx-xuqjs.xml</value>
+				<value>config/action-workCalendar.xml</value>
+				<value>config/action-carry.xml</value>
+				<value>config/action-ckx-transTime.xml</value>
+				<value>config/action-ckx-baob.xml</value>
+			</list>
+		</property>
+		<property name="sqlMaps">
+			<list>
+				<value>sqlmap-config-ckx.xml</value>
+				<value>sqlmap-config-baob.xml</value>
+			</list>
+		</property>
+	</component>
+	
+</components>
+

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 订单修改及生效 -->
+<sqlMap namespace="aixdd">
+
+	<!-- 查询订单明细列表 -->
+	<select id="queryDingdmxFayrq" parameterClass="com.athena.xqjs.entity.ilorder.Dingdmx"
+		resultClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+		select
+		 	to_char(fayrq,'yyyy-MM-dd HH24:mi:ss') as fayrq 
+		from 
+			${dbSchemal1}xqjs_dingdmx 
+		where
+			to_char(fayrq,'yyyyMM') = ( select p0fyzqxh from (select p0fyzqxh from ${dbSchemal1}xqjs_dingdlj where dingdh = #dingdh# order by id) where <![CDATA[ rownum < 2 ]]>)
+		<dynamic>
+			<isNotNull prepend=" and " property="dingdh"> dingdh = #dingdh#
+			</isNotNull>
+			<isNotNull prepend=" and " property="gongysdm"> gongysdm like substr(#gongysdm#,0,6)||'%'
+			</isNotNull>
+		</dynamic>
+		group by fayrq
+		order by fayrq
+	</select>
+	
+	<select id="queryDingdmx" parameterClass="com.athena.xqjs.entity.ilorder.Dingdmx"
+		resultClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+		select
+		max(dingdh) as dingdh,max(usercenter) as usercenter,lingjbh,max(gongysdm) as gongysdm,sum(shul) as shul,max(danw) as danw,
+		max(uabzucrl) as uabzucrl,to_char(max(fayrq),'yyyy-MM-dd') as fayrq
+		from
+		${dbSchemal1}xqjs_dingdmx
+		where
+		1 = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="dingdh"> dingdh = #dingdh#
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> usercenter =
+				#usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="gongysdm"> gongysdm like substr(#gongysdm#,0,6)||'%'
+			</isNotNull>
+			<isNotNull prepend=" and " property="fayrq"> fayrq = to_date(#fayrq#,'yyyy-MM-dd HH24:mi:ss')
+			</isNotNull>
+		</dynamic>
+		group by lingjbh
+		order by shul asc
+	</select>
+
+	<!-- 查询爱信订单匹配结果 ,连表查询零件名称 -->
+	<select id="queryAixddppgz" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.ilorder.Aixddppjg">
+		select
+		a.id,a.usercenter,a.dingdh,fahzq,a.lingjbh,to_char(a.fayrq,'yyyy-MM-dd')
+		as fayrq,a.shul,a.danw,dinghsl,chayl,duouads,shaouads,
+		b.gongysdm as gongysdm,b.uabzucrl as uabzucrl,b.uabzlx as uabzlx,c.zhongwmc as
+		lingjmc
+		from
+		(select
+		id,usercenter,dingdh,fahzq,lingjbh,fayrq,shul,danw,dinghsl,chayl,duouads,shaouads
+		from ${dbSchemal1}xqjs_aixddppjg) a
+		,${dbSchemal1}xqjs_dingdlj b,${dbSchemal3}ckx_lingj c
+		where
+		a.usercenter = b.usercenter and a.lingjbh = b.lingjbh and a.dingdh = b.dingdh and
+		a.usercenter = c.usercenter
+		and a.lingjbh = c.lingjbh
+		<dynamic>
+			<isNotNull prepend=" and " property="dingdh"> a.dingdh = #dingdh#
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> a.usercenter =
+				#usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> a.lingjbh =
+				#lingjbh#</isNotNull>
+		</dynamic>
+		order by a.fayrq
+	</select>
+
+	<!-- 更新爱信订单匹配规则结果 -->
+	<update id="updateAixddppgzjg" parameterClass="com.athena.xqjs.entity.ilorder.Aixddppjg">
+		update
+		${dbSchemal1}xqjs_aixddppjg
+		set
+		dinghsl = #dinghsl#,fayrq = to_date(#fayrq#,'YYYY-MM-DD HH24:MI:SS')
+		where
+		id = #id#
+	</update>
+
+	<!-- 查询爱信订单装箱规则 -->
+	<select id="queryAixddzxgz" resultClass="java.util.HashMap">
+	select 
+		uags,
+		uads
+		from
+		(
+			select
+			uags,uads
+			from
+			${dbSchemal1}xqjs_aixddzxgz order by uags
+			)
+		where 
+			<![CDATA[ rownum < 3 ]]>
+	</select>
+
+	<!-- 保存爱信订单规则匹配结果 -->
+	<insert id="insertPipjg" parameterClass="com.athena.xqjs.entity.ilorder.Aixddppjg">
+		insert into
+		${dbSchemal1}xqjs_aixddppjg
+		(id,usercenter,dingdh,fahzq,lingjbh,fayrq,shul,danw,dinghsl,chayl,duouads,shaouads,gongysdm)
+		values
+		(#id#,#usercenter#,#dingdh#,#fahzq#,#lingjbh#,to_date(#fayrq#,'YYYY-MM-DD
+		HH24:MI:SS'),#shul#,#danw#,#dinghsl#,
+		#chayl#,#duouads#,#shaouads#,#gongysdm#)
+	</insert>
+	
+	<!-- 保存爱信订单规则匹配结果 -->
+	<delete id="deletePipjg" parameterClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+		delete
+		${dbSchemal1}xqjs_aixddppjg
+		where 
+		dingdh = #dingdh# 
+		and gongysdm like substr(#gongysdm#,0,6)||'%' 
+		
+	</delete>
+
+	<!-- 查询订单零件列表 -->
+	<select id="queryDingdlj" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ilorder.Dingdlj">
+		select
+		id,dingdh,usercenter,gongysdm,lingjbh,dinghcj,danw,uabzlx,uabzucrl,uabzucsl,
+		nvl(p0sl , 0) as  p0sl,
+        nvl(p1sl , 0) as  p1sl,
+        nvl(p2sl , 0) as  p2sl,
+		jihyz,fayzq,dingdnr,
+		to_char(ziyhqrq,'yyyy-mm-dd') as ziyhqrq
+		from
+		${dbSchemal1}xqjs_dingdlj
+		where
+		1 = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh#
+			</isNotNull>
+			<isNotNull prepend=" and " property="dingdh"> dingdh = #dingdh#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 查询装箱匹配规则 -->
+	<select id="queryZxgz" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ilorder.Aixddzxgz">
+		select
+		id,uads,uags
+		from
+		${dbSchemal1}xqjs_aixddzxgz
+		where
+		1 = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="id"> id = #id#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 保存爱信订单规则匹配结果 -->
+	<insert id="insertAixddzxgz" parameterClass="com.athena.xqjs.entity.ilorder.Aixddzxgz">
+		insert into
+		${dbSchemal1}xqjs_aixddzxgz
+		(id,uags,uads)
+		values
+		(#id#,#uags#,#uads#)
+	</insert>
+	
+	<!-- 保存爱信订单规则匹配结果 -->
+	<update id="updateAixddzxgz" parameterClass="com.athena.xqjs.entity.ilorder.Aixddzxgz">
+		update 
+		${dbSchemal1}xqjs_aixddzxgz
+		set uags = #uags#,uads = #uads#
+		where 
+		id = #id#
+	</update>
+	
+	<!-- 保存爱信订单规则匹配结果 -->
+	<delete id="removeAixddzxgz" parameterClass="com.athena.xqjs.entity.ilorder.Aixddzxgz">
+		delete from ${dbSchemal1}xqjs_aixddzxgz
+		where id = #id#
+	</delete>
+</sqlMap>

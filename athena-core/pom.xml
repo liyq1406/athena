@@ -1,0 +1,278 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>athena</artifactId>
+		<groupId>com.athena</groupId>
+		<version>4.2.1-SNAPSHOT</version>
+	</parent>
+	<groupId>com.athena</groupId>
+	<artifactId>athena-core</artifactId>
+	<version>4.2.1-SNAPSHOT</version>
+	<name>athena-core</name>
+	<url>http://maven.apache.org</url> 
+
+	<!-- 导入项目公共包 -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.athena</groupId>
+				<artifactId>athena</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-chain</groupId>
+			<artifactId>commons-chain</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-el</groupId>
+			<artifactId>commons-el</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+		</dependency>
+
+		<!-- sdc -->
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-authority</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-biz</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-context</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-container</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-cache</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-ibatis</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-jdbc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-legacy</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-mvc</artifactId>
+			<version>3.5.4</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-remoting</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-system</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-all</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-transaction</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>bea.weblogic</groupId>
+			<artifactId>weblogic-jatmi</artifactId>
+			<version>10.3.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm-all</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ibatis</groupId>
+			<artifactId>ibatis</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>aopalliance</groupId>
+			<artifactId>aopalliance</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>${json-lib.version}</version>
+			<classifier>jdk13</classifier>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>${commons.fileupload.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.0.1</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sourceforge.jexcelapi</groupId>
+			<artifactId>jxl</artifactId>
+			<version>2.6.12</version>
+		</dependency>
+
+
+	</dependencies>
+</project>

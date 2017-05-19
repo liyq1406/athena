@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id$ -->
+
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+  <!-- defines the layout master -->
+  <fo:layout-master-set>
+    <fo:simple-page-master master-name="first" page-height="29.7cm" page-width="21cm" margin-top="1cm" margin-bottom="2cm" margin-left="2.5cm" margin-right="2.5cm">
+      <fo:region-body margin-top="1cm"/>
+      <fo:region-before extent="1cm"/>
+      <fo:region-after extent="1.5cm"/>
+    </fo:simple-page-master>
+  </fo:layout-master-set>
+
+  <!-- starts actual layout -->
+  <fo:page-sequence master-reference="first">
+
+
+<fo:flow flow-name="xsl-region-body">
+  <fo:block  font-size="10pt" font-family="Simsun" margin-bottom="30pt">做个pdf真麻烦哪,终于把石头变成金子了!
+  <fo:block color="gray" font-family="Simsun" margin-top="15pt" margin-left="150pt" >---------by 想飞的鳄鱼  </fo:block>
+  </fo:block>
+  
+  
+<fo:block color="gray" border-bottom-width="5pt"   >
+ </fo:block>
+  <fo:block space-after.optimum="10pt" font-family="Simsun" font-size="10pt">
+  
+  
+  
+<fo:table margin-bottom="10pt" border-width="groove"  > 
+<fo:table-column column-width="65pt"/> 
+<fo:table-column column-width="65pt"/> 
+<fo:table-column column-width="65pt"/>
+<fo:table-column column-width="65pt"/>
+<fo:table-column column-width="65pt"/>
+<fo:table-column column-width="65pt"/>
+<fo:table-column column-width="65pt"/>
+<fo:table-body>
+<fo:table-row    >
+<fo:table-cell >
+<fo:block font-family="Simsun"> 
+列名1</fo:block>
+  </fo:table-cell> 
+  <fo:table-cell > 
+  <fo:block font-family="Simsun"> 
+  列名2</fo:block>
+  </fo:table-cell> 
+  <fo:table-cell >
+  <fo:block font-family="Simsun"> 
+  列名3</fo:block>
+  </fo:table-cell> 
+  <fo:table-cell >
+ <fo:block font-family="Simsun">  
+  列名4</fo:block>
+  </fo:table-cell> 
+  <fo:table-cell >
+ <fo:block font-family="Simsun">  
+  列名5</fo:block>
+  </fo:table-cell> 
+  <fo:table-cell >
+ <fo:block font-family="Simsun">  
+  列名6</fo:block>
+  </fo:table-cell> 
+  <fo:table-cell >
+ <fo:block font-family="Simsun">  
+  列名7</fo:block>
+  </fo:table-cell> 
+  </fo:table-row>
+  </fo:table-body>
+  </fo:table> 
+  
+  
+    
+<fo:table > 
+<fo:table-column column-width="65pt"/> 
+<fo:table-column column-width="65pt"/> 
+<fo:table-column column-width="65pt"/>
+<fo:table-column column-width="65pt"/>
+<fo:table-column column-width="65pt"/>
+<fo:table-column column-width="65pt"/>
+<fo:table-column column-width="65pt"/>
+<fo:table-body>
+<fo:table-row  margin-bottom="5pt">
+
+<!--跨列  number-columns-spanned="2"  -->
+<fo:table-cell  >
+  <fo:block font-family="Simsun"> 
+11111
+  </fo:block>
+  </fo:table-cell>
+  
+ <fo:table-cell>
+  <fo:block font-family="Simsun"> 
+  22222
+  </fo:block>
+  </fo:table-cell>
+  
+  <fo:table-cell>
+  <fo:block font-family="Simsun"> 
+  33333
+  </fo:block>
+  </fo:table-cell>
+  
+  <fo:table-cell>
+  <fo:block font-family="Simsun"> 
+  44444
+  </fo:block>
+  </fo:table-cell>
+  
+  <fo:table-cell>
+  <fo:block font-family="Simsun"> 
+  55555
+  </fo:block>
+  </fo:table-cell>
+  
+  <fo:table-cell>
+  <fo:block font-family="Simsun"> 
+  66666
+  </fo:block>
+  </fo:table-cell>
+  
+  <fo:table-cell>
+  <fo:block font-family="Simsun"> 
+  77777
+  </fo:block>
+  </fo:table-cell> 
+  
+  </fo:table-row>
+  
+  <fo:table-row color="red" margin-bottom="5pt">
+
+<!--跨列  number-rows-spanned="2"  -->
+<fo:table-cell  >
+  <fo:block font-family="Simsun"> 
+  aaaaa
+  </fo:block>
+  </fo:table-cell>
+  
+ <fo:table-cell>
+  <fo:block font-family="Simsun"> 
+  bbbbb
+  </fo:block>
+  </fo:table-cell>
+  
+  <fo:table-cell>
+  <fo:block font-family="Simsun"> 
+  ccccc
+  </fo:block>
+  </fo:table-cell>
+  
+  <fo:table-cell>
+  <fo:block font-family="Simsun"> 
+  ddddd
+  </fo:block>
+  </fo:table-cell>
+  
+  <fo:table-cell>
+  <fo:block font-family="Simsun"> 
+  eeeee
+  </fo:block>
+  </fo:table-cell>
+  
+  <fo:table-cell>
+  <fo:block font-family="Simsun"> 
+  fffff
+  </fo:block>
+  </fo:table-cell>
+  
+  <fo:table-cell>
+  <fo:block font-family="Simsun"> 
+  ggggg
+  </fo:block>
+  </fo:table-cell> 
+  
+  </fo:table-row>
+  
+
+  </fo:table-body>
+  </fo:table> 
+  
+  </fo:block>
+
+
+
+
+</fo:flow>
+</fo:page-sequence>
+</fo:root>

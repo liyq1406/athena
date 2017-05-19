@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="anx">
+	<!-- 清理中间表 -->	
+	<delete id="deleteAnxmaoxqzjb">
+		delete 
+		from 
+			${dbSchemal1}XQJS_ANXMAOXQZJB 
+	</delete>
+	
+	<!-- 查询订单明细 -->
+	<select id="queryDingdlj" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.ilorder.Dingdlj">
+		select 
+			ID
+		from 
+			${dbSchemal1}xqjs_dingdlj
+		where 
+			rownum <![CDATA[ < ]]> 2
+		<dynamic>
+			<isNotNull property="dingdh" prepend=" and ">dingdh = #dingdh#</isNotNull>
+			<isNotNull property="lingjbh" prepend=" and ">lingjbh = #lingjbh#</isNotNull>
+			<isNotNull property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotNull>
+			<isNotNull property="gongysdm" prepend=" and ">gongysdm = #gongysdm#</isNotNull>
+		</dynamic>
+	</select>
+	
+	<select id="queryDingdmxSl" parameterClass="com.athena.xqjs.entity.ilorder.Dingdlj" resultClass="java.math.BigDecimal">
+		select 
+			sum(shul) as shul
+		from 
+			${dbSchemal1}xqjs_dingdmx 
+		where 
+			1 = 1
+		<dynamic>
+			<isNotNull property="dingdh" prepend=" and ">dingdh = #dingdh#</isNotNull>
+			<isNotNull property="lingjbh" prepend=" and ">lingjbh = #lingjbh#</isNotNull>
+			<isNotNull property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotNull>
+			<isNotNull property="gongysdm" prepend=" and ">gongysdm = #gongysdm#</isNotNull>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 查询按需毛需求 -->
+	<select id="queryAnxmaoxq" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxq">
+		select  
+      		USERCENTER,OFH,zhongzlxh,HANZBS,EMON,SHUNXH,LINGJBH,DANW,XIAOHD,to_char(xhsj,'yyyy-mm-dd hh24:mi') as xhsj,XIAOHXS,XUQLY,CHEJH,
+      		CHANX,ZHIZLX,CAIFSJ       
+    	from 
+    		${dbSchemal1}XQJS_ANXMAOXQ 
+    	where 
+    		1 = 1
+    		<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+    		<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+    		<isNotNull prepend=" and " property="xiaohd">xiaohd = #xiaohd#</isNotNull>
+    		order by xhsj
+	</select>
+	
+	<!-- 保存按需毛需求中间表 -->
+	<insert id="insertAnxmaoxqzjb2">
+		insert into ${dbSchemal1}XQJS_ANXMAOXQZJB
+		(
+			USERCENTER,
+			OFH,
+			ZHONGZLXH,
+			HANZBS,
+			SHUNXH,
+			LINGJBH,
+			DANW,
+			XIAOHD,
+			XHSJ,
+			XIAOHXS,
+			XUQLY,
+			CHEJH,
+			CHANX,
+			ZHIZLX,
+			CAIFSJ
+		)values(#usercenter#,#ofh#,#zhongzlxh#,#hanzbs#,#shunxh#,#lingjbh#,#danw#,#xiaohd#,to_date(#xhsj#,'yyyy-mm-dd hh24:mi'),
+		#xiaohxs#,#xuqly#,#chejh#,#chanx#,#zhizlx#,to_date(#caifsj#,'yyyy-MM-dd'))
+	</insert>
+	
+	<!-- 把按需毛需求明细表分段生成按需毛需求明细中间表 -->
+	<insert id="insertAnxmaoxqzjb">
+	<![CDATA[
+		insert into ${dbSchemal1}XQJS_ANXMAOXQZJB
+		(
+			USERCENTER,
+			OFH,
+			ZHONGZLXH,
+			HANZBS,
+			EMON,
+			SHUNXH,
+			LINGJBH,
+			DANW,
+			XIAOHD,
+			XHSJ,
+			XIAOHXS,
+			XUQLY,
+			CHEJH,
+			CHANX,
+			ZHIZLX,
+			CAIFSJ
+		)
+		select  
+		  USERCENTER ,
+		  min(OFH)	 ,
+		  (select ZHONGZLXH from ${dbSchemal1}XQJS_ANXMAOXQ anxMxq2 
+		  	where 
+		  		anxMxq2.Usercenter = #usercenter# 
+			and anxMxq2.Lingjbh = #lingjbh# 
+			and anxMxq2.Xiaohd = #xiaohd#
+			and anxMxq2.XHSJ =  to_date(#xiaohsj2#,'yyyy-mm-dd hh24:mi')),
+		  min(HANZBS)	,
+		  min(EMON) 	,
+		  min(SHUNXH)   ,
+		  LINGJBH    	,
+		  min(DANW)		,
+		  XIAOHD   		,
+		  to_date(#xiaohsj#,'yyyy-mm-dd hh24:mi')	,
+		  sum(XIAOHXS)  ,
+		  min(XUQLY)  	,
+		  min(CHEJH)	,
+		  min(CHANX)	,
+		  min(ZHIZLX)	,
+		  min(CAIFSJ)       
+		from ${dbSchemal1}XQJS_ANXMAOXQ anxMxq
+		where 
+			anxMxq.Usercenter = #usercenter# 
+		and anxMxq.Lingjbh = #lingjbh# 
+		and anxMxq.Xiaohd = #xiaohd#
+		and anxMxq.XHSJ >= to_date(#xiaohsj#,'yyyy-mm-dd hh24:mi') 
+		and anxMxq.XHSJ < to_date(#xiaohsj2#,'yyyy-mm-dd hh24:mi')
+		group by anxMxq.Usercenter,anxMxq.Lingjbh,anxMxq.Xiaohd
+	]]>
+	</insert>
+	
+	<!-- 初始初始化布线中间表 -->
+	<insert id="insertAnxcshbxzjb">
+		<![CDATA[
+		insert into ${dbSchemal1}XQJS_ANXCSHBXZJB 
+		(
+		  USERCENTER  ,
+		  LINGJBH     ,
+		  FAHD        ,
+		  MUDD        ,
+		  XIAOHD      ,
+		  LIUSH       ,
+		  ZHIZLX      ,
+		  SHUL        ,
+		  GONGYSBH    ,
+		  LUJBH       ,
+		  LUJMC       ,
+	      ZHIDGYS     ,
+	      JIAOFM      ,
+	      BEIHZQ      ,
+	      YUNSZQ      ,
+	      GCBH        ,
+	      XIEHZTBH    ,
+	      SONGHPC     ,
+	      DINGHCK     ,
+	      MOS2        ,
+	      CANGKSHPC2  ,
+	      CANGKSHSJ2  ,
+	      CANGKFHSJ2  ,
+	      BEIHSJ2     ,
+	      IBEIHSJ2    ,
+	      PBEIHSJ2    ,
+	      XIANBCK     ,
+	      MOS         ,
+	      CANGKSHPC   ,
+	      CANGKSHSJ   ,
+	      CANGKFHSJ   ,
+	      BEIHSJ      ,
+	      IBEIHSJ     ,
+	      PBEIHSJ     ,
+	      SHENGCXBH   ,
+	      BEIHSJC     ,
+	      ANQKCS      ,
+	      XIANBLLKC   ,
+	      YIFYHLZL    ,
+	      JIAOFZL     ,
+	      ZHONGZZL    ,
+	      CHEJ        ,
+	      XIANH       ,
+	      DANW        ,
+	      XIAOHSJ     ,
+	      CHAIFSJ     ,
+	      XQLY        ,
+	      CKUSBZLX    ,
+	      CKUSBZRL   ,
+	      CKUCLX     ,
+	      CKUCRL     ,
+	      zickbh,
+	      anqkcsl,
+	      GYSUCBZLX ,
+	      GYSUCRL    ,
+	      GYSUABZLX  ,
+	      GYSUAUCGS  ,
+	      JIANGLMS2  ,
+	      SHENGXSJ2  ,
+	      JIANGLMS   ,
+	      SHENGXSJ   ,
+	      GONGYHTH	 ,
+	      XIANBYHLX	 ,
+	      XIAOHCBH   ,
+	      XIAOHCCXBH ,
+	      FENPQBH    ,
+	      GONGYFE	 ,
+	      ZUIXQDL,
+	      GONGYSLX,
+	      DINGHCKLX	 
+	    ) 
+	    select 
+	    	Usercenter,
+	        Lingjbh,
+	         fahd,
+	         mudd,
+	         Xiaohd,
+	         ZHONGZLXH,
+	         Zhizlx,
+	         XIAOHXS,
+	         gongysbh,
+	         Lujbh,
+	         lujmc,
+	         Zhidgys,
+	         Jiaofm,
+	         Beihzq,
+	         Yunszq,
+	         Gcbh,
+	         Xiehztbh,
+	         Songhpc,
+	         Dinghck,
+	         Mos2,
+	         Cangkshpc2,
+	         Cangkshsj2,
+	         Cangkfhsj2,
+	         Beihsj2,
+	         Ibeihsj2,
+	         Pbeihsj2,
+	         Xianbck,
+	         waibms,
+	         Cangkshpc,
+	         Cangkshsj,
+	         Cangkfhsj,
+	         Beihsj,
+	         Ibeihsj,
+	         Pbeihsj,
+	         Shengcxbh,
+	         Beihsjc,
+	         Anqkcs,
+	         Xianbllkc,
+	         Yifyhlzl,
+	         Jiaofzl,
+	         Zhongzzl,
+	         CHEJH,
+	         CHANX,
+	         Danw,
+	         xhsj,
+	         CAIFSJ,
+	         XUQLY,
+	         usbzlx,
+	         usbzrl,
+	         uclx,
+	         ckucrl,
+	 		 zickbh,
+	 		 anqkcsl,
+	         ucbzlx,
+	         gysucrl,
+	         uabzlx,
+	         uaucgs,
+	         jianglms2,
+	         shengxsj2,
+		     jianglms,
+	         shengxsj,
+	         GONGYHTH,
+	         XIANBYHLX,
+	         XIAOHCBH,
+	         XIAOHCCXBH,
+	         FENPQBH,
+	         GONGYFE,
+	         ZUIXQDL,
+	         GONGYSLX,
+	         DINGHCKLX
+	    from(
+	    select 
+	         anxMxq.Usercenter,
+	         anxMxq.Lingjbh,
+	         wullj.fahd,
+	         wullj.mudd,
+	         anxMxq.Xiaohd,
+	         anxMxq.ZHONGZLXH,
+	         anxMxq.Zhizlx,
+	         anxMxq.XIAOHXS,
+	         wullj.gongysbh,
+	         wullj.Lujbh,
+	         wullj.lujmc,
+	         wullj.Zhidgys,
+	         wullj.Jiaofm,
+	         wullj.Beihzq,
+	         wullj.Yunszq,
+	         wullj.Gcbh,
+	         wullj.Xiehztbh,
+	         wullj.Songhpc,
+	         wullj.Dinghck,
+	         wullj.Mos2,
+	         wullj.Cangkshpc2,
+	         wullj.Cangkshsj2,
+	         wullj.Cangkfhsj2,
+	         wullj.Beihsj2,
+	         wullj.Ibeihsj2,
+	         wullj.Pbeihsj2,
+	         wullj.Xianbck,
+	         wullj.waibms,
+	         wullj.Cangkshpc,
+	         wullj.Cangkshsj,
+	         wullj.Cangkfhsj,
+	         wullj.Beihsj,
+	         wullj.Ibeihsj,
+	         wullj.Pbeihsj,
+	         wullj.Shengcxbh,
+	         wullj.Beihsjc,
+	         xhd.Anqkcs,
+	         xhd.Xianbllkc,
+	         xhd.Yifyhlzl,
+	         xhd.Jiaofzl,
+	         xhd.Zhongzzl,
+	         anxMxq.CHEJH,
+	         anxMxq.CHANX,
+	         anxMxq.Danw,
+	         to_char(anxMxq.XHSJ,'yyyy-mm-dd hh24:mi') as xhsj,
+	         anxMxq.CAIFSJ,
+	         anxMxq.XUQLY,
+	         ck.usbzlx,
+	         ck.usbzrl,
+	         ck.uclx,
+	         ck.ucrl as ckucrl,
+	 		 ck.zickbh,
+	 		 ck.anqkcsl,
+	         gys.ucbzlx,
+	         gys.ucrl as gysucrl,
+	         gys.uabzlx,
+	         gys.uaucgs,
+	         wullj.jianglms2,
+	         wullj.shengxsj2,
+		     wullj.wjianglms as jianglms,
+	         wullj.wshengxsj as shengxsj,
+	         gys.GONGYHTH,
+	         xhd.XIANBYHLX,
+	         xhd.XIAOHCBH,
+	         xhd.XIAOHCCXBH,
+	         xhd.FENPQBH,
+	         gys.GONGYFE,
+	         gys.ZUIXQDL,
+	         wullj.GONGYSLX,
+	         wullj.DINGHCKLX
+      
+		    from ${dbSchemal1}XQJS_ANXMAOXQZJB anxMxq
+		    left join ${dbSchemal3}ckx_lingjxhd xhd 
+		      on anxMxq.Usercenter = xhd.usercenter 
+		      	and anxMxq.Lingjbh = xhd.lingjbh 
+		      	and anxMxq.Xiaohd = xhd.xiaohdbh
+		    left join ${dbSchemal3}ckx_wullj wullj
+		      on xhd.usercenter = wullj.usercenter 
+		      	and xhd.lingjbh = wullj.lingjbh 
+		      	and xhd.fenpqbh = wullj.fenpqh 
+		      	
+		    left join ${dbSchemal3}ckx_lingjgys gys
+			  on gys.usercenter = wullj.usercenter 
+				and gys.lingjbh = wullj.lingjbh 
+				and gys.gongysbh = wullj.GONGYSBH
+				and (wullj.wjianglms = 'CD' or wullj.wjianglms = 'C1')
+			left join ${dbSchemal3}CKX_LINGJCK ck 
+			  on ck.usercenter = wullj.usercenter 
+			  	and ck.lingjbh = wullj.lingjbh
+				and ck.cangkbh = substr(wullj.xianbck,0,3) 
+				and (wullj.jianglms2 = 'MD' or wullj.jianglms2 = 'M1' or wullj.wjianglms = 'C1')
+		)where jianglms in('CD','C1') or jianglms2 in('MD','M1')
+		]]>
+	</insert>
+	
+	<!-- 清理中间表 -->	
+	<delete id="deleteAnxcshbxzjb">
+		delete 
+		from 
+			${dbSchemal1}XQJS_ANXCSHBXZJB 
+	</delete>
+	
+	<!-- 根据零件,用户中心,消耗点查询按需初始化C1M1中间表明细 -->
+	<select id="queryAnxcshbxzjbMxC1M1" resultClass="com.athena.xqjs.entity.anxorder.Anxcshbxzjb" parameterClass="java.util.Map">
+			select 
+				USERCENTER ,
+				LINGJBH ,max(
+				FAHD ) AS FAHD,max(
+				MUDD ) AS MUDD,MAX(XIAOHD) AS XIAOHD,max(
+				LIUSH ) AS LIUSH,max(
+				ZHIZLX ) AS ZHIZLX,
+				SUM(SHUL) AS SHUL ,max(
+				GONGYSBH ) as GONGYSBH,max(
+				LUJBH ) as LUJBH,max(
+				LUJMC ) as LUJMC,max(
+				WAIBMS ) as WAIBMS,max(
+				ZHIDGYS ) as ZHIDGYS,max(
+				JIAOFM ) as JIAOFM,max(
+				BEIHZQ ) as BEIHZQ,max(
+				YUNSZQ ) as YUNSZQ,max(
+				GCBH ) as GCBH,max(
+				XIEHZTBH ) as XIEHZTBH,max(
+				SONGHPC ) as SONGHPC,max(
+				DINGHCK ) as DINGHCK,max(
+				MOS2 ) as MOS2,max(
+				CANGKSHPC2 ) as CANGKSHPC2,max(
+				CANGKSHSJ2 ) as CANGKSHSJ2,max(
+				CANGKFHSJ2 ) as CANGKFHSJ2,max(
+				BEIHSJ2 ) as BEIHSJ2,max(
+				IBEIHSJ2 ) as IBEIHSJ2,max(
+				PBEIHSJ2 ) as PBEIHSJ2,
+				XIANBCK ,max(
+				MOS ) as MOS,max(
+				CANGKSHPC ) as CANGKSHPC,max(
+				CANGKSHSJ ) as CANGKSHSJ,max(
+				CANGKFHSJ ) as CANGKFHSJ,max(
+				BEIHSJ ) as BEIHSJ,max(
+				IBEIHSJ ) as IBEIHSJ,max(
+				PBEIHSJ ) as PBEIHSJ,max(
+				SHENGCXBH ) as SHENGCXBH,max(
+				BEIHSJC ) as BEIHSJC,max(
+				ANQKCSL ) as ANQKCSL,max(
+				XIANBLLKC ) as XIANBLLKC,max(
+				YIFYHLZL ) as YIFYHLZL,max(
+				JIAOFZL ) as JIAOFZL,max(
+				ZHONGZZL ) as ZHONGZZL,max(
+				CHEJ ) as CHEJ,max(
+				XIANH ) as XIANH,max(
+				DANW ) as DANW,
+				XIAOHSJ ,max(
+				CHAIFSJ ) as CHAIFSJ,max(
+				XQLY    ) as XQLY,max(
+				CKUSBZLX    ) as CKUSBZLX,max(
+		      CKUSBZRL   ) as CKUSBZRL,max(
+		      CKUCLX     ) as CKUCLX,max(
+		      CKUCRL     ) as CKUCRL,max(
+		      GYSUCBZLX ) as GYSUCBZLX,max(
+		      GYSUCRL    ) as GYSUCRL,max(
+		      GYSUABZLX  ) as GYSUABZLX,max(
+		      GYSUAUCGS  ) as GYSUAUCGS,max(
+		      JIANGLMS2  ) as JIANGLMS2,max(
+		      SHENGXSJ2  ) as SHENGXSJ2,max(
+		      JIANGLMS   ) as JIANGLMS,max(
+		      SHENGXSJ   ) as SHENGXSJ,max(
+		      GONGYHTH	 ) as GONGYHTH,max(
+		      XIANBYHLX	 ) as XIANBYHLX,max(
+		      XIAOHCBH   ) as XIAOHCBH,max(
+		      XIAOHCCXBH ) as XIAOHCCXBH,max(
+		      FENPQBH	 ) as FENPQBH,max(
+		      GONGYFE	 ) as GONGYFE,max(
+		      ZUIXQDL	 ) as ZUIXQDL,max(
+		      ZICKBH) as ZICKBH
+			from 
+			      	${dbSchemal1}XQJS_ANXCSHBXZJB t 
+			where 
+				1=1 
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+					lingjbh = #lingjbh#
+				</isNotEmpty>
+				<isNotNull prepend=" and " property="ms">
+					(jianglms = #ms# or jianglms2 = #ms2#)
+				</isNotNull>
+				<isNotNull prepend=" and " property="xianbck">
+					xianbck = #xianbck# 
+				</isNotNull>
+			</dynamic>
+			group by usercenter,lingjbh,xianbck,xiaohsj
+			order by 
+			      	xiaohsj
+	</select>
+	
+	<!-- 根据零件,用户中心,消耗点查询按需初始化中间表明细 -->
+	<select id="queryAnxcshbxzjbMx" resultClass="com.athena.xqjs.entity.anxorder.Anxcshbxzjb" parameterClass="java.util.Map">
+			select 
+					USERCENTER ,
+			LINGJBH ,
+			FAHD ,
+			MUDD ,
+			XIAOHD ,
+			LIUSH ,
+			ZHIZLX ,
+			SHUL ,
+			GONGYSBH ,
+			LUJBH ,
+			LUJMC ,
+			WAIBMS ,
+			ZHIDGYS ,
+			JIAOFM ,
+			BEIHZQ ,
+			YUNSZQ ,
+			GCBH ,
+			XIEHZTBH ,
+			SONGHPC ,
+			DINGHCK ,
+			MOS2 ,
+			CANGKSHPC2 ,
+			CANGKSHSJ2 ,
+			CANGKFHSJ2 ,
+			BEIHSJ2 ,
+			IBEIHSJ2 ,
+			PBEIHSJ2 ,
+			XIANBCK ,
+			MOS ,
+			CANGKSHPC ,
+			CANGKSHSJ ,
+			CANGKFHSJ ,
+			BEIHSJ ,
+			IBEIHSJ ,
+			PBEIHSJ ,
+			SHENGCXBH ,
+			BEIHSJC ,
+			ANQKCS ,
+			XIANBLLKC ,
+			YIFYHLZL ,
+			JIAOFZL ,
+			ZHONGZZL ,
+			CHEJ ,
+			XIANH ,
+			DANW ,
+			XIAOHSJ ,
+			CHAIFSJ ,
+			XQLY    ,
+			CKUSBZLX    ,
+	      CKUSBZRL   ,
+	      CKUCLX     ,
+	      CKUCRL     ,
+	      GYSUCBZLX ,
+	      GYSUCRL    ,
+	      GYSUABZLX  ,
+	      GYSUAUCGS  ,
+	      JIANGLMS2  ,
+	      SHENGXSJ2  ,
+	      JIANGLMS   ,
+	      SHENGXSJ   ,
+	      GONGYHTH	 ,
+	      XIANBYHLX	 ,
+	      XIAOHCBH   ,
+	      XIAOHCCXBH ,
+	      FENPQBH	 ,
+	      GONGYFE	 ,
+	      ZUIXQDL	 ,
+	      ZICKBH
+			from 
+			      	${dbSchemal1}XQJS_ANXCSHBXZJB t 
+			where 
+				1=1 
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+					lingjbh = #lingjbh#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohd">
+					xiaohd = #xiaohd#
+				</isNotEmpty>
+				<isNotNull prepend=" and " property="ms">
+					(jianglms = #ms# or jianglms2 = #ms2#)
+				</isNotNull>
+			</dynamic>
+			order by 
+			      	xiaohsj
+	</select>
+	
+	<select id="queryAnxcshbxzjbByMs" remapResults="true" resultClass="com.athena.xqjs.entity.anxorder.Anxcshbxzjb">
+	select 
+	          distinct 
+	          usercenter ,
+	          lingjbh,
+	          <dynamic>
+				<isNotNull property="type" >
+					$type$
+				</isNotNull>
+			</dynamic>  
+	      	from 
+	              ${dbSchemal1}XQJS_ANXCSHBXZJB t 
+	        where 
+			jianglms = #ms# or jianglms2 = #ms2#
+	</select>
+	
+	<!-- 查询线边仓库库存 -->
+	<select id="queryXianbkKucslBylingj" resultClass="java.math.BigDecimal">
+		select sum(ziy.KUCSL) from ${dbSchemal1}XQJS_ZIYKZB ziy  
+		 where ziy.cangkdm = (select distinct substr(zjb.xianbck,0,3)  from ${dbSchemal1}XQJS_ANXCSHBXZJB zjb
+							 where  zjb.USERCENTER = #usercenter#
+							   and zjb.LINGJBH = #lingjbh#
+							   and zjb.xiaohd = #xiaohd#
+							   and zjb.xiaohsj = #xiaohsj# )
+			<dynamic>
+				<isNotEmpty prepend="  and " property="usercenter">
+					USERCENTER = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="lingjbh">
+					LINGJBH = #lingjbh#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="ziyhqrq">
+					ZIYHQRQ = to_date(#ziyhqrq#,'yyyy-mm-dd')
+				</isNotEmpty>
+			</dynamic>	
+		   group by ziy.USERCENTER, ziy.LINGJBH,ziy.cangkdm
+	</select>
+	
+	<!-- 查询消耗量 -->
+	<select id="queryXiaohl" resultClass="java.math.BigDecimal">
+	<![CDATA[
+		select  
+		  sum(XIAOHXS) as SHUL    
+		from ${dbSchemal1}XQJS_ANXMAOXQ 
+		where 
+			Usercenter = #usercenter# 
+		and Lingjbh = #lingjbh# 
+		and Xiaohd = #xiaohd#
+		and XHSJ >= to_date(#xiaohsj#,'yyyy-mm-dd hh24:mi')
+		and XHSJ < to_date(#xiaohsj2#,'yyyy-mm-dd hh24:mi')
+		group by Usercenter,Lingjbh,Xiaohd
+	]]>
+	</select>
+	
+	<!-- 查询消耗量 -->
+	<select id="queryCshXiaohl" resultClass="java.math.BigDecimal">
+	<![CDATA[
+		 select  
+		  sum(SHUL) as SHUL    
+		from ${dbSchemal1}xqjs_anxcshbxzjb 
+		where 
+			Usercenter = #usercenter#
+		and Lingjbh = #lingjbh#
+		and Xiaohd = #xiaohd#
+		 and to_date(XIAOHSJ,'yyyy-mm-dd hh24:mi') >= to_date(#xiaohsj#, 'yyyy-mm-dd hh24:mi')
+     	 and to_date(XIAOHSJ,'yyyy-mm-dd hh24:mi') <= to_date(#xiaohsj2#, 'yyyy-mm-dd hh24:mi')
+		group by Usercenter,Lingjbh,Xiaohd
+	]]>
+	</select>
+	
+	<!-- 查询毛需求最大时间 -->
+	<select id="queryMxqxhsj" resultClass="java.lang.String">
+		select 
+			xiaohsj 
+		from 
+			(select 
+				xiaohsj 
+			from 
+				${dbSchemal1}xqjs_anxcshbxzjb 
+			where 
+				xiaohd = #xiaohd# and usercenter = #usercenter# 
+				and lingjbh = #lingjbh# and shengcxbh = #shengcxbh# 
+			order by xiaohsj) 
+		where rownum <![CDATA[<]]> 2
+	</select>
+	
+	<!-- 查询到货量 -->
+	<select id="queryDaohl" resultClass="java.math.BigDecimal"> 
+		select 
+			NVL(sum(SHUL),0) as SHUL
+		from ${dbSchemal1}XQJS_DINGDMX mx
+		where 
+			mx.USERCENTER = #usercenter#
+		and mx.LINGJBH = #lingjbh#
+		and mx.XIAOHD = #xiaohd#
+		and mx.GONGYSDM = #gongysdm#
+		and mx.jiaofrq = to_date(#jiaofrq#,'yyyy-MM-dd')
+		group by 
+		USERCENTER,
+		LINGJBH,
+		XIAOHD,
+		GONGYSDM	
+	</select>
+	
+	<!-- 保存异常待消耗 -->
+	<statement id="addYicdxh" >
+                  <![CDATA[    
+                  merge into 
+                  	    ${dbSchemal1}xqjs_kucjscsb a
+                  using 
+                  		(select count(*) co from ${dbSchemal1}xqjs_kucjscsb a  
+                  		where  a.lingjbh = #lingjbh# and a.usercenter = #usercenter# and a.xiaohd = #xiaohd# and a.flag = '2'
+                  		and to_char(a.jilrq,'yyyy-MM-dd') = #jilrq#) b
+                         on(b.co<>0)
+                         when matched then 
+                         	update 
+								set a.yicxhl = $yicxhl$,
+								a.jilrq = to_date(#create_time#,'yyyy-mm-dd HH24:mi:ss'),
+								a.create_time = to_date(#create_time#,'yyyy-mm-dd HH24:mi:ss'),
+								a.creator = #creator#,
+								 a.zhongzlxh=#zhongzlxh#,
+						         a.kucsldxh=#kucsldxh#,
+						         a.xianbllkc=#xianbllkc#,
+						         a.pdsjkc=#pdsjkc#
+                            where  
+                            	a.lingjbh = #lingjbh# and a.usercenter = #usercenter# and 
+                            	to_char(a.jilrq,'yyyy-MM-dd') = #jilrq# and a.xiaohd = #xiaohd# and a.flag = '2'
+                         when  not matched then 
+                         insert (usercenter,lingjbh,yicxhl,xiaohd,zhongzlxh,kucsldxh,xianbllkc,pdsjkc,flag,jilrq,create_time,creator) 
+                         values(#usercenter#,#lingjbh#,#yicxhl#,#xiaohd#,#zhongzlxh#,#kucsldxh#,#xianbllkc#,#pdsjkc#,2,to_date(#create_time#,'yyyy-mm-dd HH24:mi:ss'),
+						to_date(#create_time#,'yyyy-mm-dd HH24:mi:ss'),#creator#)]]>
+	</statement>
+	
+	<!-- 查询待消耗 -->
+	<select id="queryDxh"  resultClass="java.math.BigDecimal">
+		select 
+  			sum(xiaohxs)
+		from 
+  			${dbSchemal1}xqjs_anxmaoxq
+		where 
+  			xhsj <![CDATA[ >= ]]> to_date(#kaissj#,'yyyy-MM-dd hh24:mi:ss') and 
+  			xhsj <![CDATA[ < ]]> to_date(#jiessj#,'yyyy-MM-dd hh24:mi:ss')
+  		<dynamic>
+  			<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+  			<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+  			<isNotEmpty prepend=" and " property="shengcxbh">
+				chanx = #shengcxbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohdbh">
+				xiaohd = #xiaohdbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhongzlxh">
+				zhongzlxh = #zhongzlxh#
+			</isNotEmpty>
+  		</dynamic>
+	</select>
+	
+	<!-- 查询用户中心,消耗点,用于更新线边理论库存 -->
+	<select id="queryXbkcXhd" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+		select 
+			max(a.usercenter) as usercenter,a.lingjbh,a.xiaohdbh as xiaohd, max (a.shengcxbh) as shengcxbh
+		from 
+			${dbSchemal3}ckx_lingjxhd a,${dbSchemal3}ckx_wullj b 
+		where 
+			a.biaos = '1' and a.usercenter = b.usercenter and a.fenpqbh = b.fenpqh and (b.Waibms = 'CD'
+    		or b.mos2 = 'MD') and a.lingjbh = b.lingjbh
+		group by a.lingjbh,a.xiaohdbh,a.usercenter
+	</select>
+	
+	<!-- 查询按需毛需求当前天最大消耗时间 -->
+	<select id="queryMaxXhsj" parameterClass="java.util.Map" resultClass="java.lang.String">
+		select 
+			max(xhsj) 
+		from 
+			${dbSchemal1}xqjs_anxmaoxq 
+		where 
+			xhsj >= to_date(#xiaohsj#,'yyyy-MM-dd HH24:mi') and to_char(xhsj,'yyyy-MM-dd') = #xiaohsj#
+	</select>
+	
+	<!-- 查询初始化计算需更新线边理论库存的消耗点 -->
+	<select id="queryCshLjxhd" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+		select USERCENTER,
+	       LINGJBH,
+	       XIAOHD,
+	       max (shengcxbh) as shengcxbh
+	  	from ${dbSchemal1}XQJS_ANXCSHBXZJB
+	 		where jianglms = 'CD' or jianglms2 = 'MD'
+	 	group by USERCENTER, LINGJBH, XIAOHD
+	</select>
+	
+	<!-- 查询初始化计算需更新线边理论库存的消耗点 -->
+	<select id="queryXBPD" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.anxorder.XbpdBean">
+	SELECT DISTINCT L.USERCENTER,L.LINGJBH,L.SHENGCXBH,D.XIAOHDBH,D.XIANBLLKC FROM 
+	(select DISTINCT W.USERCENTER, W.FENPQH, W.LINGJBH, W.SHENGCXBH
+	  from ${dbSchemal3}ckx_wullj w
+	 where 1 = 1
+	   AND (w.mos = 'MD' OR W.WAIBMS = 'CD')
+	   <dynamic>
+	           <isNotEmpty prepend=" and " property="mos">W.MOS=#mos#</isNotEmpty>
+	           <isNotEmpty prepend=" and " property="waibms">W.WAIBMS=#waibms#</isNotEmpty>
+	   </dynamic>
+	   ) L,${dbSchemal3}CKX_LINGJXHD D
+	 WHERE 
+	 	  d.biaos = '1' and
+	      L.USERCENTER=D.USERCENTER 
+	      AND 
+	      L.LINGJBH=D.LINGJBH 
+	      AND 
+	      L.SHENGCXBH=D.SHENGCXBH
+	      AND 
+	      L.FENPQH=D.FENPQBH
+	      <dynamic>
+	           <isNotEmpty prepend=" and " property="usercenter">L.usercenter=#usercenter#</isNotEmpty>
+	           <isNotEmpty prepend=" and " property="lingjbh">L.lingjbh=#lingjbh#</isNotEmpty>
+	           <isNotEmpty prepend=" and " property="shengcxbh">L.shengcxbh=#shengcxbh#</isNotEmpty>
+	           <isNotEmpty prepend=" and " property="xiaohdbh">D.xiaohdbh=#xiaohdbh#</isNotEmpty>
+	      </dynamic>
+      </select>
+      
+      <!-- 查询按需毛需求流水点最大消耗时间 -->
+	<select id="queryCDCMaxXhsj" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT 
+			XHSJ 
+		FROM
+		(SELECT 
+			TO_CHAR(XHSJ,'yyyy-mm-dd HH24:mi:ss') as XHSJ
+		FROM 
+			${dbSchemal1}XQJS_ANXMAOXQ 
+		WHERE 
+				1=1
+		    AND USERCENTER=#usercenter#
+		    AND LINGJBH=#lingjbh#
+	        AND XIAOHD=#xiaohdbh#
+	        AND CHANX=#shengcxbh#
+	        AND ZHONGZLXH<![CDATA[ >= ]]>#zhongzlxh#
+	        AND XUQLY='3'
+	        ORDER BY ZHONGZLXH
+	        
+	   ) WHERE 
+     	ROWNUM = 1
+	</select>
+	   <!-- 查询按需毛需求流水号是否存在 -->
+	<select id="queryCDClsh" parameterClass="java.util.Map" resultClass="int">
+		select count(*) from ${dbSchemal1}xqjs_anxmaoxq m where rownum &lt;=1 and m.ZHONGZLXH=#zhongzlxh#
+	</select>
+	
+</sqlMap>

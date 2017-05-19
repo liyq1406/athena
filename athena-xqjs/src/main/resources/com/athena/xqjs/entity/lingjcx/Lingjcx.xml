@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lingjcx">
+
+	<select id="lingjcx" resultClass="com.athena.xqjs.entity.lingjcx.LingjztBean">
+		SELECT USERCENTER,TCNO,WULD,LINGJBH ,DINGDH,BLH,to_char(QIYSJ,'yyyy-MM-dd') as QIYSJ,QIYD,MUDD,to_char(GUANXSJ,'yyyy-MM-dd') as GUANXSJ,SUM(LINGJSL) as LINGJZL
+		FROM
+		(SELECT DHTZD_.USERCENTER, TC_.ZUISWLD AS WULD,TC_.TCNO, UABQ_.LINGJBH AS LINGJBH,UABQ_.LINGJSL,UABQ_.DINGDH,DHTZD_.BLH,TC_.QIYSJ, TC_.QIYD,YAOHL_.MUDD,TC_.GUANXSJ
+		  FROM ${dbSchemal1}XQJS_TC TC_,${dbSchemal1}CK_DAOHTZD DHTZD_,
+		       (SELECT LINGJBH, UTH, USERCENTER, LINGJSL,DINGDH,YAOHLH
+		          FROM ${dbSchemal1}CK_UABQ
+		         WHERE 1=1 
+		         <dynamic>
+					<isNotEmpty prepend=" and " property="lingjbh">LINGJBH  = #lingjbh# </isNotEmpty>
+					<isNotEmpty prepend=" and " property="usercenter">USERCENTER = #usercenter#</isNotEmpty>
+				</dynamic>
+		         ) UABQ_,
+		         (SELECT USERCENTER,YAOHLH,DINGDH,LINGJBH,MUDD FROM ${dbSchemal1}CK_YAOHL WHERE 1=1
+                  <dynamic>
+					<isNotEmpty prepend=" and " property="lingjbh">LINGJBH  = #lingjbh# </isNotEmpty>
+					<isNotEmpty prepend=" and " property="usercenter">USERCENTER = #usercenter#</isNotEmpty>
+				</dynamic>
+                ) YAOHL_
+			 WHERE TC_.UTNO = DHTZD_.UTH  AND TC_.TCZT = '1' AND DHTZD_.ZHUANGT in (1,2)
+			   AND DHTZD_.USERCENTER = UABQ_.USERCENTER
+			   AND DHTZD_.UTH = UABQ_.Uth
+			   AND UABQ_.USERCENTER = YAOHL_.USERCENTER AND UABQ_.YAOHLH = YAOHL_.YAOHLH) tmp
+			GROUP BY USERCENTER,WULD,TCNO,LINGJBH,DINGDH,BLH,to_char(QIYSJ,'yyyy-MM-dd'),QIYD,MUDD,to_char(GUANXSJ,'yyyy-MM-dd')
+	</select>
+
+	<select id="selectTCLingjByWuld" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.lingjcx.LingjbytcnoBean">
+		SELECT 
+		TC_.TCNO,
+		to_char(TC_.QIYSJ,'yyyy-MM-dd') as QIYSJ,
+		TC_.ZUISWLD AS WULD,
+		to_char(TC_.DAODWLDSJ,'yyyy-MM-dd') as DAODWLDSJ,
+		UABQ_.LINGJBH,
+		UABQ_.LINGJMC,
+		sum(UABQ_.LINGJSL) as LINGJZL
+		FROM ${dbSchemal1}XQJS_TC TC_,${dbSchemal1}CK_DAOHTZD DHTZD_,
+		 (SELECT LINGJBH, UTH, USERCENTER, LINGJSL,LINGJMC FROM ${dbSchemal1}CK_UABQ WHERE 1=1 
+		         <dynamic>
+					<isNotEmpty prepend=" and " property="lingjbh">LINGJBH  = #lingjbh# </isNotEmpty>
+					<isNotEmpty prepend=" and " property="usercenter">USERCENTER = #usercenter#</isNotEmpty>
+				</dynamic>
+		 ) UABQ_ WHERE TC_.UTNO = DHTZD_.UTH  AND TC_.TCZT='1' AND ZHUANGT in (1,2) AND DHTZD_.USERCENTER = UABQ_.USERCENTER AND DHTZD_.UTH = UABQ_.Uth
+		<dynamic>
+			<isNotEmpty prepend=" and " property="wuld">TC_.ZUISWLD =#wuld#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="tcNo">TC_.TCNO =#tcNo#</isNotEmpty>
+		</dynamic>
+		GROUP BY TC_.TCNO,
+		to_char(TC_.QIYSJ,'yyyy-MM-dd'),TC_.ZUISWLD,to_char(TC_.DAODWLDSJ,'yyyy-MM-dd'),UABQ_.LINGJBH,UABQ_.LINGJMC
+		ORDER BY TC_.TCNO
+	</select>
+	<select id="selectYaohlByYaohlh" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.lingjcx.YaohlBean">
+		SELECT DISTINCT
+		TC_.TCNO,
+		YAOHL_.DINGDH,
+		YAOHL_.YAOHLH,
+		UABQ_.LINGJBH,
+		YAOHL_.GONGYSDM,
+		YAOHL_.GONGYSMC,
+		UABQ_.UAXH,
+		UABQ_.UARL,
+		to_char(YAOHL_.JIAOFJ,'yyyy-MM-dd') AS JIAOFJ,
+		TC_.LUJDM
+		FROM ${dbSchemal1}XQJS_TC TC_,${dbSchemal1}CK_DAOHTZD DHTZD_,
+		(SELECT LINGJBH, UTH, USERCENTER, LINGJSL,UARL,UAXH,YAOHLH FROM ${dbSchemal1}CK_UABQ WHERE 1=1 
+		         <dynamic>
+					<isNotEmpty prepend=" and " property="lingjbh">LINGJBH  = #lingjbh# </isNotEmpty>
+					<isNotEmpty prepend=" and " property="usercenter">USERCENTER = #usercenter#</isNotEmpty>
+				</dynamic>
+		 ) UABQ_ ,
+		 (SELECT USERCENTER,YAOHLH,DINGDH,JIAOFJ,GONGYSMC,GONGYSDM  FROM ${dbSchemal1}CK_YAOHL  WHERE 1=1
+		 <dynamic>
+		 	<isNotEmpty prepend=" and " property="lingjbh">LINGJBH  = #lingjbh# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">USERCENTER = #usercenter#</isNotEmpty>
+		 	<isNotEmpty prepend=" and " property="yaohlh">YAOHLH =#yaohlh#</isNotEmpty>
+		 	<isNotEmpty prepend=" and " property="dingdh">DINGDH =#dingdh#</isNotEmpty>
+		 	<isNotEmpty prepend=" and " property="jiaofj">to_char(JIAOFJ,'yyyy-MM-dd') =#jiaofj#</isNotEmpty>
+		 </dynamic>
+		 ) YAOHL_
+		 WHERE TC_.UTNO = DHTZD_.UTH  AND TC_.TCZT='1' AND  ZHUANGT in (1,2) AND DHTZD_.USERCENTER = UABQ_.USERCENTER AND DHTZD_.UTH = UABQ_.Uth and UABQ_.YAOHLH = YAOHL_.YAOHLH
+		<dynamic>
+			<isNotEmpty prepend=" and " property="tcNo">TC_.TCNO =#tcNo#</isNotEmpty>
+		</dynamic>
+		order by UABQ_.LINGJBH
+	</select>
+	
+	<select id="lingjdingdhcx" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.lingjcx.LingjDingdhcxBean">
+		SELECT
+		TC_.ZUISWLD as wuld,
+		UABQ_.DINGDH,
+		UABQ_.LINGJBH,
+		UABQ_.USERCENTER,<!-- add usercenter by hzg 2015.9.30 -->
+		sum(UABQ_.LINGJSL) as lingjzl
+		FROM ${dbSchemal1}XQJS_TC TC_,${dbSchemal1}CK_DAOHTZD DHTZD_,
+        (SELECT USERCENTER,UTH,YAOHLH,LINGJBH,LINGJSL,DINGDH FROM ${dbSchemal1}CK_UABQ WHERE 1=1 
+         <dynamic>
+        	<isNotEmpty prepend=" and " property="usercenter">USERCENTER =#usercenter#</isNotEmpty>
+        	<isNotEmpty prepend=" and " property="lingjbh">LINGJBH  =#lingjbh#</isNotEmpty>
+        	<isNotEmpty prepend=" and " property="dingdh">DINGDH =#dingdh#</isNotEmpty>
+        </dynamic>
+        ) UABQ_
+<!-- 		(SELECT USERCENTER,YAOHLH,DINGDH,LINGJBH FROM ${dbSchemal1}CK_YAOHL WHERE 1=1 -->
+<!-- 		<dynamic> -->
+<!--         	<isNotEmpty prepend=" and " property="usercenter">USERCENTER =#usercenter#</isNotEmpty> -->
+<!--         	<isNotEmpty prepend=" and " property="lingjbh">LINGJBH  =#lingjbh#</isNotEmpty> -->
+<!--         	<isNotEmpty prepend=" and " property="dingdh">DINGDH =#dingdh#</isNotEmpty> -->
+<!--         </dynamic> -->
+<!-- 		) YAOHL_ -->
+		WHERE TC_.UTNO = DHTZD_.UTH  AND TC_.TCZT='1' and ZHUANGT in (1,2) AND DHTZD_.USERCENTER =
+		UABQ_.USERCENTER AND DHTZD_.UTH = UABQ_.Uth 
+<!-- 		AND UABQ_.USERCENTER = YAOHL_.USERCENTER AND UABQ_.YAOHLH = YAOHL_.YAOHLH -->
+	  GROUP BY TC_.ZUISWLD,UABQ_.LINGJBH,UABQ_.DINGDH,UABQ_.USERCENTER
+	</select>
+	
+	<select id="selectTCLingjByDingdhcx" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.lingjcx.TCLingjbydingdhcxBean">
+		SELECT 
+		TC_.TCNO,
+		to_char(TC_.QIYSJ,'yyyy-MM-dd') AS QIYSJ,
+		TC_.ZUISWLD AS WULD,
+		to_char(TC_.DAODWLDSJ,'yyyy-MM-dd') AS DAODWLDSJ,
+		UABQ_.LINGJBH,
+		UABQ_.LINGJMC,
+		sum(UABQ_.LINGJSL) AS LINGJZL
+		FROM ${dbSchemal1}XQJS_TC TC_,${dbSchemal1}CK_DAOHTZD DHTZD_,
+		(SELECT USERCENTER,UTH,LINGJBH,LINGJMC,LINGJSL,DINGDH FROM ${dbSchemal1}CK_UABQ 
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh">LINGJBH =#lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">USERCENTER =#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh">DINGDH=#dingdh#</isNotEmpty>
+		</dynamic>
+		) UABQ_ WHERE TC_.UTNO = DHTZD_.UTH  AND TC_.TCZT='1' AND ZHUANGT in (1,2) AND DHTZD_.USERCENTER = UABQ_.USERCENTER AND DHTZD_.UTH = UABQ_.Uth
+		<dynamic>
+			<isNotEmpty prepend=" and " property="wuld">TC_.ZUISWLD =#wuld#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="tcNo">TC_.TCNO =#tcNo#</isNotEmpty>
+		</dynamic>
+		GROUP BY TC_.TCNO,
+		to_char(TC_.QIYSJ,'yyyy-MM-dd') ,
+		TC_.ZUISWLD,
+		to_char(TC_.DAODWLDSJ,'yyyy-MM-dd'),
+		UABQ_.LINGJBH,
+		UABQ_.LINGJMC
+		ORDER BY UABQ_.LINGJBH
+	</select>
+	
+	<select id="selectTccx" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.lingjcx.LingjcxBean">
+		SELECT
+		UABQ_.DINGDH,
+		UABQ_.LINGJBH,
+		sum(LINGJSL) as LINGJZL,
+		TC_.DINGHCJ,
+		TC_.ZUISWLD,
+		TC_.TCNO,
+       	TC_.TCZT,
+        to_char(TC_.EDIT_TIME,'yyyy-mm-dd HH24:mi:ss') EDIT_TIME,
+		UABQ_.MUXH,
+		LINGJ_.JIHY,
+		UABQ_.UAXH,
+		UABQ_.UARL,
+		COUNT(UAH) as COUNTUAH 
+		FROM ${dbSchemal1}XQJS_TC TC_,${dbSchemal1}CK_DAOHTZD DHTZD_,
+		(SELECT USERCENTER,UTH,YAOHLH,LINGJBH,LINGJSL,MUXH,JIHYDM,UAXH,UARL,UAH,DINGDH  FROM ${dbSchemal1}CK_UABQ WHERE 1=1
+		<dynamic>
+    		<isNotEmpty prepend=" and " property="usercenter">USERCENTER = #usercenter#</isNotEmpty>
+    		<isNotEmpty prepend=" and " property="dingdh">DINGDH = #dingdh#</isNotEmpty>
+    	</dynamic>
+    	) UABQ_,
+<!-- 		(SELECT USERCENTER,YAOHLH,DINGDH,LINGJBH FROM ${dbSchemal1}CK_YAOHL WHERE 1=1 -->
+<!-- 		<dynamic> -->
+<!--     		<isNotEmpty prepend=" and " property="usercenter">USERCENTER = #usercenter#</isNotEmpty> -->
+<!--     		<isNotEmpty prepend=" and " property="dingdh">DINGDH = #dingdh#</isNotEmpty> -->
+<!--     	</dynamic> -->
+<!--     	) YAOHL_, -->
+    	(select USERCENTER,LINGJBH,JIHY,BIAOS FROM ${dbSchemal1}CKX_LINGJ) LINGJ_
+		WHERE TC_.UTNO = DHTZD_.UTH  <!-- AND TC_.TCZT='1' --> and ZHUANGT in (1,2) AND DHTZD_.USERCENTER =
+		UABQ_.USERCENTER AND DHTZD_.UTH = UABQ_.Uth 
+<!-- 		AND UABQ_.USERCENTER = YAOHL_.USERCENTER AND UABQ_.YAOHLH = YAOHL_.YAOHLH -->
+		AND UABQ_.USERCENTER=LINGJ_.USERCENTER AND UABQ_.LINGJBH=LINGJ_.LINGJBH AND LINGJ_.BIAOS='1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="tcNo">TC_.TCNO  = #tcNo#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="tczt">TC_.TCZT  = #tczt#</isNotEmpty>
+		</dynamic>
+		GROUP BY UABQ_.DINGDH,UABQ_.LINGJBH, TC_.DINGHCJ, TC_.ZUISWLD,UABQ_.MUXH,LINGJ_.JIHY,UABQ_.UAXH,UABQ_.UARL ,
+		TC_.TCNO,TC_.TCZT,TC_.EDIT_TIME
+		ORDER BY UABQ_.LINGJBH
+	</select>
+	
+	
+	<select id="selectTcByQysjcx" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.lingjcx.TcbyqysjcxBean">
+		SELECT TC_.TCNO,
+		TC_.DINGHCJ,
+		to_char(TC_.QIYSJ,'yyyy-MM-dd') AS QIYSJ,
+		TC_.ZUISWLD,
+		DHTZD_.USERCENTER  <!-- add usercenter by hzg 2015.9.30 -->
+		FROM ${dbSchemal1}XQJS_TC TC_ ,${dbSchemal1}CK_DAOHTZD DHTZD_  WHERE TC_.UTNO = DHTZD_.UTH AND TC_.TCZT='1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="startQiysj">TC_.QIYSJ &gt;= to_date(#startQiysj#,'yyyy-MM-dd')</isNotEmpty>
+			<isNotEmpty prepend=" and " property="endQiysj">TC_.QIYSJ &lt;= to_date(#endQiysj#,'yyyy-MM-dd')</isNotEmpty>
+		</dynamic>
+		ORDER BY TC_.TCNO
+	</select>
+	<select id="selectTcBywuldcx" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.lingjcx.TcbywuldcxBean">
+	SELECT  TEMP.TCNO,
+            TEMP.XIANGX,
+            TEMP.GUANXSJ,
+            TEMP.QIYSJ,
+            TEMP.QIYD,
+            TEMP.WULD as wuld,
+            TEMP.DAODWLDSJ,
+            TEMP.LINGJBH,
+             TEMP.USERCENTER,
+            TEMP.DINGDH,
+            TEMP.BLH,
+            TEMP.BLSCSJ,
+            WULD_.SHUNXH,
+            TEMP.LINGJZL,
+            TEMP.KDYS_SHEET_ID
+ 	FROM (SELECT distinct TC_.TCNO,TC_.XIANGX,
+		to_char(TC_.GUANXSJ, 'yyyy-MM-dd') AS GUANXSJ,
+		to_char(TC_.QIYSJ,'yyyy-MM-dd') AS QIYSJ,
+		TC_.QIYD,
+		TC_.ZUISWLD as wuld,
+		to_char(TC_.DAODWLDSJ,'yyyy-MM-dd') AS DAODWLDSJ,
+		UABQ_.LINGJBH,
+		UABQ_.USERCENTER, <!-- add usercenter by hzg 2015.9.30 -->
+		UABQ_.DINGDH,
+		DHTZD_.BLH,
+		DHTZD_.BLSCSJ,
+		sum(UABQ_.LINGJSL) AS LINGJZL,
+		TC_.KDYS_SHEET_ID  <!-- add kdys_sheet_id by lc 2016.9.5 -->
+		FROM ${dbSchemal1}XQJS_TC TC_,${dbSchemal1}CK_DAOHTZD DHTZD_,
+		(SELECT USERCENTER,UTH,YAOHLH,LINGJBH,LINGJSL,DINGDH  FROM ${dbSchemal1}CK_UABQ WHERE 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh">LINGJBH =#lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">USERCENTER =#usercenter#</isNotEmpty>
+		</dynamic>
+		) UABQ_
+<!-- 		(SELECT USERCENTER,YAOHLH,DINGDH,LINGJBH FROM ${dbSchemal1}CK_YAOHL WHERE 1=1  -->
+<!-- 		<dynamic> -->
+<!-- 			<isNotEmpty prepend=" and " property="lingjbh">LINGJBH =#lingjbh#</isNotEmpty> -->
+<!-- 			<isNotEmpty prepend=" and " property="usercenter">USERCENTER =#usercenter#</isNotEmpty> -->
+<!-- 		</dynamic> -->
+<!-- 		) YAOHL_, -->
+<!--     	(SELECT WULDBH ,SHUNXH FROM  ${dbSchemal1}CKX_YUNSWLD WHERE 1=1 -->
+<!--     	<dynamic> -->
+<!--     		<isNotEmpty prepend=" and " property="startwuldfw">shunxh &gt;= #startwuldfw#</isNotEmpty> -->
+<!-- 			<isNotEmpty prepend=" and " property="endwuldfw">shunxh &lt;= #endwuldfw#</isNotEmpty> -->
+<!-- 			<isNotEmpty prepend=" and " property="qiwuld">shunxh &gt;= #qiwuld#</isNotEmpty> -->
+<!-- 			<isNotEmpty prepend=" and " property="zhiwuld">shunxh &lt;=  #zhiwuld#</isNotEmpty> -->
+<!--     	</dynamic> -->
+<!--     	) WULD_ -->
+		WHERE TC_.UTNO = DHTZD_.UTH  AND TC_.TCZT='1' and ZHUANGT in (1,2) AND DHTZD_.USERCENTER =
+		UABQ_.USERCENTER AND DHTZD_.UTH = UABQ_.Uth
+<!-- 		AND UABQ_.USERCENTER = YAOHL_.USERCENTER AND UABQ_.YAOHLH = YAOHL_.YAOHLH  -->
+<!-- 		AND TC_.ZUISWLD = WULD_.WULDBH -->
+		<dynamic>
+			<isNotEmpty prepend=" and " property="tcno">TC_.TCNO =#tcno#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="kdys_sheet_id">TC_.KDYS_SHEET_ID =#kdys_sheet_id#</isNotEmpty>
+		</dynamic>
+		group by  TC_.TCNO,TC_.XIANGX, TO_CHAR(TC_.GUANXSJ, 'yyyy-MM-dd'),TO_CHAR(TC_.QIYSJ,'yyyy-MM-dd'),
+		TC_.QIYD,
+		TC_.ZUISWLD,
+		TO_CHAR(TC_.DAODWLDSJ,'yyyy-MM-dd'),
+		UABQ_.LINGJBH,UABQ_.USERCENTER,UABQ_.DINGDH,DHTZD_.BLH,DHTZD_.BLSCSJ,TC_.KDYS_SHEET_ID) TEMP 
+		LEFT JOIN (SELECT WULDBH, SHUNXH FROM ${dbSchemal1}CKX_YUNSWLD WHERE 1 = 1
+		<dynamic>
+    		<isNotEmpty prepend=" and " property="startwuldfw">shunxh &gt;= #startwuldfw#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="endwuldfw">shunxh &lt;= #endwuldfw#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="qiwuld">shunxh &gt;= #qiwuld#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhiwuld">shunxh &lt;=  #zhiwuld#</isNotEmpty>
+    	</dynamic>) WULD_ ON TEMP.WULD = WULD_.WULDBH
+		ORDER BY TEMP.TCNO
+	</select>
+	<select id="queryYunswuld" resultClass="com.athena.util.cache.CacheValue">
+		SELECT shunxh as value,  wuldbh as key ,0 as usercenter FROM ${dbSchemal1}ckx_yunswld
+	</select>
+	<select id="queryWuldlx" resultClass="com.athena.util.cache.CacheValue">
+		SELECT WULDLXBH as key,  HANY as value ,0 as usercenter FROM ${dbSchemal1}ckx_wuldlx
+	</select>
+	<select id="getYunswuld" resultClass="java.util.HashMap">
+		SELECT WULDBH,WULDMC,WULDLX,SHUNXH FROM ${dbSchemal1}CKX_YUNSWLD WHERE BIAOS = 1 AND WULDLX=#wuldlx#
+	</select>
+	<select id="queryWuld" resultClass="com.athena.util.cache.CacheValue">
+		SELECT WULDBH AS KEY,WULDMC AS VALUE,0 AS USERCENTER FROM  ${dbSchemal1}ckx_yunswld WHERE BIAOS = 1 
+	</select>
+	
+</sqlMap>

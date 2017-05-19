@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+	<resultMap class="com.athena.xqjs.entity.common.Zuiddhsl" id="Zuiddhsl">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="ZUIDDHSL" property="zuiddhsl" />
+		<result column="GONGYSBH" property="gongysbh" />
+		<result column="NIANZQ" property="nianzq" />
+		<result column="LINGJBH" property="lingjbh" />
+	</resultMap>
+
+
+	<select id="queryZuiddhslObject" resultClass="com.athena.xqjs.entity.common.Zuiddhsl">
+		SELECT
+		usercenter,
+		zuiddhsl,
+		gongysbh,
+		nianzq,
+		lingjbh
+		FROM
+		${dbSchemal3}ckx_zuiddhsl
+		WHERE
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				USERCENTER =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysbh">
+				gongysbh =
+				#gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="nianzq">
+				nianzq = #nianzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- wuyichao -->
+	<select id="queryZuiddhslList" resultClass="com.athena.xqjs.entity.common.Zuiddhsl">
+		SELECT
+		usercenter,
+		sum(zuiddhsl) as zuiddhsl,
+		gongysbh,
+		nianzq,
+		lingjbh
+		FROM
+		${dbSchemal3}ckx_zuiddhsl
+		group by usercenter,gongysbh,nianzq,lingjbh
+	</select>
+	<!-- wuyichao -->
+</sqlMap>

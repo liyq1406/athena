@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="workCalendar">
+	<!-- 多记录查询 modify by hanwu 20160105-->
+	<select id="queryCkxCalendarGroupHebTime" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarGroup">
+	select   g.usercenter,g.rilbc,g.bianzh,g.weilbzh,g.shengxsj,g.weilbzh2,g.shengxsj2 ,g.weilbzh3,g.shengxsj3 ,g.weilbzh4,g.shengxsj4   
+	from ${dbSchemal3}ckx_calendar_group g 
+    where g.biaos='1'
+    group by  g.usercenter,g.rilbc,g.bianzh,g.weilbzh,g.shengxsj,g.weilbzh2,g.shengxsj2 ,g.weilbzh3,g.shengxsj3 ,g.weilbzh4,g.shengxsj4   
+		
+    order by g.usercenter,g.rilbc,g.bianzh,g.weilbzh,g.shengxsj,g.weilbzh2,g.shengxsj2 ,g.weilbzh3,g.shengxsj3 ,g.weilbzh4,g.shengxsj4   
+	</select>
+	<delete id="removeHebTime">
+	delete from ${dbSchemal3}CKX_CALENDAR_HEBTIME
+	</delete>
+	<!-- 添加合并时间  modify by hanwu 20160105-->
+	<insert id="addCalendarHebTime" >
+	insert into ${dbSchemal3}CKX_CALENDAR_HEBTIME (HEBTIMEH,USERCENTER,BANC,BIANZH,WEILBZH,SHENGXSJ,WEILBZH2,SHENGXSJ2,WEILBZH3,SHENGXSJ3,WEILBZH4,SHENGXSJ4,CREATOR)
+	values(#HEBTIMEH#,#USERCENTER#,#BANC#,#BIANZH#,#WEILBZH#,to_date(#SHENGXSJ#,'yyyy-MM-dd'),#WEILBZH2#,to_date(#SHENGXSJ2#,'yyyy-MM-dd'),#WEILBZH3#,to_date(#SHENGXSJ3#,'yyyy-MM-dd'),#WEILBZH4#,to_date(#SHENGXSJ4#,'yyyy-MM-dd'),#CREATOR#)
+	
+	</insert>
+	<delete id="removeHebTimeInfo">
+	delete from ${dbSchemal3}CKX_CALENDAR_HEBTIME_INFO
+	</delete>
+	<!-- 添加合并时间详细  modify by hanwu 20160105-->
+	<insert id="addCalendarHebTimeInfo" >
+	insert into ${dbSchemal3}CKX_CALENDAR_HEBTIME_INFO (USERCENTER ,CHANXCK,HEBTIMEH ,CREATOR )
+	    select g.usercenter,g.appobj , h.hebtimeh ,#userID# as creator 
+	    from ${dbSchemal3}ckx_calendar_group g 
+	    inner join ${dbSchemal3}ckx_calendar_hebtime h 
+	    on H.usercenter = g.usercenter 
+	    and  h.banc = g.rilbc 
+	    and h.bianzh = g.bianzh 
+	    and nvl(h.weilbzh,'0') = nvl(g.weilbzh,'0') 
+	    and nvl(h.shengxsj,sysdate) = nvl(to_date(g.shengxsj,'yyyy-MM-dd'),sysdate)
+	    and nvl(h.weilbzh2,'0') = nvl(g.weilbzh2,'0') 
+	    and nvl(h.shengxsj2,sysdate) = nvl(to_date(g.shengxsj2,'yyyy-MM-dd'),sysdate)
+	    and nvl(h.weilbzh3,'0') = nvl(g.weilbzh3,'0') 
+	    and nvl(h.shengxsj3,sysdate) = nvl(to_date(g.shengxsj3,'yyyy-MM-dd'),sysdate)
+	    and nvl(h.weilbzh4,'0') = nvl(g.weilbzh4,'0') 
+	    and nvl(h.shengxsj4,sysdate) = nvl(to_date(g.shengxsj4,'yyyy-MM-dd'),sysdate)
+	    
+	</insert>
+</sqlMap>

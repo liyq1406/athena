@@ -1,0 +1,48 @@
+<components namespace="xqjs">
+
+	<component class="com.toft.core3.biz.module.ModuleConfig">
+		<property name="name" value="xqjs" />
+		<property name="path" value="com/athena/xqjs" />
+		<property name="actions">
+			<list>
+			
+
+	            <value>config/action-xqjs-quhysfy.xml</value>
+	            
+				<value>config/action-xqjs-dfpvdiaobl.xml</value>
+				<value>config/action-xqjs-diaobl.xml</value>
+				<value>config/action-xqjs-ilorder.xml</value>
+				<value>config/action-xqjs-kdorder.xml</value>
+				<value>config/action-xqjs-ppl.xml</value>
+				<value>config/action-xqjs-ycbj.xml</value>
+				<value>config/action-xqjs-kanbyhl.xml</value>
+				<value>config/action-xqjs-maoxq.xml</value>
+	            <value>config/action-xqjs-yhl.xml</value>
+	            <value>config/action-xqjs-lxkx.xml</value>
+	            <value>config/action-xqjs-anxorder.xml</value>
+	            <value>config/action-xqjs-zygzbj.xml</value>
+	            <value>config/action-xqjs-shouhdcl.xml</value>
+	            <value>config/action-xqjs-lingjcx.xml</value>
+	            <value>config/action-xqjs-denglswtx.xml</value>
+	            <value>config/action-xqjs-report.xml</value>
+	            <value>config/action-xqjs-emergency.xml</value>
+			</list>
+		</property>
+		<property name="sqlMaps">
+			<list>
+				<value>sqlmap-config-xqjs.xml</value>
+			</list>
+		</property>
+	</component>
+	
+	<component  id="classpathAdvisorCreator"
+				class="com.toft.core3.aop.creator.ClasspathAdvisorCreator">
+		<!-- 拦截的类，支持Ant style语法 -->
+		<property name="classPatterns" value="com/athena/**/*Service.class" />
+		<!-- 拦截的方法，正则表达式验证 -->
+		<property name="methodPatterns" value=".*" />
+		<property name="interceptorNames" value="exceptionInterceptor" />
+	</component>
+	
+</components>
+

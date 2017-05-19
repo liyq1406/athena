@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 收货待处理ibaits配置文件 -->
+<sqlMap namespace="shouhdcl">
+	<!-- 查询拒收跟踪单,按零件编号汇总 -->
+	<select id="queryShouhdcl" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.shouhdcl.Jusgzd">
+		select 
+			a.usercenter,a.lingjbh,max(a.danw) as danw,sum(jusljs) as jusljs,max(gongysdm) as gongysdm,
+			max(gongysmc) as gongysmc,max(cangkbh) as cangkbh,max(zhuangt) as zhuangt,max(gonghms) as gonghms,max(b.jihy) as jihy
+			
+		from 
+			${dbSchemal1}ck_jusgzd a,${dbSchemal3}ckx_lingj b
+		where  
+			a.lingjbh = b.lingjbh and a.usercenter = b.usercenter
+		<dynamic>
+			<isNotNull prepend=" and " property="lingjbh"> a.lingjbh = #lingjbh#</isNotNull>
+			<isNotNull prepend=" and " property="gongysdm"> gongysdm = #gongysdm#</isNotNull>
+			<isNotNull prepend=" and " property="jihy"> b.jihy = #jihy#</isNotNull>
+			<isNotNull prepend=" and " property="gonghms"> gonghms like '$gonghms$%'</isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> a.usercenter = #usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="cangkbh"> cangkbh = #cangkbh#</isNotNull>
+			<isNotNull prepend=" and " property="zhuangt"> zhuangt = $zhuangt$</isNotNull>
+		</dynamic>
+		group by a.lingjbh,a.usercenter
+	</select>
+	
+	<!-- 查询拒收跟踪单审核列表-->
+	<select id="queryShouhdclshlb" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.shouhdcl.Jusgzd">
+		select 
+			yaohlh,usercenter,jusgzdh,fahsj,daohsj,dingdh,lingjbh,jusljs,gongysdm,uah,uabzlx,uarl,ucbzlx,uchl,ucgs,blh,danw,
+			zhuangt,jusyy,chuljg
+		from 
+			${dbSchemal1}ck_jusgzd 
+		where 
+			lingjbh = #lingjbh# and usercenter = #usercenter#
+		<dynamic>
+			<isNotNull prepend=" and " property="chuljg"> chuljg = $chuljg$</isNotNull>
+			<isNotNull prepend=" and " property="gongysdm"> gongysdm = #gongysdm#</isNotNull>
+			<isNotNull prepend=" and " property="blh"> blh = #blh#</isNotNull>
+			<isNotNull prepend=" and " property="daohsj"> daohsj = to_date(#daohsj#,'yyyy-MM-dd')</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 审核 -->
+	<update id="shenH" parameterClass="com.athena.xqjs.entity.shouhdcl.Jusgzd">
+		update 
+			${dbSchemal1}ck_jusgzd
+		set
+			chuljg = $chuljg$,zhuangt = 2
+		where 
+			usercenter = #usercenter# and jusgzdh = #jusgzdh#
+	</update>
+	
+	<!-- 查询要货令 -->
+	<select id="queryYaohl" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		select 
+			yaohlh,dingdh,lingjbh,yaohsl,gongysdm,baozxh,usxh,ucxh,ucrl,ucgs,fahd,xiughyjjfsj,danw
+		from
+			${dbSchemal1}ck_yaohl
+		where 
+			usercenter = #usercenter# and lingjbh = #lingjbh# and yaohlzt = '01'
+		order by create_time
+	</select>
+	
+	<!-- 校验要货令 -->
+	<select id="checkYhl" parameterClass="com.athena.xqjs.entity.yaohl.Yaohl" resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		select 
+			yaohlh 
+		from 
+			${dbSchemal1}ck_jusgzd 
+		where 
+			yaohlh = #yaohlh#
+	</select>
+	
+	<!-- 指定要货令 -->
+	<update id="zhiDyhl" parameterClass="com.athena.xqjs.entity.shouhdcl.Jusgzd">
+		update 
+			${dbSchemal1}ck_jusgzd
+		set
+			chuljg = 1,zhuangt = 2
+			<dynamic>
+				<isNotNull property="yaohlh">,yaohlh = #yaohlh# </isNotNull>
+				<isNotNull property="dingdh">,dingdh = #dingdh# </isNotNull>
+			</dynamic>
+		where 
+			usercenter = #usercenter# and jusgzdh = #jusgzdh# 
+	</update>
+	
+		<!-- 查询拒收跟踪单回退-->
+	<select id="queryShouhdclht" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.shouhdcl.Jusgzd">
+		select 
+			 j.usercenter, j.yaohlh, j.jusgzdh, j.fahsj, j.daohsj, j.dingdh, j.lingjbh, j.gongysdm, j.uah, j.uabzlx, j.uarl, j.ucbzlx, j.uchl, j.ucgs, j.blh, j.danw, j.gonghms, j.xiehd, j.chengysdm,l.dinghcj 
+		from 
+			${dbSchemal1}ck_jusgzd  j inner join ${dbSchemal3}ckx_lingj l   on j.usercenter = l.usercenter and j.lingjbh = l.lingjbh
+		where 
+ 1=1
+		<dynamic>
+			<isNotNull prepend=" and " property="gongysdm"> j.gongysdm = #gongysdm#</isNotNull>
+			<isNotNull prepend=" and " property="jusgzdh"> j.jusgzdh = #jusgzdh#</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> j.lingjbh = #lingjbh#</isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> j.usercenter = #usercenter#</isNotNull>
+		</dynamic>
+	</select>
+</sqlMap>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+
+	<properties resource="com/athena/fj/config/sqlmap.properties" />
+
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="10"
+		maxTransactions="5" useStatementNamespaces="true" /> 
+
+		<!--贺志国 -->
+		<sqlMap resource="com/athena/fj/entity/sqlmap-yaocjh.xml" />
+		<sqlMap resource="com/athena/fj/entity/sqlmap-chelsb.xml" />
+		<sqlMap resource="com/athena/fj/entity/sqlmap-peizjh.xml" />
+		<sqlMap resource="com/athena/fj/entity/sqlmap-zhuangc.xml" />
+		<sqlMap resource="com/athena/fj/entity/sqlmap-shougpz.xml" />
+		<sqlMap resource="com/athena/fj/entity/sqlmap-dictionary.xml" />
+		<sqlMap resource="com/athena/fj/entity/sqlmap-peiztz.xml" />
+
+		<!-- by 王冲 2012-02-18 -->
+		<sqlMap resource="com/athena/fj/entity/sqlmap-fenpeiyaocjh.xml" />
+		<sqlMap resource="com/athena/fj/entity/sqlmap-billNum.xml" />
+		<sqlMap resource="com/athena/fj/entity/sqlmap-fjschedule.xml" />
+		
+		
+		
+		
+		
+		
+		
+</sqlMapConfig>

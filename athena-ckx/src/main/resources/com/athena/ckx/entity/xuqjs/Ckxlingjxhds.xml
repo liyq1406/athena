@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ts_ckx">
+
+	<!--查询-->
+	<select id="queryCkxLingjxhds" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhds">
+		select usercenter,lingjbh,xinljbh,xiaohd,yuanxhd,to_char(shengxr,'yyyy-MM-dd') as shengxr,to_char(jiesr,'yyyy-MM-dd') as jiesr,biaos
+		from ${dbSchemal3}ckx_lingjxhd_s 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+			usercenter =#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+			lingjbh =#lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xinljbh">
+			xinljbh =#xinljbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohd">
+			xiaohd =#xiaohd#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="yuanxhd">
+			yuanxhd =#yuanxhd#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">
+			biaos =#biaos#</isNotEmpty>
+		</dynamic>
+		order by  biaos,usercenter,lingjbh,xiaohd
+	</select>
+	
+	
+	<select id="getCkxLingjxhds" resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhds">
+		select usercenter,lingjbh,xinljbh,xiaohd,yuanxhd,to_char(shengxr,'yyyy-MM-dd') as shengxr,to_char(jiesr,'yyyy-MM-dd') as jiesr,biaos
+		from ${dbSchemal3}ckx_lingjxhd_s 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+			usercenter =#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+			lingjbh =#lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="yuanxhd">
+			yuanxhd =#yuanxhd#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<select id="getCountCkxyljxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" resultClass="java.lang.String">
+		select count(xiaohdbh)
+		from ${dbSchemal3}ckx_lingjxhd
+		where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohdbh"><![CDATA[xiaohdbh=#xiaohdbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos=#biaos#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!--插入一条数据-->
+	<insert id="insertCkxLingjxhds" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhds">
+		insert into ${dbSchemal3}ckx_lingjxhd_s 
+		(usercenter,lingjbh,xinljbh,xiaohd,yuanxhd,shengxr,jiesr,biaos,creator,create_time)
+		values(#usercenter#,#lingjbh#,#xinljbh#,#xiaohd#,#yuanxhd#,to_date(#shengxr#,'yyyy-MM-dd'),to_date(#jiesr#,'yyyy-MM-dd'),#biaos#,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<!--更新一条数据-->
+	<update id="updateCkxLingjxhds" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhds">
+		update ${dbSchemal3}ckx_lingjxhd_s  set 
+		xiaohd=#xiaohd#,
+		shengxr = to_date(#shengxr#,'yyyy-MM-dd'),
+		jiesr = to_date(#jiesr#,'yyyy-MM-dd'),
+		biaos=#biaos#,
+		editor=#editor#,
+		edit_time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yuanxhd">yuanxhd = #yuanxhd#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--更新一条数据-->
+	<update id="updateCkxLingjxhdsh" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhds">
+		update ${dbSchemal3}ckx_lingjxhd_s  set
+		xinljbh=#xinljbh#, 
+		xiaohd=#xiaohd#,
+		shengxr = to_date(#shengxr#,'yyyy-MM-dd'),
+		jiesr = to_date(#jiesr#,'yyyy-MM-dd'),
+		biaos=#biaos#,
+		editor=#editor#,
+		edit_time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yuanxhd">yuanxhd = #yuanxhd#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--更新一条数据-->
+	<update id="updateCkxLingjxhdshbysx" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhds">
+		update ${dbSchemal3}ckx_lingjxhd_s  set
+		xinljbh=#xinljbh#, 
+		xiaohd=#xiaohd#,
+		shengxr = to_date(#shengxr#,'yyyy-MM-dd'),
+		jiesr = to_date(#jiesr#,'yyyy-MM-dd'),
+		biaos=#biaos#,
+		editor=#editor#,
+		edit_time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yuanxhd">yuanxhd = #yuanxhd#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<statement id="mergelingjXhds" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhds">
+merge  into ${dbSchemal3}ckx_lingjxhd_s k 
+using (select count(usercenter) co from ${dbSchemal3}ckx_lingjxhd_s t 
+    where t.usercenter=#usercenter# and t.lingjbh = #lingjbh# and t.yuanxhd=#yuanxhd#) s
+on (s.co > 0)
+when matched then 
+  update set k.shengxr=null,k.jiesr=null,k.xiaohd = #xiaohd# ,k.biaos='0',k.editor=#editor#,edit_time = sysdate
+  where <![CDATA[ k.usercenter=#usercenter# and k.lingjbh = #lingjbh# and k.yuanxhd = #yuanxhd#]]>
+ when not matched then 
+   insert  (usercenter,lingjbh,xiaohd,yuanxhd,biaos,creator,create_time,editor,edit_time)
+   values(#usercenter#,#lingjbh#,#xiaohd#,#yuanxhd#,#biaos#,#creator#,sysdate,#editor#,sysdate)
+</statement>
+	
+	
+	<!--删除一条数据-->
+	<delete id="deleteCkxLingjxhds" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhds">
+		update ${dbSchemal3}ckx_lingjxhd_s
+		set <![CDATA[biaos = '0']]> 
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xiaohd">xiaohd = #xiaohd#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yuanxhd">yuanxhd = #yuanxhd#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

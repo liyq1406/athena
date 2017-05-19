@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="anx">
+<!-- clv毛需求中间表 -->
+	<delete id="clear_jc_xq">truncate table jc_xq</delete>
+	<insert id="add_jc_xq" parameterClass="java.util.Map">
+		insert into jc_xq  (usercenter, lingjbh, xiaohxs, ofh, xiaohd, laiybs, xhsj, xhtime )
+	 <![CDATA[	select a.usercenter, a.lingjbh, a.xiaohxs, a.ofh,a.xiaohd, a.laiybs,
+       (case
+         when to_char(xhsj, 'hh24:mi:ss') <=  '06:00:00' then
+          trunc(xhsj - 1)  else  trunc(xhsj)
+       end) xhsj,
+       a.xhsj xhtime
+  		from ${dbSchemal1}xqjs_anxmaoxq a where a.xhsj >sysdate-3 ]]>
+  		and a.usercenter= #usercenter# 
+	</insert>
+	
+	<!-- clv结果 -->
+	<delete id="clear_jc_clv">truncate table jc_clv</delete>
+	<insert id="add_jc_clv">
+	insert into  jc_clv (usercenter, lingjbh, xiaohd, j0, j0date, j1, j1date, j2, j2date)  
+	<![CDATA[	select n.usercenter, n.lingjbh,   n.xiaohd,
+		       nvl(sum(decode(trunc(n.xhsj),
+		                  (select min(trunc(xhsj))
+		                     from jc_xq c
+		                    where c.ofh = 'clv'),
+		                  n.xiaohxs)),0) J0,
+		       (select min(trunc(xhsj))
+		                     from jc_xq c
+		                    where c.ofh = 'clv')
+		                     j0date, 
+		       
+		       nvl(sum(decode(trunc(n.xhsj),
+		                  (select min(trunc(xhsj))
+		                     from jc_xq c
+		                    where c.ofh = 'clv'
+		                      AND TRUNC(XHSJ) <>
+		                          (select min(trunc(xhsj))
+		                             from jc_xq c
+		                            where c.ofh = 'clv')),
+		                  n.xiaohxs)),0) J1,
+		         (select min(trunc(xhsj))
+		                     from jc_xq c
+		                    where c.ofh = 'clv'
+		                      AND TRUNC(XHSJ) <>
+		                          (select min(trunc(xhsj))
+		                             from jc_xq c
+		                            where c.ofh = 'clv')) j1date,
+		       nvl(sum(decode(trunc(n.xhsj),
+		                  (select min(trunc(xhsj))
+		                     from jc_xq
+		                    where ofh = 'clv'
+		                      and TRUNC(XHSJ) >
+		                          (select min(trunc(xhsj))
+		                             from jc_xq c
+		                            where c.ofh = 'clv'
+		                              AND TRUNC(XHSJ) >
+		                                  (select min(trunc(xhsj))
+		                                     from jc_xq c
+		                                    where c.ofh = 'clv'))),
+		                  n.xiaohxs)),0) J2,
+		            (select min(trunc(xhsj))
+		                     from jc_xq
+		                    where ofh = 'clv'
+		                      and TRUNC(XHSJ) >
+		                          (select min(trunc(xhsj))
+		                             from jc_xq c
+		                            where c.ofh = 'clv'
+		                              AND TRUNC(XHSJ) >
+		                                  (select min(trunc(xhsj))
+		                                     from jc_xq c
+		                                    where c.ofh = 'clv'))) j2date
+		  from jc_xq n ]]>
+		 group by n.usercenter ,n.lingjbh, n.xiaohd
+	
+	</insert>
+	
+	<!-- sppv结果 -->
+	<delete id="clear_jc_sppv">truncate table jc_sppv</delete>
+	<insert id="add_jc_sppv" parameterClass="java.util.Map">
+	insert into jc_sppv ( usercenter,lingjbh, xiaohd, sppvsl, ssj, zsj)  
+	select a.usercenter, a.lingjbh, a.xiaohd, nvl(sum(a.xiaohxs),0) sppvsl, (trunc
+	<![CDATA[ 
+	(sysdate - 1) + 6.5 / 24) ssj, (trunc(sysdate ) + 6.5 / 24) zsj
+	  from ${dbSchemal1}xqjs_anxmaoxq a
+	 where a.ofh <> 'clv'
+	   and a.xhsj >=
+	       (trunc(sysdate - 1) + 6.5 / 24)
+	   and a.xhsj < (trunc(sysdate ) + 6.5 / 24) and a.usercenter=#usercenter#
+	 group by a.usercenter,a.lingjbh, a.xiaohd
+	 ]]>
+	</insert>
+	
+	<!-- 出库量及异常消耗  -->
+	<delete id="clear_jc_xhl">truncate table jc_xhl</delete>
+	<insert id="add_jc_xhl" parameterClass="java.util.Map">
+		insert into jc_xhl (usercenter,lingjbh, xiaohd, ckycsl, qs, jz)
+		 <![CDATA[ select a.usercenter,a.lingjbh, substr(a.xiaohd,1,9) xiaohd, nvl(sum(a.daohl),0) - nvl(sum(a.yicxhl),0) ckycsl,(trunc(sysdate - 1) + 6 / 24) qs, 
+		(trunc(sysdate ) + 6 / 24) jz
+		  from ${dbSchemal1}xqjs_kucjscsb a
+		 where 
+		   a.jilrq >= (trunc(sysdate - 1) + 6 / 24)
+		   and a.jilrq < (trunc(sysdate ) + 6 / 24) ]]>  
+		   and a.usercenter=#usercenter#
+		 group by a.usercenter,a.lingjbh, substr(a.xiaohd,1,9)
+	</insert>
+	
+	<!-- 产生的订单量 -->
+	<delete id="clear_jc_ddl">truncate table jc_ddl</delete>
+	<insert id="add_jc_ddl" parameterClass="java.util.Map">
+		insert into jc_ddl  (usercenter,lingjbh, xiaohd, ddl, qssj, jzsj)
+	 <![CDATA[ 	select a.usercenter,
+		       a.lingjbh,
+		       a.xiaohd,
+		       nvl(sum(a.shul),0) ddl,
+		       (trunc(sysdate) + 5 / 24) qssj,
+		       (trunc(sysdate) + 12 / 24) jzsj
+		  from ${dbSchemal1}xqjs_dingdmx a, ${dbSchemal1}xqjs_dingd b
+		 where a.dingdh = b.dingdh
+		   and a.gonghlx = 'CD'
+		   and b.dingdlx <> '3'
+		   and a.create_time >= (trunc(sysdate) + 5 / 24)
+		   and a.create_time < (trunc(sysdate) + 12 / 24)]]>  
+		   and a.usercenter=#usercenter#
+		 group by a.usercenter,a.lingjbh, a.xiaohd
+	
+	</insert>
+	
+	
+	<!-- 计算前零件消耗点 -->
+	<delete id="clear_jc_ljxhd">truncate table jc_ljxhd</delete>
+	<insert id="add_jc_ljxhd" parameterClass="java.util.Map">
+		insert into jc_ljxhd (usercenter,lingjbh, xiaohdbh, xianbllkc, yifyhlzl, jiaofzl, zhongzzl)
+		select distinct a.usercenter,a.lingjbh,a.xiaohdbh,a.xianbllkc,a.yifyhlzl,a.jiaofzl,a.zhongzzl 
+		from ${dbSchemal3}ckx_lingjxhd_r a 
+		where editor like '1740' 
+		<![CDATA[ and a.edit_time >= (trunc(sysdate) + 3 / 24)
+	   	and a.edit_time < (trunc(sysdate) + 12 / 24) ]]>  
+	  	and a.usercenter=#usercenter#	
+	</insert>
+	
+	
+	
+	
+	<!-- 汇总按需计算结果  -->
+	<delete id="clearReport" parameterClass="java.util.Map">delete from  jc_cd t where t.usercenter=#usercenter#</delete>
+	<insert id="addReport" parameterClass="java.util.Map">
+	insert into jc_cd (usercenter,lingjbh, xiaohd, ua, anqkcs, biaodzl, jiaofzl, zhongzzl, daijf, xianbllkc, ckycsl, sppvsl, lilunkc, jisllkc, dinghsl, j0, j0date, j1, j1date, j2, j2date, create_time)
+
+		select a.usercenter,
+		A.LINGJBH, <!--零件,-->
+		       A.Xiaohd, <!--消耗点,-->
+		nvl((select (x.uaucgs*x.ucrl) from ${dbSchemal3}ckx_lingjgys x where x.usercenter=a.usercenter and x.lingjbh=a.lingjbh and rownum=1),1) UA,
+		       a.anqkcs, <!--安全库存,-->
+		       nvl(a.yifyhlzl,0) biaodzl,<!-- 表达总量,-->
+		       nvl(a.jiaofzl,0) jiaofzl,<!--交付总量,-->
+		       nvl(a.zhongzzl,0) zhongzzl,<!--终止总量,-->
+		       nvl(a.yifyhlzl,0)- nvl(a.jiaofzl,0) - nvl(a.zhongzzl,0) daijf,<!--待交付量,-->
+		       f.xianbllkc, <!--计算前理论库存,-->
+		       d.ckycsl,<!-- 出库异常及盘点数量, -->
+		       c.sppvsl,<!-- SPPV消耗量,-->
+		       f.xianbllkc+nvl(d.ckycsl,0)-nvl(c.sppvsl,0) lilunkc,<!-- 推导的理论库存,-->
+		       nvl(a.xianbllkc,0) jisllkc,<!-- 系统计算的理论库存,-->
+		       nvl(e.ddl,0) dinghsl,<!--产生的订货量,-->
+		       b.j0 ,<!--J0需求,-->
+		       b.j0date,
+		       b.j1 ,<!--J1需求,-->
+		       b.j1date ,
+		       b.j2 ,<!--J2需求,-->
+		       b.j2date,
+		       sysdate create_time<!--当前时间-->
+		  from ${dbSchemal1}xqjs_anxjscszjb a
+		  left join jc_clv b
+		    on a.lingjbh = b.lingjbh
+		   and a.xiaohd = b.xiaohd
+		  left join jc_sppv c
+		    on a.lingjbh = c.lingjbh
+		   and a.xiaohd = c.xiaohd
+		  left join jc_xhl d <!--出库量及异常消耗-->
+		    on a.lingjbh = d.lingjbh
+		   and a.xiaohd = d.xiaohd
+		  left join jc_ddl e on a.lingjbh=e.lingjbh and a.xiaohd=e.xiaohd
+		  left join jc_ljxhd f on a.lingjbh=f.lingjbh and a.xiaohd=f.xiaohdbh
+		 where a.usercenter=#usercenter# and a.mos = 'CD'
+	</insert>
+</sqlMap>

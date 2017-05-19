@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="report" extend="toft-default" namespace="/report">	
+		<!-- 初始化零件库存 -->
+		<action name="initLingjkc" class="lingjkcAction" method="initLingjkc">
+			<result name="lingjkc">/WEB-INF/pages/xqjs/report/lingjkc.jsp</result>
+		</action>
+		
+		<!-- 查询参考系登录事务提醒 -->
+		<action name="queryLingjkc" class="lingjkcAction" method="queryLingjkc">
+		</action>
+
+		<!-- 初始化毛需求报表查询 -->
+		<action name="initMaoxqReport" class="maoxqReportAction" method="initMaoxqReport">
+			<result name="maoxqReport">/WEB-INF/pages/xqjs/report/maoxqReport.jsp</result>
+		</action>
+		
+		<!-- 毛需求分析 -->
+		<action name="maoxqFenx" class="maoxqReportAction" method="maoxqFenx">
+		</action>
+		
+		<!-- 查询毛需求报表信息 -->
+		<action name="queryMaoxq" class="maoxqReportAction" method="queryMaoxq">
+		</action>
+	
+		<!-- 库存分析  begin-->
+		<!-- il -->
+		<action name="il" class="kucfxAction" method="initIlPage">
+			<result name="il">/WEB-INF/pages/xqjs/report/ilKucfx.jsp</result>
+		</action>
+		<action name="downloadIlKuc" class="kucfxAction" method="downloadIlKuc"></action>
+		<action name="iljs" class="kucfxAction" method="calculateIl"></action>
+		<action name="queryIlKuc" class="kucfxAction" method="queryIlKuc"></action>		
+		<action name="querySessionMaoxqIlKcfxbb" class="kucfxAction" method="querySessionMaoxqIlKcfxbb"></action>		
+		<!-- il -->
+		
+		<!-- kd -->
+		<action name="kd" class="kucfxAction" method="initKdPage">
+			<result name="kd">/WEB-INF/pages/xqjs/report/kdKucfx.jsp</result>
+		</action>
+		<action name="downloadKdKuc" class="kucfxAction" method="downloadKdKuc"></action>
+		<action name="kdjs" class="kucfxAction" method="calculateKd"></action>
+		<action name="queryKdKuc" class="kucfxAction" method="queryKdKuc"></action>	
+		<!-- kd -->
+		
+		<!-- kd 报警  -->
+		<action name="bj" class="kucfxAction" method="initBjPage">
+			<result name="bj">/WEB-INF/pages/xqjs/report/bjKucfx.jsp</result>
+		</action>	
+		<action name="downloadBjKuc" class="kucfxAction" method="downloadBjKuc"></action>
+		<action name="bjjs" class="kucfxAction" method="calculateBj"></action>
+		<action name="queryBjKuc" class="kucfxAction" method="queryBjKuc"></action>	
+		<!-- kd 报警  -->
+		<!-- 库存分析  end-->
+	</package>
+</toft>

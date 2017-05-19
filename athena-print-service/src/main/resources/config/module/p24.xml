@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 参数值为空或者0都代表无意义,解析程序不会拼接 -->
+<!-- taskHeight 任务高度   perPaperHeight 每页纸的高度     beginHeight 每页打印开始距纸张高度差  endHeight 每页打印结束距纸张高度差 -->
+<print-config taskHeight="0" perPaperHeight="288" beginHeight="6" endHeight="6" pageInfo="true">
+	
+	<!-- 区域 -->
+	<!-- id 区域编号,由1开始依次类推 , 对应数据库的区域字段 -->
+	<!-- type 区域内容样式  sheet 表单, grid 表格 -->
+	<!-- autoSr 当 type=grid的时候启用 -->
+	<area id="1" type="sheet" autoSr="17">
+		<!-- 数据 -->
+		<!-- parentid 父类id,对应区域id -->
+		<!-- key 键值,对应打印数据键值 -->
+		<!-- dataType 数据样式 TWOBYTE 汉字   BARCODE 条形码    C3/9;X1A;H7;DARK;20;38 BARCODE 只能跟着sheet类型  -->
+		<!-- font 字体及样式 -->
+		<!-- sr 行起始坐标 -->
+		<!-- sc 列起始坐标 -->
+		<!-- ve 打印数据的高度 -->
+		<!-- he 打印数据的宽度 -->
+		<data parentid="1" row="1" key="1-1" dataType="TWOBYTE" font="F16;P8;"  sr="10" sc="250;" ve="0;" he="0;"  value="纠纷单"/>
+		<data parentid="1" row="1" key="1-54" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="290;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="1" key="1-99" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="390;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="2" key="1-48" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="10;" ve="0;" he="0;" value="用户名:" />
+		<data parentid="1" row="2" key="1-49" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="50;" ve="0;" he="0;" value="#replace"  />
+		<data parentid="1" row="2" key="1-50" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="412;" ve="0;" he="0;" value="打印时间:" />
+		<data parentid="1" row="2" key="1-51" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="452;" ve="0;" he="0;" value="#replace"  />
+		<data parentid="1" row="3" key="1-2" dataType="TWOBYTE" font="F16;P8;"  sr="19" sc="10;" ve="0;" he="0;"  value="接收:"/>
+		<data parentid="1" row="3" key="1-3" dataType="TWOBYTE" font="F16;P8;" sr="#sr" sc="39;"  ve="0;" he="0;" value="#replace" />
+		<data parentid="1" row="3" key="1-4" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="331;" ve="0;" he="0;"  value="日期-时间:" />
+		<data parentid="1" row="3" key="1-5" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="398;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="4" key="1-6" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="10;" ve="0;" he="0;" value="CLE:" />
+		<data parentid="1" row="4" key="1-7" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="39;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="4" key="1-8" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="168;"  ve="0;" he="0;" value="EVT:"  />
+		<data parentid="1" row="4" key="1-9" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="197;" ve="0;" he="0;" value="#replace" />
+		<data parentid="1" row="4" key="1-10" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="331;" ve="0;" he="0;"  value="创建纠纷号:" />
+		<data parentid="1" row="4" key="1-11" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="403;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="5" key="1-12" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="10;" ve="0;" he="0;" value="计划员代码:" />
+		<data parentid="1" row="5" key="1-13" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="82;" ve="0;" he="0;" value="#replace"  />
+<!-- 		<data parentid="1" row="4" key="1-48" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="168;" ve="0;" he="0;" value="用户名:" /> -->
+<!-- 		<data parentid="1" row="4" key="1-49" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="197;" ve="0;" he="0;" value="#replace"  /> -->
+<!-- 		<data parentid="1" row="4" key="1-50" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="331;" ve="0;" he="0;" value="打印时间:" /> -->
+<!-- 		<data parentid="1" row="4" key="1-51" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="403;" ve="0;" he="0;" value="#replace"  /> -->
+		<data parentid="1" row="6" key="1-14" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="10;" ve="0;" he="0;" value="仓库管理员代码:" />
+		<data parentid="1" row="6" key="1-15" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="101;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="6" key="1-16" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="168;" ve="0;" he="0;" value="用户中心:" />
+		<data parentid="1" row="6" key="1-17" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="220;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="6" key="1-18" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="307;" ve="0;" he="0;"  value="紧急度:" />
+		<data parentid="1" row="6" key="1-19" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="380;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="6" key="1-20" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="432;" ve="0;" he="0;"  value="EL单位:" />
+		<data parentid="1" row="6" key="1-21" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="480;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="7" key="1-22" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="10;" ve="0;" he="0;"  value="零件号:" />
+		<data parentid="1" row="7" key="1-23" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="48;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="7" key="1-24" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="168;" ve="0;" he="0;"  value="零件名称:" />
+		<data parentid="1" row="7" key="1-25" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="202;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="8" key="1-26" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="10;" ve="0;" he="0;"  value="供应商:" />
+		<data parentid="1" row="8" key="1-27" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="58;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="8" key="1-28" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="168;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="9" key="1-29" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="10;" ve="0;" he="0;"  value="承运商:" />
+		<data parentid="1" row="9" key="1-30" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="53;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="9" key="1-52" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="168;" ve="0;" he="0;"  value="承运商名称:" />
+		<data parentid="1" row="9" key="1-53" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="202;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="9" key="1-31" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="307;" ve="0;" he="0;"  value="卡车:" />
+		<data parentid="1" row="9" key="1-32" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="380;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="10" key="1-33" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="10;" ve="0;" he="0;"  value="责任方:" />
+		<data parentid="1" row="10" key="1-34" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="53;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="10" key="1-35" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="168;" ve="0;" he="0;"  value="离岸价(Y/N):" />
+		<data parentid="1" row="10" key="1-36" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="216;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="11" key="1-37" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="10;" ve="0;" he="0;"  value="EL号:" />
+		<data parentid="1" row="11" key="1-38" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="43;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="11" key="1-39" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="168;" ve="0;" he="0;"  value="BL:" />
+		<data parentid="1" row="11" key="1-40" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="187;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="11" key="1-41" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="360;" ve="0;" he="0;"  value="BL日期:" />
+		<data parentid="1" row="11" key="1-42" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="403;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="1" row="12" key="1-43" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="168;" ve="0;" he="0;"  value="数量" />
+		<data parentid="1" row="12" key="1-44" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="221;" ve="0;" he="0;"  value="单位" />
+		<data parentid="1" row="12" key="1-45" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="269;" ve="0;" he="0;"  value="CTN" />
+		<data parentid="1" row="12" key="1-46" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="341;" ve="0;" he="0;"  value="NB-CTN" />
+		<data parentid="1" row="12" key="1-47" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="413;" ve="0;" he="0;"  value="技术报告号" />
+	</area>	
+	<area id="2" type="grid" autoSr="17">
+		<data parentid="2" row="1" key="2-1" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="19;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="2" row="1" key="2-2" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="170;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="2" row="1" key="2-3" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="226;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="2" row="1" key="2-4" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="264;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="2" row="1" key="2-5" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="350;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="2" row="1" key="2-6" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="422;" ve="0;" he="0;"  value="#replace" />
+	</area>
+	<area id="3" type="grid" autoSr="17">
+		<data parentid="3" row="0" key="3-1" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="19;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="3" row="0" key="3-2" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="170;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="3" row="0" key="3-3" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="226;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="3" row="0" key="3-4" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="264;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="3" row="0" key="3-5" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="350;" ve="0;" he="0;"  value="#replace" />
+		<data parentid="3" row="0" key="3-6" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="422;" ve="0;" he="0;"  value="#replace" />
+	</area>
+	<area id="4" type="sheet" autoSr="20">
+		<data parentid="4" row="1" key="4-1" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="10;" ve="0;" he="0;"  value="纠纷原因:" />
+		<data parentid="4" row="1" key="4-2" dataType="TWOBYTE" font="F16;P8;"  sr="#sr" sc="72;" ve="0;" he="0;"  value="#replace" />
+	</area>
+</print-config>

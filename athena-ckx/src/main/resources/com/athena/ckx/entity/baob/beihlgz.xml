@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- wy -->
+	
+	<!-- 备货令跟踪-->
+	<select id="querybeihlgz" parameterClass="com.athena.ckx.entity.baob.Beihlgz" resultClass="com.athena.ckx.entity.baob.Beihlgz">
+	select bhd.beihdh,decode(bhd.beihdzt, '0', '备货开始','1' , '出库确认中','2', '备货结束' ) as beihdzt,bhd.bhsj,nbyhl.shangxsj,bhd.usercenter,nbyhl.chanx,bhd.cangkbh,bhd.zickbh,bhdmx.lingjbh,bhdmx.lingjmc,bhdmx.ush,bhdmx.elh,bhdmx.kuwbh,bhdmx.beihsl,bhdmx.gongysdm,
+ 			bhdmx.gongysmc,bhdmx.yaohlh,bhdmx.yaohsl,bhd.keh,bhdmx.xiehd ,bhdmx.editor from  ${dbSchemal3}ck_beihdmx bhdmx
+ 		    left join ${dbSchemal3}ck_beihd bhd on bhd.usercenter=bhdmx.usercenter and bhd.beihdh=bhdmx.beihdh
+			left join ${dbSchemal3}ck_yaonbhl nbyhl on nbyhl.yaohlh = bhdmx.yaohlh and nbyhl.usercenter = nbyhl.usercenter
+			where 1=1
+			<dynamic> 
+			<isNotEmpty prepend=" and " property="beihdh"><![CDATA[bhd.beihdh = #beihdh#]]></isNotEmpty>
+			<isNotEmpty prepend="  and " property="createtime">
+				<isEmpty prepend="   " property="finishedtime">
+					<![CDATA[bhd.bhsj >= to_date(#createtime#,'yyyy-MM-dd HH24:mi:ss')]]>
+				</isEmpty>
+				<isNotEmpty prepend="   " property="finishedtime">
+					<![CDATA[bhd.bhsj between to_date(#createtime#,'yyyy-MM-dd HH24:mi:ss') and to_date(#finishedtime#,'yyyy-MM-dd HH24:mi:ss')]]>
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="finishedtime">
+				<isEmpty prepend="   " property="createtime">
+					<![CDATA[bhd.bhsj <= to_date(#finishedtime#,'yyyy-MM-dd HH24:mi:ss')]]>
+				</isEmpty>
+				<isNotEmpty prepend="   " property="createtime">
+					bhd.bhsj between to_date(#createtime#,'yyyy-MM-dd HH24:mi:ss') and to_date(#finishedtime#,'yyyy-MM-dd HH24:mi:ss')
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[bhd.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx"><![CDATA[nbyhl.chanx = #chanx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[bhd.cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehd"><![CDATA[bhdmx.xiehd = #xiehd#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="beihdzt"><![CDATA[beihdzt = #beihdzt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="keh"><![CDATA[bhd.keh = #keh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 定时删除备货单表 -->
+	<delete id="deleteBeihd"  parameterClass="com.athena.ckx.entity.baob.Beihlgz">
+		<![CDATA[delete from ${dbSchemal3}ck_beihd_21552 
+		where create_time < to_date(#createtime#,'yyyy-MM-dd hh24:mi:ss')]]>
+	</delete>
+	
+	<!--定时删除备货单明细表 -->
+	<delete id="deleteBeihdmx" parameterClass="com.athena.ckx.entity.baob.Beihlgz">
+		<![CDATA[delete from ${dbSchemal3}ck_beihdmx_21552 
+		where create_time < to_date(#createtime#,'yyyy-MM-dd hh24:mi:ss')]]>
+	</delete>
+	
+</sqlMap>

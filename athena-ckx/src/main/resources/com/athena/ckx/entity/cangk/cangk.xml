@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+ 
+<!-- 
+	仓库
+	@author denggq
+	@date 2012-1-10
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryCangk" parameterClass="com.athena.ckx.entity.cangk.Cangk" resultClass="com.athena.ckx.entity.cangk.Cangk">
+	select cangk_.usercenter,cangk_.cangkbh,cangk_.cangklx,cangk_.rongqcbh,
+	       cangk_.daoctqq,cangk_.zhantlx,cangk_.biaos,cangk_.wulgyyz ,cangk_.anqkctsmrz,
+	       cangk_.zuidkctsmrz,cangk_.creator,cangk_.create_time,cangk_.editor,trim(cangk_.chukms) chukms,
+	       cangk_.edit_time,cangk_.xiehztbz,post_.post_name as wulgyyzmc,
+	       cangk_.gongc,cangk_.xianh
+    from ${dbSchemal3}ckx_cangk cangk_
+    left join ${dbSchemal3}sys_post post_
+    on  post_.post_code = cangk_.wulgyyz
+    where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[cangk_.usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangk_.cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="rongqcbh" prepend="and">
+	    		<![CDATA[cangk_.rongqcbh = #rongqcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangklx" prepend="and">
+	    		<![CDATA[cangk_.cangklx = #cangklx#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="wulgyyz" prepend="and">
+	    		<![CDATA[cangk_.wulgyyz = #wulgyyz#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[cangk_.biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by cangk_.usercenter,cangk_.cangkbh
+	</select>
+	
+	<!-- 获取数量 -->
+	<select id="getCountCangk" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_cangk  where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="rongqcbh" prepend="and">
+	    		<![CDATA[rongqcbh = #rongqcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangklx" prepend="and">
+	    		<![CDATA[cangklx = #cangklx#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="wulgyyz" prepend="and">
+	    		<![CDATA[wulgyyz = #wulgyyz#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<!-- mantis 0011588  hanwu 2015-07-21 获取原仓库对象时不带标识条件-->
+	<select id="getCangk" resultClass="com.athena.ckx.entity.cangk.Cangk">
+		select usercenter,cangkbh,cangklx,rongqcbh,daoctqq,zhantlx,biaos,wulgyyz, anqkctsmrz,zuidkctsmrz,xiehztbz,chukms
+		from ${dbSchemal3}ckx_cangk 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<!-- 内部物流导入获取仓库类型 lc 2016-12-06 -->
+	<select id="getCangk_Inner" resultClass="com.athena.ckx.entity.cangk.Cangk">
+		select usercenter,cangkbh,cangklx,rongqcbh,daoctqq,zhantlx,biaos,wulgyyz,anqkctsmrz,zuidkctsmrz,xiehztbz,chukms
+		  from ${dbSchemal3}ckx_cangk 
+		 where usercenter = #usercenter# and cangkbh = #cangkbh#
+	</select>
+	
+	<select id="jiaoyztbh" resultClass="com.athena.ckx.entity.cangk.Cangk">
+	select usercenter,cangkbh,substr(zhantbh,0,4)  from ${dbSchemal3}ckx_zick
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    		<![CDATA[ and substr(zhantbh,0,4)<>#xiehztbz#]]> 
+	    		<![CDATA[and zhantbh is not null]]> 
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<insert id="insertCangk" parameterClass="com.athena.ckx.entity.cangk.Cangk">
+		insert into ${dbSchemal3}ckx_cangk(usercenter,cangkbh,cangklx,rongqcbh,daoctqq,zhantlx,biaos,creator,create_time,editor,edit_time,wulgyyz,anqkctsmrz,zuidkctsmrz,xiehztbz,chukms,gongc,xianh)
+		values(#usercenter#,#cangkbh#,#cangklx#,#rongqcbh#,#daoctqq#,#zhantlx#,'1',
+		#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),#wulgyyz#,#anqkctsmrz#,#zuidkctsmrz#,#xiehztbz#,#chukms#,#gongc#,#xianh#)
+	</insert>
+	
+	<update id="updateCangk" parameterClass="com.athena.ckx.entity.cangk.Cangk">
+		update ${dbSchemal3}ckx_cangk 
+		set cangklx = #cangklx#,
+			rongqcbh = #rongqcbh# ,
+			daoctqq = #daoctqq# ,
+			zhantlx = #zhantlx# ,
+			anqkctsmrz = #anqkctsmrz# ,
+			zuidkctsmrz = #zuidkctsmrz# ,
+			chukms=#chukms#,
+			biaos = #biaos# ,
+			editor = #editor#,
+			xiehztbz = #xiehztbz#,
+			gongc = #gongc#,
+			xianh = #xianh#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where <![CDATA[usercenter = #usercenter# and cangkbh = #cangkbh#]]> 
+	</update>
+	<!-- 准备层POA -->
+	<update id="updateCangkByZbcpoa" parameterClass="com.athena.ckx.entity.cangk.Cangk">
+		update ${dbSchemal3}ckx_cangk 
+		set cangklx = #cangklx#,
+			rongqcbh = #rongqcbh# ,
+			wulgyyz = #wulgyyz# ,
+			daoctqq = #daoctqq# ,
+			zhantlx = #zhantlx# ,
+			anqkctsmrz = #anqkctsmrz# ,
+			zuidkctsmrz = #zuidkctsmrz# ,
+			biaos = #biaos# ,
+			editor = #editor#,
+			xiehztbz = #xiehztbz#,
+			gongc = #gongc#,
+			xianh = #xianh#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where <![CDATA[usercenter = #usercenter# and cangkbh = #cangkbh#]]> 
+	</update>
+	
+	<delete id="deleteCangk" parameterClass="com.athena.ckx.entity.cangk.Cangk">
+		update ${dbSchemal3}ckx_cangk 
+		set <![CDATA[biaos = #biaos# , editor = #editor# , edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+	<!-- 查询用户中心下的工厂   hanwu 2015-07-18-->
+	<select id="queryGongc" parameterClass="com.athena.ckx.entity.cangk.Cangk" 
+	resultClass="java.util.HashMap">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='GC' and beiz = #usercenter#
+		order by paix asc
+	</select>
+	
+	<!-- 验证生产线是否存在   hanwu 2015-07-20-->
+	<select id="getCountXianh" parameterClass="com.athena.ckx.entity.cangk.Cangk"  resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_shengcx where 1=1
+		<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xianh"><![CDATA[shengcxbh = #xianh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!-- 导出时查询仓库   hanwu 2015-07-21-->
+	<select id="queryCangkForExport" parameterClass="com.athena.ckx.entity.cangk.Cangk" resultClass="com.athena.ckx.entity.cangk.Cangk">
+	select cangk_.usercenter,cangk_.cangkbh,cangk_.cangklx,cangk_.rongqcbh,
+	       cangk_.daoctqq,cangk_.zhantlx,cangk_.biaos,cangk_.wulgyyz ,cangk_.anqkctsmrz,
+	       cangk_.zuidkctsmrz,cangk_.creator,cangk_.create_time,cangk_.editor,trim(cangk_.chukms) chukms,
+	       cangk_.edit_time,cangk_.xiehztbz,post_.post_name as wulgyyzmc,
+	       xt.zidmc as gongc,cangk_.xianh
+    from ${dbSchemal3}ckx_cangk cangk_
+    left join ${dbSchemal3}sys_post post_
+    on  post_.post_code = cangk_.wulgyyz
+    left join ${dbSchemal3}ckx_xitcsdy xt
+    on  cangk_.gongc = xt.zidbm and cangk_.usercenter = xt.beiz and xt.zidlx = 'GC' 
+    where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[cangk_.usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangk_.cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="rongqcbh" prepend="and">
+	    		<![CDATA[cangk_.rongqcbh = #rongqcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangklx" prepend="and">
+	    		<![CDATA[cangk_.cangklx = #cangklx#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="wulgyyz" prepend="and">
+	    		<![CDATA[cangk_.wulgyyz = #wulgyyz#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[cangk_.biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by cangk_.usercenter,cangk_.cangkbh
+	</select>
+	
+</sqlMap>

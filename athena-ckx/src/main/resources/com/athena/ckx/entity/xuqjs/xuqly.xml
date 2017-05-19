@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 需求来源-作用域  qizhongtao 2012-4-17 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryXuqly" resultClass="com.athena.ckx.entity.xuqjs.Xuqly">
+			select  xuqly,zuoyy,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_xuqly
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="xuqly"><![CDATA[xuqly=#xuqly#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="zuoyy"><![CDATA[zuoyy=#zuoyy#]]></isNotEmpty>
+			</dynamic>
+			order by xuqly,zuoyy
+		</select>
+		
+		<!--单数据查询	 -->
+		<select id="getXuqly" resultClass="com.athena.ckx.entity.xuqjs.Xuqly">
+			select  xuqly,zuoyy
+			from ${dbSchemal3}ckx_xuqly
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="xuqly"><![CDATA[xuqly=#xuqly#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="zuoyy"><![CDATA[zuoyy=#zuoyy#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertXuqly" parameterClass="com.athena.ckx.entity.xuqjs.Xuqly" >
+			insert into ${dbSchemal3}ckx_xuqly(xuqly,zuoyy,creator,create_time,editor,edit_time)
+			values(<![CDATA[#xuqly#,#zuoyy#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 删除数据 -->
+		<delete id="deleteXuqly" parameterClass="com.athena.ckx.entity.xuqjs.Xuqly">
+			delete from ${dbSchemal3}ckx_xuqly where
+			<dynamic prepend=" ">
+				<isNotEmpty property="xuqly" prepend=" and "><![CDATA[xuqly = #xuqly#]]></isNotEmpty>
+				<isNotEmpty property="zuoyy" prepend=" and "><![CDATA[zuoyy = #zuoyy#]]></isNotEmpty>
+			</dynamic>
+		</delete>
+	
+</sqlMap>

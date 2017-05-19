@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="hlorder">
+  <resultMap class="com.athena.xqjs.entity.hlorder.DdbhMaoxqsxxh" id="DdbhMaoxqsxxh">
+    <result column="DAXXH" property="daxxh" jdbcType="VARCHAR" />
+    <result column="WHOF" property="whof" jdbcType="VARCHAR" />
+    <result column="SXSXH" property="sxsxh" jdbcType="DECIMAL" />
+    <result column="CAIFRQ" property="caifrq" jdbcType="TIMESTAMP" />
+    <result column="CKPYY" property="ckpyy" jdbcType="DECIMAL" />
+    <result column="ZHANYSXSXH" property="zhanysxsxh" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  
+  <select id="queryDdbhMaoxqsxxhAll" parameterClass="map" resultClass="com.athena.xqjs.entity.hlorder.DdbhMaoxqsxxh">
+    select DAXXH, WHOF, SXSXH, CAIFRQ, CKPYY,ZHANYSXSXH
+    from ${dbSchemal5}DDBH_MAOXQSXXH
+       
+  </select>
+  
+  <select id="queryDdbhMaoxqsxxhBykey" parameterClass="map" resultClass="com.athena.xqjs.entity.hlorder.DdbhMaoxqsxxh">
+    select DAXXH, WHOF, SXSXH, CAIFRQ, CKPYY,ZHANYSXSXH
+    from ${dbSchemal5}DDBH_MAOXQSXXH
+    where DAXXH = #daxxh#
+       
+  </select>
+  
+  <delete id="deleteDdbhMaoxqsxxhByPrimaryKey" parameterClass="map" >
+    delete from ${dbSchemal5}DDBH_MAOXQSXXH
+    where DAXXH = #daxxh#
+  </delete>
+  
+  <insert id="insertDdbhMaoxqsxxh" parameterClass="com.athena.xqjs.entity.hlorder.DdbhMaoxqsxxh">
+    insert into ${dbSchemal5}DDBH_MAOXQSXXH (DAXXH, WHOF, SXSXH, 
+      CAIFRQ,CKPYY,ZHANYSXSXH)
+    values (#daxxh#, #whof#, #sxsxh#,#caifrq#,#ckpyy#,#zhanysxsxh#)
+  </insert>
+  
+  <insert id="insertDdbhMaoxqsxxhr" parameterClass="com.athena.xqjs.entity.hlorder.DdbhMaoxqsxxhr">
+    insert into ${dbSchemal5}DDBH_MAOXQSXXH_R (DAXXH, WHOF, SXSXH, 
+      CAIFRQ,CKPYY,ZHANYSXSXH,CJ_DATE)
+    values (#daxxh#, #whof#, #sxsxh#,#caifrq#,#ckpyy#,#zhanysxsxh#,#cj_date#)
+  </insert>
+  
+  <update id="updateDdbhMaoxqsxxh" parameterClass="com.athena.xqjs.entity.hlorder.DdbhMaoxqsxxh">
+    update ${dbSchemal5}DDBH_MAOXQSXXH
+    set WHOF = #whof#,
+      SXSXH = #sxsxh#,
+      CAIFRQ = #caifrq#,
+      CKPYY = #ckpyy#,
+      ZHANYSXSXH=#zhanysxsxh#
+   where  
+   1=1
+	<dynamic>
+			<isNotEmpty prepend="  and " property="daxxh">DAXXH = #daxxh#
+			</isNotEmpty>
+		</dynamic>
+  </update>
+  
+</sqlMap>

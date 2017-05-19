@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+	容器记账方式
+	@author xss
+	@date 2015-2-3
+	0010495
+-->
+<sqlMap namespace="rongqjz">
+	
+	<!-- 查询 -->
+	<select id="queryRongqjz" resultClass="com.athena.ckx.entity.xuqjs.Rongqjz">
+		select usercenter,shifgys from ${dbSchemal3}ckx_rongqjz where 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">
+				usercenter = #usercenter#
+			</isNotNull>
+			<isNotNull property="shifgys" prepend=" and ">
+				shifgys = #shifgys#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 保存-->
+	<insert id="saveRongqjz">
+		insert into ${dbSchemal3}ckx_rongqjz(usercenter,shifgys,creator,create_time,editor,edit_time)values(#usercenter#,#shifgys#,#creator#,sysdate,#editor#,sysdate)
+	</insert>
+	
+	<!-- 保存 -->
+	<update id="updateRongqjz">
+		update 
+			${dbSchemal3}ckx_rongqjz
+		set
+			shifgys = #shifgys#,
+			editor = #editor#,
+			edit_time = sysdate			
+		where 
+			usercenter = #usercenter# 
+	</update>
+	
+		<!-- 删除数据 -->
+		<delete id="deleteRongqjz" parameterClass="com.athena.ckx.entity.xuqjs.Rongqjz">
+			delete from ${dbSchemal3}ckx_rongqjz where usercenter = #usercenter# 
+		</delete>
+	
+	
+	<!-- 检查用户中心是否存在 -->
+	<select id="checkUsercenter" resultClass="java.lang.String">
+		select count(*) as count from ${dbSchemal3}ckx_rongqjz where 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">
+				usercenter = #usercenter#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	
+	
+</sqlMap>

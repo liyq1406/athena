@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- ibatis数据库操作配置文件 -->
+<sqlMap namespace="peizjh">
+<!--配载计划查询  hzg 2011-12-26 -->
+	<select id="queryPeizjh"  resultClass="com.athena.fj.entity.Peizjh">
+		<![CDATA[
+		select 
+		f.yaocmxh,
+		f.peizdh,
+		f.usercenter,
+		to_char(f.faysj,'yyyy-MM-dd hh24:mi')as faysj,
+		to_char(f.daocsj,'yyyy-MM-dd hh24:mi')as daocsj,
+		f.yunssbm,
+		g.gongsmc,
+		f.jihcx,
+		f.chep,
+		f.jihzt,
+		f.yunslx,
+		to_char(f.daysj,'yyyy-MM-dd hh24:mi:ss')as daysj,
+		c.cangkbh
+		from 
+		${dbSchemal2}FJ_PEIZJH f 
+		left join 
+		(select * from ${dbSchemal3}CKX_GONGYS where biaos='1' and leix='3' and usercenter=#usercenter#) g 
+		on f.yunssbm=g.gcbh   
+		inner join
+		(select * from ${dbSchemal3}CKX_CHENGPK_JIHYZ where usercenter=#usercenter#) c
+		on  f.Cangkbh=c.Cangkbh
+		where f.usercenter = #usercenter# and c.jihyzbh=#jihyzbh#
+		 ]]>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="fromDaocsj"><![CDATA[daocsj >= to_date(#fromDaocsj#,'yyyy-mm-dd hh24:mi')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="toDaocsj"><![CDATA[daocsj <= to_date(#toDaocsj#,'yyyy-mm-dd hh24:mi')]]></isNotEmpty>
+		    <isNotEmpty prepend=" and " property="peizdh"><![CDATA[peizdh = #peizdh#]]></isNotEmpty>
+		    <isNotEmpty prepend=" and " property="jihcx"><![CDATA[jihcx = #jihcx#]]></isNotEmpty>
+		    <isNotEmpty prepend=" and " property="chep"><![CDATA[chep = #chep#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="yunssbm"><![CDATA[yunssbm = #yunssbm#]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[ ORDER BY F.DAYSJ  DESC,f.peizdh DESC ]]>
+	</select>
+	
+<!--配载计划下的要货令查询  hzg 2011-12-26 -->   
+   <select id="queryPeizjh_yaohl" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+   	<![CDATA[
+   	select * from(
+		 select f.peizdh,
+		 f.lingjsl,
+		 c.lingjbh,
+		 c.baozxh,
+		 c.xiehd,
+     	 c.keh,
+		 to_char(f.faysj, 'yyyy-MM-dd hh24:mi') as faysj,
+		 to_char(c.jiaofj,'yyyy-MM-dd hh24:mi')as jiaofj,
+		 c.yaohlh,
+    	 b.beihdh
+		 from ${dbSchemal2}FJ_YAOHLMX f 
+		 left join 
+		 ${dbSchemal4}CK_YAONBHL c 
+		 on f.yaohlbh=c.yaohlh  
+	     left join 
+	       (select bd.peizdh,bd.beihdh,bmx.yaohlh from ${dbSchemal4}ck_beihd bd ,${dbSchemal4}ck_beihdmx bmx where bd.peizdh = #peizdh# and bd.usercenter = bmx.usercenter and bd.beihdh = bmx.beihdh ) b 
+	       on f.peizdh = b.peizdh and f.yaohlbh = b.yaohlh
+		 )s 
+		 where peizdh=#peizdh#
+		 ]]>
+   </select>
+
+<!--自动配载时查询没有备上货的要货令  hzg 2011-12-26 -->   
+   <select id="queryNoMatchYaohl"  resultClass="java.util.HashMap">
+   	<![CDATA[
+		select * from(
+		 select f.peizdh,f.lingjsl,c.yaohlh,c.lingjbh,c.baozxh,c.xiehd,to_char(c.jiaofj,'yyyy-MM-dd hh24:mi')as jiaofj
+		 from ${dbSchemal2}FJ_YAOHLMX f 
+		 left join ${dbSchemal4}CK_YAONBHL c 
+		 on f.yaohlbh=c.yaohlh 
+		 )s where peizdh=#peizdh#  and yaohlh not in ($yaohls$) ]]>
+   </select>
+   
+   <!--手工配载时查询没有备上货的要货令  hzg 2012-2-29 -->   
+   <select id="queryNoMatchYaohlSG" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+   	<![CDATA[
+		 select  c.yaohlh,c.lingjbh,c.yaohsl,c.baozxh,c.xiehd,to_char(c.jiaofj,'yyyy-MM-dd hh24:mi')as jiaofj 
+		 from  ${dbSchemal4}CK_YAONBHL c 
+	     where usercenter=#usercenter# and suodpz='0' AND YAOHLZT in ('01','04') and  yaohlh in ($yaohls$) ]]>
+   </select>
+
+   <!--查询配载单号下的要货令  hzg 2012-2-29 -->   
+   <select id="queryYaohlOfPeizd" parameterClass="java.lang.String"  resultClass="java.util.HashMap">
+   	<![CDATA[
+		 select  yaohlbh
+		 from  ${dbSchemal2}FJ_YAOHLMX  
+	     where peizdh=#peizdh# ]]>
+   </select>
+
+<!--车型查询  hzg 2011-12-22 -->   
+   <select id="queryChexMap"  resultClass="java.util.HashMap">
+		<![CDATA[select chexbh from ${dbSchemal3}CKX_CHEX]]>
+   </select>
+   
+<!--运输商查询  hzg 2011-12-27 -->   
+   <select id="queryYunssMap" parameterClass="java.lang.String"  resultClass="java.util.HashMap">
+		<![CDATA[select gcbh from ${dbSchemal3}CKX_GONGYS where usercenter = #usercenter# and leix='3' and biaos='1']]>
+   </select>
+   
+<!--配载单查询  hzg 2012-1-12 -->   
+   <select id="queryPeizd"  resultClass="com.athena.fj.entity.Peizjh">
+		<![CDATA[select PEIZDH,YUNSSBM,JIHCX,CHEP,to_char(DAOCSJ,'yyyy-MM-dd hh24:mi') DAOCSJ,
+		to_char(FAYSJ,'yyyy-MM-dd hh24:mi') FAYSJ,YUNSLX from ${dbSchemal2}FJ_PEIZD where peizdh = #peizdh#]]>
+   </select>   
+   
+<!--配载单明细查询  hzg 2012-1-12 -->   
+   <select id="queryPeizdmx" parameterClass="java.lang.String"  resultClass="com.athena.fj.entity.Peizdmx">
+		<![CDATA[select BEIHDH,PEIZDH,BAOZSL,CANGKBH,ZICKBH from ${dbSchemal2}FJ_PEIZDMX where peizdh = #peizdh#]]>
+   </select>   
+   
+<!--备货单查询  hzg 2012-1-14 -->   
+   <select id="queryBeihd"   resultClass="com.athena.fj.entity.Peizdmx">
+		<![CDATA[
+		select * from (
+		select a.beihdh,a.cangkbh,count(b.beihdh) baozsl,a.zickbh from 
+		${dbSchemal4}CK_BEIHD a 
+		left join 
+		${dbSchemal4}CK_BEIHDMX b 
+		on a.BEIHDH=b.BEIHDH 
+		group by a.beihdh,a.cangkbh,a.zickbh
+		)s where beihdh in ($beihdh$)]]> 
+   </select>     
+   
+<!--要货令明细表中的发运时间查询，取发运时间最早的  hzg 2012-2-11   ||2012-4-19不需查询要货令明细的faysj -->   
+  <!--  <select id="queryFaysjOfYaohlmx" parameterClass="java.lang.String"  resultClass="java.lang.String">
+		<![CDATA[
+		select to_char(faysj,'yyyy-MM-dd hh24:mi') as faysj from 
+		(select faysj from  ${dbSchemal2}fj_yaohlmx where peizdh=#peizdh#  order by faysj)s 
+		where rownum <2 ]]> 
+   </select>   -->
+   
+   <!--要货令明细表中的客户编码查询，取第一条记录的客户编码  hzg 2012-6-5--> 
+    <select id="queryKehbmOfYaohlmx" parameterClass="java.lang.String"  resultClass="java.lang.String">
+		<![CDATA[
+		select kehbm from ${dbSchemal2}fj_yaohlmx where peizdh=#peizdh# and rownum <2 ]]> 
+   </select>  
+    	
+<!-- 要货令表中的发运时间查询，取发运时间最早的  hzg 2012-2-11 -->   
+   <select id="queryFaysjOfYaohl" parameterClass="java.util.Map"  resultClass="java.util.HashMap">
+		<![CDATA[
+		select to_char(faysj,'yyyy-MM-dd hh24:mi') as faysj,keh ,cangkbh  from 
+		(select faysj,keh ,cangkbh  from  ${dbSchemal4}CK_YAONBHL where usercenter=#usercenter# and yaohlh in($yaohls$)  order by faysj)s 
+		where rownum <2 ]]> 
+   </select>  
+    	
+<!-- 客户提前期查询  hzg 2012-2-22 update 2012-4-18将kehtqq 改为yaoctqq ,2012-4-19去掉该查询方法-->   
+<!--    <select id="queryHehChengpkOfTiqq" parameterClass="java.util.Map"  resultClass="java.lang.String">
+		<![CDATA[
+		select yaoctqq from  ${dbSchemal3}CKX_KEH_CHENGPK where usercenter=#usercenter# and cangkbh=#cangkbh# and  kehbh=#keh# and chengysbh=#yunssbm#]]> 
+   </select> 	 -->
+	
+	
+<!-- 配载计划修改    hzg 2011-12-26 -->	
+	<update id="updatePeizjh" parameterClass="com.athena.fj.entity.Peizjh">
+		<![CDATA[update ${dbSchemal2}FJ_PEIZJH SET 
+					chep = #chep#,
+					jihzt = #jihzt#,
+					daysj =to_date( #daysj#,'yyyy-MM-dd hh24:mi:ss'),
+					editor=#editor#,
+					edit_time=to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss')
+		         	where  peizdh=#peizdh# 
+		  ]]>
+		 <dynamic>
+			<isNotEmpty prepend=" and " property="yaocmxh"><![CDATA[ yaocmxh=#yaocmxh# ]]></isNotEmpty>
+		</dynamic>  	
+	</update>
+	
+<!-- 配载计划运输商修改    hzg 2012-3-28 -->	
+	<update id="updatePeizjhYunss" parameterClass="java.util.Map">
+		<![CDATA[update ${dbSchemal2}FJ_PEIZJH SET 
+					yunssbm = #yunssbm#
+		         	where  peizdh=#peizdh# and usercenter=#usercenter# ]]>
+	</update>	
+	
+<!-- 配载计划删除    hzg 2011-12-26 -->	
+	<delete id="deletePeizjh"  parameterClass="com.athena.fj.entity.Wulgz">
+		<![CDATA[delete from ${dbSchemal2}FJ_PEIZJH where peizdh=#peizdh# ]]>
+	</delete>
+	
+	<!-- 删除要货令明细    hzg 2011-2-7 -->	
+	<delete id="deleteYaohlmx"  parameterClass="com.athena.fj.entity.Peizjh">
+		<![CDATA[delete from ${dbSchemal2}FJ_YAOHLMX where peizdh=#peizdh# and yaohlbh in ($yaohls$)]]>
+	</delete>
+
+	<!-- 删除要车计划明细    gswang 2013-10-31 -->	
+	<delete id="deleteJihyhlmx"  parameterClass="com.athena.fj.entity.Peizjh">
+		<![CDATA[delete from ${dbSchemal2}fj_jihyhlmx where  YAOHLBH in ($yaohls$)]]>
+	</delete>
+	
+<!-- 记物流故障    hzg 2012-1-3 -->	
+	<insert id="insertWulgz" parameterClass="com.athena.fj.entity.Wulgz">
+		<![CDATA[
+		insert into ${dbSchemal2}FJ_WULGZ 
+		(YAOCMXH,PEIZDH,JIHCX,SHIJCX,SHIJCP,GUZYY,DAOCSJ,SHIJDCSJ,YUNSSBM,CREATOR,CREATE_TIME,EDITOR,EDIT_TIME) 
+		values 
+		(#yaocmxh#,#peizdh#,#jihcx#,#shijcx#,#shijcp#,#guzyy#,
+		to_date(#daocsj#,'yyyy-MM-dd hh24:mi'),
+		to_date(#shijdcsj#,'yyyy-MM-dd hh24:mi'),
+		#yunssbm#,
+		#creator#,
+		to_date(#createTime#,'yyyy-MM-dd hh24:mi:ss'),
+		#editor#,
+		to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss'))]]>
+	</insert>
+	
+<!-- 修改要车计划状态为已配载    hzg 2012-1-3 -->		
+	<update id="updateYaocjhzt" parameterClass="java.util.Map">
+		<![CDATA[update ${dbSchemal2}FJ_YAOCMX SET yaoczt = #yaoczt#,editor=#editor#,edit_time=to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss')  where  ID=#yaocmxh#]]>
+	</update>
+	
+<!--更新要货令表中的锁定状态为未锁定    hzg 2012-1-3 -->		
+	<update id="updateYaohlSdzt" parameterClass="com.athena.fj.entity.Peizjh">
+		update ${dbSchemal4}CK_YAONBHL set suodpz =#suodpz#,editor=#editor#,edit_time=to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss')  where yaohlh in ($yaohls$) 
+	</update>
+	
+<!-- 插入配载单表    hzg 2012-1-11 -->		
+	<insert id="insertPeizd" parameterClass="com.athena.fj.entity.Peizjh">
+		<![CDATA[insert into ${dbSchemal2}FJ_PEIZD(PEIZDH,YUNSSBM,JIHCX,CHEP,DAOCSJ,FAYSJ,YUNSLX,DAYSJ,SHIFZC,CREATOR,CREATE_TIME,EDITOR,EDIT_TIME)
+			values(#peizdh#,#yunssbm#,#jihcx#,#chep#,to_date(#daocsj#,'yyyy-MM-dd hh24:mi'),to_date(#faysj#,'yyyy-MM-dd hh24:mi'),#yunslx#,to_date(#daysj#,'yyyy-MM-dd hh24:mi:ss'),0,#creator#,to_date(#createTime#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss'))
+		]]>
+	</insert>
+	
+<!-- 插入备货令信息到配载单明细表    hzg 2012-1-11 -->		
+	<insert id="insertPeizdmx" parameterClass="com.athena.fj.entity.Peizdmx">
+		<![CDATA[insert into ${dbSchemal2}FJ_PEIZDMX(BEIHDH,PEIZDH,BAOZSL,CANGKBH,ZICKBH,CREATOR,CREATE_TIME,EDITOR,EDIT_TIME)
+			values(#beihdh#,#peizdh#,#baozsl#,#cangkbh#,#zickbh#,#creator#,to_date(#createTime#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss'))
+		]]>
+	</insert>	
+	
+
+<!--配载计划增加，根据未配载要货令列中的查询条件查询内部要货令  hzg 2012-3-22 -->   
+   <select id="queryNoPeizYaohl" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+   	<![CDATA[
+   	  select baozxh,
+   	  lingjbh,
+   	  yaohsl,
+   	  xiehd,
+   	  keh,
+   	  to_char(faysj,'yyyy-MM-dd hh24:mi') faysj,
+   	  to_char(jiaofj,'yyyy-MM-dd hh24:mi') jiaofj,
+   	  yaohlh
+   	  from ${dbSchemal4}CK_YAONBHL 
+   	  where usercenter=#usercenter# 
+   	  and shifpz='1' 
+   	  and suodpz='0' 
+   	  and YAOHLZT  in ('01','04') 
+   	  and keh in( 
+   	  select kehbh from ${dbSchemal3}CKX_KEH_CHENGPK  where yunslxbh=#yslxbh# group by kehbh)
+   	  ]]>
+   	 	<dynamic>
+			<isNotEmpty prepend=" and " property="faysj"><![CDATA[faysj >= to_date(#faysj#,'yyyy-mm-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="keh"><![CDATA[keh = #keh#]]></isNotEmpty>
+		    <isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh=#baozxh#]]></isNotEmpty>
+		    <isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+		    <isNotEmpty prepend=" and " property="yaohlhs"><![CDATA[yaohlh not in( $yaohlhs$)]]></isNotEmpty>
+		</dynamic>
+   	<![CDATA[
+   	  	order by faysj ,yaohlh
+	]]>
+   </select> 
+   
+  <!-- 新增配载计划表  hzg 2012-3-23 --> 
+   <insert id="insertPeizjh" parameterClass="com.athena.fj.entity.Peizjh">
+		<![CDATA[insert into ${dbSchemal2}FJ_PEIZJH
+		(
+		 USERCENTER,
+		 PEIZDH,
+		 FAYSJ,
+		 DAOCSJ,
+		 YUNSLX,
+		 YUNSSBM,
+		 JIHCX,
+		 JIHZT,
+		 CANGKBH,
+		 CREATOR,
+		 CREATE_TIME,
+		 EDITOR,
+		 EDIT_TIME)
+		values(
+		 #usercenter#,
+		 #peizdh#,
+		 to_date(#faysj#,'yyyy-mm-dd hh24:mi'),
+		 to_date(#daocsj#,'yyyy-mm-dd hh24:mi'),
+		 #yunslx#,
+		 #yunssbm#,
+		 #jihcx#,
+		 '0',
+		 #cangkbh#,
+		 #creator#,
+		 to_date(#createTime#,'yyyy-MM-dd hh24:mi:ss'),
+		 #creator#,
+		 to_date(#createTime#,'yyyy-MM-dd hh24:mi:ss'))
+		]]>
+	</insert>
+	
+	<!-- 新增要贷令明细    hzg 2012-3-23 -->
+	<insert id="insertYaohlmx" parameterClass="java.util.Map">
+		<![CDATA[
+	  INSERT INTO ${dbSchemal2}FJ_YAOHLMX
+      (YAOHLBH,
+       PEIZDH,
+       USERCENTER,
+       BAOZDM,
+       LINGJMC,
+       LINGJSL,
+       FAYSJ,
+       JIAOFSJ,
+       KEHBM,
+       CREATOR,
+       CREATE_TIME,
+       EDITOR,
+       EDIT_TIME
+       )
+      SELECT C.YAOHLH,
+             #peizdh# PEIZDH,
+             #usercenter# USERCENTER,
+             C.BAOZXH,
+             LJ.ZHONGWMC,
+             C.YAOHSL,
+             C.FAYSJ,
+             C.JIAOFJ,
+             C.KEH,
+             #creator# CREATOR ,
+             SYSDATE CREATE_TIME,
+             #creator# EDITOR ,
+             SYSDATE EDIT_TIME
+        FROM ${dbSchemal4}CK_YAONBHL C
+        JOIN (select * from ${dbSchemal3}CKX_LINGJ where biaos='1' AND usercenter = #usercenter#) LJ
+           ON LJ.LINGJBH = C.LINGJBH AND LJ.usercenter = C.usercenter 
+           where C.usercenter=#usercenter# and  C.YAOHLH in  ($yaohls$)
+
+			]]>
+	</insert>
+	
+	<!--配载计划下的要货令零件汇总  hzg 2012-3-29 -->   
+   <select id="queryPeizjh_yaohlOfLingj" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+   	<![CDATA[
+     select lingjbh ,sum(lingjsl) as lingjsl from(
+		 select f.peizdh,
+		 f.lingjsl,
+		 f.usercenter,
+		 c.lingjbh,
+		 c.baozxh,
+		 c.xiehd,
+     	 c.keh,
+		 to_char(f.faysj, 'yyyy-MM-dd hh24:mi') as faysj,
+		 to_char(c.jiaofj,'yyyy-MM-dd hh24:mi')as jiaofj,
+		 c.yaohlh
+		 from ${dbSchemal2}FJ_YAOHLMX f 
+		 left join 
+		 ${dbSchemal4}CK_YAONBHL c 
+		 on f.yaohlbh=c.yaohlh  
+		 )s 
+		 where peizdh=#peizdh# 
+		 group by lingjbh
+		 ]]>
+   </select>
+	
+	<!--配载计划下的要货令包装汇总  hzg 2012-3-29 -->   
+   <select id="queryPeizjh_yaohlOfBaoz" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+   	<![CDATA[
+     select baozxh,count(baozxh) as baozsl from(
+		 select f.peizdh,
+		 f.lingjsl,
+		 f.usercenter,
+		 c.lingjbh,
+		 c.baozxh,
+		 c.xiehd,
+     	 c.keh,
+		 to_char(f.faysj, 'yyyy-MM-dd hh24:mi') as faysj,
+		 to_char(c.jiaofj,'yyyy-MM-dd hh24:mi')as jiaofj,
+		 c.yaohlh
+		 from ${dbSchemal2}FJ_YAOHLMX f 
+		 left join 
+		 ${dbSchemal4}CK_YAONBHL c 
+		 on f.yaohlbh=c.yaohlh  
+		 )s 
+		 where peizdh=#peizdh# 
+		 group by baozxh
+		 ]]>
+   </select>
+	
+	
+		<!--配载计划增加，根据运输路线查询内部要货令  hzg 2012-3-21 -->   
+   <select id="queryYunslxOfYaohl" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+   	<![CDATA[
+   	  select baozxh,lingjbh,yaohsl,xiehd,keh,
+   	  to_char(faysj,'yyyy-MM-dd hh24:mi') faysj,
+   	  to_char(jiaofj,'yyyy-MM-dd hh24:mi') jiaofj,yaohlh
+   	  from ${dbSchemal4}CK_YAONBHL 
+   	  where usercenter=#usercenter# 
+   	  and shifpz='1' 
+   	  and suodpz='0' 
+   	  AND YAOHLZT  in ('01','04') 
+   	  and yaohlh in($yaohlhs$) order by faysj
+	]]>
+   </select> 
+   
+   <!-- 运输路线下的运输商查询 -->
+   <select id="queryYunssOfLXZ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+   <![CDATA[
+   select distinct gcbh from (select gcbh,leix from  ${dbSchemal3}CKX_GONGYS where usercenter=#usercenter# and biaos='1') g 
+     inner join 
+   (select chengysbh,yunslxbh from ${dbSchemal3}CKX_KEH_CHENGPK where usercenter=#usercenter#) k 
+	 on g.gcbh=k.chengysbh where g.leix=3 and k.yunslxbh=#yunslx#
+   ]]>
+   </select>
+   
+   
+   <!-- ******************************** 获取打印机组信息 2012-12-18 hzg*********************************** -->
+	<select id="queryYhzbhOfPrintUserInfo" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+			select p.userscode from ${dbSchemal3}ckx_print_userinfo p where p.usercenter=#usercenter# and p.usercode=#username#
+		]]>
+	</select>
+	<select id="queryDjzbhOfPrintDictInfo" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+			select p.danjzbh from ${dbSchemal3}ckx_print_strogdict p where p.usercenter=#usercenter#  and P.CANGKBH=#cangkbh# and p.zidbm=#zidbm#
+		]]>
+	</select>
+	<select id="queryDyjzbhOfPrintRight" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+			select p.spcodes from ${dbSchemal3}ckx_print_right p where p.usercenter=#usercenter#  and p.userscode=#yhzbh# 
+			and p.scodes=#djzbh# and p.storagescode=#cangkbh#
+
+		]]>
+	</select>
+   
+   
+   
+   <!-- ******************************** 插入打印业务表  2012-6-5 hzg*********************************** -->
+  	<!-- 插入CKX_PRINT_QTASK_MAIN -->
+   <insert id="insertPrintQtaskMain" parameterClass="java.util.Map">
+   	<![CDATA[
+   	  insert into ${dbSchemal3}CKX_PRINT_QTASK_MAIN
+		(
+		 USERCENTER,
+		 QID,
+		 SACCOUNT,
+		 PGID,
+		 SCODE,
+		 STORAGECODE,
+		 SDEVICECODE,
+		 CREATETIME,
+		 STATUS,
+		 BIAOS)
+		values(
+		 #usercenter#,
+		 #qid#,
+	     #saccount#,
+		 #pgid#,
+		 #scode#,
+		 #storagecode#,
+		 #sdevicecode#,
+		 to_date(#createtime#,'yyyy-MM-dd hh24:mi:ss'),
+		 #status#,
+		 #biaos#)
+	]]>
+   </insert>
+   	<!-- 插入CKX_PRINT_QTASK_INFO -->
+   <insert id="insertPrintQtaskInfo" parameterClass="java.util.Map">
+   	<![CDATA[
+   	  insert into ${dbSchemal3}CKX_PRINT_QTASK_INFO
+		(
+		 USERCENTER,
+		 QID,
+		 SEQ,
+		 MODELNUMBER,
+		 PRINTNUMBER,
+		 PRINTUNITCOUNT,
+		 PRINTTYPE,
+		 STATUS,
+		 QUYZS)
+		values(
+		 #usercenter#,
+		 #qid#,
+		 #seq#,
+		 #modelnumber#,
+		 #printnumber#,
+		 #printunitcount#,
+		 #printtype#,
+		 #status#,
+		 #quyzs#)
+	]]>
+   </insert>
+   	<!-- 插入CKX_PRINT_QTASK_SHEET -->
+   <insert id="insertPrintQtaskSheet" parameterClass="java.util.Map">
+   	<![CDATA[
+   	  insert into ${dbSchemal3}CKX_PRINT_QTASK_SHEET
+		(
+		 QID,
+		 SEQ,
+		 AREA,
+		 SPARS)
+		values(
+		 #qid#,
+		 #seq#,
+		 #area#,
+		 #spars#)
+	]]>
+   </insert>
+	<!-- 插入CKX_PRINT_QTASK_LIST -->
+   <insert id="insertPrintQtaskList" parameterClass="java.util.Map">
+   	<![CDATA[
+   	  insert into ${dbSchemal3}CKX_PRINT_QTASK_LIST
+		(
+		 QID,
+		 SEQ,
+		 AREA,
+		 XUH,
+		 SPARS)
+		values(
+		 #qid#,
+		 #seq#,
+		 #area#,
+		 #xuh#,
+		 #spars#)
+	]]>
+   </insert>
+   
+   <!--更新配载计划表计划状态    gswang 2013-10-25 -->		
+	<update id="updatePeizjhzt" parameterClass="java.util.Map">
+		update ${dbSchemal2}FJ_PEIZJH p set p.JIHZT =#jihzt#,editor=#editor#,edit_time=sysdate  where p.usercenter = #usercenter# and p.peizdh = #peizdh#  
+	</update>
+	
+	<!--查询要货令最晚时间  gswnag 2014-4-18 -->   
+   <select id="queryZuiwsj" parameterClass="java.lang.String"  resultClass="java.lang.String">
+		<![CDATA[
+			SELECT  TO_CHAR(MIN(YL.ZUIWSJ),'yyyy-mm-dd hh24:mi:ss') ZUIWSJ  FROM (
+			select Y.USERCENTER,Y.YAOHLBH from ${dbSchemal2}FJ_YAOHLMX y where y.Peizdh  = #peizdh# ) PZ INNER JOIN ${dbSchemal4}CK_YAONBHL YL ON PZ.USERCENTER = YL.USERCENTER AND PZ.YAOHLBH=YL.YAOHLH
+			]]>
+   </select>  
+   
+    <!--查询配载计划的打印状态--> 
+    <select id="queryPrintStatus" parameterClass="java.lang.String"  resultClass="java.lang.String">
+		<![CDATA[
+		select JIHZT from ${dbSchemal2}fj_peizjh where peizdh=#peizdh# ]]> 
+   </select> 
+   
+   
+       <!--查询配载计划明细--> 
+    <select id="queryPeizjhmx" parameterClass="java.lang.String"  resultClass="java.util.HashMap">
+		<![CDATA[
+		select * from ${dbSchemal2}fj_yaohlmx where peizdh=#peizdh# ]]> 
+   </select>   
+</sqlMap>
+

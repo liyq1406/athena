@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- ibatis数据库操作配置文件 -->
+<sqlMap namespace="chelsb-test">
+	
+<!--  车辆资源插入测试 查询 hzg 2012-2-9 -->
+   <select id="queryChelsb"  parameterClass="com.athena.fj.entity.Chelsb" resultClass="java.util.HashMap">
+		<![CDATA[select usercenter,yunssbm,to_char(shenbsj,'yyyy-MM-dd')as shenbsj,chex,shul from ${dbSchemal2}FJ_CHELSB 
+		        where usercenter=#usercenter# and yunssbm=#yunssbm# and shenbsj=to_date(#shenbsj#,'yyyy-mm-dd') and chex=#chex#]]>
+	</select>
+	
+<!--  车辆资源删除测试 查询 hzg 2012-2-9 -->
+   <select id="queryChelsbdelete" parameterClass="com.athena.fj.entity.Chelsb"  resultClass="java.util.HashMap">
+		<![CDATA[select usercenter,yunssbm,to_char(shenbsj,'yyyy-MM-dd')as shenbsj,chex,shul from ${dbSchemal2}FJ_CHELSB 
+		        where usercenter=#usercenter# and yunssbm=#yunssbm# and shenbsj=to_date(#shenbsj#,'yyyy-mm-dd') and chex=#chex#]]>
+	</select>
+	
+</sqlMap>
+

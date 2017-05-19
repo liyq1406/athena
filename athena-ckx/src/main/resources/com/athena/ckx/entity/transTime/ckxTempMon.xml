@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="transTime">
+	
+	<select id="queryCkxTempMon" resultClass="com.athena.ckx.entity.transTime.CkxTempMon">
+	select usercenter,xiehztbh 
+	from ${dbSchemal3}ckx_dingsjspz
+	where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingszt">dingszt = #dingszt#</isNotEmpty>
+		</dynamic>
+		order by usercenter,xiehztbh
+	</select>
+	<insert id="insertTempMon" parameterClass="com.athena.ckx.entity.transTime.CkxTempMon">
+	insert into ${dbSchemal3}ckx_dingsjspz
+	(usercenter,xiehztbh,dingszt,creator,creat_time)
+	values(<![CDATA[ 
+	#usercenter#,	#xiehztbh# ,   #dingszt#,	#creator#,#create_time#
+	   ]]> ) 
+	
+	</insert>
+	
+	<select id="selectCkxTempMonJs" resultClass="com.athena.ckx.entity.transTime.CkxTempMon" parameterClass="java.util.Map">
+	select usercenter,xiehztbh 
+	from ${dbSchemal3}ckx_dingsjspz where 1=1 
+	<![CDATA[ and usercenter = #usercenter# and xiehztbh =#xiehztbh# and creat_time > sysdate-(1/24)   ]]>
+	</select>	
+	
+	<delete id="deleteTempMon" parameterClass="java.util.Map">
+		delete ${dbSchemal3}ckx_dingsjspz where 1=1 
+		<![CDATA[ and usercenter = #usercenter# and xiehztbh =#xiehztbh# ]]>
+	</delete>	
+	
+	<delete id="deleteDingsjspzJs" parameterClass="java.util.Map">
+		delete ${dbSchemal3}ckx_dingsjspz where 1=1 and dingszt = '2' 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbhs">xiehztbh in $xiehztbhs$</isNotEmpty>
+		</dynamic>
+	</delete>	
+	
+	<delete id="deleteYunssjmbTempJs" parameterClass="java.util.Map">
+		delete from ${dbSchemal3}ckx_yunssjmb_temp where usercenter = #usercenter# and xiehztbh in $xiehztbhs$
+	</delete>	
+	
+	<insert id="insertYunssjmbTempJs" parameterClass="java.util.Map">
+		 insert into ${dbSchemal3}ckx_yunssjmb_temp
+		   (usercenter,xiehztbh ,gcbh ,  daohsj , facsj , xuh,shengcsj ,creator , create_time,editor,edit_time)
+		 select  p.usercenter,p.xiehztbh,p.gcbh,jianysj as daohsj,
+		  case when g.beihzq is null or g.fayzq is null then 0 else  (jianysj-((g.beihzq+g.fayzq)*24*60)) end facsj,xuh ,p.creat_time,p.creator,p.creat_time,p.creator as editor,p.creat_time as edit_time
+		 from ckx_tempchengyspianl p
+		 left join (select distinct wbwl.usercenter,wbwl.xiehztbz,wbwl.chengysbh as gcbh ,wbwl.beihzq ,wbwl.panysj as fayzq from ckx_waibwl wbwl ) g on g.gcbh=p.gcbh and g.usercenter = p.usercenter and g.xiehztbz = p.xiehztbh
+		 where p.usercenter = #usercenter# and p.xiehztbh in $xiehztbhs$ 
+		 order by p.usercenter,p.xiehztbh,p.gcbh,p.xuh	
+	</insert>
+	
+	<select id="selectCkxYunssjmbDSSX" resultClass="com.athena.ckx.entity.transTime.CkxYunssjMBSx" parameterClass="java.util.Map">
+		SELECT  ys.Usercenter,ys.xiehztbzh,#creator# creator,#creator# editor  FROM ${dbSchemal3}CKX_YUNSSJMB_SHENGX YS INNER JOIN ${dbSchemal3}CKX_XIEHZTBZ XZ ON YS.USERCENTER = XZ.USERCENTER AND YS.XIEHZTBZH= XZ.XIEHZTBZH
+		 WHERE XZ.BIAOS = '1' 
+		<![CDATA[AND YS.SHENGXSJ = TO_DATE(#shengxsj#,'yyyy-mm-dd')  ]]>
+	</select>	
+	
+	<delete id="deleteYunssjmbdssx" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMBSx">
+		delete from ${dbSchemal3}ckx_yunssjmb where usercenter = #usercenter# and xiehztbh =#xiehztbzh#
+	</delete>	
+	
+	<delete id="insertYunssjmbdssx" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMBSx">
+		insert into ${dbSchemal3}ckx_yunssjmb  
+	   (usercenter,xiehztbh ,gcbh , facsj , daohsj , shengcsj , xuh,creator,create_time,editor,edit_time)
+	    select y.usercenter,y.xiehztbh,y.gcbh,y.facsj,y.daohsj,y.shengcsj,y.xuh,
+	                    #creator#,sysdate,#creator#,sysdate
+	           from ${dbSchemal3}ckx_yunssjmb_temp y where 1=1 and y.usercenter = #usercenter# and y.xiehztbh =#xiehztbzh#
+	</delete>	
+</sqlMap>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	仓库
+	@author denggq
+	@date 2012-1-10
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryChengpkJihyz" parameterClass="com.athena.ckx.entity.cangk.ChengpkJihyz" resultClass="com.athena.ckx.entity.cangk.ChengpkJihyz">
+		select usercenter,cangkbh,jihyzbh,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_chengpk_jihyz 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="jihyzbh" prepend="and">
+	    		<![CDATA[jihyzbh = #jihyzbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,cangkbh,jihyzbh
+	</select>
+	
+	<select id="getChengpkJihyz" resultClass="com.athena.ckx.entity.cangk.ChengpkJihyz">
+		select usercenter,cangkbh,jihyzbh
+		from ${dbSchemal3}ckx_chengpk_jihyz 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<insert id="insertChengpkJihyz" parameterClass="com.athena.ckx.entity.cangk.ChengpkJihyz">
+		insert into ${dbSchemal3}ckx_chengpk_jihyz(usercenter,cangkbh,jihyzbh,creator,create_time,editor,edit_time)
+		values(#usercenter#,#cangkbh#,#jihyzbh#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<update id="updateChengpkJihyz" parameterClass="com.athena.ckx.entity.cangk.ChengpkJihyz">
+		update ${dbSchemal3}ckx_chengpk_jihyz 
+		set jihyzbh = #jihyzbh#,
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where <![CDATA[usercenter = #usercenter# and cangkbh = #cangkbh#]]> 
+	</update>
+	
+	<delete id="deleteChengpkJihyz" parameterClass="com.athena.ckx.entity.cangk.ChengpkJihyz">
+		delete from ${dbSchemal3}ckx_chengpk_jihyz where
+		<dynamic prepend="  ">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+</sqlMap>

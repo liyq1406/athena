@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ts_ckx">
+	<!-- 多记录查询 -->
+	<select id="queryAnxpy" resultClass="com.athena.ckx.entity.xuqjs.Anxpy">
+		select usercenter,chanx,txsj,pysj,flag,editor,edit_time as editTime
+		from ${dbSchemal3}CKX_ANXPY where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">riq = #riq#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="beginDate">
+				<![CDATA[create_time >= to_date(#beginDate#,'yyyy-MM-dd HH24:mi') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="endDate">
+				<![CDATA[create_time <=to_date(#endDate#,'yyyy-MM-dd HH24:mi') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="flag"> flag = #flag#</isNotEmpty>
+		</dynamic>
+		order by edit_time desc
+	</select>
+	
+	<!--  检验输入的产线 0011651 -->
+	<select id="checkChanx" resultClass="java.lang.String">
+		select count(*) from ${dbSchemal3}ckx_shengcx 
+			where  usercenter = #usercenter#
+		 	 and   SHENGCXBH=#chanx#
+			 and biaos = '1'
+	</select>
+	
+	
+	<!-- 插入记录 -->
+	<insert id="insertAnxpy" parameterClass="com.athena.ckx.entity.xuqjs.Anxpy">
+	insert into
+		 ${dbSchemal3}CKX_ANXPY (usercenter,chanx,flag,txsj,pysj,creator,create_Time,editor,edit_Time)
+		 	values(<![CDATA[
+			#usercenter#,
+			#chanx#,
+			'0',
+			to_date(#txsj#,'yyyy-MM-dd HH24:mi:ss'),
+			#pysj#,
+			#creator#,
+			to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),
+			#editor#,
+			to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+	   ]]> ) 
+	</insert>
+	
+	<!-- 修改记录 -->
+	<update id="updateAnxpy" parameterClass="com.athena.ckx.entity.xuqjs.Anxpy">
+		update ${dbSchemal3}CKX_ANXPY set 
+		txsj = to_date(#txsj#,'yyyy-MM-dd HH24:mi:ss'),
+		pysj = #pysj#,
+		editor = #editor#,
+		edit_Time = to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where usercenter = #usercenter#
+		and   chanx = #chanx#
+		and  flag='0'
+	</update>
+	
+	<!-- 删除记录 -->
+	<update id="deleteAnxpy" parameterClass="com.athena.ckx.entity.xuqjs.Anxpy">
+		update ${dbSchemal3}CKX_ANXPY set 
+		flag='2',
+		editor = #editor#,
+		edit_Time = to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where usercenter = #usercenter#
+	 	and   chanx=#chanx#
+		and   txsj = to_date(#txsj#,'yyyy-MM-dd HH24:mi:ss')
+		and   flag='0'
+	</update>
+	
+	<!-- 检查唯一性 -->
+	<select id="checkAnxpyUniqueness" parameterClass="com.athena.ckx.entity.xuqjs.Anxpy"
+	resultClass="java.lang.String">
+		select count(*) from ${dbSchemal3}CKX_ANXPY 
+			where  usercenter = #usercenter#
+		 	 and   chanx = #chanx#
+			 and   flag = #flag#
+	</select>
+	
+	<!-- 1890接口上次运行时间  0011786-->
+	<select id="getLasttime" resultClass="java.lang.String" parameterClass="java.lang.String">
+			select  to_char(t.LASTCPLTIME,'yyyy-MM-dd hh24:mi:ss') 
+				from ${dbSchemal3}in_zidb t 
+				where t.inbh=#inbh#
+	</select>
+</sqlMap>

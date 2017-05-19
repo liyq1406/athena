@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<!-- 贺志国 -->
+	<!-- 配载发交  author:贺志国  date:2011-12-21 -->
+	<package name="fj" extend="toft-default" namespace="/fj">
+	<!-- 计划跟踪action-->
+		<action name="jihgz" class="yaocjhAction" method="accessJihgz">
+			<result name="select">/WEB-INF/pages/fj/yaocjh/jihgzList.jsp</result>
+		</action>
+		<action name="queryJihgz" class="yaocjhAction" method="queryJihgz" />
+	
+	<!-- 车辆资源action-->
+		<action name="chelsb" class="chelsbAction" method="accessChelsb">
+			<result name="select">/WEB-INF/pages/fj/chelsb/chelsbList.jsp</result>
+		</action>
+		<action name="queryChelsb" class="chelsbAction" method="queryChelsb" />
+		<action name="saveChelsb" class="chelsbAction"  method="saveChelsb"/>
+		<action name="deleteChelsb" class="chelsbAction" method="deleteChelsb"/>
+	
+	<!-- 配载计划action-->
+		<action name="peizjh" class="peizjhAction" method="accessPeizjh">
+			<result name="select">/WEB-INF/pages/fj/peizjh/peizjhList.jsp</result>
+		</action>
+		<action name="queryPeizjh" class="peizjhAction" method="queryPeizjh" />
+		<action name="updatePeizjh" class="peizjhAction" method="updatePeizjh" />
+		<action name="deletePeizjh" class="peizjhAction" method="deletePeizjh" />
+		<action name="queryPeizjhYaohl" class="peizjhAction" method="queryPeizjhYaohl" />
+		<action name="queryNoMatchYaohl" class="peizjhAction" method="queryNoMatchYaohl" />
+		<action name="getPeizdInfo" class="peizjhAction" method="getPeizdInfo" />
+		<action name="updateYaocjhzt" class="peizjhAction" method="updateYaocjhzt" />
+		<action name="surePeiz" class="peizjhAction" method="surePeiz" />
+		<action name="cancelPeiz" class="peizjhAction" method="cancelPeiz" />
+		<action name="deleteCheck" class="peizjhAction" method="deleteCheck" />
+		
+		<action name="deleteYaohlmx" class="peizjhAction" method="deleteYaohlmx" />
+		<action name="addYaohlmx" class="peizjhAction" method="addYaohlmx" />
+		<action name="updatePeizjhYunss" class="peizjhAction" method="updatePeizjhYunss" />
+		
+		<action name="printPeizjh" class="peizjhAction" method="printPeizjh" />
+		
+		<!-- 零件和包装汇总 -->
+		<action name="queryPeizjhYaohlOfLingj" class="peizjhAction" method="queryPeizjhYaohlOfLingj" />
+		<action name="queryPeizjhYaohlOfBaoz" class="peizjhAction" method="queryPeizjhYaohlOfBaoz" />
+		<action name="tuiJanPeiZ" class="peizjhAction" method="tuiJanPeiZ" />
+		<action name="queryPeizcl" class="peizjhAction" method="queryPeizcl" />
+		
+		<!-- 增加配载计划跳转 hzg  2012-3-20 -->
+		<action name="toPageAddPeizjh" class="peizjhAction" method="toPageAddPeizjh">
+			<result name="pageAddPeizjh">/WEB-INF/pages/fj/peizjh/addPeizjh.jsp</result>
+		</action>
+		<!-- 修改配载计划跳转 hzg 2012-3-20 selectYunslxOfYaohl-->
+		<action name="toPageEditPeizjh" class="peizjhAction" method="toPageEditPeizjh">
+			<result name="pageEditPeizjh">/WEB-INF/pages/fj/peizjh/editPeizjh.jsp</result>
+		</action>
+		<!-- 路线组下的运输商查询 hzg  2012-8-3  新增 -->
+		<action name="queryYunssOfLXZ" class="peizjhAction" method="queryYunssOfLXZ"></action>
+		
+		
+		
+		<!-- 增加配载计划，运输路线组查询未配载要货令查询 hzg 2012-3-20 -->
+		<action name="queryYaohlOfTuij" class="peizjhAction" method="queryYaohlOfTuij" />
+		<!-- 增加配载计划，查询区域条件查询未配载要货令查询 hzg 2012-3-21 -->
+		<action name="queryNoPeizYaohl" class="peizjhAction" method="queryNoPeizYaohl" />
+		<action name="insertPeizjh" class="peizjhAction" method="insertPeizjh" />
+		
+		
+		<!-- 配载调整action hzg 2012-3-23-->
+		<action name="peiztz" class="peiztzAction" method="accessPeiztz">
+			<result name="select">/WEB-INF/pages/fj/peiztz/peiztzList.jsp</result>
+		</action>
+		<action name="queryPeizjhOfTiaoz" class="peiztzAction" method="queryPeizjhOfTiaoz" />
+		<action name="queryYaohlOfPeizd" class="peiztzAction" method="queryYaohlOfPeizd" />
+		<action name="moveYaohlToPeizjh" class="peiztzAction" method="moveYaohlToPeizjh" />
+		<action name="deletePeizjhOfTiaoz" class="peiztzAction" method="deletePeizjhOfTiaoz" />
+			<!-- 零件和包装组汇总 -->
+		<action name="queryPeizjhOfLingj" class="peiztzAction" method="queryPeizjhOfLingj" />
+		<action name="queryPeizjhOfBaozz" class="peiztzAction" method="queryPeizjhOfBaozz" />
+		
+		
+		<action name="queryYaohlOfkh" class="shougpzAction" method="queryYaohlOfkh" />
+		<action name="shougpzQr" class="shougpzAction" method="shougpzQr" />
+
+		<!-- 装车发运action-->
+		<action name="701" class="zhuangcfyAction" method="accessZhuangcfy">
+			<result name="select">/WEB-INF/pages/ck/zhuangche/701.jsp</result>
+		</action>
+		<action name="70101" class="zhuangcfyAction" method="queryUAInfo"></action>
+		<action name="70102" class="zhuangcfyAction" method="queryChep"></action>
+		<action name="70103" class="zhuangcfyAction" method="queryUAList"></action>
+		<!-- 数据字典 -->
+		<action name="queryKeh" class="dictionaryAction" method="queryKeh"></action>
+		<action name="queryKehCpk" class="dictionaryAction" method="queryKehCpk"></action>
+		<action name="queryYunss" class="dictionaryAction" method="queryYunss"></action>
+		<action name="queryYunssCpk" class="dictionaryAction" method="queryYunssCpk"></action>
+		<action name="queryChex" class="dictionaryAction" method="queryChex"></action>
+		<action name="queryChexYunss" class="dictionaryAction" method="queryChexYunss"></action>
+		<action name="queryYunslx" class="dictionaryAction" method="queryYunslx"></action>
+	</package>
+	
+	
+</toft>

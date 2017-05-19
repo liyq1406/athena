@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 流程操作 -->
+<sqlMap namespace="liuccz">
+	<!-- 查询车位下的运单状态信息通过叉车表--> 
+	 <select id="queryChewydxx"  parameterClass="java.util.Map" resultClass="com.athena.truck.entity.Chelpd">
+ <![CDATA[
+	select  a.usercenter,a.quybh,a.daztbh,a.yundh,a.kach,a.chewbh,a.xiehxh ,b.zhuangt,b.zhuangtmc,b.liucbh,b.liucmc,b.biaozsj,
+	( case when (b.zhuangt>3 or b.liucbh='8') and  b.bj > d.fangkbzsj  then  2   
+           when b.zhuangt=3 and b.bj1 > d.kacwdbjsj then 1 else 0 end) beiz
+	from
+	(select  c.usercenter,c.quybh,c.daztbh,p.yundh,p.kach,p.chewbh,p.xiehxh from  ${dbSchemal0}ckx_chac c ,${dbSchemal0}kc_chelpd p where c.biaos='1' and c.chacz=#chacz# 
+	and p.usercenter=c.usercenter and c.quybh=p.quybh and c.daztbh=p.daztbh and p.paidzt='1' and c.usercenter=#usercenter# ) a,
+	(select usercenter,quybh,daztbh,yundh,kach,zhuangt,zhuangtmc,liucbh,liucmc ,biaozsj,(sysdate- zhunrsj)*60*24 bj1 ,(sysdate- rucsj)*60*24 bj from
+	(select  rank() over(partition by y.usercenter,y.quybh,y.daztbh,y.yundh,y.kach,y.zhuangt,y.zhuangtmc order by l.liucbh asc) rk,  
+	y.usercenter,y.quybh,y.daztbh,y.yundh,y.kach,y.zhuangt,y.zhuangtmc,l.liucbh ,l.liucmc,l.biaozsj,y.rucsj,y.zhunrsj    from  ${dbSchemal0}kc_yund y, ${dbSchemal0}ckx_liucdy l   
+	where y.usercenter=l.usercenter and y.quybh=l.quybh and y.daztbh=l.daztbh
+	and y.zhuangt>=3 and y.zhuangt < 8  and l.biaos='1' and l.liucbh> y.zhuangt) t where t.rk=1 )b,${dbSchemal0}ckx_dazt d 
+	where a.usercenter=b.usercenter and a.quybh=b.quybh and a.daztbh=b.daztbh and  a.yundh=b.yundh  and a.kach=b.kach 
+	and a.usercenter=d.usercenter and a.quybh=d.quybh and a.daztbh=d.daztbh ]]>
+	<dynamic>
+	 <isNotEmpty property="zhuangt" prepend="and"> b.zhuangt=#zhuangt# </isNotEmpty>
+	 <isNotEmpty property="yundh" prepend="and"> b.yundh=#yundh# </isNotEmpty>
+	 <isNotEmpty property="kach" prepend="and"> b.kach=#kach# </isNotEmpty>
+	</dynamic>
+	order by xiehxh asc
+	</select>
+	
+	
+	<!-- 查询车位运单信息通过叉车车辆 -->
+	 <select id="queryChewccydxx"  parameterClass="java.util.Map" resultClass="com.athena.truck.entity.Chelpd">
+<![CDATA[	select 
+      a.usercenter,a.quybh,a.daztbh,a.yundh,a.kach,a.chewbh,a.xiehxh ,b.zhuangt,b.zhuangtmc,b.liucbh,b.liucmc,b.biaozsj,
+  ( case when (b.zhuangt>3 or b.liucbh='8') and  b.bj > d.fangkbzsj  then  2   
+         when b.zhuangt=3 and b.bj1 > d.kacwdbjsj then 1 else 0 end) beiz
+from
+(select  c.usercenter,c.quybh,c.daztbh,p.yundh,p.kach,p.chewbh,p.xiehxh from  ${dbSchemal0}ckx_chac c ,${dbSchemal0}kc_chelpd p ,${dbSchemal0}ckx_chac_chew cc     
+where c.biaos='1'  and c.chacz=#chacz# and cc.usercenter=c.usercenter and cc.quybh=c.quybh and cc.daztbh=c.daztbh
+and cc.chacbh=c.chacbh and cc.chewbh=p.chewbh  and c.usercenter=#usercenter#
+and p.usercenter=c.usercenter and c.quybh=p.quybh and c.daztbh=p.daztbh and p.paidzt='1') a,
+
+(select usercenter,quybh,daztbh,yundh,kach,zhuangt,zhuangtmc,liucbh,liucmc ,biaozsj,(sysdate- zhunrsj)*60*24 bj1  ,(sysdate- rucsj)*60*24 bj  from
+(select  rank() over(partition by y.usercenter,y.quybh,y.daztbh,y.yundh,y.kach,y.zhuangt,y.zhuangtmc order by l.liucbh asc) rk,  
+y.usercenter,y.quybh,y.daztbh,y.yundh,y.kach,y.zhuangt,y.zhuangtmc,l.liucbh ,l.liucmc,l.biaozsj ,y.rucsj,y.zhunrsj   from  ${dbSchemal0}kc_yund y, ${dbSchemal0}ckx_liucdy l  
+ where y.usercenter=l.usercenter and y.quybh=l.quybh and y.daztbh=l.daztbh
+and y.zhuangt>=3 and y.zhuangt < 8  and l.biaos='1' and l.liucbh> y.zhuangt) t where t.rk=1 )b , ${dbSchemal0}ckx_dazt d 
+where a.usercenter=b.usercenter and a.quybh=b.quybh and a.daztbh=b.daztbh and  a.yundh=b.yundh  and a.kach=b.kach 
+and a.usercenter=d.usercenter and a.quybh=d.quybh and a.daztbh=d.daztbh  ]]>
+<dynamic>
+	 <isNotEmpty property="zhuangt" prepend="and"> b.zhuangt=#zhuangt# </isNotEmpty>
+	 <isNotEmpty property="yundh" prepend="and"> b.yundh=#yundh# </isNotEmpty>
+	 <isNotEmpty property="kach" prepend="and"> b.kach=#kach# </isNotEmpty>
+	</dynamic>
+	order by xiehxh asc
+	</select>
+	
+<!-- 查询当前叉车车位关系是否存在 -->
+ <select id="queryChewccgx"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+        select  count(1) num from ${dbSchemal0}ckx_chac c ,${dbSchemal0}ckx_chac_chew cc where 
+        c.usercenter=cc.usercenter and c.quybh=cc.quybh and c.daztbh=cc.daztbh  
+        and c.chacbh=cc.chacbh and c.biaos='1' and c.chacz=#chacz# and c.usercenter=#usercenter#
+ </select>
+ <!--修改车位状态 -->
+ <update id="updateChew" parameterClass="com.athena.truck.entity.Chew" >
+			update ${dbSchemal0}ckx_chew
+				set editor = #editor#,				
+				edit_time =sysdate,
+				chewzt='0'
+				where usercenter=#usercenter#
+				and   chewbh=#chewbh#
+				and   daztbh=#daztbh#
+ </update>
+ 
+ <!-- 修改运单状态 -->
+ <update id="updateYund" parameterClass="com.athena.truck.entity.Yund">
+ update ${dbSchemal0}kc_yund y
+ set editor  =#editor#,
+ edit_time=sysdate,
+ zhuangt=#zhuangt#,
+ zhuangtmc=(select   liucmc from  ${dbSchemal0}ckx_liucdy l where l.usercenter=y.usercenter and
+			y.daztbh=l.daztbh and l.quybh=y.quybh and l.liucbh=#zhuangt# )
+ where  usercenter=#usercenter#
+ and   yundh=#yundh# 
+ </update>
+ 
+ <!-- 查询运单信息 -->
+ <select id="queryYundCheck" parameterClass="com.athena.truck.entity.Yund" resultClass="com.athena.truck.entity.Yund">
+		select yd.usercenter,yd.yundh,yd.quybh,yd.daztbh,yd.kach,to_char(yd.shengbsj,'yyyy-MM-dd hh24:mi:ss') shengbsj,
+    	to_char(yd.rucsj,'yyyy-MM-dd hh24:mi:ss') rucsj,to_char(yd.chucsj,'yyyy-MM-dd hh24:mi:ss')  chucsj,yd.flag,yd.zhuangt,yd.zhuangtmc,
+    	yd.jijbs,yd.beiz,yd.beiz1,yd.beiz2,yd.beiz3,yd.tiqpdbs,to_char(yd.create_time,'yyyy-MM-dd hh24:mi:ss') createTime , to_char(yd.edit_time,'yyyy-MM-dd hh24:mi:ss') editTime  ,d.biaozsj   
+		from ${dbSchemal0}kc_yund yd left join ${dbSchemal0}ckx_liucdy d on yd.usercenter = d.usercenter and yd.quybh = d.quybh and yd.daztbh = d.daztbh and yd.zhuangt=d.liucbh where 1=1  
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[yd.usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="yundh"><![CDATA[yd.yundh = #yundh#]]></isNotEmpty>
+			</dynamic>
+			order by yd.usercenter,yd.yundh
+	</select>
+ <!-- 车辆出入厂流水 -->
+ <insert id="insertChurcls" parameterClass="com.athena.truck.entity.Yund">
+ 	insert into ${dbSchemal0}kc_churcls(usercenter, quybh, daztbh, yundh, liucbh, kach, chewbh, beiz, operator, operate_time, operate_type, biaozsj, lastoperate_time, chengysbh, rongqc, jijbs, tiqpdbs)
+		values(#usercenter#, #quybh#, #daztbh#, #yundh#, #zhuangt#, #kach#, #beiz#, '', #beiz1#, sysdate, '1', #biaozsj#, to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss'), '', '', #jijbs#, #tiqpdbs#)
+ </insert>
+   <!-- 删除车辆排队 -->
+	<delete id="deleteChelpd" parameterClass="com.athena.truck.entity.Yund">
+		delete from ${dbSchemal0}kc_chelpd 
+		where usercenter = #usercenter# and  yundh = #yundh# and kach = #kach# and paidzt='1'
+	</delete>
+	
+	 <!-- 记录车辆排队表删除记录 -->
+     <insert id="insertChlepdls" parameterClass="com.athena.truck.entity.Yund">
+     	 insert into ${dbSchemal0}kc_chelpd_history 
+		( id,
+		  usercenter,
+		  quybh,
+		  daztbh,
+		  yundh,
+		  kach,
+		  chengysbh,
+		  chewbh,
+		  paidzt,
+		  paidxh,
+		  xiehxh,
+		  paidsx,
+		  yuanpdsx,
+		  zdchew,
+		  operate,
+		  beiz,
+		  beiz1,
+		  beiz2,
+		  beiz3,
+		  creator,
+	      create_time
+		)
+   select
+		seq_chelpd.nextval,
+		 usercenter,
+		  quybh,
+		  daztbh,
+		  yundh,
+		  kach,
+		  chengysbh,
+		  chewbh,
+		  paidzt,
+		  paidxh,
+		  xiehxh,
+		  paidsx,
+		  yuanpdsx,
+		  zdchew,
+		  'd',
+		  beiz,
+		  beiz1,
+		  beiz2,
+		  beiz3,
+		  #editor#,
+	    sysdate
+		from ${dbSchemal0}kc_chelpd 
+		where usercenter=#usercenter#
+		and   yundh=#yundh#
+		and   kach=#kach#
+     </insert>
+     
+     <!--查询流程定义信息 -->
+     <select id="queryLicdy"  resultClass="java.util.HashMap" >
+  	<![CDATA[
+		  select zidbm,zidmc from ${dbSchemal0}ckx_xitcsdy t where zidlx='LCDY' and  ( t.beiz='ZDY' or t.zidbm='3' ) order by t.zidbm
+		]]>
+     </select>
+     
+    <parameterMap id="fangkProMap" class="java.util.HashMap">
+        
+       <parameter property="chewbh" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="editor" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="usercenter" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="yundh" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="kach" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="zhuangt" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="quybh" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="daztbh" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="beiz" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="beiz1" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="biaozsj" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="jijbs" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="tiqpdbs" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+        
+       <parameter property="result" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT " />
+        
+    </parameterMap>
+    
+    <!-- 调用存储过程执行车位放空 -->
+	<procedure id="pro_truck_chewfk" parameterMap="fangkProMap" >	
+	{call ${dbSchemal0}pro_truck_chewfk (?,?,?,?,?,?,?,?,?,?,?,?,?,?)}
+	</procedure>
+	
+	<parameterMap id="chexProMap" class="java.util.HashMap">
+        
+       <parameter property="chewbh" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="editor" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="usercenter" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="yundh" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="kach" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="zhuangt" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="zhuangtmc" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="quybh" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="daztbh" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="beiz3" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="beiz1" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="biaozsj" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="jijbs" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+       <parameter property="tiqpdbs" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+        
+       <parameter property="result" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT " />
+        
+    </parameterMap>
+	
+	<!-- 调用存储过程执行运单撤销 -->
+	<procedure id="pro_truck_yundcx" parameterMap="chexProMap" >	
+	{call ${dbSchemal0}pro_truck_yundcx (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}
+	</procedure>
+	
+	<!-- 根据用户中心、运单号查询是否存在3-7状态运单及当前状态 -->
+	<select id="getYundlccz"  parameterClass="java.util.Map" resultClass="java.lang.String">
+	    SELECT Y.ZHUANGT
+		 FROM ${dbSchemal0}KC_YUND Y
+		WHERE Y.ZHUANGT IN ('3', '4', '5', '6', '7')
+		  AND Y.USERCENTER = #usercenter#
+		  AND Y.YUNDH = #yundh#
+	</select>
+	
+</sqlMap>

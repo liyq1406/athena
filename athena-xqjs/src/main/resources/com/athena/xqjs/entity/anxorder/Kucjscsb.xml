@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="anx">
+	<select id="queryAllKucjscsbObject" resultClass="com.athena.xqjs.entity.anxorder.Kucjscsb">
+
+		select 
+			usercenter,
+			lingjbh,
+			xiaohd,
+			yicxhl,
+			daohl ,
+			flag
+		from 
+			${dbSchemal1}xqjs_kucjscsb
+		where 
+			1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohd">
+				xiaohd = #xiaohd#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询线边理论库存 -->
+	<select id="queryLilkc" resultClass="java.math.BigDecimal">
+	select 
+		sum(xianbllkc)
+	from 
+		${dbSchemal3}ckx_lingjxhd
+	where 
+		1 = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+			<isNotNull prepend=" and " property="xiaohdbh">xiaohdbh = #xiaohdbh#</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 查询异常消耗和到货量(即出库量) -->
+	<select id="queryYcxhDh" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.anxorder.Kucjscsb">
+		select 
+			sum(yicxhl) as yicxhl,
+			sum(daohl) as daohl
+		from 
+			${dbSchemal1}xqjs_kucjscsb 
+		where 
+			1 = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+			<isNotEmpty prepend=" and " property="xiaohdbh">
+				xiaohd = #xiaohdbh#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前计算时间到上次计算时间的消耗 -->
+	<select id="querySjxh" resultClass="java.math.BigDecimal" parameterClass="java.util.Map">
+		select 
+			sum(xiaohxs) as daixhl
+		from 
+			${dbSchemal1}xqjs_anxmaoxq t
+		where 
+			1 = 1
+			<dynamic>
+				<isNotNull prepend=" and " property="j0">
+				<isNotNull property="jn">
+				t.xhsj Between to_date(#j0#,'yyyy-mm-dd HH24:MI') And to_date(#jn#,'yyyy-mm-dd HH24:MI') 
+				</isNotNull>
+				</isNotNull>
+				<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+				<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+				<isNotNull prepend=" and " property="xiaohdbh">xiaohd = #xiaohdbh#</isNotNull>
+			</dynamic>
+	</select>
+	
+	<!-- wuyichao 紧急件不处理 -->
+	<update id="unoperatingEmergency">
+		update 
+			${dbSchemal1}XQJS_EMERGENCY 
+		set 
+			ZHUANGT = '2',
+			editor = #username#,
+	        edit_time = sysdate
+		where 
+			ZHUANGT in ('0','3')
+			and id in ($ids$)
+	</update>
+	
+	
+	<!-- wuyichao   查询紧急件 -->
+	<select id="queryEmergency" resultClass="com.athena.xqjs.entity.emergency.EmergencyModel">
+		select 
+			 EMERGENCY.ID as id,
+		     EMERGENCY.USERCENTER as usercenter,
+		     EMERGENCY.LINGJBH as lingjbh,
+		     EMERGENCY.LINGJMC as lingjmc,
+		     EMERGENCY.GONGYSBH as gongysbh,
+		     EMERGENCY.GONGYSMC as gongysmc,
+		     EMERGENCY.CHENGYSBH as chengysbh,
+		     EMERGENCY.CHENGYSMC as chengysmc,
+		     EMERGENCY.GONGYSFE as gongysfe,
+		     EMERGENCY.XIAOHD as xiaohd,
+		     EMERGENCY.CHAY as chay,
+		     EMERGENCY.XIANBLLKC as xianbllkc,
+		     EMERGENCY.PANDSJSL as pandsjsl,
+		     EMERGENCY.PANDZT as pandzt,
+		     EMERGENCY.JIHY as jihy,
+		     EMERGENCY.UARL as uarl,
+		     EMERGENCY.BAOZGS as baozgs,
+		     EMERGENCY.YAOHSL as yaohsl,
+		     EMERGENCY.ANQKC as anqkc,
+		     EMERGENCY.ZHUANGT as zhuangt,
+		     EMERGENCY.DINGDH as dingdh,
+		     to_char(EMERGENCY.XIAOH_TIME,'yyyy-mm-dd HH24:mi:ss')  as xiaoh_time,
+		     EMERGENCY.CREATOR as creator , 
+		     to_char(EMERGENCY.CREATE_TIME,'yyyy-mm-dd HH24:mi:ss') as create_time,
+		     EMERGENCY.EDITOR as editor,
+		      to_char(EMERGENCY.EDIT_TIME,'yyyy-mm-dd HH24:mi:ss') as edit_time,
+		      EMERGENCY.BEIZ as beiz,
+		       to_char(jilu.rq,'yyyy-mm-dd HH24:mi:ss') as jilrq,
+		      jilu.ANQKCS as jilaqkcs,
+		      jilu.DJFL as jildjfl,
+		      jilu.CDLUKCC1KC as jilxbllkc,
+		      jilu.j0 as j0,
+		      jilu.j1 as j1,
+		      jilu.j2 as j2,
+		      jilu.ddl as jilddl,
+		      jilu.ziycy as ziycy
+		from 
+		     ${dbSchemal1}XQJS_EMERGENCY  EMERGENCY,
+		     (
+				select usercenter,lingjbh , xhdck,rq ,ANQKCS ,DJFL , CDLUKCC1KC , DDL,j0,j1,j2,(j0+j1+ANQKCS-DJFL-CDLUKCC1KC-DDL) as ziycy
+				from
+				(select  usercenter,lingjbh , xhdck,rq ,nvl(ANQKCS,0) as anqkcs,nvl(DJFL,0) as djfl,nvl(CDLUKCC1KC,0) as cdlukcc1kc ,nvl(DDL,0) as ddl,nvl(j0,0) as j0,nvl(j1,0) as j1,nvl(j2,0) as j2, rank() over (partition by usercenter,lingjbh , xhdck order by rq desc) rank
+				  from ${dbSchemal1}jc_c1cd
+				  where mos = 'CD' 
+				   ) d
+				where d.rank = 1
+			 ) jilu
+		where 
+			EMERGENCY.usercenter = jilu.usercenter(+)
+			and EMERGENCY.lingjbh = jilu.lingjbh(+)
+			and EMERGENCY.xiaohd = jilu.xhdck(+)
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter">EMERGENCY.usercenter = #usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh">EMERGENCY.lingjbh = #lingjbh#</isNotNull>
+			<isNotNull prepend=" and " property="xiaohd">EMERGENCY.xiaohd = #xiaohd#</isNotNull>
+			<isNotNull prepend=" and " property="creator">EMERGENCY.creator = #creator#</isNotNull>
+			<isNotNull prepend=" and " property="jihy">EMERGENCY.JIHY = #jihy#</isNotNull>
+			<isNotNull prepend=" and " property="gongysbh">EMERGENCY.GONGYSBH = #gongysbh#</isNotNull>
+			<isNotNull prepend=" and " property="chengysbh">EMERGENCY.CHENGYSBH = #chengysbh#</isNotNull>
+			<isNotNull prepend=" and " property="pandzt">EMERGENCY.PANDZT = #pandzt#</isNotNull>
+			<isNotNull prepend=" and " property="zhuangt">EMERGENCY.ZHUANGT = #zhuangt#</isNotNull>
+			<isNotNull prepend=" and " property="editor">EMERGENCY.EDITOR = #editor#</isNotNull>
+			<isNotEmpty prepend=" and " property="createtimeFrom">
+			            EMERGENCY.create_time &gt;= to_date(#createtimeFrom#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="createtimeTo">
+			             EMERGENCY.create_time &lt;= to_date(#createtimeTo#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="edittimeFrom">
+			            EMERGENCY.EDIT_TIME &gt;= to_date(#edittimeFrom#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="edittimeTo">
+			             EMERGENCY.EDIT_TIME &lt;= to_date(#edittimeTo#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+		</dynamic>
+		 order by EMERGENCY.EDIT_TIME desc , EMERGENCY.id
+	</select>
+	
+	
+	<!-- wuyichao   查询盘点历史 -->
+	<select id="queryPandls" resultClass="com.athena.xqjs.entity.anxorder.Kucjscsb">
+		select 
+		     USERCENTER as usercenter,
+		     LINGJBH as lingjbh,
+		     YICXHL as yicxhl, 
+		     DAOHL as daohl,
+		     XIAOHD as xiaohd,
+		     FLAG as flag,
+		     to_char(JILRQ,'yyyy-mm-dd HH24:mi:ss') as jilrq,
+		     to_char(CREATE_TIME,'yyyy-mm-dd HH24:mi:ss') as create_time,
+		     CREATOR as creator,
+		     ZHONGZLXH as zhongzlxh,
+		     KUCSLDXH as kucsldxh,
+		     XIANBLLKC as xianbllkc,
+		     PDSJKC as pdsjkc,
+		     PANDDXH as panddxh,
+		     PANDCKL as pandckl,
+		     PANDYCXH as pandycxh,
+		     to_char(ANXSCJSSJ,'yyyy-mm-dd HH24:mi:ss') as anxscjssj
+		from 
+		     ${dbSchemal1}xqjs_kucjscsb 
+		where 
+			 flag = '2' and zhongzlxh is not null
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+			<isNotNull prepend=" and " property="xiaohd">xiaohd = #xiaohd#</isNotNull>
+			<isNotNull prepend=" and " property="creator">creator = #creator#</isNotNull>
+			<isNotEmpty prepend=" and " property="jilrqFrom">
+			            jilrq &gt;= to_date(#jilrqFrom#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jilrqTo">
+			             jilrq &lt;= to_date(#jilrqTo#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="createtimeFrom">
+			            create_time &gt;= to_date(#createtimeFrom#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="createtimeTo">
+			             create_time &lt;= to_date(#createtimeTo#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+		</dynamic>
+		 order by jilrq desc , usercenter , lingjbh , xiaohd ,creator  
+	</select>
+	
+	
+	<!-- 查询物流路径信息 -->
+	<select id="queryWulljxxByEmergency" resultClass="com.athena.xqjs.entity.emergency.EmergencyModel">
+		select 
+			 distinct
+			 usercenter as usercenter ,
+			 lingjbh as lingjbh,
+			 gongysbh as gongysbh,
+			 gcbh as chengysbh,
+			 gongyfe as gongysfe
+		from 
+			${dbSchemal1}ckx_wullj   
+		where 
+			waibms = 'CD'
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+			<isNotNull prepend=" and " property="gongysbh">gongysbh = #gongysbh#</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 查询物流路径信息 -->
+	<select id="queryWulljxxByWullj" resultClass="com.athena.xqjs.entity.common.Wullj">
+		SELECT
+		usercenter,
+		fenpqh,
+		lingjbh,
+		gongysbh,
+		lujbh,
+		lujmc,
+		fahd,
+		waibms,
+		zhidgys,
+		jiaofm,
+		beihzq,
+		yunszq,
+		gcbh,
+		xiehztbh,
+		songhpc,
+		mudd,
+		dinghck,
+		mos2,
+		cangkshpc2,
+		cangkshsj2,
+		cangkfhsj2,
+		beihsj2,
+		ibeihsj2,
+		pbeihsj2,
+		beihsjc,
+		xianbck,
+		mos,
+		cangkshpc,
+		cangkshsj,
+		cangkfhsj,
+		beihsj,
+		ibeihsj,
+		pbeihsj,
+		wulgyyz,
+		wulgyyz1,
+		wulgyyz2
+		FROM
+		${dbSchemal3}ckx_wullj
+		where 
+			waibms = 'CD'
+	</select>
+	
+	
+	
+	<!-- 查询物供应商承运商信息 -->
+	<select id="queryGongysChengysxxByEmergency" resultClass="com.athena.xqjs.entity.emergency.EmergencyModel">
+		select 
+			usercenter as usercenter,
+			gcbh as gongysbh,
+			gcbh as chengysbh,
+			gongsmc as gongysmc,
+			gongsmc as chengysmc
+		from 
+			${dbSchemal1}ckx_gongys
+		where 
+			 biaos = '1'
+			 and 
+			 gcbh in ($gcbh$)
+	</select>
+	
+	<select id="queryLingjGongysByEmergencyModel" resultClass="com.athena.xqjs.entity.common.LingjGongys" >
+	select
+		usercenter,
+		gongysbh,
+		lingjbh,
+		gongyhth,
+		gongyfe,
+		youxq,
+		fayd,
+		shengxsj,
+		shixsj,
+		zuixqdl,
+		cankfz,
+		zhijcjbl,
+		shifyzpch,
+		ucbzlx,
+		ucrl,
+		uabzlx,
+		uaucgs,
+		gaib,
+		neic,
+		shifczlsbz
+	from 
+		${dbSchemal3}ckx_lingjgys 
+		where biaos = '1'
+	</select>
+	
+	<select id="queryLingjsByEmergencyModel" resultClass="com.athena.xqjs.entity.common.Lingj">
+		select kaisrq,
+       dinghcj,
+       zhongwmc,
+       zongcldm,
+       lingjzl,
+       lingjlx,
+       lingjsx,
+       gongybm,
+       to_char(diycqysj, 'yyyy-MM-dd') as diycqysj,
+       zhizlx,
+       danw,
+       anqm,
+       biaos,
+       fawmc,
+       jiesrq,
+       guanjljjb,
+       usercenter,
+       zhuangcxs,
+       lingjbh,
+       jihy
+ 	 from 
+ 	 	${dbSchemal3}ckx_lingj
+	 where
+		 biaos = '1'
+	</select>
+	
+	
+	<select id="queryGongysByEmergencyModel" resultClass="com.athena.xqjs.entity.common.Gongys" >
+		select
+		usercenter,
+		gongsmc,
+		chuanz,
+		neibgys_cangkbh,
+		diz,
+		fayzq,
+		songhzdpc,
+		gonghlx,
+		leix,
+		dianh,
+		youb,
+		gcbh,
+		lianxr,
+		kacbztj,
+		beihzq,
+		fayd,
+		neibyhzx,
+		songhzxpc
+		from
+		${dbSchemal3}ckx_gongys
+		where
+		 biaos = '1'
+	</select>
+	
+	<select id="queryEmergencyById" resultClass="com.athena.xqjs.entity.emergency.EmergencyModel">
+		select 
+			 EMERGENCY.ID as id,
+		     EMERGENCY.USERCENTER as usercenter,
+		     EMERGENCY.LINGJBH as lingjbh,
+		     EMERGENCY.LINGJMC as lingjmc,
+		     EMERGENCY.GONGYSBH as gongysbh,
+		     EMERGENCY.GONGYSMC as gongysmc,
+		     EMERGENCY.CHENGYSBH as chengysbh,
+		     EMERGENCY.CHENGYSMC as chengysmc,
+		     EMERGENCY.GONGYSFE as gongysfe,
+		     EMERGENCY.XIAOHD as xiaohd,
+		     EMERGENCY.CHAY as chay,
+		     EMERGENCY.XIANBLLKC as xianbllkc,
+		     EMERGENCY.PANDSJSL as pandsjsl,
+		     EMERGENCY.PANDZT as pandzt,
+		     EMERGENCY.JIHY as jihy,
+		     EMERGENCY.UARL as uarl,
+		     EMERGENCY.BAOZGS as baozgs,
+		     EMERGENCY.YAOHSL as yaohsl,
+		     EMERGENCY.ANQKC as anqkc,
+		     EMERGENCY.ZHUANGT as zhuangt,
+		     EMERGENCY.DINGDH as dingdh,
+		     to_char(EMERGENCY.XIAOH_TIME,'yyyy-mm-dd HH24:mi:ss')  as xiaoh_time,
+		     EMERGENCY.CREATOR as creator , 
+		     to_char(EMERGENCY.CREATE_TIME,'yyyy-mm-dd HH24:mi:ss') as create_time,
+		     EMERGENCY.EDITOR as editor,
+		     to_char(EMERGENCY.EDIT_TIME,'yyyy-mm-dd HH24:mi:ss') as edit_time,
+		     EMERGENCY.BEIZ as beiz
+		 from 
+			  ${dbSchemal1}XQJS_EMERGENCY  EMERGENCY
+		where 
+		    1 = 1
+		    <dynamic>
+			<isNotNull prepend=" and " property="id"> EMERGENCY.ID = #id#</isNotNull>
+			<isNotNull prepend=" and " property="ids">EMERGENCY.ID in ($ids$)</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 批量修改紧急件信息 -->
+	<update id="editEmergencyById" parameterClass="com.athena.xqjs.entity.emergency.EmergencyModel">
+		update ${dbSchemal1}XQJS_EMERGENCY
+			set
+			GONGYSBH = #gongysbh#,
+			GONGYSMC = #gongysmc#,
+			CHENGYSBH = #chengysbh#,
+			CHENGYSMC = #chengysmc#,
+			GONGYSFE = #gongysfe#,
+			EDIT_TIME = sysdate,
+			EDITOR = #editor#,
+			ZHUANGT = #zhuangt#,
+			BAOZGS = #baozgs#,
+			YAOHSL = #yaohsl#,
+			DINGDH = #dingdh#,
+			BEIZ = #beiz#,
+			XIAOH_TIME = to_date(#xiaoh_time#,'yyyy-mm-dd HH24:mi:ss')
+			where 
+				ID = #id#
+	</update>
+	
+	<!-- 订单明细批量插入 -->
+	<insert id="insertDingdmxByEmergencyModel" parameterClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+		insert into
+		${dbSchemal1}XQJS_DINGDMX
+		(
+		ID,
+		xiaohch,
+		shid,
+		YUGSFQZ,
+		FAHD,
+		LUJDM,
+		SHUL,
+		UABZUCLX,
+		xiehd,
+		LINGJBH,
+		YAOHQSRQ,
+		usbaozlx,
+		ZUIHWHSJ,
+		DINGHCJ,
+		UABZUCRL,
+		YAOHJSRQ,
+		YIJFL,
+		XIEHZT,
+		xiaohccxh,
+		chanx,
+		usbaozrl,
+		zuiwdhsj,
+		UABZUCSL,
+		xiaohcsxsj,
+		GONGYSLX,
+		xiaohsj,
+		ZUIHWHR,
+		JIAOFRQ,
+		LEIX,
+		USERCENTER,
+		zuizdhsj,
+		ZHUANGT,
+		xianbyhlx,
+		DANW,
+		FAYRQ,
+		GONGHLX,
+		xiaohcbhsj,
+		UABZLX,
+		JISSL,
+		DINGDH,
+		GONGYSDM,
+		JIHYZ,
+		CANGKDM,
+		active,
+		tangc,
+		creator,create_time,editor,edit_time,
+		LINGJMC,
+		GONGSMC,
+		xiaohd,
+		GCBH,
+		BEIHSJ2
+		)
+		values(
+		${dbSchemal1}XQJS_DINGDMX_SEQ.nextval,
+		#xiaohch#,
+		<dynamic>
+			<isNull property="shid">null,</isNull>
+			<isNotNull property="shid">to_date(#shid#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>	
+		<dynamic>
+			<isNull property="yugsfqz">null,</isNull>
+			<isNotNull property="yugsfqz">#yugsfqz#,</isNotNull>
+		</dynamic>
+		#fahd#,
+		#lujdm#,
+		#shul#,
+		#uabzuclx#,
+		#xiehd#,
+		#lingjbh#,
+		<dynamic>
+			<isNull property="yaohqsrq">null,</isNull>
+			<isNotNull property="yaohqsrq">to_date(substr(#yaohqsrq#,1,10),'yyyy-mm-dd'),</isNotNull>
+		</dynamic>
+		<dynamic>
+			<isNull property="usbaozlx">null,</isNull>
+			<isNotNull property="usbaozlx">#usbaozlx#,</isNotNull>
+		</dynamic>
+		<dynamic>
+			<isNull property="zuihwhsj">null,</isNull>
+			<isNotNull property="zuihwhsj">to_date(#zuihwhsj#,'yyyy-MM-dd HH24:mi:ss'),</isNotNull>
+		</dynamic>
+		#dinghcj#,
+		<dynamic>
+			<isNull property="uabzucrl">null,</isNull>
+			<isNotNull property="uabzucrl">#uabzucrl#,</isNotNull>
+		</dynamic>
+		decode(#yaohjsrq#,'null',null,to_date(substr(#yaohjsrq#,1,10),'yyyy-MM-dd')),
+		<dynamic>
+			<isNull property="yijfl">null,</isNull>
+			<isNotNull property="yijfl">#yijfl#,</isNotNull>
+		</dynamic>
+		#xiehzt#,
+		#xiaohccxh#,
+		#chanx#,
+		<dynamic>
+			<isNull property="usbaozrl">null,</isNull>
+			<isNotNull property="usbaozrl">#usbaozrl#,</isNotNull>
+		</dynamic>
+		<dynamic>
+			<isNull property="zuiwdhsj">null,</isNull>
+			<isNotNull property="zuiwdhsj">to_date(#zuiwdhsj#,'yyyy-MM-dd HH24:mi'),</isNotNull>
+		</dynamic>
+		#uabzucsl#,
+		#xiaohcsxsj# ,
+		<dynamic>
+			<isNull property="gongyslx">null,</isNull>
+			<isNotNull property="gongyslx">#gongyslx#,</isNotNull>
+       </dynamic>
+       <dynamic>
+			<isNull property="xiaohsj">null,</isNull>
+			<isNotNull property="xiaohsj">to_date(#xiaohsj#,'yyyy-MM-dd HH24:mi:ss'),</isNotNull>
+		</dynamic>
+		#zuihwhr#,
+		decode(#jiaofrq#,'null',null,to_date(substr(#jiaofrq#,1,10),'yyyy-MM-dd')),
+		<dynamic>
+		   <isNull property="leix">null,</isNull>
+			<isNotNull property="leix">#leix#,</isNotNull>
+		</dynamic>
+		#usercenter#,
+		<dynamic>
+			<isNull property="zuizdhsj">null,</isNull>
+			<isNotNull property="zuizdhsj">to_date(#zuizdhsj#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+		</dynamic>
+		#zhuangt#,
+		<dynamic>
+			<isNull property="xianbyhlx">null,</isNull>
+			<isNotNull property="xianbyhlx">#xianbyhlx#,</isNotNull>
+		</dynamic>
+		#danw#,
+		<dynamic>
+			<isNotNull property="faysj">to_date(#faysj#,'yyyy-mm-dd HH24:mi'),</isNotNull>
+			<isNull property="faysj">decode(#fayrq#,'null',null,to_date(substr(#fayrq#,1,10),'yyyy-mm-dd')),</isNull>
+		</dynamic>
+		#gonghlx#,
+		#xiaohcbhsj#,
+		#uabzlx#,
+		<dynamic>
+			<isNull property="jissl">null,</isNull>
+			<isNotNull property="jissl">#jissl#,</isNotNull>
+		</dynamic>
+		#dingdh#,
+		#gongysdm#,
+		#jihyz#,
+		<dynamic>
+			<isNull property="cangkdm">null,</isNull>
+			<isNotNull property="cangkdm">substr(#cangkdm#,0,3),</isNotNull>
+		</dynamic>
+		#active#,
+		<dynamic>
+			<isNull property="tangc">null,</isNull>
+			<isNotNull property="tangc">#tangc#,</isNotNull>
+		</dynamic>
+		#creator#,
+		to_timestamp(#create_time#, 'yyyy-mm-dd HH24:mi:ss:FF3'),
+		#editor#,
+		to_timestamp(#edit_time#, 'yyyy-mm-dd HH24:mi:ss:FF3'),
+		#lingjmc#,
+		#gongsmc#,
+		#xiaohd#,
+		#gcbh#,
+		<dynamic>
+			<isNull property="beihsj2">null</isNull>
+			<isNotNull property="beihsj2">#beihsj2#</isNotNull>
+		</dynamic>
+		)
+	
+	</insert>
+	
+</sqlMap>

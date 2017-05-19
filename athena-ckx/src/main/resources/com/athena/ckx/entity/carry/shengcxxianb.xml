@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="carry">
+	<select id="queryCkxShengcxXianb" resultClass="com.athena.ckx.entity.carry.CkxShengcxXianb">
+		select usercenter,lingjbh,fenpqh,shengcxbh,qid,zick,qidlx,mos,jianglms,jianglmssxsj,shengxbs,creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_shengcx_xianb where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">fenpqh = #fenpqh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="qid">qid = #qid#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getCkxShengcxXianb" resultClass="com.athena.ckx.entity.carry.CkxShengcxXianb">
+		select usercenter,lingjbh,fenpqh,shengcxbh,qid,zick,qidlx,mos,jianglms,jianglmssxsj,shengxbs,creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_shengcx_xianb where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">fenpqh = #fenpqh#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+	<select id="getCountCkxShengcxXianb" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_shengcx_xianb where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">fenpqh = #fenpqh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="qid">qid = #qid#</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+
+
+	<!-- 插入记录 -->
+	<insert id="insertCkxShengcxXianb" parameterClass="com.athena.ckx.entity.carry.CkxShengcxXianb">insert into
+		${dbSchemal3}ckx_shengcx_xianb (usercenter,lingjbh,fenpqh,shengcxbh,qid,zick,qidlx,mos,jianglms,jianglmssxsj,shengxbs,creator,create_Time,editor,edit_Time)
+		values(
+			#usercenter#,
+			#lingjbh#,
+			#fenpqh#,
+			#shengcxbh#,
+			#qid#,
+			#zick#,
+			#qidlx#,
+			#mos#,
+			#jianglms#,
+			#jianglmssxsj#,1
+			,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<update id="updateCkxShengcxXianb" parameterClass="com.athena.ckx.entity.carry.CkxShengcxXianb">
+		update ${dbSchemal3}ckx_shengcx_xianb set 
+		qid=#qid#,
+		zick=#zick#,
+		qidlx=#qidlx#,
+		mos=#mos#,
+		jianglms=#jianglms#,
+		jianglmssxsj=#jianglmssxsj#,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">fenpqh = #fenpqh#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deleteCkxShengcxXianb" parameterClass="com.athena.ckx.entity.carry.CkxShengcxXianb">
+		delete from ${dbSchemal3}ckx_shengcx_xianb where 
+		 usercenter = #usercenter#
+		and	lingjbh = #lingjbh#
+		and	fenpqh = #fenpqh#
+	
+	</delete>
+</sqlMap>

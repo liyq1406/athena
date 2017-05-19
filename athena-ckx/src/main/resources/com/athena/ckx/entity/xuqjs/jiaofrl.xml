@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+	
+	<!--交付日历   denggq  2012-4-6 -->
+	<select id="queryCkxJiaofrl" parameterClass="com.athena.ckx.entity.xuqjs.CkxJiaofrl" resultClass="com.athena.ckx.entity.xuqjs.CkxJiaofrl">
+		select usercenter,jiaofm,ri,nianzq,zhoux,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_jiaofrl
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiaofm"><![CDATA[jiaofm = #jiaofm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="ri"><![CDATA[ri = #ri#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,ri
+	</select>
+	
+	<!-- 根据中心日历获得交付日历 -->
+	<insert id="insertJiaofrl" parameterClass="com.athena.ckx.entity.xuqjs.CkxJiaofrl" >
+		insert into ${dbSchemal3}ckx_jiaofrl(usercenter, ri, nianzq, zhoux, jiaofm, creator, create_time, editor, edit_time) 
+		select a.usercenter as usercenter, a.riq as ri,a.nianzq ,a.zhoux, b.jiaofm as jiaofm,#creator# as creator,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss') as create_time,#editor# as editor, to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') as edit_time
+		from ${dbSchemal3}ckx_calendar_center a 
+		inner join ${dbSchemal3}ckx_jiaofmsd b
+		on a.usercenter = b.usercenter 
+		and to_char(a.zhoux,'9') = to_char(b.zhouxh,'9')
+		and a.xingq = b.xingqxh
+		and a.shifjfr = '1'
+		and a.biaos = '1'
+		and a.riq like '$ri$%'
+		and a.usercenter = #usercenter#
+		     
+	</insert>
+	
+	<!-- 清空表数据 -->
+	<delete id="deleteJiaofrl" parameterClass="com.athena.ckx.entity.xuqjs.CkxJiaofrl">
+		delete from ${dbSchemal3}ckx_jiaofrl where
+		<dynamic prepend=" "> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="jiaofm"><![CDATA[jiaofm = #jiaofm#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="ri"><![CDATA[ri like '$ri$%']]></isNotEmpty>
+			</dynamic>
+	</delete>	
+</sqlMap>

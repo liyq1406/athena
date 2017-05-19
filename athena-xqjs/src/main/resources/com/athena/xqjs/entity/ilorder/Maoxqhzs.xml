@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ilorder">
+
+	<resultMap class="com.athena.xqjs.entity.ilorder.Maoxqhzs"
+		id="Maoxqhzs">
+		<result column="DANW" property="danw" />
+		<result column="LINGJBH" property="lingjbh" />
+		<result column="S8" property="s8" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="S3" property="s3" />
+		<result column="SHIYCJ" property="shiycj" />
+		<result column="S9" property="s9" />
+		<result column="S6" property="s6" />
+		<result column="S7" property="s7" />
+		<result column="S2" property="s2" />
+		<result column="S1" property="s1" />
+		<result column="S4" property="s4" />
+		<result column="CHANX" property="chanx" />
+		<result column="S0ZXH" property="s0zxh" />
+		<result column="S10" property="s10" />
+		<result column="S5" property="s5" />
+		<result column="XUQCFRQ" property="xuqcfrq" />
+		<result column="ZHIZLX" property="zhizlx" />
+		<result column="S0" property="s0" />
+		<result column="WAIBMS" property="waibms" />
+	</resultMap>
+
+	<select id="queryMaoxqhzs" resultClass="com.athena.xqjs.entity.ilorder.Maoxqhzs" >
+		select
+		DANW,
+		LINGJBH,
+		S8,
+		ID,
+		USERCENTER,
+		S3,
+		SHIYCJ,
+		S9,
+		S6,
+		S7,
+		S2,
+		S1,
+		S4,
+		CHANX,
+		S0ZXH,
+		S10,
+		S5,
+		XUQCFRQ,
+		ZHIZLX,
+		S0,
+		wulgyyz
+		from
+		${dbSchemal1}XQJS_maoxqhzs
+		where
+		1=1
+	</select>
+
+<!-- xss_12970 -->
+	<select id="queryAllMaoxqhzs" resultClass="com.athena.xqjs.entity.ilorder.Maoxqhzs"
+		parameterClass="java.util.Map">
+	  select hz.usercenter as usercenter,
+       hz.lingjbh as lingjbh,
+       hz.chanx as chanx,
+       hz.zhizlx as zhizlx,
+       hz.shiycj as shiycj,
+       hz.danw as danw,
+       sum(decode(#s0#, hz.xuqz, hz.xuqsl, 0)) as s0,
+       sum(decode(#s1#, hz.xuqz, hz.xuqsl, 0)) as s1,
+       sum(decode(#s2#, hz.xuqz, hz.xuqsl, 0)) as s2,
+       sum(decode(#s3#, hz.xuqz, hz.xuqsl, 0)) as s3,
+       sum(decode(#s4#, hz.xuqz, hz.xuqsl, 0)) as s4,
+       sum(decode(#s5#, hz.xuqz, hz.xuqsl, 0)) as s5,
+       sum(decode(#s6#, hz.xuqz, hz.xuqsl, 0)) as s6,
+       sum(decode(#s7#, hz.xuqz, hz.xuqsl, 0)) as s7,
+       sum(decode(#s8#, hz.xuqz, hz.xuqsl, 0)) as s8,
+       sum(decode(#s9#, hz.xuqz, hz.xuqsl, 0)) as s9,
+       sum(decode(#s10#, hz.xuqz, hz.xuqsl, 0)) as s10,
+       hz.xuqcfrq as xuqcfrq,
+       #nianzx# as s0zxh,
+       hz.waibms 
+  from (select distinct ad.usercenter,
+                        ad.lingjbh,
+                        ad.chanx,
+                        ad.zhizlx,
+                        ad.shiycj,
+                        ad.danw,
+                        ad.xuqz,
+                        ad.xuqsl,
+                        ad.xuqcfrq,
+                        cw.waibms
+          from (select q.usercenter as usercenter,
+                       q.lingjbh as lingjbh,
+                       q.chanx as chanx,
+                       q.zhizlx as zhizlx,
+                       x.dinghcj as shiycj,
+                       q.danw as danw,
+                       q.xuqz,
+                       sum(q.xuqsl) as xuqsl,
+                       t.xuqcfsj as xuqcfrq
+                  from ${dbSchemal1}XQJS_maoxq t, ${dbSchemal1}XQJS_maoxqmx q, ${dbSchemal3}ckx_lingj x
+                 where t.xuqbc = q.xuqbc
+                    and q.usercenter = #usercenter#
+                   and q.xuqbc = #xuqbc#
+                   and q.usercenter = x.usercenter
+                   and q.lingjbh = x.lingjbh
+                   and q.zhizlx = #zhizlx#
+                 group by q.usercenter,
+                          q.lingjbh,
+                          q.chanx,
+                          q.zhizlx,
+                          x.dinghcj,
+                          q.danw,
+                          q.xuqz,
+                          t.xuqcfsj) ad,
+                   (
+              select 
+              usercenter,
+              lingjbh ,
+              shengcxbh,
+              zhizlx,
+               waibms
+               from 
+               ${dbSchemal3}ckx_wullj
+               where waibms = 'PS'
+              
+              )  cw
+         where ad.usercenter = cw.usercenter(+)
+           and ad.chanx = cw.shengcxbh(+)
+           and ad.lingjbh = cw.lingjbh(+)
+            and cw.zhizlx = #zhizlx#
+           ) hz
+ group by hz.usercenter,
+          hz.lingjbh,
+          hz.chanx,
+          hz.zhizlx,
+          hz.shiycj,
+          hz.danw,
+          hz.xuqcfrq,
+      hz.waibms
+      
+   
+    union  all
+               (
+               select hz.usercenter as usercenter,
+       hz.lingjbh as lingjbh,
+       hz.chanx as chanx,
+       hz.zhizlx as zhizlx,
+       hz.shiycj as shiycj,
+       hz.danw as danw,
+       sum(decode(#s0#, hz.xuqz, hz.xuqsl, 0)) as s0,
+       sum(decode(#s1#, hz.xuqz, hz.xuqsl, 0)) as s1,
+       sum(decode(#s2#, hz.xuqz, hz.xuqsl, 0)) as s2,
+       sum(decode(#s3#, hz.xuqz, hz.xuqsl, 0)) as s3,
+       sum(decode(#s4#, hz.xuqz, hz.xuqsl, 0)) as s4,
+       sum(decode(#s5#, hz.xuqz, hz.xuqsl, 0)) as s5,
+       sum(decode(#s6#, hz.xuqz, hz.xuqsl, 0)) as s6,
+       sum(decode(#s7#, hz.xuqz, hz.xuqsl, 0)) as s7,
+       sum(decode(#s8#, hz.xuqz, hz.xuqsl, 0)) as s8,
+       sum(decode(#s9#, hz.xuqz, hz.xuqsl, 0)) as s9,
+       sum(decode(#s10#, hz.xuqz, hz.xuqsl, 0)) as s10,
+       hz.xuqcfrq as xuqcfrq,
+       #nianzx# as s0zxh,
+       hz.waibms 
+  from (select distinct ad.usercenter,
+                        ad.lingjbh,
+                        ad.chanx,
+                        ad.zhizlx,
+                        ad.shiycj,
+                        ad.danw,
+                        ad.xuqz,
+                        ad.xuqsl,
+                        ad.xuqcfrq,
+                        cw.waibms
+          from (select q.usercenter as usercenter,
+                       q.lingjbh as lingjbh,
+                       '' as chanx,
+                       q.zhizlx as zhizlx,
+                       '' as shiycj,
+                       q.danw as danw,
+                       q.xuqz,
+                       sum(q.xuqsl) as xuqsl,
+                       t.xuqcfsj as xuqcfrq
+                  from ${dbSchemal1}XQJS_maoxq t, ${dbSchemal1}XQJS_maoxqmx q
+                 where t.xuqbc = q.xuqbc
+                    and q.usercenter = #usercenter#
+                   and q.xuqbc = #xuqbc#
+                   and q.zhizlx = #zhizlx#
+                 group by q.usercenter,
+                          q.lingjbh,
+                      
+                          q.zhizlx,
+                       
+                          q.danw,
+                          q.xuqz,
+                          t.xuqcfsj) ad,
+                   (
+              select 
+              distinct
+              usercenter,
+              lingjbh ,
+              '' as shengcxbh,
+              zhizlx,
+              'NS' as waibms
+              from 
+              ${dbSchemal3}ckx_wullj
+               where waibms != 'PS'
+              
+              )  cw
+         where ad.usercenter = cw.usercenter(+)
+          
+           and ad.lingjbh = cw.lingjbh(+)
+            and cw.zhizlx = #zhizlx#
+           ) hz
+ group by hz.usercenter,
+          hz.lingjbh,
+          hz.chanx,
+          hz.zhizlx,
+          hz.shiycj,
+          hz.danw,
+          hz.xuqcfrq,
+      hz.waibms
+              )
+	</select>
+
+	<insert id="insertMaoxqhzs" parameterClass="com.athena.xqjs.entity.ilorder.Maoxqhzs">
+		insert into
+		${dbSchemal1}XQJS_maoxqhzs
+		(
+		DANW,
+		LINGJBH,
+		S8,
+		ID,
+		USERCENTER,
+		S3,
+		SHIYCJ,
+		S9,
+		S6,
+		S7,
+		S2,
+		S1,
+		S4,
+		CHANX,
+		S0ZXH,
+		S10,
+		S5,
+		XUQCFRQ,
+		ZHIZLX,
+		S0,
+		wulgyyz,
+		waibms
+		)
+		values(
+		#danw#,
+		#lingjbh#,
+		#s8#,
+		${dbSchemal1}MAOXQHZPFPXH_SEQ.nextval,
+		#usercenter#,
+		#s3#,
+		#shiycj#,
+		#s9#,
+		#s6#,
+		#s7#,
+		#s2#,
+		#s1#,
+		#s4#,
+		#chanx#,
+		#s0zxh#,
+		#s10#,
+		#s5#,
+		to_date(substr(#xuqcfrq#,0,10),'yyyy-mm-dd'),
+		#zhizlx#,
+		#s0#,
+		#wulgyyz#,
+		#waibms#
+		)
+	</insert>
+
+	<update id="updateMaoxqhzs" parameterClass="com.athena.xqjs.entity.ilorder.Maoxqhzs">
+		update ${dbSchemal1}XQJS_maoxqhzs
+		set
+		DANW=#danw#,
+		LINGJBH=#lingjbh#,
+		S8=#s8#,
+		ID=#id#,
+		USERCENTER=#usercenter#,
+		S3=#s3#,
+		SHIYCJ=#shiycj#,
+		S9=#s9#,
+		S6=#s6#,
+		S7=#s7#,
+		S2=#s2#,
+		S1=#s1#,
+		S4=#s4#,
+		CHANX=#chanx#,
+		S0ZXH=#s0zxh#,
+		S10=#s10#,
+		S5=#s5#,
+		XUQCFRQ=#xuqcfrq#,
+		ZHIZLX=#zhizlx#,
+		S0=#s0#
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<delete id="deleteMaoxqhzs" parameterClass="com.athena.xqjs.entity.ilorder.Maoxqhzs">
+		delete
+		from
+		${dbSchemal1}XQJS_maoxqhzs
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<delete id="deleteMaoxqhzsById" parameterClass="java.util.Map">
+		delete
+		from
+		${dbSchemal1}XQJS_maoxqhzs
+		where
+		ID = #id#
+	</delete>
+	
+
+	<delete id="deleteAllMaoxqhzs" >
+		truncate table
+		${dbSchemal1}XQJS_maoxqhzs
+	</delete>
+	
+		
+	
+	
+	<select id="checkXiaohblPS" resultClass="com.athena.xqjs.entity.common.Xiaohblzjb" >
+		select t.usercenter, t.lingjbh, t.chanx as Shengcxbh, x.xiaohbl
+  from ${dbSchemal1}XQJS_MAOXQHZS t, ${dbSchemal1}XQJS_XIAOHBLZJB x
+ where t.lingjbh = x.lingjbh
+   and t.usercenter = x.usercenter
+   and t.chanx = x.shengcxbh
+	</select>
+	<delete id="deleteOneOfMaoxqhzs" parameterClass="java.util.Map">
+		delete
+		from
+		${dbSchemal1}XQJS_maoxqhzs
+		where
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">LINGJBH = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="chanx">CHANX = #chanx#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

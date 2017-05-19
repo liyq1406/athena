@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- xryuan -->
+	
+	<delete id="delliulbb"  parameterClass="java.lang.String">
+		<![CDATA[delete from ${dbSchemal3}REP_LIULBB 
+		where huizsj <= to_date(#cleansj#,'yyyy-MM')]]>
+	</delete>
+	
+	<select id="insertRepLiubb" parameterClass="java.util.Map">
+      insert into ${dbSchemal3}REP_LIULBB (LINGJBH,GONGYSDM,CHENGYSDM,USERCENTER,XIEHZTBZ,CANGKBH,KEH,JINCLX,BAOZS,LINGJSL,SHANGXMS,JILSJ,HUIZSJ)
+      select x.lingjbh,x.gongysdm,x.chengysdm,x.usercenter,x.xiehztbz,x.cangkbh,x.kehbh as keh,
+		     case
+		         when x.jinclx = 'A01' then
+		          '入库'
+		         when x.jinclx = 'A35' then
+		          '正常出库'
+		         when x.jinclx = 'A36' then
+		          '调拨出库' end as jinclx,count(x.uah) as baozs,sum(x.lingjsl) as lingjsl,x.yaohllx as shangxms,x.jilsj,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss')
+            from (select t.lingjbh,t.gongysdm,substr(t.xiehzt, 0, 3) as xiehztbz,t.czm as jinclx,t.lingjsl,t.uah,t.chengysdm,t.usercenter,t.cangkbh,t.kehbh,t.yaohllx,to_char(t.caiwrq,'yyyy-MM') as jilsj from ${dbSchemal3}IN_CKLIUSZ t 
+                   where  1=1 
+                  <dynamic> 
+					<isNotEmpty prepend=" and " property="huizsj">to_char(CAIWRQ,'yyyy-MM')=#huizsj#</isNotEmpty>
+		   		  </dynamic> ) x
+            group by x.lingjbh,x.gongysdm,x.yaohllx,x.usercenter,x.chengysdm,x.jinclx,x.xiehztbz,x.cangkbh,x.kehbh,x.jilsj
+   </select>
+</sqlMap>

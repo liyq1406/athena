@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- 工艺消耗点  denggq 2012-4-17 -->
+	
+	<select id="queryCkxGongyxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxGongyxhd" resultClass="com.athena.ckx.entity.xuqjs.CkxGongyxhd">
+		select gongyxhd,chessl,pianysj,liush,gongybs,biaos, shengcxbh,biaos as ycbiaos ,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_gongyxhd
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="gongyxhd"><![CDATA[gongyxhd like '$gongyxhd$%']]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="liush"><![CDATA[liush like '$liush$%']]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh=#shengcxbh#]]></isNotEmpty>
+	    		<isNotEmpty prepend=" and " property="gongybs"><![CDATA[gongybs = #gongybs#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+			order by gongyxhd
+	</select>
+	
+	<select id="queryCkxGxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxGongyxhd" resultClass="com.athena.ckx.entity.xuqjs.CkxGongyxhd">
+		select gongyxhd,chessl,pianysj,liush,decode(gongybs,'1','有效','0','无效') as  gongybs,decode( biaos,'1','有效','0','无效','2','新建') as   biaos, shengcxbh,biaos as ycbiaos ,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_gongyxhd
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="gongyxhd"><![CDATA[gongyxhd like '$gongyxhd$%']]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="liush"><![CDATA[liush like '$liush$%']]></isNotEmpty>
+	    		<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh=#shengcxbh#]]></isNotEmpty>
+	    		<isNotEmpty prepend=" and " property="gongybs"><![CDATA[gongybs = #gongybs#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+			order by gongyxhd
+	</select>
+	
+	<select id="getCkxGongyxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxGongyxhd" resultClass="com.athena.ckx.entity.xuqjs.CkxGongyxhd">
+		select gongyxhd,chessl,pianysj,liush,gongybs,biaos
+		from ${dbSchemal3}ckx_gongyxhd
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="gongyxhd"><![CDATA[gongyxhd like '$gongyxhd$%']]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="liush"><![CDATA[liush like '$liush$%']]></isNotEmpty>
+	    		<isNotEmpty prepend=" and " property="gongybs"><![CDATA[gongybs = #gongybs#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	<select id="getCountCkxGongyxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxGongyxhd" resultClass="java.lang.String">
+		select count(gongyxhd)
+		from ${dbSchemal3}ckx_gongyxhd
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="gongyxhd"><![CDATA[gongyxhd like '$gongyxhd$%']]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="liush"><![CDATA[liush like '$liush$%']]></isNotEmpty>
+	    		<isNotEmpty prepend=" and " property="gongybs"><![CDATA[gongybs = #gongybs#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	<select id="getCountGongyxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxGongyxhd" resultClass="java.lang.String">
+		select count(gongyxhd)
+		from ${dbSchemal3}ckx_gongyxhd
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="gongyxhd"><![CDATA[gongyxhd = #gongyxhd#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	<insert id="insertCkxGongyxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxGongyxhd">
+		insert into ${dbSchemal3}ckx_gongyxhd(gongyxhd,chessl,pianysj,liush,gongybs,biaos,zuh,shengcxbh,creator,create_time,editor,edit_time)
+		values(<![CDATA[#gongyxhd# , #chessl# , #pianysj# , #liush# ,#gongybs#, #biaos# ,#zuh#,#shengcxbh#, #creator# ,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')  ]]> )
+	</insert>
+	<insert id="insertCkxGongyxhds" parameterClass="com.athena.ckx.entity.xuqjs.CkxGongyxhd">
+		insert into ${dbSchemal3}ckx_gongyxhd(gongyxhd,chessl,pianysj,liush,gongybs,biaos,zuh,shengcxbh,creator,create_time,editor,edit_time)
+		values(<![CDATA[#gongyxhd# , #chessl# , #pianysj# , #liush# ,'0', #biaos# ,#zuh#,#shengcxbh#, #creator# ,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')  ]]> )
+	</insert>
+	
+	<update id="updateCkxGongyxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxGongyxhd">
+		update ${dbSchemal3}ckx_gongyxhd
+		set chessl = #chessl#,
+	        pianysj = ceil(#pianysj#),
+	        shengcxbh = #shengcxbh#,
+	    	liush = #liush#,
+	    	biaos = #biaos#,
+	    	editor = #editor#,
+	    	edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  <![CDATA[gongyxhd = #gongyxhd#]]> 
+	</update>
+	
+	<delete id="deleteCkxGongyxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxGongyxhd">
+		update ${dbSchemal3}ckx_gongyxhd
+		set <![CDATA[biaos = '0', editor=#editor#, edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		where <![CDATA[gongyxhd = #gongyxhd# ]]>
+	</delete>
+</sqlMap>

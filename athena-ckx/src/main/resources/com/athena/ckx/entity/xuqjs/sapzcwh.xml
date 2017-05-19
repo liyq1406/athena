@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sapzcwh">
+	
+	<!-- 查询 -->
+	<select id="querySapzcwh" resultClass="com.athena.ckx.entity.xuqjs.Sapzcwh">
+		select usercenter,chanx,qsliush,jzliush,lingjbh,gongysdm,flag,creator,create_time,editor,edit_time from ${dbSchemal5}SG_ZHENGCGYS where 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotNull>
+			<isNotNull property="chanx" prepend=" and ">chanx = #chanx#</isNotNull>
+			<isNotNull property="qsliush" prepend=" and ">qsliush = #qsliush#</isNotNull>
+			<isNotNull property="jzliush" prepend=" and ">jzliush = #jzliush#</isNotNull>
+			<isNotNull property="lingjbh" prepend=" and ">lingjbh = #lingjbh#</isNotNull>
+			<isNotEmpty prepend=" and " property="create_time_form">  <![CDATA[create_time between to_date(#create_time_form#,'yyyy-MM-dd hh24:mi:ss') and to_date(#create_time_to#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 保存-->
+	<insert id="saveSapzcwh">
+		insert into ${dbSchemal5}SG_ZHENGCGYS(usercenter,chanx,qsliush,jzliush,lingjbh,gongysdm,flag,creator,create_time,editor,edit_time)values(#usercenter#,#chanx#,#qsliush#,#jzliush#,#lingjbh#,#gongysdm#,'0',#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+		<!-- 删除-->
+	<delete id="deleteSapzcwh" parameterClass="com.athena.ckx.entity.xuqjs.Sapzcwh">	 
+		delete from ${dbSchemal5}SG_ZHENGCGYS where 1 = 1 
+		<dynamic>
+				<isNotEmpty property="usercenter" prepend=" and ">
+					<![CDATA[usercenter = #usercenter#]]>
+				</isNotEmpty>
+				<isNotEmpty property="chanx" prepend=" and ">
+					<![CDATA[chanx = #chanx#]]>
+				</isNotEmpty>
+				<isNotEmpty property="lingjbh" prepend=" and ">
+					<![CDATA[lingjbh = #lingjbh#]]>
+				</isNotEmpty>
+				<isNotEmpty property="jzliush" prepend=" and ">
+					<![CDATA[jzliush = #jzliush#]]>
+				</isNotEmpty>
+				<isNotEmpty property="gongysdm" prepend=" and ">
+					<![CDATA[gongysdm = #gongysdm#]]>
+				</isNotEmpty>		
+			</dynamic>	
+	</delete>
+</sqlMap>

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="carry">
+	<select id="queryCkxCangkxhsj" resultClass="com.athena.ckx.entity.carry.CkxCangkxhsj">select 
+		usercenter,
+		cangkbh,
+		fenpqhck,
+		mos,
+		cangkshpcf,
+		cangkshsj,
+		cangkfhsj,
+		beihsj,
+		ibeihsj,
+		pbeihsj,
+		shifzdbh,
+		shengxbs,
+		creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_cangkxhsj t where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqhck">fenpqhck = #fenpqhck#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">mos = #mos#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengxbs">shengxbs = #shengxbs#</isNotEmpty>
+		</dynamic>
+		 order by usercenter ,cangkbh,		fenpqhck,mos
+	</select>
+	
+	<!-- 模式为RM时 仓库权限 ，模式为RD时分配循环权限  denggq 20120828 -->
+	<select id="queryCkxCangkxhsjByWlgyy" resultClass="com.athena.ckx.entity.carry.CkxCangkxhsj">select 
+		usercenter,
+		cangkbh,
+		fenpqhck,
+		mos,
+		cangkshpcf,
+		cangkshsj,
+		cangkfhsj,
+		beihsj,
+		ibeihsj,
+		pbeihsj,
+		shifzdbh,
+		shengxbs,
+		creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_cangkxhsj t where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqhck">fenpqhck = #fenpqhck#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">mos = #mos#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengxbs">shengxbs = #shengxbs#</isNotEmpty>
+			<isEqual prepend=" and " property="creator" compareValue="ck">
+				exists (
+				select '0' from ${dbSchemal3}ckx_cangk c 
+					where c.usercenter = t.usercenter
+						and c.cangkbh = substr(t.fenpqhck,1,3) 
+						and c.wulgyyz = #wulgyyz#
+				)
+			</isEqual>
+			<isEqual prepend=" and " property="creator" compareValue="fpq">
+				exists (
+				select '0' from ${dbSchemal3}ckx_fenpq f 
+					where f.usercenter = t.usercenter
+						and f.fenpqh = t.fenpqhck
+						and f.wulgyyz = #wulgyyz#
+				)
+				</isEqual>
+		</dynamic>
+		 order by usercenter ,cangkbh,		fenpqhck,mos
+	</select>
+	
+	<select id="getCkxCangkxhsj" resultClass="com.athena.ckx.entity.carry.CkxCangkxhsj">select 
+		usercenter,
+		cangkbh,
+		fenpqhck,
+		mos,
+		cangkshpcf,
+		cangkshsj,
+		cangkfhsj,
+		beihsj,
+		ibeihsj,
+		pbeihsj,
+		shifzdbh,
+		shengxbs,
+		creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_cangkxhsj where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqhck">fenpqhck = #fenpqhck#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">mos = #mos#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getCountCangkxhsj" parameterClass="com.athena.ckx.entity.carry.CkxCangkxhsj" resultClass="java.lang.String">
+		select count(usercenter)
+		from ${dbSchemal3}ckx_cangkxhsj
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[cangkbh = #cangkbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenpqhck"><![CDATA[fenpqhck = #fenpqhck#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="mos"><![CDATA[mos = #mos#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!-- 插入记录 -->
+	<insert id="insertCkxCangkxhsj" parameterClass="com.athena.ckx.entity.carry.CkxCangkxhsj">insert into
+		${dbSchemal3}ckx_cangkxhsj (usercenter,cangkbh,fenpqhck,mos,cangkshpcf,cangkshsj,cangkfhsj,beihsj,ibeihsj,pbeihsj,shifzdbh,shengxbs,creator,create_Time,editor,edit_Time)
+		values(
+			#usercenter#,
+			#cangkbh#,
+			#fenpqhck#,
+			#mos#,
+			#cangkshpcf#,
+			#cangkshsj#,
+			#cangkfhsj#,
+			#beihsj#,
+			#ibeihsj#,
+			#pbeihsj#,
+			#shifzdbh#,1
+			,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	<!-- 修改记录 -->
+	<update id="updateCkxCangkxhsj" parameterClass="com.athena.ckx.entity.carry.CkxCangkxhsj">
+		update ${dbSchemal3}ckx_cangkxhsj set 
+		usercenter=#usercenter#,
+		cangkbh=#cangkbh#,
+		fenpqhck=#fenpqhck#,
+		mos=#mos#,
+		cangkshpcf=#cangkshpcf#,
+		cangkshsj=#cangkshsj#,
+		cangkfhsj=#cangkfhsj#,
+		beihsj=#beihsj#,
+		ibeihsj=#ibeihsj#,
+		pbeihsj=#pbeihsj#,
+		shifzdbh=#shifzdbh#,
+		shengxbs=#shengxbs#,
+		
+		
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		 where
+		1=1
+		
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqhck">fenpqhck = #fenpqhck#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">mos = #mos#</isNotEmpty>
+		</dynamic>
+		
+	</update>
+	
+	
+	<!-- 修改记录 -->
+	<update id="updateCkxCangkxhsjbyexport" parameterClass="com.athena.ckx.entity.carry.CkxCangkxhsj">
+		update ${dbSchemal3}ckx_cangkxhsj set 
+		usercenter=#usercenter#,
+		cangkbh=#cangkbh#,
+		fenpqhck=#fenpqhck#,
+		mos=#mos#,
+		cangkshpcf=#cangkshpcf#,
+		cangkshsj=#cangkshsj#,
+		cangkfhsj=#cangkfhsj#,
+		beihsj=#beihsj#,
+		ibeihsj=#ibeihsj#,
+		pbeihsj=#pbeihsj#,
+		shifzdbh=#shifzdbh#,
+		shengxbs='1',
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		 where
+		1=1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqhck">fenpqhck = #fenpqhck#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">mos = #mos#</isNotEmpty>
+		</dynamic>
+		
+	</update>
+	
+	<!-- 逻辑删除 -->
+	<update id="deleteLogicCkxCangkxhsj" parameterClass="com.athena.ckx.entity.carry.CkxCangkxhsj">
+		update ${dbSchemal3}ckx_cangkxhsj set 
+		shengxbs=0,
+		
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		 where
+		1=1
+		
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqhck">fenpqhck = #fenpqhck#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">mos = #mos#</isNotEmpty>
+		</dynamic>
+		
+	</update>
+	<!-- 删除记录 -->
+	<delete id="deleteCkxCangkxhsj" parameterClass="com.athena.ckx.entity.carry.CkxCangkxhsj">
+		delete from ${dbSchemal3}ckx_cangkxhsj where usercenter = #usercenter#
+			and cangkbh = #cangkbh#
+			and fenpqhck = #fenpqhck#
+			and mos = #mos#
+		
+	</delete>
+	<!-- 查询仓库/循环   返回仓库和循环 编号（带子仓库）-->
+ <select id="listCangkXunh" resultClass="com.athena.ckx.entity.carry.CkxCangkxhsj">
+ 	select c.cangkbh||z.zickbh fenpqhck 
+ 	from ${dbSchemal3}ckx_cangk c inner join ${dbSchemal3}ckx_zick z 
+ 	on c.usercenter=z.usercenter and c.cangkbh=z.cangkbh
+ 	where c.biaos=1 and c.usercenter=#usercenter#
+		union all
+	select fenpqh from ${dbSchemal3}ckx_fenpq where biaos=1  and usercenter=#usercenter#
+ </select>
+ 
+ 	<!-- 查询仓库 编号（带子仓库）-->
+ <select id="listCangk" resultClass="com.athena.ckx.entity.carry.CkxCangkxhsj">
+ 	select c.cangkbh||z.zickbh cangkbh 
+ 	from ${dbSchemal3}ckx_cangk c inner join ${dbSchemal3}ckx_zick z 
+ 	on c.usercenter=z.usercenter and c.cangkbh=z.cangkbh
+ 	where c.biaos=1 and c.usercenter=#usercenter#
+ </select>
+</sqlMap>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- hj -->
+	
+	<!-- 零件-计划员-供应商-->
+	<select id="querylingjjhygys" parameterClass="com.athena.ckx.entity.baob.Lingjjhygys" resultClass="com.athena.ckx.entity.baob.Lingjjhygys">
+		select ljgys.usercenter,ljgys.lingjbh,ljgys.gongysbh,gys.gongsmc,ljgys.gongyfe*100 gongyfe, wllj.fahd,wllj.mudd,wllj.chengysbh,p.post_code||' '||p.post_name as jihy ,lj.zhongwmc  
+			from ${dbSchemal3}ckx_lingjgys ljgys  
+			left join ${dbSchemal3}ckx_gongys gys on ljgys.usercenter = gys.usercenter and ljgys.gongysbh = gys.gcbh
+			left join (select distinct w.usercenter,w.lingjbh,w.gongysbh,w.fahd,w.mudd,w.gcbh as chengysbh 
+			           from ${dbSchemal3}ckx_wullj w) wllj 
+			     on wllj.usercenter = ljgys.usercenter and wllj.lingjbh=ljgys.lingjbh and wllj.gongysbh = ljgys.gongysbh and wllj.fahd = gys.fayd
+			left join ${dbSchemal3}ckx_lingj lj on lj.usercenter = ljgys.usercenter and lj.lingjbh = ljgys.lingjbh
+			left join  ${dbSchemal1}sys_post  p 
+			on  p.dic_code = 'JIHUAY' and p.post_code= lj.jihy
+			WHERE 1=1 and ljgys.biaos='1' and lj.biaos='1'
+			<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[ljgys.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[ljgys.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[ljgys.gongysbh = #gongysbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysbh"><![CDATA[wllj.chengysbh = #chengysbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy"><![CDATA[lj.jihy = #jihy#]]></isNotEmpty>
+		</dynamic>
+		order by ljgys.usercenter,ljgys.lingjbh,ljgys.gongysbh
+	</select>
+</sqlMap>

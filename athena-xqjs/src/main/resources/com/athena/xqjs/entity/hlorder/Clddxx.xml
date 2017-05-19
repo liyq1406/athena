@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="hlorder">
+  
+  <resultMap class="com.athena.xqjs.entity.hlorder.Clddxx" id="Clddxx">
+	<result column="USERCENTER" jdbcType="VARCHAR" property="usercenter" />
+    <result column="WHOF" jdbcType="VARCHAR" property="whof" />
+    <result column="LCDV24" jdbcType="VARCHAR" property="lcdv24" />
+    <result column="YPLBJ" jdbcType="VARCHAR" property="yplbj" />
+    <result column="YJJHZRQ" jdbcType="TIMESTAMP" property="yjjhzrq" />
+    <result column="YJJHZSX" jdbcType="VARCHAR" property="yjjhzsx" />
+    <result column="SCXH" jdbcType="VARCHAR" property="scxh" />
+    <result column="YJJZLSJ" jdbcType="TIMESTAMP" property="yjjzlsj" />
+    <result column="YJSYHSJ" jdbcType="TIMESTAMP" property="yjsyhsj" />
+    <result column="SXSXH" jdbcType="DECIMAL" property="sxsxh" />
+    <result column="LCDV" jdbcType="VARCHAR" property="lcdv" />
+    <result column="CJ_DATE" jdbcType="TIMESTAMP" property="cjDate" />
+    <result column="CLZT" jdbcType="CHAR" property="clzt" />
+    <result column="WENJMC" jdbcType="VARCHAR" property="wenjmc" />
+    <result column="WENJLJ" jdbcType="VARCHAR" property="wenjlj" />
+    <result column="SHANGXSJ" jdbcType="TIMESTAMP" property="shangxsj" />
+    <result column="KAIBSJ" jdbcType="TIMESTAMP" property="kaibsj" />
+    <result column="HANZSCX" jdbcType="VARCHAR" property="hanzscx" />
+    <result column="LCDVBZK" jdbcType="VARCHAR" property="lcdvbzk" />
+     
+    
+  </resultMap>
+  
+  <!-- 根据产线，计算开始时间 获取排产计划集合（按产线、上线序号 正序排列） （zzxxlist） -->
+  <select id="queryfindZzxxlist"  resultClass="com.athena.xqjs.entity.hlorder.Clddxx" parameterClass="java.util.Map">
+  		select 
+  			USERCENTER,WHOF,LCDV24,YJJZLSJ,YJSYHSJ,SXSXH,LCDVBZK,SCXH,YPLBJ,LCDV
+  		from 
+  			${dbSchemal5}IN_CLDDXX 
+  		where 
+  			USERCENTER=#usercenter# and SCXH=#scxh# and YJJZLSJ <![CDATA[ >= ]]> to_date(#kaisrq#,'yyyy-mm-dd hh24:mi:ss') and SXSXH != '99999999'
+		order by SCXH,YJJZLSJ,SXSXH
+  </select>
+  
+  
+   <!-- 根据产线，和最后推导出的上线顺序号 来获取>=线顺序号（按产线、上线序号 正序排列） （zzxxlist） -->
+  <select id="queryfindZzxxlistbylastsxxh"  resultClass="com.athena.xqjs.entity.hlorder.Clddxx" parameterClass="java.util.Map">
+  		select 
+  			USERCENTER,WHOF,LCDV24,YJJZLSJ,YJSYHSJ,SXSXH,LCDVBZK,SCXH,YPLBJ,LCDV
+  		from 
+  			${dbSchemal5}IN_CLDDXX 
+  		where 
+  			USERCENTER=#usercenter# and SCXH=#scxh# and SXSXH <![CDATA[ >= ]]> #sxsxh# and SXSXH != '99999999'
+		order by SCXH,YJJZLSJ,SXSXH
+  </select>
+	
+	<!-- 产线集合初始化 -->
+  <select id="queryusercenterAndscxh" resultClass="com.athena.xqjs.entity.hlorder.Clddxx" >
+  		select 
+  		distinct USERCENTER,SCXH from ${dbSchemal5}IN_CLDDXX
+  </select>
+  
+  <select id="queryfindZzxxlistbywhofandusercent"  resultClass="com.athena.xqjs.entity.hlorder.Clddxx" parameterClass="java.util.Map">
+  		select 
+  			USERCENTER,WHOF,LCDV24,YJJZLSJ,YJSYHSJ,SXSXH,LCDVBZK,SCXH,YPLBJ,LCDV
+  		from 
+  			${dbSchemal5}IN_CLDDXX 
+  		where 
+  			USERCENTER=#usercenter# and SCXH=#scxh# and WHOF =#whof# 
+	
+  </select>
+</sqlMap>

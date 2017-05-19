@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="hlorder">
+	
+	<select id="queryKuczhByParam" resultClass="com.athena.xqjs.entity.hlorder.VjKuczh">
+
+		select
+		usercenter, 
+			cangk, 
+			iskaolckjs, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3
+		from
+		${dbSchemal1}XQJS_KUCZH
+		where
+		usercenter = #usercenter#			
+
+	</select>	
+</sqlMap>

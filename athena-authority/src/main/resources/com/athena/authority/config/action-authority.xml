@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="authority" extend="toft-default" namespace="/authority">
+		<!-- 数据权限组 -->
+		<action name="dataGroup" 
+			class="dataGroupAction" method="execute">
+			<result name="select">/WEB-INF/pages/authority/dataGroup/dataGroup.jsp</result>
+		</action>
+		
+		<action name="queryDataGroup" class="dataGroupAction" method="query"/>
+		<action name="getDataGroup" class="dataGroupAction" method="get"/>
+		<action name="removeDataGroup" class="dataGroupAction" method="remove"/>
+		<action name="saveDataGroup" class="dataGroupAction" method="save"/>
+		<action name="getData" class="dataGroupAction" method="getData"/>
+		<action name="saveDataGroupItem" class="dataGroupItemAction" method="save"/>
+		<action name="listDataGroup" class="dataGroupAction" method="list"/>
+		<action name="getSelectedData" class="dataGroupAction" method="getSelectedData"/>
+		
+		<action name="dataTable" 
+			class="dataTableAction" method="execute">
+			<result name="select">/WEB-INF/pages/authority/dataTable/dataTable.jsp</result>
+		</action>
+		
+		<action name="queryDataTable" class="dataTableAction" method="query"/>
+		<action name="getDataTable" class="dataTableAction" method="get"/>
+		<action name="saveDataTable" class="dataTableAction" method="save"/>
+		<action name="removeDataTable" class="dataTableAction" method="remove"/>
+		<action name="getDataTableByGroupid" class="dataTableAction" method="getDataTableByGroupid"/>
+		
+		<!-- 0303数据权限类型 -->
+		<action name="dataType" 
+			class="dataTypeAction" method="execute">
+			<result name="select">/WEB-INF/pages/authority/dataType/dataType.jsp</result>
+		</action>
+		<action name="queryDataType" class="dataTypeAction" method="query"/>
+		<action name="getDataType" class="dataTypeAction" method="get"/>
+		<action name="saveDataType" class="dataTypeAction" method="save"/>
+		<action name="removeDataType" class="dataTypeAction" method="remove"/>
+		<action name="listDataType" class="dataTypeAction" method="list"/>
+		<action name="validateOnlyDataType" class="dataTypeAction" method="validateOnlyDataType"></action>
+		<action name="validatedataParam" class="dataTypeAction" method="validatedataParam"></action>
+		<!-- 0105岗位数据 -->
+		<action name="postDataItem" 
+			class="postDataItemAction" method="execute">
+			<result name="select">/WEB-INF/pages/authority/postDataItem/postDataItem.jsp</result>
+		</action>
+		
+		<action name="queryPostDataItem" class="postDataItemAction" method="query"/>
+		<action name="getPostDataItem" class="postDataItemAction" method="get"/>
+		<action name="removePostDataItem" class="postDataItemAction" method="remove"/>
+		<action name="savePostDataItem" class="postDataItemAction" method="save"/>
+		<action name="listPostDataItems" class="postDataItemAction" method="listPostDataItemByDataId"/>
+		<action name="listDataGroupItemByGroupId" class="dataGroupItemAction" method="list"/>
+		
+		
+		<!-- 0104岗位 -->
+		<action name="post" 
+			class="postAction" method="execute">
+			<result name="select">/WEB-INF/pages/authority/post/post.jsp</result>
+		</action>
+		
+		<action name="queryPost" class="postAction" method="query"/>
+		<action name="listPost" class="postAction" method="list"/>
+		<action name="getPost" class="postAction" method="get"/>
+		<action name="savePost" class="postAction" method="save"/>
+		<action name="removePost" class="postAction" method="remove"/>
+		<action name="delPost" class="postAction" method="delPost"/>
+		<action name="changePostActive" class="postAction" method="changePostActive"/>
+		<action name="getPostDataItems" class="postAction" method="getPostDataItems"/>
+		<action name="savePostDataItems" class="postAction" method="savePostDataItems"/>
+		<action name="getPostData" class="postAction" method="getAllPostDataItems"/>
+		<action name="listAllPost" class="postAction" method="listPostByGroupid"/>
+		<action name="disabledPost" class="postAction" method="disabledPostByGroupid"/>
+		<action name="listAll" class="postAction" method="listAll"/>
+		<action name="validateOnlyPost" class="postAction" method="validateOnlyPost"></action>
+		<action name="savePostDataItemsCk" class="postAction" method="savePostDataItemsCk"></action>
+		<action name="listSysDataGroup" class="postAction" method="listSysDataGroup"></action>	
+		<action name="saveAuthUsercenter" class="postAction" method="saveAuthUsercenter"></action>
+		<action name="getRoleuc" class="postAction" method="getRoleuc"></action>
+		<action name="getRoleucByPostCode" class="postAction" method="getRoleucByPostCode"></action>	
+		<!-- 岗位组 -->
+		<action name="postGroup" 
+			class="postGroupAction" method="execute">
+			<result name="select">/WEB-INF/pages/authority/postGroup/postGroup.jsp</result>
+		</action>
+		
+		<action name="postGroupExpandByparentId"  class="postGroupAction" method="postGroupExpandByparentId"></action>
+		<action name="queryPostGroup" class="postGroupAction" method="query"/>
+		<action name="listPostGroup" class="postGroupAction" method="list"/>
+		<action name="getPostGroup" class="postGroupAction" method="get"/>
+		<action name="savePostGroup" class="postGroupAction" method="save"/>
+		<action name="removePostGroup" class="postGroupAction" method="remove"/>
+		<action name="delPostGroup" class="postGroupAction" method="delPostGroup"/>
+		<action name="getRoleMenuAndButtonIds" class="postGroupAction" method="getRoleMenuAndButtonIds"/>
+		<action name="saveAuthorized" class="postGroupAction" method="saveAuthorized"/>
+		<action name="validateOnly" class="postGroupAction" method="validateOnly"></action>
+		<action name="getUsercenterByLoginName" class="postGroupAction" method="getUsercenterByLoginName"></action>
+		<action name="getChildMenuByparentid" class="postGroupAction" method="getChildMenuByparentid"></action>
+		<action name="getUsercenter" class="postGroupAction" method="getUsercenter"></action>
+		<action name="listAllPostGroup" class="postGroupAction" method="listAllPostGroup"></action>
+		<action name="queryPostGroupAuth" class="postGroupAction" method="queryPostGroupAuth"/>
+		<action name="updateMenuAuth" class="postGroupAction" method="updateMenuAuth"/>
+		
+		<!-- 0101用户 -->
+		<action name="user" 
+			class="userAction" method="execute">
+			<result name="select">/WEB-INF/pages/authority/user/user.jsp</result>
+		</action>
+		
+		<action name="queryUser" class="userAction" method="query"/>
+		
+		<action name="getUser" class="userAction" method="get"/>
+		<action name="saveUser" class="userAction" method="save"/>
+		<action name="removeUser" class="userAction" method="remove"/>
+		<action name="resetPassword" class="userAction" method="resetPassword"/>
+		<action name="changeUserActive" class="userAction" method="changeUserActive"></action>
+		<action name="validateOnlyUser" class="userAction" method="validateOnlyUser"></action>
+		<action name="updateUserPassword" class="userAction" method="updateUserPassword"></action>
+		<!-- 分配用户组 -->
+		<action name="listUserPost" class="userAction" method="listUserPosts"/>
+		<action name="saveRPostUser" class="userAction" method="saveRPostUser"/>
+		<!-- 0202菜单目录 -->
+		<action name="menuDirectory" 
+			class="menuDirectoryAction" method="execute">
+			<result name="select">/WEB-INF/pages/authority/menuDirectory/menuDirectory.jsp</result>
+		</action>
+		
+		<action name="menuBatch" 
+			class="menuDirectoryAction" method="batch">
+			<result name="select">/WEB-INF/pages/authority/menuDirectory/menuBatch.jsp</result>
+		</action>
+		
+		<action name="queryMenuDirectory" class="menuDirectoryAction" method="query"/>
+		<action name="listMenuDirectory" class="menuDirectoryAction" method="list"/>
+		<action name="getMenuDirectory" class="menuDirectoryAction" method="get"/>
+		<action name="saveMenuDirectory" class="menuDirectoryAction" method="save"/>
+		<action name="removeMenuDirectory" class="menuDirectoryAction" method="remove"/>
+		<action name="changeMenuActive" class="menuDirectoryAction" method="changeMenuActive"></action>
+		
+		<!-- 批量更新菜单 -->
+		<action name="batchUpdate" class="menuDirectoryAction" method="batchUpdate"/>
+		
+		<!-- 保存菜单及其菜单对应的按钮 -->
+		<action name="saveWithButtons" class="menuDirectoryAction" method="saveWithButtons"/>
+		
+		<!-- 0203菜单资源 -->
+		<action name="menuResource" 
+			class="menuResourceAction" method="execute">
+			<result name="select">/WEB-INF/pages/authority/menuResource/menuResource.jsp</result>
+		</action>
+		
+		<action name="queryMenuResource" class="menuResourceAction" method="query"/>
+		<action name="listMenuResource" class="menuResourceAction" method="list"/>
+		<action name="getMenuResource" class="menuResourceAction" method="get"/>
+		<action name="saveMenuResource" class="menuResourceAction" method="save"/>
+		<action name="removeMenuResource" class="menuResourceAction" method="remove"/>
+		
+		<action name="ckDataType" 
+			class="ckDataTypeAction" method="execute">
+			<result name="select">/WEB-INF/pages/authority/ckDataType/ckDataType.jsp</result>
+		</action>
+		<action name="queryCkDataType" class="ckDataTypeAction" method="query"/>
+		<action name="listCkDataType" class="ckDataTypeAction" method="list"/>
+		<action name="getCkDataType" class="ckDataTypeAction" method="get"/>
+		<action name="saveCkDataType" class="ckDataTypeAction" method="save"/>
+		<action name="removeCkDataType" class="ckDataTypeAction" method="remove"/>
+		<action name="getCkDataInfo" class="ckDataTypeAction" method="getCkDataInfo"/>
+		
+		<action name="dic" class="dicAction" method="execute">
+			<result name="select">/WEB-INF/pages/authority/dic/dic.jsp</result>
+		</action>
+		<action name="queryDic" class="dicAction" method="query" />
+		<action name="getDic" class="dicAction" method="get" />
+		<action name="saveDic" class="dicAction" method="save"/>
+		<action name="removeDic" class="dicAction" method="remove"/>
+		<action name="validateOnlyDic" class="dicAction" method="validateOnlyDic"></action>
+		<action name="listDic" class="dicAction" method="list"></action>
+		<action name="getDicByDicCode" class="dicAction" method="getDicByDicCode"></action>
+		
+		<!-- 系统日记 -->
+		<action name="busLog" 
+			class="logAction" method="execute">
+			<result name="select">/WEB-INF/pages/authority/busLog/busLog.jsp</result>
+		</action>
+		<action name="queryBusLog" class="logAction" method="query"/>
+		<action name="listBusLog" class="logAction" method="list"/>
+		<action name="getBusLog" class="logAction" method="get"/>
+		<action name="removeBusLog" class="logAction" method="remove"/>
+		<!-- 登录和退出登录 -->
+		<action name="logout" 
+			class="loginAction" method="logout">
+			<result name="logout">/logout.jsp</result>
+		</action>
+		
+		<!-- 模块切换 -->
+		<action name="sys_login_module" 
+			class="loginAction" method="moduleChange">
+			<result name="select">/WEB-INF/pages/common/module_sys.jsp</result>
+			<result name="pc">/WEB-INF/pages/pc/module_pc.jsp</result>
+			<result name="fj">/WEB-INF/pages/fj/module_fj.jsp</result>
+		</action>
+	</package>
+</toft>

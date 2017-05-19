@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+	<!-- rencong 2016.4.5 -->	
+	<!-- 实时延误要货令   0008931 11472-->
+	<!-- V4_025 -->
+	<!-- 12898 12905--> <!-- huxy_13506 -->
+	<select id="queryShisywyhl" parameterClass="com.athena.ckx.entity.baob.Shisywyhl" resultClass="com.athena.ckx.entity.baob.Shisywyhl">
+		select a.usercenter as usercenter,a.lingjbh as lingjbh,a.lingjmc as lingjmc,a.keh as keh,a.mudd as mudd,a.yaohllx as yaohllx
+		,decode(a.muddlx,'1',a.chanx,d.xianh) as chanx
+		,decode(a.yaohlzt, '01', '表达','02' , '在途','03', '等待交付' ) as yaohlzt,a.yaohlh as yaohlh,
+			        substr(to_char(a.zuiwsj, 'yyyy-mm-dd'), 1, 10) zuiwdhrq,
+			        substr(to_char(a.zuiwsj, 'yyyy-mm-dd hh24:mi:ss'), 12, 8) shik,
+			        a.gongysdm as gongysdm,a.gongysmc as gongysmc,a.chengysdm as chengysdm,
+					decode(a.chengysdm,a.gongysdm,'自理',a.chengysmc) as chengysmc,
+			        c.jihy as jihy,a.yaohsl as yaohsl,
+			        decode(a.yancyy,'1','0验收','2','拒收表达','3','纠纷为0') as yancyy,
+			        decode(a.shiflsk,'0','N','1','Y') as shiflsk,
+			        decode(nvl(a.beiz3,'0'),'0','N','1','Y') as beiz3
+		from ${dbSchemal3}ck_yaohl a
+	
+       , ${dbSchemal3}ckx_lingj c,${dbSchemal3}ckx_cangk d
+      where a.yaohllx = a.yaohllx
+     <![CDATA[ and a.zuiwsj < to_date(#currentDate#,'yyyy-mm-dd hh24:mi:ss') ]]> 
+      and a.cangkbh = d.cangkbh 
+      and a.usercenter=d.usercenter
+      and a.lingjbh = c.lingjbh
+      and a.usercenter = c.usercenter
+      and a.yaohlzt in  ('01','02','03')
+			<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"> <![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"> <![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[a.gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zuiwsj_from">  <![CDATA[a.zuiwsj between to_date(#zuiwsj_from#,'yyyy-MM-dd hh24:mi:ss') and to_date(#zuiwsj_to#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy">    <![CDATA[c.jihy = #jihy#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm">     <![CDATA[a.chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="keh">     <![CDATA[a.keh = #keh#]]></isNotEmpty>
+			<!-- <isNotEmpty prepend=" and " property="yaohlzt"> <![CDATA[a.yaohlzt = #yaohlzt#]]>   </isNotEmpty> -->
+			<isNotEmpty prepend=" and " property="chanx"> <![CDATA[decode(a.muddlx,1,a.chanx,d.xianh) = #chanx#]]>   </isNotEmpty>
+			<!-- huxy_12905 -->
+			<isNotEmpty  prepend=" and " property="shiflsk">     <![CDATA[a.shiflsk = #shiflsk#]]></isNotEmpty>
+			<isNotEmpty  prepend=" and " property="beiz3"  > <![CDATA[nvl(a.beiz3,'0') = #beiz3#]]></isNotEmpty>
+		</dynamic>
+		$yaohllx$
+		$yaohlzt$
+		order by a.zuiwsj,a.yaohlh
+	</select>
+	
+	<!-- 查询要货令类型 -->
+	<select id="queryYhllx" parameterClass="java.util.Map" resultClass="com.athena.ckx.entity.baob.Shisywyhl">
+			select yaohllx from ${dbSchemal3}ck_yaohl group by yaohllx			
+				
+		</select>
+</sqlMap>

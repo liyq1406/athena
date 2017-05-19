@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="workCalendar">
+	<!-- 多记录查询 -->
+	<select id="queryCkxXiuxr" resultClass="com.athena.ckx.entity.workCalendar.CkxXiuxr">select 
+		riq,beiz,biaos,creator,create_Time,editor,edit_Time from ${dbSchemal3}ckx_xiuxr where 1=1 
+		<dynamic>
+			<isNotEmpty prepend="  and " property="riq">riq = #riq#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos = #biaos#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="beginDate">
+				<![CDATA[riq >= #beginDate#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="endDate">
+				<![CDATA[riq <= #endDate#]]>
+			</isNotEmpty>
+		</dynamic>
+		order by riq
+	</select>
+	<!-- 单记录查询 -->
+	<select id="getCkxXiuxr" resultClass="com.athena.ckx.entity.workCalendar.CkxXiuxr">select 
+		beiz,
+		riq from ${dbSchemal3}ckx_xiuxr where riq=#riq#
+	</select>
+	<!-- 插入记录 -->
+	<insert id="insertCkxXiuxr" parameterClass="com.athena.ckx.entity.workCalendar.CkxXiuxr">insert into
+		 ${dbSchemal3}ckx_xiuxr (beiz,riq,biaos，creator,create_Time,editor,edit_Time)
+		values(
+			#beiz#,
+			#riq#,1,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	<!-- 修改记录 -->
+	<update id="updateCkxXiuxr" parameterClass="com.athena.ckx.entity.workCalendar.CkxXiuxr">
+		update ${dbSchemal3}ckx_xiuxr set 
+		beiz=#beiz#,
+		riq=#riq#,
+		biaos=#biaos#,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where riq = #riq#
+	</update>
+	<!-- 删除记录 -->
+	<delete id="deleteCkxXiuxr" parameterClass="com.athena.ckx.entity.workCalendar.CkxXiuxr">
+		delete from ${dbSchemal3}ckx_xiuxr where riq = #riq#
+	</delete>
+</sqlMap>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="dfpvlszsh">
+	
+	<!-- 查询 -->
+	<select id="queryDfpvlszsh" parameterClass="com.athena.ckx.entity.xuqjs.Dfpvlszsh" resultClass="com.athena.ckx.entity.xuqjs.Dfpvlszsh">
+		select a.usercenter,a.pingzh,a.pingzxmh,a.caozm,a.chexbs, a.caozf,a.gongysdm,a.blh,a.cangk,a.cangkzck,
+		a.midck,a.xiaohd,a.lingjbh,a.danw,a.lingjsl,a.jiaofrq,a.liusqs,a.liusjz,a.zherzt,a.zherztmc,a.yicxhlx,
+		a.caiwrq,a.caozy,a.oper_time,a.creator,a.create_time,a.editor,a.edit_time,a.zhuangt,a.flag,a.beiz
+		from ${dbSchemal3}DFPV_SHENH a where a.usercenter = #usercenter#
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="caozm"><![CDATA[a.caozm = #caozm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="pingzh"><![CDATA[a.pingzh = #pingzh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhuangt"><![CDATA[a.zhuangt = #zhuangt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="blh"><![CDATA[a.blh = #blh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="edit_time_from">  <![CDATA[a.edit_time between to_date(#edit_time_from#,'yyyy-MM-dd hh24:mi:ss') and to_date(#edit_time_to#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 操作码 -->
+	<select id="queryCaozm" parameterClass="java.util.Map" resultClass="com.athena.ckx.entity.xuqjs.Dfpvlszsh">
+			select zidbm as caozm from ${dbSchemal3}ckx_xitcsdy where zidlx = 'DFPVLSZ'  group by zidbm				
+		</select>
+	
+	<!-- 审核 -->
+	<update id="updateShenh" parameterClass="java.util.HashMap">
+		update 
+			${dbSchemal3}DFPV_SHENH
+		set
+			zhuangt = '1',
+			creator = #creator#,
+			create_time = sysdate,
+			editor = #editor#,
+			edit_time = sysdate
+		where 
+			zhuangt = '0' 
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="pingzh"><![CDATA[pingzh=#pingzh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="pingzxmh"><![CDATA[pingzxmh=#pingzxmh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="caozm"><![CDATA[caozm=#caozm#]]></isNotEmpty>
+			</dynamic>
+	</update>
+	
+	<insert id="insertShenh" parameterClass="java.util.HashMap">
+		insert into ${dbSchemal3}IN_DFPV_LIUSZ a(a.usercenter,a.pingzh,a.pingzxmh,a.caozm,a.chexbs,a.caozf,a.gongysdm,a.blh,a.cangk,a.cangkzck,
+		a.midck,a.xiaohd,a.lingjbh,a.danw,a.lingjsl,a.jiaofrq,a.liusqs,a.liusjz,a.zherzt,a.zherztmc,a.yicxhlx,
+		a.caiwrq,a.caozy,a.oper_time,a.creator,a.create_time,a.editor,a.edit_time,a.beiz1)
+		select b.usercenter,b.pingzh,b.pingzxmh,b.caozm,b.chexbs,b.caozf,b.gongysdm,b.blh,b.cangk,b.cangkzck,
+		b.midck,b.xiaohd,b.lingjbh,b.danw,b.lingjsl,b.jiaofrq,b.liusqs,b.liusjz,b.zherzt,b.zherztmc,b.yicxhlx,
+		b.caiwrq,b.caozy,b.oper_time,#creator# as creator,sysdate,#editor# as editor,sysdate,b.beiz from ${dbSchemal3}DFPV_SHENH b 
+		where b.usercenter = #usercenter# and b.pingzh = #pingzh# and b.pingzxmh = #pingzxmh# and b.caozm = #caozm#
+	</insert>
+
+
+	<insert id="insertA36" parameterClass="java.util.HashMap">
+		insert into ${dbSchemal3}DFPV_SHENH_DIAOB a(a.usercenter,a.pingzh,a.cangkzck,a.lingjbh,a.lingjsl,a.chengbzx,a.jiaofrq,a.creator,a.create_time,a.editor,a.edit_time,a.beizhu1)
+		select b.usercenter,b.pingzh,b.cangkzck,b.lingjbh,b.lingjsl,c.chengbzx,b.jiaofrq, #creator# as creator,sysdate,#editor# as editor,sysdate,b.blh as beizhu1 from ${dbSchemal3}DFPV_SHENH b, 
+		${dbSchemal3}XQJS_DIAOBSQ c where b.caozm='A36' and b.blh=c.diaobsqdh
+		and b.usercenter = #usercenter# and b.pingzh = #pingzh# and b.pingzxmh = #pingzxmh#
+	</insert>
+	
+	
+	
+	<delete id="deleteShenh" parameterClass="java.util.HashMap">	 
+		delete from ${dbSchemal3}DFPV_SHENH where zhuangt = '1' 
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="pingzh"><![CDATA[pingzh=#pingzh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="pingzxmh"><![CDATA[pingzxmh=#pingzxmh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="caozm"><![CDATA[caozm=#caozm#]]></isNotEmpty>
+			</dynamic>
+	</delete>
+
+	
+	
+</sqlMap>

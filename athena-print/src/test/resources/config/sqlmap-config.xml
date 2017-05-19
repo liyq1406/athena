@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="100"
+		maxTransactions="50" useStatementNamespaces="true" />
+<!--	<sqlMap resource="com/isoftstone/test/grid/bean/IbatisTest.xml" />-->
+<!--	<sqlMap resource="com/isoftstone/test/tree/bean/TreeBean.xml" />-->
+ <sqlMap resource="com/toft/core2/dao/TableUtils.xml"/>
+ <!--  <sqlMap resource="config/newdic/sequence/SequenceItems.xml"/> -->
+</sqlMapConfig>

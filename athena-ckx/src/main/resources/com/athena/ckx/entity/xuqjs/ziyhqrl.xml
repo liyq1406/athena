@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 资源获取日历 qizhongtao 2012-4-16 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryZiyhqrl" resultClass="com.athena.ckx.entity.xuqjs.Ziyhqrl">
+			select  ziyhqrq,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_ziyhqrl
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="ziyhqrq"><![CDATA[ziyhqrq = #ziyhqrq#]]></isNotEmpty>
+			</dynamic>
+			order by ziyhqrq
+		</select>
+		
+		 <!--单数据查询	 -->
+		<select id="getZiyhqrl" resultClass="com.athena.ckx.entity.xuqjs.Ziyhqrl">
+			select  ziyhqrq
+			from ${dbSchemal3}ckx_ziyhqrl
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="ziyhqrq"><![CDATA[ziyhqrq=#ziyhqrq#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertZiyhqrl" parameterClass="com.athena.ckx.entity.xuqjs.Ziyhqrl" >
+			insert into ${dbSchemal3}ckx_ziyhqrl(ziyhqrq,creator,create_time,editor,edit_time)
+			values(<![CDATA[#ziyhqrq#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		
+		<!-- 删除数据 -->
+		<delete id="deleteZiyhqrl" parameterClass="com.athena.ckx.entity.xuqjs.Ziyhqrl">
+			delete from ${dbSchemal3}ckx_ziyhqrl where
+			<dynamic prepend=" ">
+				<isNotEmpty property="ziyhqrq" prepend=" and ">
+					<![CDATA[ziyhqrq = #ziyhqrq#]]>
+				</isNotEmpty>
+			</dynamic>
+		</delete>
+	
+</sqlMap>

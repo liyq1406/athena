@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- 开箱入库集装箱报表-->
+	<select id="querykaixrukjizx" parameterClass="java.util.Map" resultClass="com.athena.ckx.entity.baob.Kaixrukjizx">
+	        select uabq.usercenter,uabq.lingjbh,uabq.lingjmc,uabq.lingjsl,t.tcno,t.dinghcj,uabq.gongysdm,uabq.gongysmc,t.qiysj,t.daodwldsj,t.kaixzdsj
+			from ${dbSchemal3}xqjs_tc t
+            INNER JOIN ${dbSchemal3}CK_DAOHTZD DHTZD ON t.UTNO = DHTZD.UTH
+            INNER JOIN ${dbSchemal3}CK_UABQ UABQ ON DHTZD.USERCENTER = UABQ.USERCENTER AND DHTZD.UTH = UABQ.Uth  
+            and uabq.baozzt='5'
+            where 1=1 and t.tczt='1' and T.KAIXZDSJ is not null
+			<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[uabq.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[uabq.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="tcno"><![CDATA[t.tcno = #tcno#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[uabq.gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startqiysj"><![CDATA[to_char(t.qiysj,'yyyy-MM-dd') >= #startqiysj#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="endqiysj"><![CDATA[to_char(t.qiysj,'yyyy-MM-dd') < #endqiysj#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startdaodwldsj"><![CDATA[to_char(t.daodwldsj,'yyyy-MM-dd') >= #startdaodwldsj#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="enddaodwldsj"><![CDATA[to_char(t.daodwldsj,'yyyy-MM-dd') < #enddaodwldsj#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startkaixzdsj"><![CDATA[to_char(t.kaixzdsj,'yyyy-MM-dd') >= #startkaixzdsj# ]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="endkaixzdsj"><![CDATA[and to_char(t.kaixzdsj,'yyyy-MM-dd') < #endkaixzdsj#]]></isNotEmpty>
+		</dynamic>
+		order by uabq.usercenter,t.tcno,uabq.lingjbh
+	</select>
+	
+	
+	<delete id="delxqjstc21543"  parameterClass="com.athena.ckx.entity.baob.Kaixrukjizx">
+		<![CDATA[delete from ${dbSchemal3}xqjs_tc_21543 
+		where guidsj < to_date(#qiysj#,'yyyy-MM-dd hh24:mi:ss')]]>
+	</delete>
+	
+	<delete id="deldaohtzd21543"  parameterClass="com.athena.ckx.entity.baob.Kaixrukjizx">
+		<![CDATA[delete from ${dbSchemal3}ck_daohtzd_21543 
+		where guidsj < to_date(#qiysj#,'yyyy-MM-dd hh24:mi:ss')]]>
+	</delete>
+	
+	<delete id="deluabq21543"  parameterClass="com.athena.ckx.entity.baob.Kaixrukjizx">
+		<![CDATA[delete from ${dbSchemal3}ck_uabq_21543 
+		where guidsj < to_date(#qiysj#,'yyyy-MM-dd hh24:mi:ss')]]>
+	</delete>
+	
+	<delete id="delkaixruk"  parameterClass="com.athena.ckx.entity.baob.Kaixrukjizx">
+		<![CDATA[delete from ${dbSchemal3}rep_kaixrukjizx 
+		where create_time < to_date(#qiysj#,'yyyy-MM-dd hh24:mi:ss')]]>
+	</delete>
+	
+	<select id="insertRepkaixruk" parameterClass="java.lang.String">
+      insert into ${dbSchemal3}rep_kaixrukjizx (USERCENTER,LINGJBH,LINGJMC,LINGJSL,TCNO,DINGHCJ,GONGYSDM,GONGYSMC,QIYSJ,DAODWLDSJ,KAIXZDSJ,CREATE_TIME)
+      select uabq.usercenter,uabq.lingjbh,uabq.lingjmc,uabq.lingjsl,t.tcno,t.dinghcj,uabq.gongysdm,uabq.gongysmc,t.qiysj,t.daodwldsj,t.kaixzdsj,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss')
+			from ${dbSchemal3}xqjs_tc_21543 t
+            INNER JOIN ${dbSchemal3}ck_daohtzd_21543 DHTZD ON t.UTNO = DHTZD.UTH
+            INNER JOIN ${dbSchemal3}ck_uabq_21543 UABQ ON DHTZD.USERCENTER = UABQ.USERCENTER AND DHTZD.UTH = UABQ.Uth  
+            and UABQ.BAOZZT='5'
+            where 1=1 
+   </select>
+	
+</sqlMap>

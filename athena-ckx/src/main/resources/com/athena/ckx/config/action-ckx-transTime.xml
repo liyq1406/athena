@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>	
+
+    <package name="transTime" namespace="/transTime"  extend="toft-default" >
+
+  
+     <!--    hj 0319  -->	   
+    	 <!-- 运输时间模板 -->
+        <action name="yunssjmbTemp" 
+			class="ckxYunssjMbTempAction" method="execute_temp">
+			<result name="select_temp">/WEB-INF/pages/ckx/transTime/yunssjmbTemp.jsp</result>
+		</action>
+		
+		<!-- 数据生效  （运输时间（计算）==》手工计算 xss-0011489  -->
+    	<action  name="sgjsYunssjmbTemp" class="ckxYunssjMbTempAction" method="sgjs"/>
+    	
+		 <!-- 查询数据 运输时间（计算） -->
+   		<action  name="queryYunssjmbTemp" class="ckxYunssjMbTempAction" method="query_temp"/>
+         <!-- 数据修改 （运输时间（计算）） -->
+        <action  name="saveYunssjmbTemp" class="ckxYunssjMbTempAction" method="save_temp"/>
+    	 <!-- 数据生效  （运输时间（计算）==》运输时间（实际））  -->
+    	<action  name="effectYunssjmbTemp" class="ckxYunssjMbTempAction" method="effect"/>
+        <action name="yunssjmb" 
+			class="ckxYunssjMbTempAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/transTime/yunssjmb.jsp</result>
+		</action>
+		 <!-- 查询数据 （运输时间（实际））-->
+		<action  name="queryYunssjmb" class="ckxYunssjMbTempAction" method="query"/>
+		 <!-- 数据保存 （运输时间（实际）） -->
+        <action  name="saveYunssjmb" class="ckxYunssjMbTempAction" method="save"/>
+        <!-- 数据导出 -->
+         <action  name="derivedYunssjmbTemp" class="ckxYunssjMbTempAction" method="derived"/>
+          <!-- 数据导入 -->
+          <!--xh 141219  10798 导入权限控制 -->
+         <action  name="importAth_importYunssjmbTemp" class="ckxYunssjMbTempAction" method="importExcel">
+         <result name="select">/WEB-INF/pages/ckx/transTime/yunssjmbTemp.jsp</result>
+         </action>
+ 		<!-- 定时生效查询 -->
+		<action  name="queryDingssx" class="ckxYunssjMbTempAction" method="queryDingssx"/>
+		<action  name="saveDingssx" class="ckxYunssjMbTempAction" method="saveDingssx"/>
+		
+		<!-- 进入手工计算页面 -->
+		   <action name="tosgjsPageYunssjmbTemp" 
+			class="ckxYunssjMbTempAction" method="tosgjsPage">
+			   <result name="to_sgjs">/WEB-INF/pages/ckx/transTime/sgsjYunssjmb.jsp</result>
+		</action>
+		
+         
+      <!-- 模拟计算 -->
+      <action  name="queryTempMon" class="ckxTempMonAction" method="query"/>
+       <action  name="saveTempMon" class="ckxTempMonAction" method="save"/>
+     	 <!-- 运输时刻 -->
+        <action name="yunssk" 
+			class="ckxYunsskAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/transTime/yunssk.jsp</result>
+		</action>
+      <action  name="queryCkxYunssk" class="ckxYunsskAction" method="query"/>
+      <action  name="saveCkxYunssk" class="ckxYunsskAction" method="save"/>
+     <action  name="removeCkxYunssk" class="ckxYunsskAction" method="remove"/>
+        <action  name="downloadCkxYunssk" class="ckxYunsskAction" method="download"/>
+     <!-- 运输时刻 手工计算  0011489-->
+      <action name="yunsskTemp" 
+			class="ckxYunsskTempAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/transTime/yunsskTemp.jsp</result>
+	  </action>
+      <action  name="queryCkxYunsskTemp" class="ckxYunsskTempAction" method="query"/>    	
+  	  <action  name="downloadCkxYunsskTemp" class="ckxYunsskTempAction" method="download"/> 
+     <!-- CS初始化盘点 -->
+        <action name="csChush" 
+		   class="ckxCsChushAction" method="execute">
+		<result name="select">/WEB-INF/pages/ckx/transTime/csChush.jsp</result>
+		</action>
+      <action  name="queryCkxCsChush" class="ckxCsChushAction" method="query"/>    
+      <action  name="saveCkxCsChush" class="ckxCsChushAction" method="save"/>
+
+      
+          <!-- CS初始化历史查询 -->
+        <action name="csChushcx" 
+		  class="ckxCsChushcxAction" method="execute">
+		<result name="select">/WEB-INF/pages/ckx/transTime/csChushcx.jsp</result>
+		</action>
+      <action  name="queryCkxCsChushcx" class="ckxCsChushcxAction" method="query"/>
+
+         <!-- CS初始化拉空-->
+        <action name="csChushlk" 
+		  class="ckxCsChushlkAction" method="execute">
+		<result name="select">/WEB-INF/pages/ckx/transTime/csChushlk.jsp</result>		
+		</action>
+      <action  name="queryCkxCsChushlk" class="ckxCsChushlkAction" method="query"/>
+     
+      <action  name="lakongCkxCsChushlk" class="ckxCsChushlkAction" method="lakong"/>
+      
+      <action name="xinCsChushlk" 
+		  class="ckxCsChushlkAction" method="xinExecute">		
+		<result name="selectXin">/WEB-INF/pages/ckx/transTime/xinCsChushlk.jsp</result>
+		</action>
+      <action  name="xinQueryCkxCsChushlk" class="ckxCsChushlkAction" method="xinQuery"/>
+     
+      <action  name="xinLakongCkxCsChushlk" class="ckxCsChushlkAction" method="xinLakong"/>
+        
+        
+         <!-- CS初始化计算-->
+        <action name="csChushjs" 
+		  class="ckxCsChushjsAction" method="execute">
+		<result name="select">/WEB-INF/pages/ckx/transTime/csChushjs.jsp</result>
+		</action>
+      <action  name="queryCkxCsChushjs" class="ckxCsChushjsAction" method="query"/>
+      <action  name="authuserCkxCsChushjs" class="ckxCsChushjsAction" method="authUser"/>
+      
+      <action  name="jisuanCkxCsChushjs" class="ckxCsChushjsAction" method="jisuan"/>
+ 
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+      <!--    kqy   -->
+      
+      
+      
+      <!-- 卸货站台送货频次 -->
+      <action name="frequency" 
+			class="ckxFrequencyAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/transTime/frequency.jsp</result>
+	</action>
+	<action  name="queryFrequency" class="ckxFrequencyAction" method="query"/>
+    <action  name="compute" class="ckxFrequencyAction" method="compute"/>
+    <action  name="saveFrequency" class="ckxFrequencyAction" method="save"/>
+    <action  name="addFrequency" class="ckxFrequencyAction" method="add"/>
+     <action  name="daleteFrequency" class="ckxFrequencyAction" method="delete"/>
+    <!-- hj 仅供下拉框选择（卸货站台|承运商） -->
+     <action  name="listGcbhORXiehzt" class="ckxFrequencyAction" method="listGcbhORXiehzt"/>
+    
+      
+      <!-- 卸货站台需求归集 -->
+      <action name="ckxXiehztxqgj" 
+			class="ckxXiehztxqgjAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/transTime/ckxXiehztxqgj.jsp</result>
+	</action>
+    <action  name="queryCkxXiehztxqgj" class="ckxXiehztxqgjAction" method="query"/>  
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+     
+      
+      
+      
+      
+      
+      
+      
+      
+    
+      
+     
+    </package>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</toft>

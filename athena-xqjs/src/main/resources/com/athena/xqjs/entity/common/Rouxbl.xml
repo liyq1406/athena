@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+	<resultMap class="com.athena.xqjs.entity.common.Rouxbl" id="Rouxbl">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="GUANJLJJB" property="guanjljjb" />
+		<result column="GONGYSBH" property="gongysbh" />
+		<result column="DINGHZQ" property="dinghzq" />
+		<result column="ROUXBL" property="rouxbl" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="create_time" />
+		<result column="EDITOR" property="editor" />
+		<result column="EDIT_TIME" property="edit_time" />
+	</resultMap>
+
+
+	<select id="queryRouxblObject" resultClass="com.athena.xqjs.entity.common.Rouxbl">
+		SELECT
+		usercenter,
+		guanjljjb,
+		gongysbh,
+		dinghzq,
+		rouxbl,
+		creator,
+		create_time ,
+		editor ,
+		edit_time
+		FROM
+		${dbSchemal3}ckx_gongys_rouxbl
+		WHERE
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysbh">
+				gongysbh =
+				#gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="guanjljjb">
+				guanjljjb =
+				#guanjljjb#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dinghzq">
+				dinghzq = #dinghzq#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>

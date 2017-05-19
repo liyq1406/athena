@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ts_ckx">
+	
+	
+	<!-- 多记录查询 -->
+	<select id="queryYunslxJiaof" resultClass="com.athena.ckx.entity.paicfj.YunslxJiaof">select 
+		xingqxh,		
+		yunslxbh,		
+		jiaofsk,		
+		usercenter
+		 from ${dbSchemal3}ckx_yunslx_jiaof where 1=1
+		 <dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yunslxbh">yunslxbh = #yunslxbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xingqxh">xingqxh = #xingqxh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jiaofsk">jiaofsk = #jiaofsk#</isNotEmpty>
+		</dynamic>
+		order by usercenter,yunslxbh,xingqxh,jiaofsk
+	</select>
+	
+	<!-- 插入记录 -->
+	<insert id="insertYunslxJiaof" parameterClass="com.athena.ckx.entity.paicfj.YunslxJiaof">insert into
+		${dbSchemal3}ckx_yunslx_jiaof (xingqxh,edit_time,yunslxbh,editor,jiaofsk,creator,usercenter,create_time)
+		values(
+			#xingqxh#,
+			#edit_time#,
+			#yunslxbh#,
+			#editor#,
+			#jiaofsk#,
+			#creator#,
+			#usercenter#,
+			#create_time#)
+	</insert>
+	
+	<!-- 删除记录 -->
+	<delete id="deleteYunslxJiaof" parameterClass="com.athena.ckx.entity.paicfj.YunslxJiaof">
+		delete from ${dbSchemal3}ckx_yunslx_jiaof where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yunslxbh">yunslxbh = #yunslxbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xingqxh">xingqxh = #xingqxh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jiaofsk">jiaofsk = #jiaofsk#</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

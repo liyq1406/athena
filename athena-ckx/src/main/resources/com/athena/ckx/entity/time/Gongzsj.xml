@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="time">
+	
+	<select id="queryGongzsj" resultClass="com.athena.ckx.entity.time.Gongzsj">
+	select xingqxh,ban,
+		to_char(jiezsj,'yyyy-mm-dd') as jiezsj,
+		to_char(kaissj,'yyyy-mm-dd') as kaissj,
+		tiaozts,xh,biaos,bianzh 
+	from GONGZSJ 
+	where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="bianzh">bianzh = #bianzh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xingqxh">xingqxh = #xingqxh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xh">xh = #xh#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getGongzsj" resultClass="com.athena.ckx.entity.time.Gongzsj" parameterClass="com.athena.ckx.entity.time.Gongzsj">
+		select 
+			xingqxh,
+			ban,
+			to_char(jiezsj,'yyyy-mm-dd') as jiezsj,
+			to_char(kaissj,'yyyy-mm-dd') as kaissj,
+			tiaozts,
+			xh,biaos,
+			bianzh 
+		from GONGZSJ 
+		where 1=1 and bianzh = #bianzh# and xingqxh = #xingqxh# and xh = #xh#
+	</select>
+	
+	<insert id="insertGongzsj" parameterClass="com.athena.ckx.entity.time.Gongzsj">insert into
+		GONGZSJ (xingqxh,ban,jiezsj,kaissj,tiaozts,xh,biaos,bianzh,createUser,createTime,updateUser,updateTime)
+		values(
+			#xingqxh#,
+			#ban#,
+			to_date(#jiezsj#,'yyyy-mm-dd'),
+			to_date(#kaissj#,'yyyy-mm-dd'),
+			
+			#tiaozts#,
+			#xh#,
+			'1',
+			#bianzh#
+			#updateUser#,
+			to_char(current_date,'yyyy-mm-dd hh24:mi:ss'), 
+			#updateUser#,
+			to_char(current_date,'yyyy-mm-dd hh24:mi:ss')
+		)
+	</insert>
+	
+	<update id="updateGongzsj" parameterClass="com.athena.ckx.entity.time.Gongzsj">
+		update GONGZSJ set 
+		xingqxh=#xingqxh#,
+		ban=#ban#,
+		jiezsj=to_date(#jiezsj#,'yyyy-mm-dd'),
+		kaissj=to_date(#kaissj#,'yyyy-mm-dd'),
+		tiaozts=#tiaozts#,
+		xh=#xh#,
+		
+		bianzh=#bianzh#,
+		updateUser=#updateUser#,
+		updateTime=to_char(current_date,'yyyy-mm-dd hh24:mi:ss')
+		
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="bianzh">bianzh = #bianzh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xingqxh">xingqxh = #xingqxh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xh">xh = #xh#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	
+	
+	
+	<delete id="deleteGongzsj" parameterClass="com.athena.ckx.entity.time.Gongzsj">
+		delete from GONGZSJ where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="bianzh">bianzh = #bianzh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xingqxh">xingqxh = #xingqxh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xh">xh = #xh#</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	
+	<update id="deleteLogicGongzsj" parameterClass="com.athena.ckx.entity.time.Gongzsj">
+		update GONGZSJ set biaos='0' where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="bianzh">bianzh = #bianzh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xingqxh">xingqxh = #xingqxh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xh">xh = #xh#</isNotEmpty>
+		</dynamic>
+	</update>
+</sqlMap>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- 分配区  denggq 2012-3-21 -->
+	
+	<select id="queryFenpq" parameterClass="com.athena.ckx.entity.xuqjs.Fenpq" resultClass="com.athena.ckx.entity.xuqjs.Fenpq">
+		select usercenter,shengcxbh,fenpqh,fenpqmc,wulgyyz,biaos,creator,create_time,editor,edit_time,fenzxh
+		from ${dbSchemal3}ckx_fenpq
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[decode(fenzxh,null,shengcxbh,fenzxh) = #shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenpqh"><![CDATA[fenpqh = #fenpqh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="wulgyyz"><![CDATA[wulgyyz = #wulgyyz#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,shengcxbh,fenpqh
+	</select>
+	
+	<select id="getCountFenpq" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_fenpq where 1=1
+		<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenpqh"><![CDATA[fenpqh = #fenpqh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="wulgyyz"><![CDATA[wulgyyz = #wulgyyz#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="uclist">usercenter in ($uclist$)</isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!-- 根据分配区找到生产线  零件消耗点用 -->
+	<select id="getShengcxbh" parameterClass="com.athena.ckx.entity.xuqjs.Fenpq" resultClass="java.lang.String">
+		select distinct shengcxbh from ${dbSchemal3}ckx_fenpq
+		<dynamic prepend="where"> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh"><![CDATA[fenpqh = #fenpqh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getFenpq" parameterClass="com.athena.ckx.entity.xuqjs.Fenpq" resultClass="com.athena.ckx.entity.xuqjs.Fenpq">
+		select usercenter,shengcxbh,fenpqh,fenpqmc,wulgyyz,biaos,fenzxh
+		from ${dbSchemal3}ckx_fenpq
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenpqh"><![CDATA[fenpqh = #fenpqh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!-- 内部物流导入获取生产线编号 lc 2016-12-06 -->
+	<select id="getFenpq_Inner" parameterClass="com.athena.ckx.entity.xuqjs.Fenpq" resultClass="com.athena.ckx.entity.xuqjs.Fenpq">
+		select usercenter, shengcxbh, fenpqh, fenpqmc, wulgyyz, biaos, fenzxh
+		  from ${dbSchemal3}ckx_fenpq
+		 where usercenter = #usercenter#
+		   and fenpqh = #fenpqh#
+		   and biaos = #biaos#
+		   <dynamic> 
+			   <isNotEmpty prepend=" and " property="wulgyyz"><![CDATA[wulgyyz = #wulgyyz#]]></isNotEmpty>
+		   </dynamic>
+	</select>
+	
+	<insert id="insertFenpq" parameterClass="com.athena.ckx.entity.xuqjs.Fenpq">
+		insert into ${dbSchemal3}ckx_fenpq(usercenter,shengcxbh,fenpqh,fenpqmc,wulgyyz,biaos,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter# , #shengcxbh# , #fenpqh# , #fenpqmc# ,#wulgyyz#, '1' , #creator# ,sysdate,#editor#,sysdate  ]]> )
+	</insert>
+	<statement id="AorEbYFenpq" parameterClass="com.athena.ckx.entity.xuqjs.Fenpq">
+                  <![CDATA[    merge into ${dbSchemal3}ckx_fenpq a
+                         using (select count(*) co from ${dbSchemal3}ckx_fenpq a  where  usercenter = #usercenter#  and fenpqh = #fenpqh# and biaos='0') b
+                         on(b.co<>0)
+                         when matched then 
+                              update set 
+                              			shengcxbh = #shengcxbh#,
+                                     	fenpqmc = #fenpqmc#,
+								    	wulgyyz = #wulgyyz#,
+								    	biaos = #biaos#,
+								    	editor = #editor#,
+								    	edit_time = sysdate,
+								    	fenzxh = #fenzxh#
+                                     where usercenter = #usercenter# 
+                                         and fenpqh = #fenpqh#
+                         when  not matched then 
+                         insert (usercenter,shengcxbh,fenpqh,fenpqmc,wulgyyz,biaos,creator,create_time,editor,edit_time,fenzxh) 
+                        values(#usercenter# , #shengcxbh# , #fenpqh# , #fenpqmc# ,#wulgyyz#, '1' , #creator# ,sysdate,#editor#,sysdate,#fenzxh# )]]>
+	</statement>
+	
+	<update id="updateFenpq" parameterClass="com.athena.ckx.entity.xuqjs.Fenpq">
+		update ${dbSchemal3}ckx_fenpq 
+		set 
+	    	fenpqmc = #fenpqmc#,
+	    	wulgyyz = #wulgyyz#,
+	    	biaos = #biaos#,
+	    	editor = #editor#,
+	    	edit_time = sysdate
+        where  <![CDATA[usercenter = #usercenter# and  shengcxbh = #shengcxbh# and fenpqh = #fenpqh#]]> 
+	</update>
+	
+	<delete id="deleteFenpq" parameterClass="com.athena.ckx.entity.xuqjs.Fenpq">
+		update ${dbSchemal3}ckx_fenpq
+		set <![CDATA[biaos = '0',editor=#editor#,edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		where <![CDATA[usercenter = #usercenter# and  shengcxbh = #shengcxbh# and fenpqh = #fenpqh#]]>
+	</delete>
+	
+	<!-- 修改分配区的产线时，同步修改对应零件消耗点的生产线编号、分装线号 -->
+	<update id="updateLingjxhdByFenpq" parameterClass="com.athena.ckx.entity.xuqjs.Fenpq">
+		update ${dbSchemal3}ckx_lingjxhd set 
+		shengcxbh = #shengcxbh#,
+		fenzxh = #fenzxh#,
+		editor = #editor# ,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  usercenter = #usercenter# and fenpqbh = #fenpqh#
+	</update>
+	
+	
+</sqlMap>

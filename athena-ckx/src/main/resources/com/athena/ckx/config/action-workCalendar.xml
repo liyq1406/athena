@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="workCalendar" extend="toft-default" namespace="/workCalendar">
+		<!-- 中心日历 -->
+		<action name="ckxCalendarCenter" 
+			class="ckxCalendarCenterAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/workCalendar/ckxCalendarCenter.jsp</result>
+		</action>
+		
+		<action name="queryCkxCalendarCenter" class="ckxCalendarCenterAction" method="query"/>
+		<action name="listCkxCalendarCenter" class="ckxCalendarCenterAction" method="list"/>
+		<action name="getCkxCalendarCenter" class="ckxCalendarCenterAction" method="get"/>
+		<action name="saveCkxCalendarCenter" class="ckxCalendarCenterAction" method="save"/>
+		
+		<action name="addYear" class="ckxCalendarCenterAction" method="addYear"/>
+		<action name="delYear" class="ckxCalendarCenterAction" method="delYear"/>
+		<action name="getSelectUserCenter" class="ckxCalendarCenterAction" method="getSelectUserCenter"/>
+		
+		<!-- 工作时间 -->
+		<action name="ckxCalendarTeam" 
+			class="ckxCalendarTeamAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/workCalendar/ckxCalendarTeam.jsp</result>
+		</action>
+		
+		<action name="queryCkxCalendarTeam" class="ckxCalendarTeamAction" method="query"/>
+		<action name="listCkxCalendarTeam" class="ckxCalendarTeamAction" method="list"/>
+		<action name="getCkxCalendarTeam" class="ckxCalendarTeamAction" method="get"/>
+		<action name="saveCkxCalendarTeam" class="ckxCalendarTeamAction" method="save"/>
+		<action name="removeCkxCalendarTeam" class="ckxCalendarTeamAction" method="remove"/>
+		<action name="addTeam" class="ckxCalendarTeamAction" method="addTeam"/>
+		<action name="copyTeam" class="ckxCalendarTeamAction" method="copyTeam"/>
+		<action name="delTeam" class="ckxCalendarTeamAction" method="delTeam"/>
+		<action name="getSelectTeamCode" class="ckxCalendarTeamAction" method="getSelectTeamCode"/>
+		<!-- 日历版次 -->
+		<action name="ckxCalendarVersion" 
+			class="ckxCalendarVersionAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/workCalendar/ckxCalendarVersion.jsp</result>
+		</action>
+		
+		<action name="queryCkxCalendarVersion" class="ckxCalendarVersionAction" method="query"/>
+		<action name="listCkxCalendarVersion" class="ckxCalendarVersionAction" method="list"/>
+		<action name="getCkxCalendarVersion" class="ckxCalendarVersionAction" method="get"/>
+		<action name="saveCkxCalendarVersion" class="ckxCalendarVersionAction" method="save"/>
+		
+		<action name="addVersion" class="ckxCalendarVersionAction" method="addVersion"/>
+		<action name="copyVersion" class="ckxCalendarVersionAction" method="copyVersion"/>
+		<action name="addDay" class="ckxCalendarVersionAction" method="addDay"/>
+		<action name="delVersion" class="ckxCalendarVersionAction" method="delVersion"/>
+		<action name="editCalendarVersionNianzx" class="ckxCalendarVersionAction" method="editCalendarVersionNianzx"/>
+		<action name="getVersionNo" class="ckxCalendarVersionAction" method="getVersionNo"/>
+		
+		<!-- 产线/仓库 -日历版次-工作时间编组 -->
+		<action name="ckxCalendarGroup" 
+			class="ckxCalendarGroupAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/workCalendar/ckxCalendarGroup.jsp</result>
+		</action>
+		
+		<action name="queryCkxCalendarGroup" class="ckxCalendarGroupAction" method="query"/>
+		<action name="listCkxCalendarGroup" class="ckxCalendarGroupAction" method="list"/>
+		<action name="getCkxCalendarGroup" class="ckxCalendarGroupAction" method="get"/>
+		<action name="addCkxCalendarGroup" class="ckxCalendarGroupAction" method="addGroup"/>
+		<action name="saveCkxCalendarGroup" class="ckxCalendarGroupAction" method="save"/>
+		<action name="removeCkxCalendarGroup" class="ckxCalendarGroupAction" method="remove"/>
+		<!-- 休息日 -->
+		<action name="ckxXiuxr" 
+			class="ckxXiuxrAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/workCalendar/ckxXiuxr.jsp</result>
+		</action>
+		
+		<action name="queryCkxXiuxr" class="ckxXiuxrAction" method="query"/>
+		<action name="listCkxXiuxr" class="ckxXiuxrAction" method="list"/>
+		<action name="getCkxXiuxr" class="ckxXiuxrAction" method="get"/>
+		<action name="saveCkxXiuxr" class="ckxXiuxrAction" method="save"/>
+	</package>
+	<package name="PCcalendar" extend="toft-default" namespace="/PCcalendar">
+	<!-- 排产 工作时间 -->
+	<action name="team" 
+			class="pcCalendarTeamAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/workCalendar/pcCalendarTeam.jsp</result>
+		</action>
+		
+		<action name="queryCkxCalendarTeam" class="pcCalendarTeamAction" method="query"/>
+		<action name="listCkxCalendarTeam" class="pcCalendarTeamAction" method="list"/>
+		<action name="getCkxCalendarTeam" class="pcCalendarTeamAction" method="get"/>
+		<action name="saveCkxCalendarTeam" class="pcCalendarTeamAction" method="save"/>
+		<action name="removeCkxCalendarTeam" class="pcCalendarTeamAction" method="remove"/>
+		<action name="addTeam" class="pcCalendarTeamAction" method="addTeam"/>
+		<action name="copyTeam" class="pcCalendarTeamAction" method="copyTeam"/>
+		<action name="delTeam" class="pcCalendarTeamAction" method="delTeam"/>
+		<action name="getSelectTeamCode" class="pcCalendarTeamAction" method="getSelectTeamCode"/>
+		
+		<!--排产 日历版次 -->
+		<action name="version" 
+			class="pcCalendarVersionAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/workCalendar/pcCalendarVersion.jsp</result>
+		</action>
+		
+		<action name="queryCkxCalendarVersion" class="pcCalendarVersionAction" method="query"/>
+		<action name="listCkxCalendarVersion" class="pcCalendarVersionAction" method="list"/>
+		<action name="getCkxCalendarVersion" class="pcCalendarVersionAction" method="get"/>
+		<action name="saveCkxCalendarVersion" class="pcCalendarVersionAction" method="save"/>
+		
+		<action name="addVersion" class="pcCalendarVersionAction" method="addVersion"/>
+		<action name="copyVersion" class="pcCalendarVersionAction" method="copyVersion"/>
+		<action name="addDay" class="pcCalendarVersionAction" method="addDay"/>
+		<action name="delVersion" class="pcCalendarVersionAction" method="delVersion"/>
+		<action name="editCalendarVersionNianzx" class="pcCalendarVersionAction" method="editCalendarVersionNianzx"/>
+		<action name="getVersionNo" class="pcCalendarVersionAction" method="getVersionNo"/>
+		<!--排产  产线 -工作时间编组 -->
+		<action name="group" 
+			class="pcCalendarGroupAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/workCalendar/pcCalendarGroup.jsp</result>
+		</action>
+		
+		<action name="queryCkxCalendarGroup" class="pcCalendarGroupAction" method="query"/>
+		<action name="listCkxCalendarGroup" class="pcCalendarGroupAction" method="list"/>
+		<action name="getCkxCalendarGroup" class="pcCalendarGroupAction" method="get"/>
+		<action name="addCkxCalendarGroup" class="pcCalendarGroupAction" method="addGroup"/>
+		<action name="saveCkxCalendarGroup" class="pcCalendarGroupAction" method="save"/>
+		<action name="removeCkxCalendarGroup" class="pcCalendarGroupAction" method="remove"/>
+	</package>
+</toft>

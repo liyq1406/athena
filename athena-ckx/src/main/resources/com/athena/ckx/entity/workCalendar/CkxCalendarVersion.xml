@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="workCalendar">
+	<!-- 多记录查询 -->
+	<select id="queryCkxCalendarVersion" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">select 
+		xis,
+		xingq,
+		banc,
+		usercenter,
+		biaos,
+		riq,
+		shifgzr,
+		shifjfr,
+		nianzq,nianzqtemp,
+		nianzx,
+		nianzx as ynianzx,
+		nianzxtemp,
+		zhoux ,zhouxtemp 
+		,creator,create_Time,editor,edit_Time
+		from ${dbSchemal3}ckx_calendar_version where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="banc">banc = #banc#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">riq = #riq#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xingq">xingq = #xingq#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifjfr">shifjfr = #shifjfr#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifgzr">shifgzr = #shifgzr#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos = #biaos#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="beginDate">
+				<![CDATA[riq >= #beginDate#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="endDate">
+				<![CDATA[riq <= #endDate#]]>
+			</isNotEmpty>
+		</dynamic>
+		order by banc, usercenter ,riq
+	</select>
+	<!-- 单记录查询 根据主键-->
+	<select id="getCkxCalendarVersion" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">select 
+		xis,
+		xingq,
+		banc,
+		usercenter,
+		biaos,
+		riq,
+		shifgzr,
+		shifjfr,	
+		 nianzq,nianzqtemp,
+	    nianzx,nianzxtemp,
+	    zhoux ,zhouxtemp  
+		,creator,create_Time,editor,edit_Time
+		from ${dbSchemal3}ckx_calendar_version 
+		where banc=#banc# and riq=#riq# and usercenter = #usercenter# and biaos=1
+	</select>
+	<select id="getCountVersion" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_calendar_version where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="banc">banc = #banc#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">riq = #riq#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xingq">xingq = #xingq#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifjfr">shifjfr = #shifjfr#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifgzr">shifgzr = #shifgzr#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos = #biaos#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 分组获取版次号和用户中心 -->
+	<select id="getCkxCalendarVersionByGroup" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+		select banc,usercenter from ${dbSchemal3}ckx_calendar_version 
+		where biaos=1 and banc=#banc#
+		group by banc,usercenter
+	</select>
+	<!-- 获取当月最大版次中的序号 -->
+	<select id="getVersionMaxNo" resultClass="java.lang.String">
+		select max(substr(banc,3,2))
+      	from ${dbSchemal3}ckx_calendar_version  where substr(banc,2,1)=#month#
+	</select>
+	
+	<!-- 获取版次序号集合 -->
+		<select id="getSelectVersionCode" resultClass="java.lang.String" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+		select banc
+		 from ${dbSchemal3}ckx_calendar_version where biaos=1 and usercenter = #usercenter# 
+		 group by banc order by banc desc
+	</select>
+	
+		<!-- 获取版次序号集合 -->
+		<select id="getDistinctVersionCode" resultClass="java.lang.String" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+		select banc
+		 from ${dbSchemal3}ckx_calendar_version where biaos=1 
+		 	<isNotEmpty prepend="  and " property="uclist">usercenter in( $uclist$)
+			</isNotEmpty>
+		 group by banc order by banc desc
+	</select>
+	
+	<select id="getVersionCode" resultClass="java.lang.String">
+		select banc
+		 from ${dbSchemal3}ckx_calendar_version  group by banc
+	</select>
+	<!-- 获取年号集合 -->
+	<select id="getYears" resultClass="java.lang.String">
+		select substr(riq,0,4)  
+		from ${dbSchemal3}ckx_calendar_version 
+		group by substr(riq,0,4)
+	</select>
+	
+	<!-- 插入记录 -->
+	<insert id="insertCkxCalendarVersion" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">insert into
+		${dbSchemal3}ckx_calendar_version (xis,xingq,banc,usercenter,biaos,riq,shifgzr,shifjfr,nianzq,nianzx,zhoux,creator,create_Time,editor,edit_Time)
+		values(
+			#xis#,
+			#xingq#,
+			#banc#,
+			#usercenter#,
+			#biaos#,
+			#riq#,
+			#shifgzr#,
+			#shifjfr#,
+			#nianzq#,
+			#nianzx#,
+			#zhoux#
+			,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<insert id="addCkxCalendarVersion" parameterClass="java.util.Map">insert into
+		${dbSchemal3}ckx_calendar_version (banc, usercenter ,riq,xingq,nianzq,nianzqtemp,zhoux,zhouxtemp,nianzx,nianzxtemp,xis,shifjfr,shifgzr,biaos,creator,create_Time,editor,edit_Time)
+		select #banc#, usercenter ,riq,xingq,nianzq,nianzq,zhoux,zhoux,nianzx,nianzx,xis,shifjfr,shifgzr,1,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss')
+		from ${dbSchemal3}ckx_calendar_center where usercenter=#usercenter# AND <![CDATA[riq like '$year$%']]>
+
+	</insert>
+	
+	<insert id="copyCkxCalendarVersion" parameterClass="java.util.Map">
+		insert into ${dbSchemal3}ckx_calendar_version(banc, usercenter ,riq,xingq,nianzq,nianzqtemp,zhoux,zhouxtemp,nianzx,nianzxtemp,xis,shifjfr,shifgzr,biaos,creator,create_Time,editor,edit_Time )
+		select  #banc#, usercenter ,riq,xingq,nianzq,nianzqtemp,zhoux,zhouxtemp,nianzx,nianzxtemp,xis,shifjfr,shifgzr,1,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss')
+		from ${dbSchemal3}ckx_calendar_version where banc=#versionCode#
+	</insert>
+	
+	
+	
+	<!-- 修改记录 -->
+	<update id="updateCkxCalendarVersion" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+		update ${dbSchemal3}ckx_calendar_version set 
+		xis=#xis#,
+		xingq=#xingq#,
+		banc=#banc#,
+		usercenter=#usercenter#,
+		biaos=#biaos#,
+		riq=#riq#,
+		shifgzr=#shifgzr#,
+		shifjfr=#shifjfr#,
+		nianzq=#nianzq#,
+		nianzx=#nianzx#,
+		zhoux=#zhoux#,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		 where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="banc">banc = #banc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">riq = #riq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 逻辑删除 -->
+	<update id="deleteCkxCalendarVersionLogic" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+		update ${dbSchemal3}ckx_calendar_version set 
+		biaos=0,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="banc">banc = #banc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">riq = #riq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 删除记录 -->
+	<delete id="deleteCkxCalendarVersion" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+		delete from ${dbSchemal3}ckx_calendar_version where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="banc">banc = #banc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+				<![CDATA[(substr(riq,0,4)+1)<$riq$]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<!-- 批量删除版次冗余记录 -->
+	<delete id="deleteCkxCalendarVersionByRiAndBanc" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+		delete from ${dbSchemal3}ckx_calendar_version v where 
+		(<![CDATA[round(to_number(sysdate - v.create_time)) > 15]]>
+   		and v.banc not in (select distinct(g.rilbc) from ${dbSchemal3}ckx_calendar_group g inner join ${dbSchemal3}ckx_calendar_version s on g.usercenter = s.usercenter and g.rilbc = s.banc)
+   		and v.banc not in ($strNA01Banc$)
+   		)
+   		or <![CDATA[(substr(v.riq,0,4)+1)<$riq$]]>
+	</delete>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 修改年周序 hj 2012-10-23 -->
+	
+	<!-- 单记录查询 根据年周序-->
+	<select id="getCkxCalendarVersionBynianzx" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+	select   banc,
+    usercenter,
+    biaos,  riq,
+     nianzq,nianzqtemp,
+	    nianzx,nianzxtemp,
+	    zhoux ,zhouxtemp  
+    from  (
+		select  
+	    banc,
+	    usercenter,
+	    biaos,  
+	    riq,
+	    nianzq,nianzqtemp,
+	    nianzx,nianzxtemp,
+	    zhoux ,zhouxtemp  
+	    from ${dbSchemal3}ckx_calendar_version t			
+			where banc=#banc#  and usercenter = #usercenter# 
+			<![CDATA[and biaos=1 and  nianzx = #nianzx# order by riq desc]]>
+		)  where rownum=1
+	</select>
+	<!-- 单记录查询 根据年周序 找到年周序的结束日-->
+	<select id="getMaxRiqByNianzx" resultClass="java.lang.String" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+	select max(t.riq) from ${dbSchemal3}ckx_calendar_version t where  banc = #banc#
+			and usercenter = #usercenter# and nianzx = #nianzx# 
+	</select>
+	<!-- 单记录查询 根据年周序 找到年周序的第一天-->
+	<select id="getMinRiqByNianzx" resultClass="java.lang.String" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+	select min(t.riq) from ${dbSchemal3}ckx_calendar_version t where  banc = #banc#
+			and usercenter = #usercenter# and nianzx = #nianzx# 
+	</select>
+	<!-- 修改（此条数据的周序的所有数据的）周序 UP|DN-->
+	<update id="updateCkxCalendarVersionZhouxUD" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+		update ${dbSchemal3}ckx_calendar_version set 
+		zhoux = #zhouxTemp#,
+		nianzq = #nianzqTemp#,
+		nianzx = #nianzxTemp#,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		and banc = #banc#
+			and usercenter = #usercenter# and zhoux = #zhoux#
+		<![CDATA[ and nianzx = #nianzx# and riq $creator$]]>		
+	</update>
+	<!-- 修改(相同年周期的)周序 UP|DN-->
+	<update id="updateZhouqZhouxUD" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+		update ${dbSchemal3}ckx_calendar_version set 
+<!-- 		zhoux = '0'||to_number(zhoux+($creator$)), -->
+		 zhoux = case when  length(to_number(zhoux+($creator$)))=2 then to_char(to_number(zhoux+($creator$))) else to_char('0'||to_number(zhoux+($creator$))) end	,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		and banc = #banc#
+			and usercenter = #usercenter# 
+		<![CDATA[  and nianzq = #nianzq#  and zhoux||nianzx<>#zhoux#||#nianzx# and riq>#riq#]]>		
+	</update>
+	<!-- 修改(相同年分)年周序 UP|DN-->
+	<update id="updateNianzxUD" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarVersion">
+		update ${dbSchemal3}ckx_calendar_version set 
+		nianzx = nianzx+($creator$),	
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		and banc = #banc#
+			and usercenter = #usercenter# 
+		<![CDATA[  and substr(nianzq,0,4) = substr(#nianzq#,0,4) and zhoux||nianzx<>#zhoux#||#nianzx# and riq>#riq#]]>		
+	</update>
+	
+</sqlMap>

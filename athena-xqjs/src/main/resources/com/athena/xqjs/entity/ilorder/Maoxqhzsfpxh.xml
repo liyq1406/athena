@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ilorder">
+
+	<resultMap class="com.athena.xqjs.entity.ilorder.Maoxqhzsfpxh"
+		id="Maoxqhzsfpxh">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="LINGJBH" property="lingjbh" />
+		<result column="FENPXH" property="fenpxh" />
+		<result column="ZHIZLX" property="zhizlx" />
+		<result column="SHIYCJ" property="shiycj" />
+		<result column="DANW" property="danw" />
+		<result column="S0" property="s0" />
+		<result column="S1" property="s1" />
+		<result column="S2" property="s2" />
+		<result column="S3" property="s3" />
+		<result column="S4" property="s4" />
+		<result column="S5" property="s5" />
+		<result column="S6" property="s6" />
+		<result column="S7" property="s7" />
+		<result column="S8" property="s8" />
+		<result column="S9" property="s9" />
+		<result column="S10" property="s10" />
+		<result column="XUQCFRQ" property="xuqcfrq" />
+		<result column="S0ZXH" property="s0zxh" />
+		<result column="CANGKDM" property="cangkdm" />
+		<result column="CANGKLX" property="cangklx" />
+		<result column="LUJBH" property="lujbh" />
+		<result column="JIAOFM" property="jiaofm" />
+		<result column="BEIHZQ" property="beihzq" />
+		<result column="YUNSZQ" property="yunszq" />
+		<result column="GONGYS" property="gongys" />
+		<result column="ZHIDGYS" property="zhidgys" />
+		<result column="WAIBGHMS" property="waibghms" />
+	</resultMap>
+	<select id="queryInMaoxqhzsfpxh" resultClass="com.athena.xqjs.entity.ilorder.Maoxqhzsfpxh">
+		select 
+
+temp.usercenter,
+       temp.lingjbh,
+       temp.zhizlx,
+       temp.shiycj,
+       temp.danw,
+       sum(temp.s0) as s0,
+       sum(temp.s1) as s1,
+       sum(temp.s2) as s2,
+       sum(temp.s3) as s3,
+       sum(temp.s4) as s4,
+       sum(temp.s5) as s5,
+       sum(temp.s6) as s6,
+       sum(temp.s7) as s7,
+       sum(temp.s8) as s8,
+       sum(temp.s9) as s9,
+       sum(temp.s10) as s10,
+       temp.xuqcfrq,
+       temp.s0zxh,
+      temp.cangkdm,
+      temp.cangklx,
+       temp.lujbh,
+       temp.beihzq,
+       temp.yunszq,
+       temp.zhidgys,
+       temp.waibghms,
+       temp.fahd
+from (
+select distinct m.usercenter,
+       m.lingjbh,
+       m.zhizlx,
+       cl.fenpqbh as fenpxh,
+       m.shiycj,
+       m.danw,
+       (m.s0 * cl.xiaohbl) as s0,
+       (m.s1 * cl.xiaohbl) as s1,
+       (m.s2 * cl.xiaohbl) as s2,
+       (m.s3 * cl.xiaohbl) as s3,
+       (m.s4 * cl.xiaohbl) as s4,
+       (m.s5 * cl.xiaohbl) as s5,
+       (m.s6 * cl.xiaohbl) as s6,
+       (m.s7 * cl.xiaohbl) as s7,
+       (m.s8 * cl.xiaohbl) as s8,
+       (m.s9 * cl.xiaohbl) as s9,
+       (m.s10 * cl.xiaohbl) as s10,
+       m.xuqcfrq,
+       m.s0zxh,
+       case
+         when cw.dinghck is null then
+          cw.xianbck
+         else
+          cw.dinghck
+       end as cangkdm,
+       case
+         when cw.dinghck is null then
+          0
+         else
+          1
+       end as cangklx,
+       cw.lujbh,
+       cw.beihzq,
+       cw.yunszq,
+       cw.zhidgys,
+       cw.waibms as waibghms,
+       cw.fahd
+  from ${dbSchemal3}ckx_lingjxhd  cl,
+       ${dbSchemal1}XQJS_maoxqhzs m,
+       ${dbSchemal3}CKX_WULLJ     cw
+ where 1 = 1
+   and m.usercenter = cl.usercenter
+   and m.lingjbh = cl.lingjbh
+   and m.chanx = cl.shengcxbh
+   and m.usercenter = cw.usercenter
+   and m.lingjbh = cw.lingjbh
+   and cl.fenpqbh = cw.fenpqh
+   and m.zhizlx = cw.zhizlx
+   and sysdate &gt; to_date(cl.shengxr, 'yyyy-mm-dd')
+   and sysdate &lt; to_date(cl.jiesr, 'yyyy-mm-dd') ) temp
+   group by 
+   temp.usercenter,
+       temp.lingjbh,
+       temp.zhizlx,
+       temp.shiycj,
+       temp.danw,
+       temp.xuqcfrq,
+       temp.s0zxh,
+      temp.cangkdm,
+      temp.cangklx,
+       temp.lujbh,
+       temp.beihzq,
+       temp.yunszq,
+       temp.zhidgys,
+       temp.waibghms,
+       temp.fahd
+  
+	</select>
+	<insert id="insertMaoxqhzsfpxh" parameterClass="com.athena.xqjs.entity.ilorder.Maoxqhzsfpxh">
+		insert into
+		${dbSchemal1}XQJS_Maoxqhzsfpxh
+		(
+		USERCENTER,
+		LINGJBH,
+		FENPXH,
+		ZHIZLX,
+		SHIYCJ,
+		DANW,
+		S0,
+		S1,
+		S2,
+		S3,
+		S4,
+		S5,
+		S6,
+		S7,
+		S8,
+		S9,
+		S10,
+		XUQCFRQ,
+		S0ZXH,
+		CANGKDM,
+		CANGKLX,
+		LUJBH,
+		JIAOFM,
+		BEIHZQ,
+		YUNSZQ,
+		GONGYS,
+		ZHIDGYS,
+		WAIBGHMS,
+		FAHD,
+		ID
+		)
+		values(
+		#usercenter#,
+		#lingjbh#,
+		#fenpxh#,
+		#zhizlx#,
+		#shiycj#,
+		#danw#,
+		#s0#,
+		#s1#,
+		#s2#,
+		#s3#,
+		#s4#,
+		#s5#,
+		#s6#,
+		#s7#,
+		#s8#,
+		#s9#,
+		#s10#,
+		#xuqcfrq#,
+		#s0zxh#,
+		#cangkdm#,
+		#cangklx#,
+		#lujbh#,
+		#jiaofm#,
+		#beihzq#,
+		#yunszq#,
+		#gongys#,
+		#zhidgys#,
+		#waibghms#,
+		#fahd#,
+		${dbSchemal1}MAOXQHZPFPXH_SEQ.nextval
+		)
+	</insert>
+	<select id="queryMaoxqhzsfpxh" resultClass="com.athena.xqjs.entity.ilorder.Maoxqhzsfpxh">
+		select
+		ID,
+		USERCENTER,
+		LINGJBH,
+		FENPXH,
+		ZHIZLX,
+		SHIYCJ,
+		DANW,
+		S0,
+		S1,
+		S2,
+		S3,
+		S4,
+		S5,
+		S6,
+		S7,
+		S8,
+		S9,
+		S10,
+		XUQCFRQ,
+		S0ZXH,
+		CANGKDM,
+		CANGKLX,
+		LUJBH,
+		JIAOFM,
+		BEIHZQ,
+		YUNSZQ,
+		GONGYS,
+		ZHIDGYS,
+		WAIBGHMS
+		from
+		${dbSchemal1}XQJS_Maoxqhzsfpxh
+		where
+		1=1
+	</select>
+
+	<delete id="deleteAllS">
+		delete
+		from
+		${dbSchemal1}XQJS_Maoxqhzsfpxh
+		where
+		1=1 
+	</delete>
+</sqlMap>

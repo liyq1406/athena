@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ckxKuczh">
+	<!-- 插入库存置换 -->
+	<insert id="insertKuczh" parameterClass="com.athena.ckx.entity.xuqjs.Kuczh">
+		<![CDATA[
+		insert into ${dbSchemal1}XQJS_KUCZH(
+			usercenter, 
+			cangk, 
+			iskaolckjs, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3)
+		values(
+		    #usercenter#,
+		    #cangk#,
+		    #iskaolckjs#,			
+			#creator#,
+			to_timestamp(#create_time#,'yyyy-mm-dd hh24:mi:ss ff'),
+			#editor#,
+			to_timestamp(#edit_time#,'yyyy-mm-dd hh24:mi:ss ff'),
+			#beiz1#,
+			#beiz2#,
+			#beiz3#
+		)]]>
+	</insert>
+  
+  <!-- 更新库存置换 -->
+	<update id="updateKuczhByParam" parameterClass="com.athena.ckx.entity.xuqjs.Kuczh">
+		update
+		${dbSchemal1}XQJS_KUCZH
+		set
+		    usercenter=#usercenter#,
+		    cangk=#cangk#,
+			iskaolckjs=#iskaolckjs#,			
+			editor = #creator#,
+			edit_time = sysdate
+		where
+			1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangk">
+				cangk =
+				#cangk#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+<!-- 删除库存置换 -->
+	<delete id="deleteKuczh" parameterClass="com.athena.ckx.entity.xuqjs.Kuczh">
+		delete
+		from
+		${dbSchemal1}XQJS_KUCZH
+		where
+		1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangk">
+				cangk =
+				#cangk#
+			</isNotEmpty>			
+			</dynamic>
+	</delete>
+<!-- 查询库存置换 -->
+	<select id="queryKuczhByParam" resultClass="com.athena.ckx.entity.xuqjs.Kuczh">
+
+		select
+		usercenter, 
+			cangk, 
+			iskaolckjs, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3
+		from
+		${dbSchemal1}XQJS_KUCZH
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangk">
+				cangk =
+				#cangk#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="iskaolckjs">
+				iskaolckjs =
+				#iskaolckjs#
+			</isNotEmpty>
+		</dynamic>
+
+	</select>	
+</sqlMap>

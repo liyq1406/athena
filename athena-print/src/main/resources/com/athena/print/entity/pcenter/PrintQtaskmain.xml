@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pcenter">
+	<!-- 查询作业主表数据 -->
+	<select id="queryPrintQtaskmain" resultClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+	select t.usercenter,t.qid,t.saccount,t.pgid,t.storagecode,t.scode,t.sdevicecode,t.createtime, t.finishedtime,t.status
+	from ${dbSchemal3}ckx_print_qtask_main  t
+	<!-- inner join ckx_print_qtask_info s on 
+	t.usercenter = s.usercenter and t.qid = s.qid-->
+	where exists (select 1 from ${dbSchemal3}ckx_print_qtask_info s where t.usercenter=s.usercenter and t.qid=s.qid)<!-- add by lc 2016.9.8 -->
+		<dynamic>
+			<isNotEmpty prepend="  and " property="qid">t.qid = #qid#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="scode">t.scode = #scode#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="pgid">t.pgid = #pgid#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="createtime">
+				<isEmpty prepend="   " property="finishedtime">
+					<![CDATA[t.createtime >= to_date(#createtime#,'yyyy-MM-dd HH24:mi:ss')]]>
+				</isEmpty>
+				<isNotEmpty prepend="   " property="finishedtime">
+					<![CDATA[t.createtime between to_date(#createtime#,'yyyy-MM-dd HH24:mi:ss') and to_date(#finishedtime#,'yyyy-MM-dd HH24:mi:ss')]]>
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="finishedtime">
+				<isEmpty prepend="   " property="createtime">
+					<![CDATA[t.createtime <= to_date(#finishedtime#,'yyyy-MM-dd HH24:mi:ss')]]>
+				</isEmpty>
+				<isNotEmpty prepend="   " property="createtime">
+					t.createtime between to_date(#createtime#,'yyyy-MM-dd HH24:mi:ss') and to_date(#finishedtime#,'yyyy-MM-dd HH24:mi:ss')
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="status">t.status = #status#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">t.usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="saccount">t.saccount = #saccount#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="storagecode">t.storagecode = #storagecode#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="sdevicecode">t.sdevicecode = #sdevicecode#</isNotEmpty>
+			<!--  <isNotEmpty prepend="  and " property="seq">s.seq = #seq#</isNotEmpty> -->
+		</dynamic>
+		order by t.createtime DESC
+	</select>
+	
+	<select id="queryPrintQtaskmainSelect" resultClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+	select t.usercenter,t.qid,t.saccount,t.pgid,t.storagecode,t.scode,t.sdevicecode,t.createtime, t.finishedtime,t.status
+	from ${dbSchemal3}ckx_print_qtask_main  t
+	<!-- inner join ckx_print_qtask_info s on 
+	t.usercenter = s.usercenter and t.qid = s.qid-->
+	where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="qid">t.qid in $qid$</isNotEmpty>
+			<isNotEmpty prepend="  and " property="status">t.status = #status#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">t.usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="saccount">t.saccount = #saccount#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="storagecode">t.storagecode = #storagecode#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="sdevicecode">t.sdevicecode = #sdevicecode#</isNotEmpty>
+			<!--  <isNotEmpty prepend="  and " property="seq">s.seq = #seq#</isNotEmpty> -->
+		</dynamic>
+		order by t.createtime DESC
+	</select>
+	
+	
+	<select id="queryPrintQtaskmain1" parameterClass="java.lang.String"  resultClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+	select usercenter,qid,saccount,pgid,storagecode,scode,sdevicecode,createtime, finishedtime,status
+	from ${dbSchemal3}ckx_print_qtask_main 
+	where qid=#qid#
+	</select>
+	
+	
+	<!-- 查询主作业表中 作业状态为 准备中     打 印机编号为  NONE 的作业队列 -->
+	<select id="queryPrintQtaskmainstatus" resultClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+	select usercenter,qid,saccount,pgid,storagecode,scode,sdevicecode,createtime, finishedtime,status
+	from ${dbSchemal3}ckx_print_qtask_main  
+	where status=-1 and sdevicecode='NONE' and usercenter='UW'
+	</select>
+	
+	<!-- 获取满足空闲打印机组要求的    新作业  用户 -->
+	<select id="queryPrintQtaskmainstatusByuser" parameterClass="java.lang.String" resultClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+	select distinct saccount from ckx_print_qtask_main 
+	where status = 0 and pgid in($list$) and usercenter='UW'
+	</select>
+	
+	<!-- 根据主队列表中的 作业ID  查询出对应的记录-->
+	<select id="queryPrintQtaskmainByinfo" parameterClass="java.util.Map" resultClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+	select usercenter,qid,saccount,pgid,storagecode,scode,sdevicecode,createtime, finishedtime,status
+	from ${dbSchemal3}ckx_print_qtask_main
+	where qid=#qid#  and usercenter=#usercenter#
+	</select>
+	
+	<!-- 根据用户获取新作业  每个用户取第一条数据  List -->
+	<select id="queryPrintQtaskmainstatus1" parameterClass="java.lang.String" resultClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+	select usercenter,qid,saccount,pgid,storagecode,scode,sdevicecode,createtime, finishedtime,status
+	from ${dbSchemal3}ckx_print_qtask_main  
+	where saccount=#saccount#  and status=0 and usercenter='UW'
+	order by createtime 
+	</select>
+	
+	<!-- 根据用户获取上一次完成任务所使用的打印机   -->
+	<select id="queryPrintQtaskmainstatus2" parameterClass="java.lang.String" resultClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+	select usercenter,qid,saccount,pgid,storagecode,scode,sdevicecode,createtime, finishedtime,status
+	from ${dbSchemal3}ckx_print_qtask_main  
+	where saccount=#saccount#  and status=3 and usercenter='UW'
+	order by finishedtime desc 
+	</select>
+	
+	<!-- 查询出主作业状态中为 打印中 或 打印中断   -->
+	<select id="queryPrintQtaskmainstatus3" parameterClass="java.lang.String" resultClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+	select usercenter,qid,saccount,pgid,storagecode,scode,sdevicecode,status,createtime
+	from ${dbSchemal3}ckx_print_qtask_main  
+	where status=1 or status=2
+	</select>
+	
+	<!-- 插入一条主作业数据 -->
+	<insert id="insertPrintQtaskmain" parameterClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+	insert into ${dbSchemal3}ckx_print_qtask_main 
+	(usercenter,qid,saccount,pgid,storagecode,scode,sdevicecode,createtime,status)
+	values(#usercenter#,#qid#,#saccount#,#pgid#,#storagecode#,#scode#,#sdevicecode#,to_date(#createtime#,'yyyy-MM-dd HH24:mi:ss'),#status#)
+	</insert>
+	
+	<!-- 更新一条主作业数据 -->
+	<update id="updatePrintQtaskmain" parameterClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+		update ${dbSchemal3}ckx_print_qtask_main set 
+		pgid=#pgid#,
+		storagecode=#storagecode#,
+		scode=#scode#, 
+		sdevicecode=#sdevicecode#,
+		createtime=to_date(#createtime#,'yyyy-MM-dd HH24:mi:ss'), 
+		status=#status#)
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="qid">qid = #qid#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	
+	<!-- 更新一条主作业数据 -->
+	<update id="updatePrintQtaskmains" parameterClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+		update ${dbSchemal3}ckx_print_qtask_main set 
+		pgid=#pgid#,
+		status=-1,
+		sdevicecode='NONE'
+		where qid = #qid#
+	</update>
+	
+	<!-- 更新一条主作业状态为 待分配 数据 -->
+	<update id="updatePrintQtaskms" parameterClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+		update ${dbSchemal3}ckx_print_qtask_main set 
+		pgid=#pgid#,
+		sdevicecode='NONE'
+		where qid = #qid#
+	</update>
+	
+	<!-- 根据主作业的ID号  更新主作业的状态为   打印完成 -->
+	<update id="updatePrintQtaskmain1" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_print_qtask_main set 
+		status=3
+		where qid= #qid# and usercenter='UW'
+	</update>
+	
+	<!-- 打印机状态为 繁忙、缺纸、卡纸、网络故障、打印机故障 时     则 更新该作业为打印中断 -->
+	<update id="updatePrintQtaskmain4" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_print_qtask_main set 
+		status=1
+		where qid= #qid# and usercenter='UW'
+	</update>
+	
+	<!-- 根据主作业的ID号  更新主作业的状态为   打印中-->
+	<update id="updatePrintQtaskmain3" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_print_qtask_main set 
+		status=2 
+		where qid= #qid# and usercenter='UW'
+	</update>
+	
+	<!-- 根据主作业的ID号  更新主作业的状态为   新作业-->
+	<update id="updatePrintQtaskmain2" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_print_qtask_main set 
+		status=0 
+		where qid= #qid# and usercenter='UW'
+	</update>
+	
+	<!-- 根据主作业的ID号   更新主队列表中的 打印机编号     写入数据库-->
+	<update id="updatePrintQtaskmain5" parameterClass="com.athena.print.entity.pcenter.PrintQtaskmain">
+		update ${dbSchemal3}ckx_print_qtask_main set 
+		sdevicecode=#sdevicecode#
+		where qid= #qid# and usercenter='UW'
+	</update>
+	
+	<!-- 逻辑删除一条主作业数据 -->
+	<delete id="deletePrintQtaskmain" parameterClass="java.util.Map">
+		update ${dbSchemal3}ckx_print_qtask_main 
+		set status = 4
+		where qid= #qid# and usercenter=#usercenter#
+	</delete>
+	
+	<!-- 逻辑删除一条主作业数据 -->
+	<delete id="deletePrintQtaskmain1" parameterClass="java.lang.String">
+		update ${dbSchemal3}ckx_print_qtask_main 
+		set status = 4
+		where qid=#qid# and usercenter='UW'
+	</delete>
+</sqlMap>

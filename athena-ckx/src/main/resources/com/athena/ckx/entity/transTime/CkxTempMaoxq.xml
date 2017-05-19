@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="transTime">
+	
+	<select id="queryCkxTempMaoxq" resultClass="com.athena.ckx.entity.transTime.CkxTempMaoxq">
+	select usercenter ,chanx , lingjbh , shul , kaissj, jiezsj		
+	from ${dbSchemal3}ckx_temp_maoxq 
+	where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">chanx = #chanx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getCkxTempMaoxq" resultClass="com.athena.ckx.entity.transTime.CkxTempMaoxq">
+		select usercenter ,chanx , lingjbh , shul , kaissj, jiezsj		
+		from ${dbSchemal3}ckx_temp_maoxq 
+		where usercenter = #usercenter#,chanx = #chanx#,lingjbh = #lingjbh#
+	</select>
+</sqlMap>

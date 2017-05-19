@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="ts_ckx">
+
+	<!--导出发货通知单查询的查询语句 -->
+	<select id="queryFhtzcx" resultClass="com.athena.ckx.entity.baob.Fahtzcx" parameterClass="com.athena.ckx.entity.baob.Fahtzcx">
+	   select b.lingjbh,a.blh,a.tch,b.lingjsl,b.dingdh,a.blscsj,a.cangkbh,b.uarl,b.gongysdm,b.yaohlh,h.jihy,a.usercenter
+  	   from ${dbSchemal3}ck_daohtzd a, ${dbSchemal3}ck_uabq b
+       left join ${dbSchemal3}ckx_lingj h on b.lingjbh = h.lingjbh
+       and b.usercenter = h.usercenter
+  	   where a.uth = b.uth
+       and (a.shiftb = '0' or a.shiftb is null)
+       and h.biaos !='2'
+       <dynamic>
+       		<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[a.usercenter=#usercenter#]]> 
+	    	</isNotEmpty>
+			<isNotEmpty property="tch" prepend="and">
+	    		<![CDATA[a.tch=#tch#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="blh" prepend="and">
+	    		<![CDATA[a.blh=#blh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="gongysdm" prepend="and">
+	    		<![CDATA[b.gongysdm=#gongysdm#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend="  and " property="createtime">
+				<isEmpty prepend="   " property="finishedtime">
+					<![CDATA[a.blscsj >= to_date(#createtime#,'yyyy-MM-dd HH24:mi:ss')]]>
+				</isEmpty>
+				<isNotEmpty prepend="   " property="finishedtime">
+					<![CDATA[a.blscsj between to_date(#createtime#,'yyyy-MM-dd HH24:mi:ss') and to_date(#finishedtime#,'yyyy-MM-dd HH24:mi:ss')]]>
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="finishedtime">
+				<isEmpty prepend="   " property="createtime">
+					<![CDATA[a.blscsj <= to_date(#finishedtime#,'yyyy-MM-dd HH24:mi:ss')]]>
+				</isEmpty>
+				<isNotEmpty prepend="   " property="createtime">
+					a.blscsj between to_date(#createtime#,'yyyy-MM-dd HH24:mi:ss') and to_date(#finishedtime#,'yyyy-MM-dd HH24:mi:ss')
+				</isNotEmpty>
+			</isNotEmpty>
+	    </dynamic>
+	    order by a.blscsj
+	</select>
+</sqlMap>

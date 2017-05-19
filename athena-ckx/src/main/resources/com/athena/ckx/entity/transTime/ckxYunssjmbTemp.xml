@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="transTime">
+	
+	<select id="queryCkxYunssjMbTemp" resultClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+	select usercenter,xiehztbh ,gcbh , nvl(facsj,0) facsj , nvl(daohsj,0) daohsj , shengcsj , xuh 
+	from ${dbSchemal3}ckx_yunssjmb_temp
+	where 1=1 
+		<dynamic>
+		<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="creator">xiehztbh in $creator$</isNotEmpty>
+		</dynamic>
+		order by xiehztbh,gcbh, xuh asc 
+	</select>
+	<insert id="insertCkxYunssjMbTempImport" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+    insert into ${dbSchemal3}ckx_yunssjmb_temp  
+   (usercenter,xiehztbh ,gcbh ,  daohsj , facsj , xuh,shengcsj ,creator , create_time,editor,edit_time)
+	values(<![CDATA[
+	#usercenter#,#xiehztbh# ,#gcbh# , #daohsj# , #facsj# , #xuh#, to_date(#shengcsj#,'yyyy-MM-dd hh24:mi:ss') ,
+	#creator#,#create_time#,#editor#,#edit_time# 
+	   ]]> ) 
+	</insert>
+	<!-- 
+	<insert id="insertCkxYunssjMbTemp" parameterClass="java.util.Date">
+    insert into ${dbSchemal3}ckx_yunssjmb_temp  
+   (usercenter,xiehztbh ,gcbh ,  daohsj , facsj , xuh,shengcsj ,creator , create_time,editor,edit_time)
+	select x.usercenter,p.xiehztbh,p.gcbh,shijpl as daohsj,
+	     (shijpl-((g.beihzq+g.fayzq)*24*60)) as facsj,xuh ,#create_time#,p.creator,#create_time#,p.creator as editor,#create_time# 
+	           from (
+	           		 select pysj.xiehztbh,pysj.gcbh,pysj.xuh,pysj.shijpl,pysj.creator
+                     from ${dbSchemal3}ckx_temp_pianysj pysj
+                     inner join ${dbSchemal3}ckx_temp_pingjpc  pc
+                     on pysj.xiehztbh = pc.xiehztbh and pysj.moncs = pc.moncs
+	           ) p
+	inner join ${dbSchemal3}ckx_xiehzt  x on x.xiehztbh=p.xiehztbh 
+	left join  ${dbSchemal3}ckx_gongys g on g.gcbh=p.gcbh and g.usercenter = x.usercenter
+	order by p.gcbh,p.xuh
+	</insert> -->
+	<!-- 调用存储过程生成运输时刻计算模板 -->
+	<procedure id="insertpro_yunssk"  >	
+	{call ${dbSchemal3}pro_ckx_yunssk (#dingszt#,#creator#)}
+	</procedure>
+	<update id="updateCkxYunssjMbTemp" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+	update ${dbSchemal3}ckx_yunssjmb_temp
+	set
+        <![CDATA[daohsj = #daohsj#]]> ,
+    	<![CDATA[facsj = #facsj#]]> ,    
+    	<![CDATA[editor = #editor#]]> ,    	
+    	<![CDATA[edit_time = #edit_time#]]> 
+    
+	 where <![CDATA[usercenter = #usercenter# and  xiehztbh = #xiehztbh# and gcbh = #gcbh# and  xuh=#xuh#]]> 
+	</update>
+	<delete id="deleteCkxYunssjMbTemp" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+		delete ${dbSchemal3}ckx_yunssjmb_temp where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuh">xuh = #xuh#</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="queryCkxYunssjMb" resultClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+	select usercenter,xiehztbh ,gcbh , facsj , daohsj , shengcsj , xuh ,creator
+	from ${dbSchemal3}ckx_yunssjmb
+	where 1=1 
+		<dynamic>
+		<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="creator">xiehztbh in $creator$</isNotEmpty>
+		</dynamic>
+		order by xiehztbh,gcbh, xuh asc 
+	</select>
+<!-- 	//获取卸货站台的集合 -->
+	<select id="getyunsskXiehztGroup"  resultClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+		select usercenter,xiehztbh from  ${dbSchemal3}ckx_yunssjmb group by usercenter,xiehztbh order by xiehztbh
+	</select>
+<!-- 	//根据卸货站台获取单个卸货站台的承运商的集合 -->
+	<select id="queryYunsskGcbh" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMb" resultClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+	select usercenter,xiehztbh ,gcbh , facsj , daohsj , shengcsj , xuh ,creator
+	from ${dbSchemal3}ckx_yunssjmb
+	where  usercenter = #usercenter# and xiehztbh = #xiehztbh# 
+	order by usercenter,xiehztbh,gcbh, xuh asc 
+	</select>
+	
+		
+	<!-- 	//获取卸货站台的集合   xss-0011489-->
+	<select id="getyunsskXiehztGroupTemp"  resultClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+		select a.usercenter,a.xiehztbh 
+			from ${dbSchemal3}ckx_yunssjmb_temp a  inner join CKX_CALENDAR_GROUP_temp  b on a.usercenter=b.usercenter and a.xiehztbh=b.appobj
+			where 1=1 
+				<dynamic>
+					<isNotEmpty prepend=" and " property="usercenter">a.usercenter = #usercenter#</isNotEmpty>
+				   <isNotEmpty property="xiehztbzs" prepend=" and ">a.xiehztbh in $xiehztbzs$</isNotEmpty>				
+				</dynamic>
+				group by a.usercenter,a.xiehztbh
+				order by a.xiehztbh
+	</select>
+	
+	<!-- 	//根据卸货站台获取单个卸货站台的承运商的集合   xss-0011489-->
+	<select id="queryYunsskGcbhTemp" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMb" resultClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+	select usercenter,xiehztbh ,gcbh , facsj , daohsj , shengcsj , xuh ,creator
+	from ${dbSchemal3}ckx_yunssjmb_temp
+	where  usercenter = #usercenter# and xiehztbh = #xiehztbh# 
+	order by usercenter,xiehztbh,gcbh, xuh asc 
+	</select>
+	
+	
+	
+	
+	<select id="getMaxXuh" resultClass="java.lang.String" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMb" >
+	select max(xuh) 
+	from ${dbSchemal3}ckx_yunssjmb
+	where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+		</dynamic>		
+	</select>
+	<insert id="insertCkxYunssjMb" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+	insert into ${dbSchemal3}ckx_yunssjmb	
+	(usercenter,xiehztbh ,gcbh , facsj , daohsj , shengcsj , xuh,creator,create_time,editor,edit_time)
+	values(<![CDATA[
+	#usercenter#,#xiehztbh# ,#gcbh# , #facsj# , #daohsj# , to_date(#shengcsj#,'yyyy-MM-dd hh24:mi:ss') , #xuh#,
+	#creator#,#create_time#,#editor#,#edit_time# 
+	   ]]> ) 
+	</insert>
+	<insert id="insertCkxYunssjMbByTemp" >
+    insert into ${dbSchemal3}ckx_yunssjmb  
+   (usercenter,xiehztbh ,gcbh , facsj , daohsj , shengcsj , xuh,creator,create_time,editor,edit_time)
+    select y.usercenter,y.xiehztbh,y.gcbh,y.facsj,y.daohsj,y.shengcsj,y.xuh,
+                    #creator#,sysdate,#creator#,sysdate
+           from ${dbSchemal3}ckx_yunssjmb_temp y inner join ${dbSchemal3}ckx_xiehztbz t on y.usercenter=t.usercenter and y.xiehztbh = t.xiehztbzh and t.biaos = '1' where 1=1
+         <dynamic>
+<!-- 			<isNotEmpty prepend=" and " property="xiehztbzs" >y.xiehztbh in $xiehztbzs$</isNotEmpty>	 -->
+			   <!-- 0007140 按照用户中心 、和物流工艺员所对应的卸货站台 编组写入数据-->
+			   <isNotEmpty property="usercenter" prepend=" and ">y.usercenter = #usercenter#</isNotEmpty>
+		       <isNotEmpty property="xiehztbzs" prepend=" and ">y.xiehztbh in $xiehztbzs$</isNotEmpty>
+			
+		</dynamic>		
+	</insert>
+	<!-- 0007084 去掉xiehztbh的-->
+	<delete id="DeleteCkxYunssjMbByTemp" >
+	  delete  from ${dbSchemal3}ckx_yunssjmb where usercenter||xiehztbh in 
+	  ( select distinct usercenter||xiehztbh from ${dbSchemal3}ckx_yunssjmb_temp where 1=1 
+		   <dynamic>
+		   <!-- 0007140 按照用户中心 、和物流工艺员所对应的卸货站台 编组删除数据-->
+		   <isNotEmpty property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotEmpty>
+		       <isNotEmpty property="xiehztbzs" prepend=" and ">xiehztbh in $xiehztbzs$</isNotEmpty>
+				
+			</dynamic>	
+	  )
+	</delete>
+	<update id="updateCkxYunssjMb" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+	update ${dbSchemal3}ckx_yunssjmb
+	<dynamic prepend="set">
+        <isNotEmpty property="facsj" prepend=",">
+    		   <![CDATA[facsj = #facsj#]]> 
+    	</isNotEmpty>    
+    	 <isNotEmpty property="daohsj" prepend=",">
+    		   <![CDATA[daohsj = #daohsj#]]> 
+    	</isNotEmpty>    	
+    	  <isNotEmpty property="editor" prepend=",">
+    		   <![CDATA[editor = #editor#]]> 
+    	</isNotEmpty>
+    	  <isNotEmpty property="edit_time" prepend=",">
+    		   <![CDATA[edit_time = #edit_time#]]> 
+    	</isNotEmpty>
+    	</dynamic>
+	 where <![CDATA[usercenter = #usercenter# and  xiehztbh = #xiehztbh# and gcbh = #gcbh# and  xuh =#xuh#]]> 
+	</update>
+	
+	<delete id="deleteCkxYunssjMb" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+		delete ${dbSchemal3}ckx_yunssjmb where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuh">xuh = #xuh#</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<select id="queryDingssx" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMBSx" resultClass="com.athena.ckx.entity.transTime.CkxYunssjMBSx">
+	select bz.usercenter,bz.xiehztbzh,sx.editor, to_char(sx.edit_time,'yyyy-MM-dd hh24:mi:ss') edit_time,to_char(sx.shengxsj,'yyyy-MM-dd') shengxsj from ${dbSchemal3}ckx_xiehztbz bz left join ${dbSchemal3}ckx_yunssjmb_shengx sx 
+	on bz.usercenter = sx.usercenter and bz.xiehztbzh = sx.xiehztbzh
+	where 1=1   and bz.biaos = '1' 
+       <dynamic>
+        <isNotEmpty property="usercenter" prepend=" and ">bz.usercenter = #usercenter#</isNotEmpty>
+        <isNotEmpty property="xiehztbzh" prepend=" and ">bz.xiehztbzh in $xiehztbzh$</isNotEmpty>
+      </dynamic>  
+		order by bz.usercenter,bz.xiehztbzh 
+	</select>
+	
+	<update id="updateCkxYunssjMbDingssx" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMBSx">
+	update ${dbSchemal3}ckx_yunssjmb_shengx
+    set 
+     <dynamic>
+             <isNotEmpty property="shengxsj" prepend="  "><![CDATA[shengxsj = to_date(#shengxsj#,'yyyy-MM-dd'), ]]></isNotEmpty>
+             <isEmpty property="shengxsj" prepend="  "><![CDATA[shengxsj = null, ]]></isEmpty>
+     </dynamic> 
+    	<![CDATA[editor = #editor#]]> ,    	
+    	<![CDATA[edit_time = sysdate]]> 
+	 where <![CDATA[usercenter = #usercenter# and  xiehztbzh = #xiehztbzh# ]]> 
+	</update>
+	
+	<insert id="insertCkxYunssjMbDingssx" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMBSx">
+	insert into ${dbSchemal3}ckx_yunssjmb_shengx	
+	(usercenter,xiehztbzh ,shengxsj,creator,create_time,editor,edit_time)
+	values(<![CDATA[
+	#usercenter#,#xiehztbzh# ,]]>
+	     <dynamic>
+             <isNotEmpty property="shengxsj" prepend="  "><![CDATA[to_date(#shengxsj#,'yyyy-MM-dd') ]]></isNotEmpty>
+             <isEmpty property="shengxsj" prepend="  "><![CDATA[null ]]></isEmpty>
+    	 </dynamic> 
+	<![CDATA[
+	,#creator#,sysdate,#editor#,sysdate 
+	   ]]> ) 
+	</insert>
+	
+	<select id="selectYsskMbSxXiehztbz" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMBSx" resultClass="java.util.HashMap">
+	select bz.usercenter,bz.xiehztbzh from ${dbSchemal3}ckx_xiehztbz bz 
+	where 1=1   and bz.biaos = '1' 
+       <dynamic>
+        <isNotEmpty property="usercenter" prepend=" and ">bz.usercenter = #usercenter#</isNotEmpty>
+        <isNotEmpty property="xiehztbzh" prepend=" and ">bz.xiehztbzh = #xiehztbzh#</isNotEmpty>
+      </dynamic>  
+		order by bz.usercenter,bz.xiehztbzh 
+	</select>
+	
+	<select id="queryChengysListUpload" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select  b.usercenter,b.gcbh from ${dbSchemal3}ckx_gongys b where  b.biaos = '1' 
+       <dynamic>
+        <isNotEmpty property="usercenter" prepend=" and ">b.usercenter = #usercenter#</isNotEmpty>
+      </dynamic>  
+      order by b.usercenter,b.gcbh
+	</select>
+	
+	<select id="queryXiehztbzhListUpload" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select bz.usercenter,bz.xiehztbzh from ${dbSchemal3}ckx_xiehztbz bz 
+		where 1=1   and bz.biaos = '1' 
+       <dynamic>
+        <isNotEmpty property="usercenter" prepend=" and ">bz.usercenter = #usercenter#</isNotEmpty>
+        <isNotEmpty property="xiehztbzh" prepend=" and ">bz.xiehztbzh = #xiehztbzh#</isNotEmpty>
+      </dynamic>  
+		order by bz.usercenter,bz.xiehztbzh 
+	</select>
+
+	<select id="querycangkuListUpload" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT bz.Usercenter,bz.Cangkbh FROM ${dbSchemal3}CKX_CANGK bz
+		where 1=1   and bz.biaos = '1' 
+       <dynamic>
+        <isNotEmpty property="usercenter" prepend=" and ">bz.usercenter = #usercenter#</isNotEmpty>
+      </dynamic>  
+		order by bz.usercenter,bz.Cangkbh 
+	</select>
+	
+	<insert id="insertCkxYunssjmbUpload" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+    insert into ${dbSchemal3}ckx_yunssjmb_temp  
+   (usercenter,xiehztbh ,gcbh ,  daohsj , facsj , xuh,shengcsj ,creator , create_time,editor,edit_time)
+	values(<![CDATA[
+	#usercenter#,#xiehztbh# ,#gcbh# , #daohsj# , #facsj# , #xuh#, sysdate ,
+	#creator#,#create_time#,#editor#,#edit_time# 
+	   ]]> ) 
+	</insert>	
+	
+	<select id="getCountYunssjmb" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMb" resultClass="java.lang.String">
+		select count(1)
+		from ${dbSchemal3}ckx_yunssjmb_temp
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiehztbh"><![CDATA[xiehztbh = #xiehztbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gcbh"><![CDATA[gcbh = #gcbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xuh"><![CDATA[xuh = #xuh#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<update id="updateCkxYunssjmbUpload" parameterClass="com.athena.ckx.entity.transTime.CkxYunssjMb">
+	update ${dbSchemal3}ckx_yunssjmb_temp
+    set shengcsj = sysdate ,
+    	<![CDATA[facsj = #facsj#]]> ,   
+    	<![CDATA[daohsj = #daohsj#]]> ,    
+    	<![CDATA[editor = #editor#]]> ,    	
+    	<![CDATA[edit_time = sysdate]]> 
+	 where <![CDATA[usercenter = #usercenter# and  xiehztbh = #xiehztbh#  and gcbh = #gcbh# and xuh = #xuh#]]> 
+	</update>
+	
+	<delete id="deleteYunssjmbTempUpload" parameterClass="java.util.Map">
+		delete from ${dbSchemal3}ckx_yunssjmb_temp where usercenter = #usercenter#  
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="xiehztbzs"><![CDATA[xiehztbh in $xiehztbzs$]]></isNotEmpty>
+			</dynamic>
+	</delete>
+	
+	
+		<select id="getdistinctxiehztbh" resultClass="com.athena.ckx.entity.transTime.CkxYunssjMb" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarGroup">
+
+   select a.xiehztbzh xiehztbh, b.RILBC gongzrl, b.BIANZH gongzsjbz
+     from ckx_xiehztbz a LEFT JOIN  ckx_calendar_group b on a.xiehztbzh = b.appobj and a.usercenter=b.usercenter       and length(b.appobj) = $lxLength$
+      and b.biaos = '1'
+    INNER JOIN ckx_yunssjmb_temp c
+       on a.usercenter = c.usercenter
+      and a.xiehztbzh = c.XIEHZTBH
+    where 1 = 1
+	<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">a.usercenter = #usercenter#</isNotEmpty>	
+			<isNotEmpty prepend="  and " property="biaos">a.biaos = #biaos#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="creator">a.xiehztbzh in $creator$</isNotEmpty>
+		</dynamic>
+    group by xiehztbzh, RILBC, BIANZH
+    order by xiehztbzh, RILBC, BIANZH
+	</select>
+</sqlMap>

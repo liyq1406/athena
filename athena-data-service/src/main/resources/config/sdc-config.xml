@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components>
+<import resource="classpath*:config/**/module-*.xml"/>
+	<constant name="useIBatis" value="classpath:config/sqlmap-config.xml" />
+	<constant name="useCache" value="classpath:config/ehcache.xml" />
+	
+	<component-scan 
+		package="com.toft.widgets,com.toft.core3,com.toft.core2,com.athena" />
+
+	<datasources transaction-manager="local">
+		<datasource id="1" name="测试数据库" type="Oracle">
+			<connection user-name="TOFT" password="TOFT" server-name="10.26.218.180"
+				port="1521" db-name="dev1db">
+			</connection>
+		</datasource>
+		
+<!-- 		<datasource id="1" name="测试数据库" type="Mysql"> -->
+<!-- 			<connection user-name="athena" password="athena" server-name="localhost" -->
+<!-- 				port="3306" db-name="athena"> -->
+<!-- 			</connection> -->
+<!-- 		</datasource> -->
+	</datasources>
+	
+	<listener class="com.toft.core3.biz.module.ModuleListener" />
+		<message resource="config.toft.ToftErrorCode"/>
+	<message resource="config.toft.ToftSYSErrorCode"/>
+	
+</components>

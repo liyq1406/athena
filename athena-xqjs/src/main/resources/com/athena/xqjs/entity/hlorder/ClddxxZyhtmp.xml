@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="hlorder" >
+ <resultMap id="ClddxxZyhtmp" class="com.athena.xqjs.entity.hlorder.ClddxxZyhtmp" >
+    <result column="ID" property="id"  />
+    <result column="USERCENTER" property="usercenter"  />
+    <result column="WHOF" property="whof"  />
+    <result column="LCDV24" property="lcdv24"  />
+    <result column="YPLBJ" property="yplbj"  />
+    <result column="YJSXSJ" property="yjsxsj"  />
+    <result column="SCXH" property="scxh"  />
+    <result column="YJSYHSJ" property="yjsyhsj"  />
+    <result column="SXSXH" property="sxsxh" />
+    <result column="LCDV" property="lcdv"  />
+    <result column="LEIX" property="leix" />
+    <result column="CJ_DATE" property="cjDate" />
+    <result column="CLZT" property="clzt"  />
+    <result column="LCDVBZK" property="lcdvbzk"  />
+    <result column="LIUSH" property="liush" jdbcType="DECIMAL" />
+  </resultMap>
+ 
+  <insert id="insertclddxxzyhtmp" parameterClass="com.athena.xqjs.entity.hlorder.Clddxx2" >
+      insert into ${dbSchemal5}IN_CLDDXX_ZYHTMP(ID, 
+      USERCENTER, 
+      WHOF,      
+      LCDV24, 
+      YPLBJ, 
+      YJSXSJ, 
+      SCXH, 
+      YJSYHSJ, 
+      SXSXH, 
+      LCDV, 
+      LEIX, 
+      CJ_DATE, 
+      CLZT, 
+      LCDVBZK,
+      LIUSH)
+      values(
+				#id#,
+				#usercenter#,  
+				#whof#,
+				#lcdv24#,  
+				#yplbj#,
+				#yjsxsj#,
+				#scxh#,
+				#yjsyhsj#,
+				#sxsxh#,
+				#lcdv#,
+				#leix#,
+				#cjDate#,
+				#clzt#,
+				#lcdvbzk#,
+				#liush#
+			)
+  </insert>
+  
+   <delete id="deleteClddxxZyhTmpAlldata" >
+		truncate table ${dbSchemal5}IN_CLDDXX_ZYHTMP 
+  </delete>
+  
+ <!-- 根据订单集合查询 -->
+	<select id="queryComputeZzsxlistBYinwhof" resultClass="com.athena.xqjs.entity.hlorder.ClddxxZyhtmp" parameterClass="java.util.Map" >
+		select 
+		ID, USERCENTER, WHOF, SCXH, SXSXH
+		from ${dbSchemal5}IN_CLDDXX_ZYHTMP
+		where WHOF in ($whofs$) 
+		and USERCENTER = #usercenter#
+	</select>
+ 
+ 
+</sqlMap>

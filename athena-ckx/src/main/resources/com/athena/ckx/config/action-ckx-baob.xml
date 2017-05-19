@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	
+	<package name="baob" namespace="/baob"  extend="toft-default" >
+               
+    	<action name="lingjjhygys" class="lingjjhygysAction" method="execute">
+    	    <!-- 零件-计划员-供应商  -->            
+    		<result name="select">/WEB-INF/pages/ckx/baob/lingjjhygys.jsp</result>
+    	</action>
+    	<action name="querylingjjhygys" class="lingjjhygysAction" method="query"/>
+    	<action name="lingjxhdxh" class="lingjxhdxhAction" method="execute">
+    	    <!-- 零件-消耗点-循环 -->            
+    		<result name="select">/WEB-INF/pages/ckx/baob/lingjxhdxh.jsp</result>
+<!--     		<result name="tongbjpgz">/WEB-INF/pages/ckx/baob/tongbjpgz.jsp</result> -->
+    	</action>
+    	<action name="querylingjxhdxh" class="lingjxhdxhAction" method="query"/>
+    	
+    	<action name="tongbjpgz" class="tongbjpgzAction" method="execute">
+    	    <!-- 同步-集配-跟踪 -->            
+    		<result name="select">/WEB-INF/pages/ckx/baob/tongbjpgz.jsp</result>
+    	</action>
+    	<action name="querytongbjpgz" class="tongbjpgzAction" method="query"/>
+    	<action name="shisywyhl" class="shisywyhlAction" method="execute">
+    	    <!-- 实时延误要货令 -->            
+    		<result name="select">/WEB-INF/pages/ckx/baob/shisywyhl.jsp</result>
+    	</action>
+    	<action name="queryshisywyhl" class="shisywyhlAction" method="query"/>
+    	<action name="queryYhllx" class="shisywyhlAction" method="queryYhllx"/>
+    	<!-- 执行层 过滤计划员 -->
+    	<action name="queryJihyByLingj" class="ckxLingjAction" method="queryJihyByLingj"/>
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	<!-- 看板循环卡  -->	
+		<action name="kbxhk" class="kbxhkAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/kbxhk.jsp</result>
+    	</action>
+    	<action name="querykbxhk" class="kbxhkAction" method="query"/>
+    	<action name="downloadkbxhk" class="kbxhkAction" method="download"/><!-- 导出看板循环卡-->
+   		<!--查询生产线编号 -->
+		<action name="selectChanx" class="kbxhkAction" method="selectChanx"></action>
+		
+		<!-- 零件US/冻结KD件 -->
+		<action name="lingjus" class="lingjusAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/lingjus.jsp</result>
+    	</action>
+    	<action name="querylingjus" class="lingjusAction" method="query"/>
+    	<action name="queryztsx" class="lingjusAction" method="queryztsx"/>
+    	<action name="expLingus" class="lingjusAction" method="expLingus"/>
+    	
+    	<!-- 开箱入库集装箱报表 -->
+    	<action name="kaixrukjizx" class="kaixrukjizxAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/kaixrukjizx.jsp</result>
+    	</action>
+    	<action name="querykaixrukjizx" class="kaixrukjizxAction" method="query"/>
+    	
+    	<!-- 有发货通知且入库报表 -->
+    	<action name="fahruk" class="fahrukAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/fahruk.jsp</result>
+    	</action>
+    	<action name="queryfahruk" class="fahrukAction" method="query"/>
+    	
+    	<!-- 发运超过100天汇总零件清单 -->
+    	<action name="faycg100t" class="faycg100tAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/faycg100t.jsp</result>
+    	</action>
+    	<action name="queryfaycg100t" class="faycg100tAction" method="query"/>
+    	<action name="queryallztsx" class="faycg100tAction" method="queryallztsx"/>
+    	
+    	<!-- 备货令跟踪  -->	
+		<action name="bhlgz" class="beihlgzAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/beihlgz.jsp</result>
+    	</action>
+    	<action name="querybeihlgz" class="beihlgzAction" method="query"/>
+    	
+    	<!-- 发货通知单查询  -->	
+		<action name="fhtzcx" class="fahtzcxAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/fahtzcx.jsp</result>
+    	</action>
+    	<action name="queryfahtzcx" class="fahtzcxAction" method="query"/>
+    	
+    	<!-- 发货通知单查询  -->	
+		<action name="yxqljbj" class="youxqljbjAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/youxqljbj.jsp</result>
+    	</action>
+    	<action name="queryyouxqljbj" class="youxqljbjAction" method="query"/>
+    	
+    	 <!-- 11458 实时延误要货令大屏 -->
+    	<action name="ssywyhldppz" class="shisywyhlConfigAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/shisywyhldp.jsp</result>
+    	</action>
+    	<action name="queryCangkByUsercenter" class="shisywyhlConfigAction" method="queryCangkByUsercenter"/>
+    	<action name="queryFactoryByUsercebter" class="shisywyhlConfigAction" method="queryFactoryByUsercebter"/>
+    	<!-- 查询配置 -->
+    	<action name="queryConfig" class="shisywyhlConfigAction" method="query"/>
+    	<!-- 保存配置按钮 -->
+    	<action name="saveConfig" class="shisywyhlConfigAction" method="save"/>
+    	<!-- 配置页面跳转到大屏出错处理 -->
+    	<action name="ssywyhldperror" class="shisywyhlConfigAction" method="showerror">
+    	   <result name="select">/WEB-INF/pages/kac/dapxs/dapxs-error.jsp</result>
+    	</action>
+    	<action name="showscreen" class="shisywyhlConfigAction" method="showscreen">
+    	   <result name="select">/WEB-INF/pages/ckx/baob/showscreen.jsp</result>
+    	</action>
+        <action name="queryYwyhlByParam" class="shisywyhlConfigAction" method="queryYhl"/>
+        
+       <action name="baobiao" class="shisywyhlConfigAction" method="showBaobiao">
+    	   <result name="select">/WEB-INF/pages/ckx/baob/baobiao.jsp</result>
+       </action>
+       <action name="Daoc" class="shisywyhlConfigAction" method="Daoc"/>
+       <action name="GetBaobiaoFromJihy" class="shisywyhlConfigAction" method="showBaobiaoTotal"/>
+       <!-- DFPV发货通知单查询 --><!--rencong 0011937 -->
+       <action name="dfpvfhtzd" class="dfpvfhtzdAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/dfpvfhtzd.jsp</result>
+    	</action>
+    	<action name="queryDfpvfhtzd" class="dfpvfhtzdAction" method="query"/>
+    	
+    	<!-- 零件收货和报废统计  -->	
+		<action name="lingjshhbftj" class="lingjshhbftjAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/lingjshhbftj.jsp</result>
+    	</action>
+    	<action name="querylingjshhbftj" class="lingjshhbftjAction" method="query"/>
+    	<action name="queryshouhmx" class="lingjshhbftjAction" method="queryshouhmx"/>
+    	<action name="querybaofmx" class="lingjshhbftjAction" method="querybaofmx"/>
+    	<action name="downloadLjshhbftjMob" class="lingjshhbftjAction" method="downloadLjshhbftjMob"/>
+    	<action name="importAth_ljshhbftj" class="lingjshhbftjAction" method="uploadLjshhbftj">
+	        <result name="upload">/WEB-INF/pages/ckx/baob/lingjshhbftj.jsp</result>
+		</action>
+		
+		<!-- 取货计划查询  -->	
+		<action name="quhjhcx" class="quhjhcxAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/quhjhcx.jsp</result>
+    	</action>
+    	<action name="queryquhjhcx" class="quhjhcxAction" method="query"/>
+    	<action name="downloadQuhjh" class="quhjhcxAction" method="download"/>
+    	<action name="expcheck" class="quhjhcxAction" method="expcheck"/>
+    	
+    	<!-- 在途跟踪查询  -->	
+		<action name="zaitgzcx" class="quhjhcxAction" method="executeztgzcx">
+    		<result name="select">/WEB-INF/pages/ckx/baob/zaitgzcx.jsp</result>
+    	</action>
+    	<action name="queryzaitgzcx" class="quhjhcxAction" method="queryzaitgzcx"/>
+    	<action name="downloadZaitgz" class="quhjhcxAction" method="downloadZaitgz"/>
+    	
+    	<!-- 供应商取货计划完成率计算  -->	
+		<action name="gysqhjhwcljs" class="quhjhcxAction" method="executegysqhjhwcl">
+    		<result name="select">/WEB-INF/pages/ckx/baob/gysqhjhwcljs.jsp</result>
+    	</action>
+    	<action name="querygysqhjhwcl" class="quhjhcxAction" method="querygysqhjhwcl"/>
+    	
+    	<!-- huxy_V4_041 -->
+		<action name="anxyhlbb" class="bbAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/baob/anxyhltongjbb.jsp</result>
+    	 </action>
+    	<action name="queryAnxyhlbb" class="bbAction" method="query"/> 
+    	<action name="showbb" class="bbAction" method="show">
+    		<result name="select">/WEB-INF/pages/ckx/baob/yaohlbb.jsp</result>
+    	</action>
+    	
+    	<action name="downloadbb" class="bbAction" method="downloadbb">
+    	</action>
+    	<action name="queryGongc" class="bbAction" method="queryGongc"></action>
+    </package>
+	
+</toft>

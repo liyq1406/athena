@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="outputgoodzxc">
+
+	<!--零件表-->
+	<select id="queryCKX_LINGJ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_LINGJ cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 配送类别 -->
+	<select id="queryCKX_PEISLB" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_PEISLB cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 同步集配零件分类 -->
+	<select id="queryCKX_TONGBJPLJ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_TONGBJPLJ cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 库位 -->
+	<select id="queryCKX_KUW" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_KUW cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 库位等级 -->
+	<select id="queryCKX_KUWDJ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_KUWDJ cc where cc.creator = #CREATOR#
+	]]>
+	</select>	
+	
+	<!-- 库位等级与包装 -->
+	<select id="queryCKX_KUWDJ_BAOZ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_KUWDJ_BAOZ cc where cc.creator = #CREATOR#
+	]]>
+	</select>	
+
+	<!--   -->
+	<select id="queryCKX_WULDRQGX" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_WULDRQGX cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+
+	<!-- 工艺消耗点 -->
+	<select id="queryCKX_GONGYXHD" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_GONGYXHD cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 零件验收比例设置 -->
+	<select id="queryCKX_YANSBLLJ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_YANSBLLJ cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+
+	<!-- 客户操作码 -->
+	<select id="queryCKX_KEHCZM" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_KEHCZM cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 03打印机组：逻辑删除 -->
+	<select id="queryCKX_PRINT_DEVICEGROUP" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_PRINT_DEVICEGROUP cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 打印设备：物理删除 -->
+	<select id="queryCKX_PRINT_DEVICE" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_PRINT_DEVICE cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 用户明细 -->
+	<select id="queryCKX_PRINT_USERINFO" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_PRINT_USERINFO cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 发货站台 -->
+	<select id="queryCKX_FAHZT" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_FAHZT cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 客户表 -->
+	<select id="queryCKX_KEHB" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_KEHB cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 客户成品库关系 -->
+	<select id="queryCKX_KEH_CHENGPK" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_KEH_CHENGPK cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 零件客户关系 -->
+	<select id="queryCKX_LINGJKH" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_LINGJKH cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 接口只有国产件 -->
+	<select id="queryCKX_LINGJGYS" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_LINGJGYS cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 容器场 -->
+	<select id="queryCKX_RONGQC" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_RONGQC cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+	
+	<!-- 单据打印 -->
+	<select id="queryCKX_DANJDY" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		select * from CKX_DANJDY cc where cc.creator = #CREATOR#
+	]]>
+	</select>
+</sqlMap>

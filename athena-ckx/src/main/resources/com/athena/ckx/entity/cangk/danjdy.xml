@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+	单据打印
+	@author denggq
+	@date 2012-1-30
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<!-- 多记录查询 -->
+	<select id="queryDanjdy" parameterClass="com.athena.ckx.entity.cangk.Danjdy" resultClass="com.athena.ckx.entity.cangk.Danjdy">
+	  	select usercenter,kehbh,cangkbh,danjlx,shifdy,dayls,dayfs,creator,create_time,editor,edit_time
+	  	from ${dbSchemal3}ckx_danjdy 
+	  	where 1=1
+	  	<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kehbh" prepend="and">
+	    		<![CDATA[kehbh = #kehbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="danjlx" prepend="and">
+	    		<![CDATA[danjlx = #danjlx#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,kehbh,cangkbh,danjlx
+	</select>
+	
+	<!-- 单记录查询 -->
+	<select id="getDanjdy" parameterClass="com.athena.ckx.entity.cangk.Danjdy" resultClass="com.athena.ckx.entity.cangk.Danjdy">
+		select * from ${dbSchemal3}ckx_danjdy
+		where <![CDATA[usercenter = #usercenter# , kehbh = #kehbh# , cangkbh = #cangkbh# , danjlx = #danjlx#]]>
+	</select>
+	
+	<!-- 插入记录 -->
+	<insert id="insertDanjdy" parameterClass="com.athena.ckx.entity.cangk.Danjdy">
+		insert into ${dbSchemal3}ckx_danjdy(usercenter,kehbh,cangkbh,danjlx,shifdy,dayls,dayfs,creator,create_time,editor,edit_time)
+		values(#usercenter#,#kehbh#,#cangkbh#,#danjlx#,#shifdy#,#dayls#,#dayfs#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<!-- 修改记录 -->
+	<update id="updateDanjdy" parameterClass="com.athena.ckx.entity.cangk.Danjdy">
+		update ${dbSchemal3}ckx_danjdy
+		set shifdy = #shifdy#,
+			dayls = #dayls# ,
+			dayfs = #dayfs#,
+			editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+		where <![CDATA[usercenter = #usercenter# and kehbh = #kehbh# and cangkbh = #cangkbh# and danjlx = #danjlx#]]>
+	</update>
+	
+	<!-- 删除记录 -->
+	<delete id="deleteDanjdy" parameterClass="com.athena.ckx.entity.cangk.Danjdy">
+		delete from ${dbSchemal3}ckx_danjdy where
+		<dynamic prepend="  ">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kehbh" prepend="and">
+	    		<![CDATA[kehbh = #kehbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="danjlx" prepend="and">
+	    		<![CDATA[danjlx = #danjlx#]]> 
+	    	</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

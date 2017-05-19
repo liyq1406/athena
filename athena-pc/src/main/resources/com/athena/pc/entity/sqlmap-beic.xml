@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="beic">
+
+	<!-- 根据备储计划号查询备储计划 hzg 2012-2-24 -->
+	<select id="queryBeic"   resultClass="com.athena.pc.entity.Beic">
+		<![CDATA[
+		   	select beicjhh,usercenter
+			from ${dbSchemal2}PC_BEICB 	where 1 = 1 
+		]]>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="beicjhh"><![CDATA[beicjhh like '$beicjhh$%']]></isNotEmpty>
+		</dynamic>
+		<![CDATA[ order by beicjhh]]>
+	</select>
+	
+	<!-- 根据备储计划号查询备储明细  hzg 2012-2-24 -->
+	<select id="queryBeicmx" resultClass="com.athena.pc.entity.Beic">
+		<![CDATA[
+			select beicjhmxh,beicjhh,lingjbh,
+			to_char(kaissj,'yyyy-MM-dd')as kaissj,
+			to_char(jiessj,'yyyy-MM-dd')as jiessj,
+			lingjsl 
+			from ${dbSchemal2}PC_BEICBMX
+			where  beicjhh=#beicjhh# ORDER BY beicjhmxh
+		 ]]>
+	</select>
+	
+	<select id="findById" parameterClass="java.lang.String" resultClass="java.lang.String">
+		<![CDATA[
+			select count(*) as counts
+			from ${dbSchemal2}PC_BEICBMX
+			where  beicjhh=#beicjhh#
+		 ]]>
+	</select>
+	
+	<!-- 备储计划增加  hzg 2012-2-25 -->
+	<insert id="insertBeic"  parameterClass="com.athena.pc.entity.Beic">
+		<![CDATA[
+		insert into ${dbSchemal2}PC_BEICB
+		(beicjhh,usercenter,creator,create_time,editor,edit_time) 
+		values(
+		#beicjhh#,#usercenter#,
+		#creator#,to_date(#createTime#,'yyyy-MM-dd hh24:mi:ss'),
+		#editor#,to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss'))
+		]]>
+	</insert>
+	<!-- 备储明细增加   hzg 2012-2-25 -->
+	<insert id="insertBeicmx"  parameterClass="com.athena.pc.entity.Beic">
+		<![CDATA[
+		insert into ${dbSchemal2}PC_BEICBMX
+		(beicjhmxh,beicjhh,lingjbh,kaissj,jiessj,lingjsl,creator,create_time,editor,edit_time) 
+		values(
+		#beicjhmxh#,#beicjhh#,#lingjbh#,to_date(#kaissj#,'yyyy-MM-dd'),to_date(#jiessj#,'yyyy-MM-dd'),#lingjsl#,
+		#creator#,to_date(#createTime#,'yyyy-MM-dd hh24:mi:ss'),
+		#editor#,to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss'))
+		]]>
+	</insert>
+	<!-- 备储明细更新   hzg 2012-2-25 -->
+	<update id="updateBeicmx" parameterClass="com.athena.pc.entity.Beic">
+		<![CDATA[
+			update ${dbSchemal2}PC_BEICBMX set kaissj=to_date(#kaissj#,'yyyy-MM-dd'),jiessj=to_date(#jiessj#,'yyyy-MM-dd'),
+			lingjsl=#lingjsl#,editor=#editor#,edit_time=to_date(#editTime#,'yyyy-MM-dd hh24:mi:ss')
+			where beicjhmxh=#beicjhmxh# and lingjbh=#lingjbh#
+		]]>
+	</update>
+	<!-- 备储明细删除   hzg 2012-2-25 -->
+	<delete id="deleteBeicmx" parameterClass="com.athena.pc.entity.Beic">
+		<![CDATA[
+			delete from ${dbSchemal2}PC_BEICBMX where beicjhmxh=#beicjhmxh# and lingjbh=#lingjbh#
+		]]>
+	</delete>
+	
+	<!-- 备储删除  hzg 2012-2-25 -->
+	<delete id="deleteBeic" parameterClass="com.athena.pc.entity.Beic">
+		<![CDATA[
+			delete from ${dbSchemal2}PC_BEICB where beicjhh=#beicjhh# 
+		]]>
+	</delete>
+	
+	<!-- 备储下的备储明细删除  hzg 2012-2-25 -->
+	<delete id="delBeicmxOfBeic" parameterClass="com.athena.pc.entity.Beic">
+		<![CDATA[
+			delete from ${dbSchemal2}PC_BEICBMX where beicjhh=#beicjhh# 
+		]]>
+	</delete>
+	
+	<!--查询备储计划号是否存在-->
+	<select id="queryBeicjhh" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[select count(*) as Count  from ${dbSchemal2}PC_BEICB where usercenter=#USERCENTER# and beicjhh = #bcjhh# ]]>	
+	</select>
+	
+	<!--查询备储计划号是否存在-->
+	<select id="queryBeicjhmxhMax" parameterClass="com.athena.pc.entity.Beic" resultClass="java.lang.String">
+		<![CDATA[select max(beicjhmxh) from ${dbSchemal2}pc_beicbmx where beicjhh like #beicjhh# ]]>	
+	</select>
+	
+		<!--查询备储计划号是否存在-->
+	<select id="checkLingjh" parameterClass="com.athena.pc.entity.Beic" resultClass="java.lang.String">
+		<![CDATA[select count(*) from ${dbSchemal3}ckx_lingj lj where lj.usercenter = #usercenter# and lj.lingjbh = #lingjbh# ]]>	
+	</select>
+	
+	<!--查询备储计划零件的开始时间，结束时间是否交叉-->
+	<select id="checkBeicshij" parameterClass="com.athena.pc.entity.Beic" resultClass="com.athena.pc.entity.Beic">
+		<![CDATA[
+			select mx.beicjhmxh,mx.beicjhh,mx.kaissj,mx.jiessj,mx.lingjbh from ${dbSchemal2}pc_beicbmx mx inner join ${dbSchemal2}pc_beicb bcb on mx.beicjhh = bcb.beicjhh  where mx.lingjbh = #lingjbh# and bcb.usercenter = #usercenter# and
+			 mx.beicjhmxh <> #beicjhmxh#  and 
+			((mx.kaissj <= to_date(#jiessj#, 'yyyy-mm-dd') and
+	       mx.jiessj >= to_date(#jiessj#, 'yyyy-mm-dd')) or
+	       (mx.kaissj <= to_date(#kaissj#, 'yyyy-mm-dd') and
+	       mx.jiessj >= to_date(#kaissj#, 'yyyy-mm-dd')) or
+	       (mx.kaissj > to_date(#kaissj#, 'yyyy-mm-dd') and
+	       mx.jiessj < to_date(#jiessj#, 'yyyy-mm-dd')))
+		]]>	
+	</select>
+</sqlMap>

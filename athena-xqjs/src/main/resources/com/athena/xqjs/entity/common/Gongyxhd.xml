@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="common">
+	<!-- 工艺消耗点 -->
+	<select id="queryLiushByXhd" parameterClass="java.util.Map"
+		resultClass="java.lang.String">
+		select
+		LIUSH
+		from
+		${dbSchemal3}ckx_gongyxhd
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="gongyxhd">
+				GONGYXHD = #gongyxhd#
+		</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>

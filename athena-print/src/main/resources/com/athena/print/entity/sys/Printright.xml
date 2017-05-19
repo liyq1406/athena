@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sys">
+
+	<!--查询权限的信息-->
+	<select id="queryPrintright" resultClass="com.athena.print.entity.sys.Printright">
+		select usercenter,userscode,scodes,storagescode,spcodes
+		from ${dbSchemal3}ckx_print_right 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+			usercenter =#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="userscode">
+			userscode =#userscode#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="scodes">
+			scodes =#scodes#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="storagescode">
+			storagescode =#storagescode#</isNotEmpty>
+			and leix='1'
+		</dynamic>
+		order by usercenter,userscode,scodes,storagescode
+	</select>
+	
+	<select id="queryPrintrightGly" resultClass="com.athena.print.entity.sys.Printright">
+		select usercenter,userscode,scodes,storagescode,spcodes
+		from ${dbSchemal3}ckx_print_right 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+			usercenter =#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="userscode">
+			userscode =#userscode#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="scodes">
+			scodes =#scodes#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="storagescode">
+			storagescode =#storagescode#</isNotEmpty>
+			and leix='2'
+		</dynamic>
+		order by usercenter,userscode,scodes,storagescode
+	</select>
+	
+	<select id="queryPrintrightbygly" resultClass="com.athena.print.entity.sys.Printright">
+		select usercenter,userscode,scodes,storagescode,spcodes
+		from ${dbSchemal3}ckx_print_right 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+			usercenter =#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="userscode">
+			userscode =#userscode#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="scodes">
+			scodes =#scodes#</isNotEmpty>
+			and leix='2'
+		</dynamic>
+		order by usercenter,userscode,scodes,storagescode
+	</select>
+	
+	<select id="queryPrintright1" resultClass="com.athena.print.entity.sys.Printright">
+		select usercenter,userscode,scodes,storagescode,spcodes
+		from ${dbSchemal3}ckx_print_right 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="userscode">
+			userscode =#userscode#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+			usercenter =#usercenter#</isNotEmpty>
+		</dynamic>
+		and leix='1'
+		order by usercenter,userscode,scodes,storagescode
+	</select>
+	
+	<!--插入一条数据-->
+	<insert id="insertPrintright" parameterClass="com.athena.print.entity.sys.Printright">
+		insert into ${dbSchemal3}ckx_print_right 
+		(usercenter,scodes,userscode,storagescode,spcodes,leix,creator,create_time)
+		values(#usercenter#,#scodes#,#userscode#,#storagescode#,#spcodes#,'1',#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<insert id="insertPrintrightgly" parameterClass="com.athena.print.entity.sys.Printright">
+		insert into ${dbSchemal3}ckx_print_right 
+		(usercenter,scodes,userscode,storagescode,spcodes,leix,creator,create_time)
+		values(#usercenter#,#scodes#,#userscode#,#storagescode#,#spcodes#,'2',#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<!--更新一条数据-->
+	<update id="updatePrintright" parameterClass="com.athena.print.entity.sys.Printright">
+		update ${dbSchemal3}ckx_print_right  set 
+		scodes=#scodes#,
+		userscode=#userscode#,
+		storagescode=#storagescode#,
+		spcodes=#spcodes#,
+		editor=#editor#,
+		edit_time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="scodes">scodes = #scodes#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="userscode">userscode = #userscode#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="storagescode">storagescode = #storagescode#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 物理删除用户明细 -->
+	<delete id="deletePrintright" parameterClass="com.athena.print.entity.sys.Printright">
+		delete from ${dbSchemal3}ckx_print_right  where 1=1
+		 <dynamic>
+		 	<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="scodes">scodes = #scodes#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="userscode">userscode = #userscode#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="storagescode">storagescode = #storagescode#</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

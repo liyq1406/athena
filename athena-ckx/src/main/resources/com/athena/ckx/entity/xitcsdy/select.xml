@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="ckx">
+
+	<!-- 单据类型字典   denggq 2012-02-29-->
+   	<select id="queryDjlx"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,usercenter as usercenter
+		from ${dbSchemal3}ckx_print_dictinfos 
+		where biaos = '1'
+  	</select>
+  	
+  	<!-- 零件类型字典   denggq 2012-02-29-->
+   	<select id="queryLjlx"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='LJLX'
+  	</select>
+
+	<!-- 仓库类型字典   denggq 2012-02-29-->
+   	<select id="queryCklx"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='CKLX'
+  	</select>
+  	
+  	<!-- 备货类型  hj 2012-02-29-->
+   <select id="queryBHLX"  resultClass="com.athena.util.cache.CacheValue" >
+		select ZIDBM as key, ZIDMC as value, '' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where  <![CDATA[zidlx='BHLX']]>
+   </select>
+   
+   <!-- 大纲时间    hj 2012-02-29-->
+	<select id="queryDGDW"  resultClass="com.athena.util.cache.CacheValue" >
+		select ZIDBM*100 as key, ZIDMC as value, '' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where  <![CDATA[zidlx='DGDW']]>
+  	</select>
+   
+   	<!-- 星期    hj 2012-02-29-->
+	<select id="queryXQ"  resultClass="com.athena.util.cache.CacheValue" >
+		select ZIDBM as key, ZIDMC as value, '' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where  <![CDATA[zidlx='XQ']]>
+   </select>
+   
+   	<!-- 包装材质字典   denggq 2012-03-05-->
+   	<select id="queryCzlx"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='CZLX'
+  	</select>
+  	
+  	
+  	<!-- 包装类别字典   denggq 2012-03-05-->
+   	<select id="queryBzlb"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='BZLB'
+  	</select>
+  	
+  	  	<!-- 包装类别字典   denggq 2012-03-05-->
+   	<select id="queryLxjlb"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='LXJLB'
+  	</select>
+  	
+  	<!-- 包装摆放方向字典   denggq 2012-03-05-->
+   	<select id="queryBffx"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='BFFX'
+  	</select>
+  	
+    <!-- 制造路线    hj 2012-03-8-->
+	<select id="queryZZLX"  resultClass="com.athena.util.cache.CacheValue" >
+		select ZIDBM as key, 
+<!-- 		ZIDMC as value,  -->
+		ZIDBM as value,
+		'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where  <![CDATA[zidlx='ZZLX']]>
+    </select>
+   
+    <!-- 零件属性   denggq 2012-03-23-->
+   	<select id="queryLjsx"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='LJSX'
+  	</select>
+  	
+  	<!-- 零件单位   denggq 2012-03-23-->
+   	<select id="queryLjdw"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='DWLX'
+		order by value
+  	</select>
+  	
+  	<!-- 关键零件级别   denggq 2012-03-23-->
+   	<select id="queryGuanjljjb"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='GUANJLJJB'
+  	</select>
+  	
+  	<!-- 供应商类型   denggq 2012-03-23-->
+   	<select id="queryGslx"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		<![CDATA[where zidlx='GSLX' and zidbm <> 4]]> 
+  	</select>
+  	
+  	<!-- 订货路线  qizhongtao 2012-04-06-->
+  	<select id="queryDinghlx" resultClass="com.athena.util.cache.CacheValue">
+<!--   		select zidbm as key,zidmc as value,'' as usercenter -->
+  		select zidbm as key,zidbm as value,'' as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='DINGHLX'
+  	</select>
+  	
+  	<!-- 订货周期  qizhongtao 2012-04-09-->
+  	<select id="queryDinghzq" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,'' as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='DHZQ'
+  	</select>
+  	
+  	<!-- 供货模式  qizhongtao 2012-04-09-->
+  	<select id="queryGonghms" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,'' as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='GHMS'
+  	</select>
+  	
+  	<!-- 配送标识  qizhongtao 2012-04-10-->
+  	<select id="queryPeisbz" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,'' as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='PSBS'
+  	</select>
+  	
+  	<!-- 需求来源  qizhongtao 2012-04-11-->
+  	<select id="queryXuqly" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,'' as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='XQLY'
+  	</select>
+  	
+  	<!-- 外部供货模式  qizhongtao 2012-04-16-->
+  	<select id="queryWaibghms" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,'' as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='WGMS'
+  	</select>
+  	
+  	<!-- 依赖关系  qizhongtao 2012-04-16-->
+  	<select id="queryYilgx" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,'' as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='YLGX'
+  	</select>
+  	
+  	<!--计算方法  qizhongtao 2012-04-17-->
+  	<select id="queryJisff" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,'' as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='JSFF'
+  	</select>
+  	
+  	<!--车间  qizhongtao 2012-04-18-->
+  	<select id="queryChej" resultClass="com.athena.util.cache.CacheValue">
+  		select chejbm as key,chejmc as value,usercenter as usercenter
+  		from ${dbSchemal3}ckx_chej
+  	</select>
+  	
+  	<!--车间  denggq 2012-04-18-->
+  	<select id="queryZuoyy" resultClass="com.athena.util.cache.CacheValue">
+  		select chejbm as key,chejmc as value,'0' as usercenter
+  		from ${dbSchemal3}ckx_chej
+  	</select>
+  	
+  	<!--单位类型 qizhongtao 2012-04-18  可删掉  未用到-->
+  	<select id="queryDanwlx" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,'' as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  	</select>
+  	
+  	<!-- 仓库模式   kong -->
+   	<select id="queryCKMS"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='CKMS'
+  	</select>
+  	
+  	<!-- 运输模式   kong -->
+   	<select id="queryYSMS"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='YSMS'
+  	</select>
+  	
+  	<!-- 内部模式   kong -->
+   	<select id="queryNBMS"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='NBMS' order by paix
+  	</select>
+  	
+  	<!-- 外部模式   kong -->
+   	<select id="queryWBMS"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='WBMS' order by paix
+  	</select>
+  	
+  	<!-- 生线模式   kong -->
+   	<select id="querySXMS"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='SXMS' order by paix
+  	</select>
+  	
+  	<!-- 线定模式   kong -->
+   	<select id="queryXDMS"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='XDMS' order by paix
+  	</select>
+  	
+  	<!-- 年型码   denggq 20120406 -->
+   	<select id="queryNianxm"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='NIANXM'
+  	</select>
+  	
+  	
+  	
+  	<!-- 排产计划员组   hj 2012-06-24-->
+   	<select id="queryPCJIIHY"  resultClass="com.athena.util.cache.CacheValue">
+		select POST_CODE as key,POST_CODE as value,usercenter as usercenter
+		from ${dbSchemal3}SYS_POST 
+		where DIC_CODE='PCJIHY' and biaos='1'
+  	</select>
+  	
+  	<!-- 工厂   hanwu 2015-07-18-->
+   	<select id="queryGC"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='GC'
+  	</select>
+  	
+  	<!-- 临时订单类别   hanwu 2016-01-25-->
+   	<select id="queryLSDDLB"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='LSDDLB' order by paix
+  	</select>
+  	
+  	<!-- 是否混托  mantis:0013085 by CSY 2017-01-04 -->
+   	<select id="querySFHT"  resultClass="com.athena.util.cache.CacheValue">
+		SELECT X.ZIDBM AS KEY, X.ZIDMC AS VALUE, '' AS USERCENTER
+		  FROM ${dbSchemal3}CKX_XITCSDY X
+		 WHERE X.ZIDLX = 'SFHT'
+		 ORDER BY X.PAIX
+  	</select>
+  	
+</sqlMap>

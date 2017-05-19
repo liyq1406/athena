@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+	<resultMap class="com.athena.xqjs.entity.common.CalendarGroup"
+		id="CalendarGroup">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="APPOBJ" property="appobj" />
+		<result column="BIANZH" property="bianzh" />
+		<result column="RILBC" property="rilbc" />
+		<result column="BEIZ" property="beiz" />
+		<result column="BIAOS" property="biaos" />
+		<result column="WEILBZH" property="weilbzh" />
+		<result column="SHENGXSJ" property="shengxsj" />
+	</resultMap>
+
+
+	<select id="queryCalendarGroupObject" resultClass="com.athena.xqjs.entity.common.CalendarGroup">
+		SELECT
+		usercenter,
+		appobj,
+		bianzh,
+		rilbc,
+		beiz,
+		biaos,
+		weilbzh,
+		shengxsj
+		FROM
+		${dbSchemal3}ckx_calendar_group
+		WHERE 1=1 and biaos='1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"> usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="appobj"> appobj = #appobj#</isNotEmpty>
+		</dynamic>
+  	</select>
+
+
+	<insert id="insertCalendarGroupObject" parameterClass="com.athena.xqjs.entity.common.CalendarGroup">
+		insert into ${dbSchemal3}ckx_calendar_group
+		(
+		usercenter,
+		appobj,
+		bianzh,
+		rilbc,
+		beiz,
+		biaos,
+		weilbzh,
+		shengxsj
+		)
+		values
+		(
+		#usercenter#,
+		#appobj#,
+		#bianzh#,
+		#bianzh#,
+		#rilbc#,
+		#beiz#,
+		#biaos#,
+		#weilbzh#,
+		#shengxsj#
+		)
+	</insert>
+
+</sqlMap>

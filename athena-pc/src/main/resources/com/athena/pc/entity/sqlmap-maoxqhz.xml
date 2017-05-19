@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="maoxqhz">
+	<select id="queryGongyzqs" resultClass="java.util.HashMap">
+		<![CDATA[select gongyzq from (select substr(gongyzq,0,4) gongyzq from ${dbSchemal3}ckx_calendar_gongyzq ) group by gongyzq order by gongyzq ]]>	
+	</select>
+	
+	<!-- 工业周期时间范围查询  gswang 2012-4-25  -->
+	<select id="queryGyzqfw" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		<![CDATA[
+		select gongyzq,kaissj,jiessj from ${dbSchemal3}ckx_calendar_gongyzq 
+		where gongyzq=#gongyzq# ]]>
+	</select>
+	
+	<!-- 毛需求查询 PP gswang 2012-4-25  -->
+	<select id="queryMaoxqPP" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			select xq.dingdh,xq.usercenter,xq.kaissj,xq.jiessj,xq.lingjbh,xq.gongysdm,xq.lingjsl,xq.zhongwmc,xq.xiehd,'PP' as chullx  from (
+			select mao.dingdh,mao.usercenter,to_char(mao.pckaissj,'yyyy-mm-dd') as kaissj,to_char(mao.pcjiessj,'yyyy-mm-dd') as jiessj,mao.lingjbh as lingjbh,mao.gongysdm,mao.lingjsl,mao.zhongwmc,mao.XIEHZT as xiehd from (
+			select dd.dingdh,mx.usercenter,mx.pckaissj,mx.pcjiessj,mx.lingjbh,mx.gongysdm,mx.shul as lingjsl, mx.LINGJMC zhongwmc,mx.XIEHZT from  ${dbSchemal1}xqjs_dingd_PC dd  inner join  ${dbSchemal1}xqjs_dingdmx_PC mx   on dd.dingdh = mx.dingdh where (dd.chullx = 'PP' or dd.chullx = 'NP')   
+			and  mx.pcflag='1' 
+		]]>	
+		<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[ mx.lingjbh = #lingjbh# ]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[
+			and ((pckaissj <= to_date(#jiessj#, 'yyyy-mm-dd') and pcjiessj >= to_date(#jiessj#, 'yyyy-mm-dd')) or
+       		(pckaissj <= to_date(#kaissj#, 'yyyy-mm-dd') and pcjiessj >= to_date(#kaissj#, 'yyyy-mm-dd')) or
+       		(pckaissj > to_date(#kaissj#, 'yyyy-mm-dd') and  pcjiessj < to_date(#jiessj#, 'yyyy-mm-dd')))) mao 
+       		inner join (  SELECT gs.usercenter,gs.gcbh,gs.leix FROM ${dbSchemal3}CKX_GONGYS gs where gs.leix = '1' and gs.neibyhzx = #USERCENTER# and gs.BIAOS = '1' group by gs.usercenter,gs.gcbh,gs.leix 
+			 ) gys on mao.usercenter = gys.usercenter and mao.gongysdm = gys.gcbh inner join (select lj.lingjbh from ${dbSchemal3}ckx_shengcx c inner join ${dbSchemal3}ckx_shengcx_lingj lj on c.shengcxbh=lj.shengcxbh
+			where c.shengcxbh in ($chanxhall$) and c.usercenter = #USERCENTER# GROUP BY LJ.LINGJBH ) lj on mao.lingjbh=lj.lingjbh
+			 union 
+			select mao.dingdh,mao.usercenter, mao.pckaissj as kaissj,mao.pcjiessj as jiessj,mao.lingjbh,'' as gongysdm ,mao.yaohsl as lingjsl,mao.zhongwmc,mao.xiehd from (
+			select '' as dingdh,mx.usercenter,to_char(mx.pckaissj, 'yyyy-mm-dd') as pckaissj,to_char(mx.pcjiessj, 'yyyy-mm-dd') as pcjiessj,substr(mx.ddrq,0,6) ddrqgyzq,mx.lingjbh,'' as gongysdm,mx.shul as yaohsl, cklj.zhongwmc,mx.lyxt as xiehd from  ${dbSchemal2}pc_in_wbddyg mx 
+			inner join ${dbSchemal3}ckx_lingj cklj on mx.lingjbh=cklj.lingjbh 	where 1=1 
+		]]>	
+		<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[ mx.lingjbh = #lingjbh# ]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[		
+			and 
+			((mx.pckaissj <= to_date(#jiessj#, 'yyyy-mm-dd') and mx.pcjiessj >= to_date(#jiessj#, 'yyyy-mm-dd')) or
+       		(mx.pckaissj <= to_date(#kaissj#, 'yyyy-mm-dd') and mx.pcjiessj >= to_date(#kaissj#, 'yyyy-mm-dd')) or
+       		(mx.pckaissj > to_date(#kaissj#, 'yyyy-mm-dd') and  mx.pcjiessj < to_date(#jiessj#, 'yyyy-mm-dd')))
+			) mao inner join 
+			(select lj.lingjbh from ${dbSchemal3}ckx_shengcx c inner join ${dbSchemal3}ckx_shengcx_lingj lj on c.shengcxbh=lj.shengcxbh
+			where c.shengcxbh in ($chanxhall$) and c.usercenter = #USERCENTER# GROUP BY LJ.LINGJBH ) lj on mao.lingjbh=lj.lingjbh 
+			) xq  order by  usercenter,dingdh,jiessj
+		]]>
+	</select>
+	
+	<!-- 毛需求查询 PJ gswang 2012-4-25  -->
+	<select id="queryMaoxqPJ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			select xq.dingdh,xq.usercenter,xq.kaissj,xq.jiessj,xq.lingjbh,xq.gongysdm,xq.lingjsl,xq.zhongwmc,xq.xiehd,'PJ' as chullx  from (
+			select mao.dingdh,mao.usercenter,to_char(mao.pckaissj,'yyyy-mm-dd') as kaissj,to_char(mao.pcjiessj,'yyyy-mm-dd') as jiessj,mao.lingjbh as lingjbh,mao.gongysdm,mao.lingjsl,mao.zhongwmc,mao.XIEHZT as xiehd from (
+			select dd.dingdh,mx.usercenter,mx.pckaissj,mx.pcjiessj,mx.lingjbh,mx.gongysdm,mx.shul as lingjsl,mx.LINGJMC zhongwmc,mx.XIEHZT  from  ${dbSchemal1}xqjs_dingd_PC dd  inner join  ${dbSchemal1}xqjs_dingdmx_PC mx   on dd.dingdh = mx.dingdh where (dd.chullx = 'PJ' or dd.chullx = 'NJ')  
+			and  mx.pcflag='1' 
+		]]>	
+		<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[ mx.lingjbh = #lingjbh# ]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[			
+			and ((pckaissj <= to_date(#jiessj#, 'yyyy-mm-dd') and pcjiessj >= to_date(#jiessj#, 'yyyy-mm-dd')) or
+       		(pckaissj <= to_date(#kaissj#, 'yyyy-mm-dd') and pcjiessj >= to_date(#kaissj#, 'yyyy-mm-dd')) or
+       		(pckaissj > to_date(#kaissj#, 'yyyy-mm-dd') and  pcjiessj < to_date(#jiessj#, 'yyyy-mm-dd')))) mao
+		  	inner join (  SELECT gs.usercenter,gs.gcbh,gs.leix FROM ${dbSchemal3}CKX_GONGYS gs where gs.leix = '1' and gs.neibyhzx = #USERCENTER# and gs.BIAOS = '1' group by gs.usercenter,gs.gcbh,gs.leix 
+			 ) gys on mao.usercenter = gys.usercenter and mao.gongysdm = gys.gcbh   inner join (select lj.lingjbh from ${dbSchemal3}ckx_shengcx c inner join ${dbSchemal3}ckx_shengcx_lingj lj on c.shengcxbh=lj.shengcxbh
+			where c.shengcxbh in ($chanxhall$) and c.usercenter = #USERCENTER# GROUP BY LJ.LINGJBH ) lj on mao.lingjbh=lj.lingjbh
+			 union 
+			select mao.dingdh,mao.usercenter,to_char(mao.pckaissj,'yyyy-mm-dd') as pckaissj,to_char(mao.pcjiessj,'yyyy-mm-dd') as pcjiessj,mao.lingjbh,'' as gongysdm ,mao.yaohsl, mao.zhongwmc,mao.XIEHD from (
+			select mx.dingdh,mx.usercenter, mx.pckaissj as pckaissj,mx.pcjiessj as pcjiessj,mx.lingjbh,'' as gongysdm,mx.yaohsl,cklj.zhongwmc,mx.XIEHD from  ${dbSchemal2}PC_IN_GEVP_YAOHL mx inner join ${dbSchemal3}ckx_lingj cklj on mx.lingjbh=cklj.lingjbh where 1=1 
+		]]>	
+		<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[ mx.lingjbh = #lingjbh# ]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[ 
+			and 
+			((mx.pckaissj <= to_date(#jiessj#, 'yyyy-mm-dd') and mx.pcjiessj >= to_date(#jiessj#, 'yyyy-mm-dd')) or
+       		(mx.pckaissj <= to_date(#kaissj#, 'yyyy-mm-dd') and mx.pcjiessj >= to_date(#kaissj#, 'yyyy-mm-dd')) or
+       		(mx.pckaissj > to_date(#kaissj#, 'yyyy-mm-dd') and  mx.pcjiessj < to_date(#jiessj#, 'yyyy-mm-dd')))
+			) mao inner join 
+			(select lj.lingjbh from ${dbSchemal3}ckx_shengcx c inner join ${dbSchemal3}ckx_shengcx_lingj lj on c.shengcxbh=lj.shengcxbh
+			where c.shengcxbh in ($chanxhall$) and c.usercenter = #USERCENTER# GROUP BY LJ.LINGJBH ) lj on mao.lingjbh=lj.lingjbh
+			) xq  order by  usercenter,dingdh,jiessj
+		]]>
+	</select>
+</sqlMap>

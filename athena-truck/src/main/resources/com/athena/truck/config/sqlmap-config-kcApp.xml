@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+
+	<properties resource="com/athena/truck/config/sqlmap.properties" />
+
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="10"
+		maxTransactions="5" useStatementNamespaces="true" />
+		
+		<!-- 卡车入厂APP by CSY-->
+		<sqlMap resource="com/athena/truck/entity/kcApp.xml"/>		
+		
+		<!-- PDA车位放空 APP by CSY-->
+		<sqlMap resource="com/athena/truck/entity/kcPDA.xml"/>		
+		
+</sqlMapConfig>

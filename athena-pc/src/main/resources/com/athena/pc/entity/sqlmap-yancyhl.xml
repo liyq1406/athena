@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="yancyhl">
+	<!-- 查询 hzg 2012-6-15 -->
+	<select id="queryYancyhl"  resultClass="com.athena.pc.entity.Yaonbhl">
+	<![CDATA[
+      SELECT YHL.YAOHLH, YHL.USERCENTER, YHL.LINGJBH, to_char(YHL.JIAOFJ,'yyyy-MM-dd hh24:mi') AS JIAOFJ, YHL.YAOHSL
+      FROM (select * from ${dbSchemal4}CK_YAONBHL WHERE YAOHLZT IN ('01','02','03','04')) YHL
+              inner join (
+              select distinct cxlj.usercenter, cxlj.lingjbh
+                from ${dbSchemal3}ckx_shengcx_lingj cxlj
+               inner join (select scxx.usercenter, scxx.shengcxbh
+                             from ${dbSchemal3}ckx_shengcx scxx
+                            inner join ${dbSchemal3}ckx_chanxz cxz
+                               on scxx.usercenter = cxz.usercenter
+                              and scxx.chanxzbh = cxz.chanxzbh
+                              and cxz.jihyzbh = #jihyzbh#
+                              and cxz.usercenter = #usercenter#
+                              and scxx.BIAOS = '1') scx
+                  on cxlj.usercenter = scx.usercenter
+                 and cxlj.shengcxbh = scx.shengcxbh) lj on yhl.USERCENTER = lj.USERCENTER 
+                 and YHL.LINGJBH = lj.LINGJBH where YHL.usercenter = #usercenter#
+	]]>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="kaissj"><![CDATA[YHL.jiaofj >= to_date(#kaissj#,'yyyy-mm-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiessj"><![CDATA[YHL.jiaofj <= to_date(#jiessj#,'yyyy-mm-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="yaohlh"><![CDATA[YHL.yaohlh = #yaohlh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[YHL.lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+	<![CDATA[ order by JIAOFJ DESC  ,YHL.YAOHLH ]]>
+	</select>
+
+</sqlMap>

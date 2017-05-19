@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ycbj">
+
+	<!-- 插入年度预告信息 -->
+	<insert id="insertYcbj" parameterClass="com.athena.xqjs.entity.ycbj.Yicbj">
+		insert into ${dbSchemal1}
+		xqjs_yicbj
+		(usercenter,lingjbh,jismk,cuowlx,cuowxxxx,jihydm,jihyz,create_time,creator,editor,edit_time)
+		values
+		(
+		#usercenter#,
+		#lingjbh#,
+		#jismk#,
+		#cuowlx#,
+		#cuowxxxx#,
+		#jihydm#,
+		#jihyz#,
+		to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+		#creator#,
+		#editor#,
+		to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+		)
+	</insert>
+
+	<!-- 查询所有的年度预告 -->
+	<select id="queryYicbj" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ycbj.Yicbj">
+		select
+		bj.usercenter,
+		bj.lingjbh,
+		(select zidmc
+          from ${dbSchemal3}ckx_xitcsdy zd
+         where zd.zidlx = 'YCLX'
+           and zd.zidbm = bj.cuowlx) cuowlx,
+		(select zidmc from ${dbSchemal3}ckx_xitcsdy zd where
+		zd.zidlx='JSMK'and zd.zidbm=bj.jismk)
+		jismk,
+		bj.cuowxxxx,
+		bj.jihyz,
+		bj.jihydm,
+		to_char(bj.create_time,'yyyy-mm-dd HH24:mi:ss:ff3') as create_time
+		from ${dbSchemal1}xqjs_yicbj bj
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"> bj.usercenter =#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"> bj.lingjbh =#lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihyz"> bj.jihyz = #jihyz#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihydm"> bj.jihydm = #jihydm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jismk"> bj.jismk=#jismk#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cuowlx"> bj.cuowlx=#cuowlx#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time"> 
+			         <![CDATA[ to_char(bj.create_time,'yyyy-mm-dd HH24:mi:ss')>=#create_time#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_timeTo"> 
+			         <![CDATA[ to_char(bj.create_time,'yyyy-mm-dd HH24:mi:ss')<=#create_timeTo#]]>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY CREATE_TIME DESC,LINGJBH DESC
+	</select>
+	<select id="queryAllYicbj" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ycbj.Yicbj">
+		select
+		JISMK,
+		LINGJBH,
+		USERCENTER,
+		CUOWLX,
+		CUOWXXXX,
+		JIHYZ,
+		JIHYDM,
+		to_char(create_time,'YYYY-MM-DD HH24:MI:SS:ff3') create_time
+        
+		from ${dbSchemal1}xqjs_yicbj bj
+		where 1=1 order by bj.lingjbh
+	</select>
+
+	<insert id="insertManyYcbj" parameterClass="java.util.Map">
+		insert into ${dbSchemal1}XQJS_YICBJ
+  select #jismk# as JISMK,
+         t.lingjbh,
+         t.usercenter,
+         #cuowlx# as CUOWLX,
+         t.lingjbh || '在' || t.SHENGCXBH || #cuowxxxx# as CUOWXXXX,
+         #jihyz# as JIHYZ,
+         #jihydm# as JIHYDM,
+         #jihydm# as CREATOR,
+         sysdate as CREATE_TIME,
+         #jihydm# as EDITOR,
+         sysdate as EDIT_TIME
+    from ${dbSchemal1}XQJS_XIAOHBLZJB t
+	</insert>
+	
+	<!--异常报警信息清理-->
+	<delete id="clearYcbjxxByUser">
+	     delete from ${dbSchemal1}xqjs_yicbj y 
+	         where   JISMK = #jismk#
+	              and
+	                 JIHYDM = #jihydm#
+	</delete>  
+	
+	<!-- 查询异常报警数量 -->
+	<select id="countYicbj" resultClass="java.lang.Integer">
+		select  
+			count(*) 
+		from 
+			${dbSchemal1}xqjs_yicbj
+		where 1=1
+    <dynamic>
+      <isNotEmpty prepend=" and " property="usercenter"> usercenter =#usercenter#</isNotEmpty>
+      <isNotEmpty prepend=" and " property="lingjbh"> lingjbh =#lingjbh#</isNotEmpty>
+      <isNotEmpty prepend=" and " property="jihyz"> jihyz = #jihyz#
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="jihydm"> jihydm = #jihydm#
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="jismk"> jismk=#jismk#
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="cuowlx"> cuowlx=#cuowlx#
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="create_time"> 
+               <![CDATA[ to_char(create_time,'yyyy-mm-dd HH24:mi:ss')>=#create_time#]]>
+      </isNotEmpty>
+      <isNotEmpty prepend=" and " property="create_timeTo"> 
+               <![CDATA[ to_char(create_time,'yyyy-mm-dd HH24:mi:ss')<=#create_timeTo#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 异常报警查询，查询取货运费计算异常  lc 2017-04-14 -->
+	<select id="queryYicbj_qhyfjs" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.ycbj.Yicbj">
+		select t.usercenter,
+               t.beiz2 lingjbh,
+               '取货运费计算' jismk,
+               t.leix cuowlx,
+               t.xiaox cuowxxxx,
+               t.creator jihydm,
+               '' jihyz,
+               to_char(t.create_time, 'yyyy-mm-dd HH24:mi:ss') as create_time
+          from ${dbSchemal1}quhys_message t
+         where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"> t.usercenter =#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"> t.beiz2 =#lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihydm"> t.creator = #jihydm#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cuowlx"> t.beiz1=#cuowlx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time"> 
+			         <![CDATA[ t.create_time>=to_date(#create_time#,'yyyy-mm-dd HH24:mi:ss')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_timeTo"> 
+			         <![CDATA[ t.create_time<=to_date(#create_timeTo#,'yyyy-mm-dd HH24:mi:ss')]]>
+			</isNotEmpty>
+		</dynamic>
+		 order by t.create_time desc, t.beiz2 desc
+	</select>
+	
+	<!-- 查询取货运费计算异常报警数量  lc 2017-04-14 -->
+	<select id="countYicbj_qhyfjs" resultClass="java.lang.Integer">
+		select count(*) from ${dbSchemal1}quhys_message t where 1 = 1
+        <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"> t.usercenter =#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"> t.beiz2 =#lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihydm"> t.creator = #jihydm#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cuowlx"> t.beiz1=#cuowlx#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time"> 
+			         <![CDATA[ t.create_time>=to_date(#create_time#,'yyyy-mm-dd HH24:mi:ss')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_timeTo"> 
+			         <![CDATA[ t.create_time<=to_date(#create_timeTo#,'yyyy-mm-dd HH24:mi:ss')]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>      
+</sqlMap>

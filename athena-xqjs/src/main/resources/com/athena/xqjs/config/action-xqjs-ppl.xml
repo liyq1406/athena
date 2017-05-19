@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="ppl" extend="toft-default" namespace="/ppl">
+		<!--ppl初始化页面 -->
+		<action name="niandyg" class="niandygAction" method="access_Niandyg">
+			<result name="select">/WEB-INF/pages/xqjs/ppl/ppljs.jsp</result>
+		</action>
+		<!-- 获取毛需求信息 -->
+		<action name="queryMaoxq" class="niandygAction" method="queryMaoxq" />
+		<!-- 校验计算时间及计算年份 -->
+		<action name="comparetime" class="niandygAction" method="comparetime" />
+		<!-- 确认毛需求信息 -->
+		<action name="maoxq_quer" class="niandygAction" method="niandygQuer">
+			<result name="niandygQuer">/WEB-INF/pages/xqjs/ppl/niandygQuer.jsp</result>
+		</action>
+		<!-- 计算年度预告 -->
+		<action name="niandygjs" class="niandygAction" method="niandygJis" />
+
+
+		<!-- ppl查询初始化 -->
+		<action name="init" class="pplSearchAction" method="init">
+			<result name="pplcx">/WEB-INF/pages/xqjs/ppl/pplcx.jsp</result>
+		</action>
+		<!-- 查询年度ppl -->
+		<action name="searchNdPpl" class="pplSearchAction" method="searchNdPpl">
+		</action>
+		<!-- 年度PPL信息初始化 -->
+		<action name="initNdppl" class="pplSearchAction" method="initNdppl">
+			<result name="pplInfo">/WEB-INF/pages/xqjs/ppl/pplInfo.jsp</result>
+			<result name="pplInfoSx">/WEB-INF/pages/xqjs/ppl/pplInfoSx.jsp</result>
+		</action>
+		<!-- 保存备注 -->
+		<action name="saveBeiz" class="pplSearchAction" method="saveBeiz">
+		</action>
+		<!-- 生效 -->
+		<action name="shengX" class="pplSearchAction" method="shengX">
+		</action>
+		<!-- 查询计划员组 -->
+		<action name="selectJihy" class="pplSearchAction" method="selectJihy">
+		</action>
+		<!-- 查询需求版次 -->
+		<action name="selectXuqbc" class="pplSearchAction" method="selectXuqbc">
+		</action>
+		<!-- 年度ppl明细查询 -->
+		<action name="searchNdPplMx" class="pplSearchAction" method="searchNdPplMx">
+		</action>
+		<!-- 保存ppl明细 -->
+		<action name="saveNdPplMx" class="pplSearchAction" method="saveNdPplMx">
+		</action>
+		<!-- 导出文本 -->
+		<action name="exportTxt" class="pplSearchAction" method="exportTxt">
+		</action>
+		<!-- 比较 -->
+		<action name="biJ" class="pplSearchAction" method="biJ">
+			<result name="pplBiJ">/WEB-INF/pages/xqjs/ppl/pplBj.jsp</result>
+		</action>
+		<!-- 比较明细 -->
+		<action name="bjJMx" class="pplSearchAction" method="bjJMx">
+		</action>
+
+		<action name="downLoadTxt" class="pplSearchAction" method="downLoadTxt" />
+		
+		<action name="downLoadFilePpl" class="pplDownXlscAction" method="downLoadFilePpl" />
+	
+		<!-- xss 20161010 v4_008 -->
+		<action name="SendComparePage" class="pplSearchAction" method="SendComparePage"> 
+			<result name="success">/WEB-INF/pages/xqjs/ppl/send_compare.jsp</result>
+		</action>
+				
+		<action name="queryCompareQr" class="pplCompareSendAction" method="queryCompareQr" />
+		<action name="removeCompareQr" class="pplCompareSendAction" method="removeCompareQr" />
+		<action name="maoxqSffs" class="pplSearchAction" method="maoxqSffs" />		
+		
+		
+	</package>
+</toft>

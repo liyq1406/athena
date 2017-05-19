@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	零件类型验收比例设置
+	@author denggq
+	@date 2012-2-6
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryYansblsz" parameterClass="com.athena.ckx.entity.cangk.Yansblsz" resultClass="com.athena.ckx.entity.cangk.Yansblsz">
+		select usercenter,lingjlx,cangkbh,yansbl*100 as yansbl,
+			creator,to_char(create_time,'yyyy-MM-dd hh24:mi:ss') as create_time,editor,to_char(edit_time,'yyyy-MM-dd hh24:mi:ss') as edit_time
+		from ${dbSchemal3}ckx_yansblsz 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjlx" prepend="and">
+	    		<![CDATA[lingjlx = #lingjlx#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,lingjlx,cangkbh
+	</select>
+	
+	<select id="getYansblsz" resultClass="com.athena.ckx.entity.cangk.Yansblsz">
+		select usercenter,lingjlx,cangkbh,yansbl*100 as yansbl
+		from ${dbSchemal3}ckx_yansblsz 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjlx" prepend="and">
+	    		<![CDATA[lingjlx = #lingjlx#]]> 
+	    	</isNotEmpty>
+			<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<select id="getYZYansblsz" resultClass="com.athena.ckx.entity.cangk.Yansblsz">
+		select distinct usercenter,lingjlx,yansbl*100 as yansbl
+		from ${dbSchemal3}ckx_yansblsz 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjlx" prepend="and">
+	    		<![CDATA[lingjlx = #lingjlx#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	
+	<select id="getYzYansblsz" resultClass="com.athena.ckx.entity.cangk.Yansblsz">
+		select distinct usercenter,lingjlx,yansbl*100 as yansbl
+		from ${dbSchemal3}ckx_yansblsz 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjlx" prepend="and">
+	    		<![CDATA[lingjlx = #lingjlx#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<select id="yanzYansblsz" resultClass="java.lang.Integer" parameterClass="com.athena.ckx.entity.cangk.Yansblsz">
+		select count(*) from ${dbSchemal3}ckx_yansblsz 
+		<dynamic prepend="where">
+	    	<isNotEmpty property="lingjlx" prepend="and">
+	    		<![CDATA[lingjlx = #lingjlx#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<insert id="insertYansblsz" parameterClass="com.athena.ckx.entity.cangk.Yansblsz">
+		insert into ${dbSchemal3}ckx_yansblsz(usercenter,lingjlx,cangkbh,yansbl,creator,create_time,editor,edit_time)
+		values(#usercenter#,#lingjlx#,#cangkbh#,#yansbl#/100,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<update id="updateYansblsz" parameterClass="com.athena.ckx.entity.cangk.Yansblsz">
+		update ${dbSchemal3}ckx_yansblsz 
+		set yansbl = #yansbl#/100 ,
+			editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where <![CDATA[usercenter = #usercenter# and lingjlx = #lingjlx# and cangkbh = #cangkbh#]]> 
+	</update>
+	
+	<delete id="deleteYansblsz" parameterClass="com.athena.ckx.entity.cangk.Yansblsz">
+		delete from  ${dbSchemal3}ckx_yansblsz where
+		<dynamic prepend=" ">
+			<isNotEmpty property="cangkbh"  prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjlx"  prepend="and">
+	    		<![CDATA[lingjlx = #lingjlx#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+</sqlMap>

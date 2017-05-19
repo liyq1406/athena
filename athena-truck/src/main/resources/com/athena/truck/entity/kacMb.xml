@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_kac">
+
+  <!--卡车司机 -->  
+
+   <!-- 卡车登录验证 2015.2.5  -->
+	<select id="queryKacNum" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+			select count(1) from ${dbSchemal3}kc_chelpd p where  p.kach=#kach#
+		]]>
+	</select>
+
+	<!-- 排队卡车当前状态查询  2015.2.5 -->
+	<select id="queryKacCurrStatus" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select * from 
+		 (select  a.daztbh,a.usercenter,a.yundh,a.kach,a.chewbh,a.paidzt as status,a.paidxh,
+		   to_char(a.create_time,'mm-dd hh24:mi:ss') create_time,to_char(b.zhunrsj,'mm-dd hh24:mi:ss') zhunrsj,
+			nvl(substr(a.xiehxh,length(a.xiehxh)-2,length(a.xiehxh)),'') as xiehxh 
+			from kc_chelpd a,kc_yund b where a.kach=#kach# and a.usercenter=b.usercenter and a.yundh=b.yundh  order by yundh ) 
+		 where rownum=1	
+		]]>
+	</select>
+
+	<!-- 排队卡车查询  2015.2.5 -->
+	<select id="queryKacOfPaid" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select a.kach,a.daztbh,a.paidxh,paidzt as status,
+		substr(a.xiehxh,length(a.xiehxh)-2,length(a.xiehxh)) as xiehxh,
+		a.chewbh,a.quybh,
+		a.chengysbh||b.gongsmc as chengys 
+		 from kc_chelpd a,ckx_gongys b  
+		 where daztbh in(  
+		 select a.daztbh from kc_chelpd a  where a.kach=#kach#)
+		 and b.gcbh=a.chengysbh and a.usercenter=b.usercenter
+	]]>
+	<dynamic>
+		 <isNotEmpty property="paidbs" prepend="and"> a.paidzt=#paidbs#</isNotEmpty>
+	</dynamic>
+	<![CDATA[ 
+			order by paidzt desc,xiehxh,paidxh 
+		]]>
+	</select>
+
+	<!-- 卡车所在区域下正在排队的运单查询  2015.2.10 -->
+	<select id="queryYundOfpaid" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select y.daztbh,y.yundh,y.zhuangtmc,count(b.blh) blsl from kc_yund y,kc_yundmx b,kc_chelpd c where  
+			y.usercenter=c.usercenter and y.yundh=c.yundh  
+			and y.usercenter=b.usercenter and y.yundh=b.yundh  
+			and y.quybh in(select a.quybh from kc_chelpd a,ckx_dazt d 
+			where  a.usercenter=d.usercenter and a.daztbh=d.daztbh  group by a.quybh)  
+			and c.kach=#kach#  group by  y.daztbh, y.yundh,y.zhuangtmc	
+
+		]]>
+	</select>
+
+	<!-- 运单明细    2015.2.10 -->
+	<select id="queryYundMx" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		 	select mx.yundh,mx.blh,mx.uth,mx.cangkbh,mx.xiehzt from kc_yundmx mx  
+		 		where mx.yundh=#yundh# order by mx.blh  
+		]]>
+	</select>
+
+	<!-- 卡车司机-我的信息    2015.2.10 -->
+	<select id="queryYundOfOwnerInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		 select a.kach, a.chengysbh,count(a.yundh) yundsl,a.daztbh  from kc_chelpd  a 
+		 	where a.kach=#kach#   group by a.kach,a.daztbh,a.chengysbh  
+		]]>
+	</select>
+	
+
+	<!-- 查询运单数据   停用  2015.2.10 -->
+	<select id="queryYundOfpaidInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select k.yundh,to_char(k.shengbsj,'yyyy-mm-dd hh24:mi:ss') shengbsj, 
+		to_char(k.chucsj,'yyyy-mm-dd hh24:mi:ss') chucsj from kc_yund k  
+		where k.kach=#kach#  
+		]]>
+	</select>
+
+
+
+
+ <!--叉车司机 -->
+ 
+ <!-- 登录验证 -->
+ <select id="onLoginValid" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+		select count(1) as Cnum from SYS_USER u where 
+				u.loginname =#username# and u.password=#password#
+		]]>
+ </select>
+ 
+ <!-- 叉车下车位查询 -->
+	<select id="queryChacCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		<![CDATA[
+		select count(1) CC from ckx_chac a,ckx_chac_chew b 
+			where a.usercenter=b.usercenter  and a.chacbh=b.chacbh 
+			and a.quybh=b.quybh and a.daztbh=b.daztbh and a.chacz=#chacz# and a.usercenter=#usercenter#
+		]]>
+	</select>
+
+  <!-- 叉车司机所在的叉车组 -->
+	<select id="getLoginUserPost" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select r_user_post_.POST_CODE,USER_ID,u.usercenter,p.dic_code from 
+			 SYS_R_USER_POST r_user_post_ inner join sys_r_post_usercenter u 
+			 on r_user_post_.post_code = u.post_code 
+			 inner join sys_post p  on p.post_code = r_user_post_.post_code 
+			 where r_user_post_.USER_ID=(select t.id from sys_user t 
+			 where t.loginname=#username#) and p.dic_code=#dicCode# and u.usercenter=#usercenter# and rownum=1 
+		]]>
+	</select>
+ 
+   <!-- 叉车司机登录所管理的区域 -->
+	<select id="getLoginUserQuybh" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		 select a.quybh,c.quymc  from ckx_chac a , 
+			(select r_user_post_.POST_CODE,USER_ID,u.usercenter,p.dic_code from 
+			 SYS_R_USER_POST r_user_post_ inner join sys_r_post_usercenter u on r_user_post_.post_code = u.post_code 
+			 inner join sys_post p  on p.post_code = r_user_post_.post_code 
+			  where r_user_post_.USER_ID=(select t.id from sys_user t where t.loginname=#username#) 
+			  and p.dic_code=#dicCode# and u.usercenter=#usercenter# and rownum=1) b ,ckx_dengdqy c
+			 where a.usercenter=b.usercenter and a.chacz=b.post_code
+			 and a.usercenter=c.usercenter and a.quybh=c.quybh
+		]]>
+	</select>
+	
+<!-- 叉车编号查询 -->
+	<select id="getChacbh" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select c.quybh,c.chacbh from ckx_chac c
+			 where c.chacz =#chacz#
+			 and c.usercenter=#usercenter# and rownum=1 
+		]]>
+	</select>	
+ 
+ 
+ 
+ <!--叉车 分配车位大站台列表查询-->
+<select id="queryChacCwOfDazt" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+<![CDATA[
+	
+select a.usercenter,
+       a.quybh,
+       a.daztbh,
+       a.yundh,
+       a.kach,
+       a.chewbh,
+       xiehxh,
+       b.zhuangt,
+       b.zhuangtmc,
+       b.liucbh,
+       b.liucmc,
+       b.biaozsj,d.kacwdbjsj,d.fangkbzsj,
+       case when (b.zhuangt>3 or b.liucbh='8') and  (sysdate-b.rucsj)*24*60 > d.fangkbzsj  then  'fkbj'   
+            when b.zhuangt=3 and (sysdate-b.zhunrsj)*24*60 > d.kacwdbjsj then 'wdbj' 
+            else 'zc' end as baojbs,
+       to_char(b.rucsj,'yyyy-mm-dd hh24:mi:ss') rucsj,b.edit_time
+  from (select c.usercenter,
+               c.quybh,
+               c.daztbh,
+               p.yundh,
+               p.kach,
+               p.chewbh,
+               nvl(substr(p.xiehxh, length(p.xiehxh) - 2, length(p.xiehxh)),
+                   '') as xiehxh
+          from ckx_chac c, kc_chelpd p, ckx_chac_chew cc
+         where c.biaos = '1'
+           and c.usercenter = cc.usercenter
+           and c.quybh = cc.quybh
+           and c.daztbh = cc.daztbh
+           and c.chacbh = cc.chacbh
+           and cc.chewbh = p.chewbh
+           and c.chacz = #chacz#
+           and c.usercenter = #usercenter#) a,
+       (select usercenter,
+               quybh,
+               daztbh,
+               yundh,
+               kach,
+               zhuangt,
+               zhuangtmc,
+               liucbh,
+               liucmc,
+               biaozsj,rucsj,zhunrsj,edit_time
+          from (select rank() over(partition by y.usercenter, y.quybh, y.daztbh, y.yundh, y.kach, y.zhuangt, y.zhuangtmc order by l.liucbh asc) rk,
+                       y.usercenter,
+                       y.quybh,
+                       y.daztbh,
+                       y.yundh,
+                       y.kach,
+                       y.zhuangt,
+                       y.zhuangtmc,y.rucsj,y.zhunrsj,y.edit_time,
+                       l.liucbh,
+                       l.liucmc,
+                       l.biaozsj
+                  from kc_yund y, ckx_liucdy l
+                 where y.usercenter = l.usercenter
+                   and y.quybh = l.quybh
+                   and y.daztbh = l.daztbh
+                   and y.zhuangt >= 3
+                   and y.zhuangt < 8
+                   and l.biaos = '1'
+                   and l.liucbh > y.zhuangt) t
+         where t.rk = 1) b,
+         ckx_dazt d
+ where a.usercenter = b.usercenter
+   and a.quybh = b.quybh
+   and a.daztbh = b.daztbh
+   and a.yundh = b.yundh
+   and a.kach = b.kach
+   and a.usercenter=d.usercenter and a.quybh = d.quybh and a.daztbh = d.daztbh
+   ]]>
+	<dynamic>
+		 <isNotEmpty property="zhuangt" prepend="and"> a.zhuangt=#zhuangt#</isNotEmpty>
+		 <isNotEmpty property="yundh" prepend="and"> a.yundh=#yundh#</isNotEmpty>
+		 <isNotEmpty property="kach" prepend="and"> a.kach=#kach#</isNotEmpty>
+	</dynamic>
+	<![CDATA[     
+ order by xiehxh asc
+
+]]>
+</select>
+
+
+<!--大站台所有准入卡车列表-->
+<select id="queryAllChewOfDazt" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+<![CDATA[
+select a.usercenter,
+       a.quybh,
+       a.daztbh,
+       a.yundh,
+       a.kach,
+       a.chewbh,
+       a.xiehxh,
+       b.zhuangt,
+       b.zhuangtmc,
+       b.liucbh,
+       b.liucmc,
+       b.biaozsj,d.kacwdbjsj,d.fangkbzsj,
+       case when (b.zhuangt>3 or b.liucbh='8') and  (sysdate-b.rucsj)*24*60 > d.fangkbzsj  then  'fkbj'   
+            when b.zhuangt=3 and (sysdate-b.zhunrsj)*24*60 > d.kacwdbjsj then 'wdbj' 
+            else 'zc' end as baojbs,
+       to_char(b.rucsj,'yyyy-mm-dd hh24:mi:ss') rucsj,b.edit_time
+  from (select c.usercenter,
+               c.quybh,
+               c.daztbh,
+               p.yundh,
+               p.kach,
+               p.chewbh,
+               p.xiehxh
+          from ckx_chac c, kc_chelpd p
+         where c.biaos = '1'
+           and c.chacz = #chacz#
+           and p.usercenter = c.usercenter
+           and c.quybh = p.quybh
+           and c.daztbh = p.daztbh
+           and p.paidzt = '1'
+           and c.usercenter = #usercenter#) a,
+       (select usercenter,
+               quybh,
+               daztbh,
+               yundh,
+               kach,
+               zhuangt,
+               zhuangtmc,rucsj,zhunrsj,edit_time,
+               liucbh,
+               liucmc,
+               biaozsj
+          from (select rank() over(partition by y.usercenter, y.quybh, y.daztbh, y.yundh, y.kach, y.zhuangt, y.zhuangtmc order by l.liucbh asc) rk,
+                       y.usercenter,
+                       y.quybh,
+                       y.daztbh,
+                       y.yundh,
+                       y.kach,
+                       y.zhuangt,
+                       y.zhuangtmc,y.rucsj,y.zhunrsj,y.edit_time,
+                       l.liucbh,
+                       l.liucmc,
+                       l.biaozsj
+                  from kc_yund y, ckx_liucdy l
+                 where y.usercenter = l.usercenter
+                   and y.quybh = l.quybh
+                   and y.daztbh = l.daztbh
+                   and y.zhuangt >= 3
+                   and y.zhuangt < 8
+                   and l.biaos = '1'
+                   and l.liucbh > y.zhuangt) t
+         where t.rk = 1) b,ckx_dazt d
+ where a.usercenter = b.usercenter
+   and a.quybh = b.quybh
+   and a.daztbh = b.daztbh
+   and a.yundh = b.yundh
+   and a.kach = b.kach
+    and a.usercenter=d.usercenter and a.quybh = d.quybh and a.daztbh = d.daztbh
+ ]]>
+	<dynamic>
+		 <isNotEmpty property="zhuangt" prepend="and"> a.zhuangt=#zhuangt#</isNotEmpty>
+		 <isNotEmpty property="yundh" prepend="and"> a.yundh=#yundh#</isNotEmpty>
+		 <isNotEmpty property="kach" prepend="and"> a.kach=#kach#</isNotEmpty>
+	</dynamic>
+	<![CDATA[    
+    
+ order by xiehxh asc
+
+]]>
+</select>
+
+
+<!-- 叉车员操作按钮功能 ，更新运单状态-->
+	<update id="updateYundZt" parameterClass="java.util.Map">
+		<![CDATA[
+			update  kc_yund y  set 
+			 editor =#username#,edit_time=sysdate,zhuangt=#liucbh#,zhuangtmc=#liucmc#
+			  where  usercenter=#usercenter# and  yundh=#yundh#
+		]]>
+	</update>	
+
+<!-- 叉车员操作按钮功能 ，写流水表-->
+	<insert id="insertLius" parameterClass="java.util.Map" >
+		<![CDATA[
+		insert into kc_churcls(usercenter, quybh, daztbh, yundh, liucbh, kach, chewbh, beiz, operator, 
+				operate_time, operate_type, biaozsj, lastoperate_time, chengysbh, rongqc, jijbs, tiqpdbs) 
+		values(#usercenter#,#quybh#, #daztbh#,#yundh#, #zhuangt#, #kach#, #chewbh#, '', #username#,
+				sysdate,'1',#biaozsj#,
+				(select max(l.operate_time) from kc_churcls l where l.usercenter=#usercenter# 
+				      and l.quybh=#quybh# and l.daztbh=#daztbh#  and l.yundh=#yundh#),'','','','')
+		]]>
+	</insert>	
+
+
+
+</sqlMap>

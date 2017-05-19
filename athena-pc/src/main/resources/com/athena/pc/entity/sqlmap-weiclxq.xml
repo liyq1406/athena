@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="weiclxq">
+	<!-- 未处理需求查询 hzg 2012-6-19 -->
+	<select id="queryWeiclxq"  resultClass="com.athena.pc.entity.Yaonbhl">
+	<!-- 订单 -->
+	<dynamic>
+	   	<isEqual prepend=" " 
+	             property="leix" 
+	             compareValue="DD">
+	   	<![CDATA[
+	   	 select dd.usercenter,dd.lingjbh,
+	   	 to_char(dd.pckaissj,'yyyy-MM-dd') as kaissj,
+	   	 to_char(dd.pcjiessj,'yyyy-MM-dd') as jiessj,
+	   	 dd.shul as lingjsl ,dd.paiczt,'零件流' as leix from ${dbSchemal1}xqjs_dingdmx_pc dd inner join ${dbSchemal1}xqjs_dingd_pc ddh on ddh.dingdh = dd.dingdh
+	   	]]>	
+	  <![CDATA[ 
+	   	 where (dd.paiczt <> '1' or dd.paiczt is null)    and (ddh.CHULLX = 'PJ' OR ddh.CHULLX = 'NJ' OR ddh.CHULLX = 'PP' OR ddh.CHULLX = 'NP')   AND dd.PCFLAG = '1' 
+	   	 and dd.lingjbh in (
+	   	]]>
+	   	<!-- 计划员权限 -->
+	   	<![CDATA[
+	    SELECT LINGJBH FROM ${dbSchemal3}CKX_SHENGCX_LINGJ CXLJ 
+	    INNER JOIN ${dbSchemal3}CKX_SHENGCX SCX
+	    ON CXLJ.SHENGCXBH=SCX.SHENGCXBH AND CXLJ.USERCENTER=SCX.USERCENTER
+	    INNER JOIN ${dbSchemal3}CKX_CHANXZ CXZ
+	    ON SCX.CHANXZBH=CXZ.CHANXZBH AND SCX.USERCENTER=CXZ.USERCENTER
+	    WHERE CXZ.JIHYZBH=#jihyzbh# and CXZ.USERCENTER=#usercenter# GROUP BY LINGJBH)
+		]]>	
+		<isNotEmpty prepend=" and ((" property="kaissj"><![CDATA[pckaissj <= to_date(#jiessj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="jiessj"><![CDATA[pcjiessj >= to_date(#jiessj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" )or( " property="kaissj"><![CDATA[pckaissj <= to_date(#kaissj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="jiessj"><![CDATA[pcjiessj >= to_date(#kaissj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" )or( " property="kaissj"><![CDATA[pckaissj > to_date(#kaissj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="jiessj"><![CDATA[pcjiessj < to_date(#jiessj#,'yyyy-mm-dd')))]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+		 
+	   	</isEqual> 
+   	<!-- 外部订单预告 -->
+	   	<isEqual prepend=" " 
+	             property="leix" 
+	             compareValue="YG">
+	   	<![CDATA[
+	   	select pp.* from (
+	   	 select yg.usercenter,yg.lingjbh, 
+         to_char(yg.pcjiessj,'yyyy-MM-dd') as jiessj,
+         yg.shul as lingjsl,'接口' as leix,       to_char(yg.pckaissj,'yyyy-MM-dd') as kaissj,yg.clzt from ${dbSchemal2}pc_in_wbddyg yg 
+        ]]>	
+       
+	  <![CDATA[ 
+	   	 where (yg.clzt<>'1' or yg.clzt is null)  AND yg.USERCENTER=#usercenter#
+	   	  and yg.lingjbh in (
+	   	]]>
+	   	  <!-- 计划员权限 -->
+	   	<![CDATA[
+	    SELECT LINGJBH FROM ${dbSchemal3}CKX_SHENGCX_LINGJ CXLJ 
+	    INNER JOIN ${dbSchemal3}CKX_SHENGCX SCX
+	    ON CXLJ.SHENGCXBH=SCX.SHENGCXBH AND CXLJ.USERCENTER=SCX.USERCENTER
+	    INNER JOIN ${dbSchemal3}CKX_CHANXZ CXZ
+	    ON SCX.CHANXZBH=CXZ.CHANXZBH AND SCX.USERCENTER=CXZ.USERCENTER
+	    WHERE CXZ.JIHYZBH=#jihyzbh# GROUP BY LINGJBH)
+		]]>	
+		
+		<isNotEmpty prepend=" and ((" property="kaissj"><![CDATA[pckaissj <= to_date(#jiessj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="jiessj"><![CDATA[pcjiessj >= to_date(#jiessj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" )or( " property="kaissj"><![CDATA[pckaissj <= to_date(#kaissj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="jiessj"><![CDATA[pcjiessj >= to_date(#kaissj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" )or( " property="kaissj"><![CDATA[pckaissj > to_date(#kaissj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="jiessj"><![CDATA[pcjiessj < to_date(#jiessj#,'yyyy-mm-dd')))]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+		) pp 
+	   	</isEqual> 
+	<!-- GEVP外部要货令 -->
+	   	<isEqual prepend=" " 
+	             property="leix" 
+	             compareValue="YHL">
+	   	<![CDATA[
+	   	  select yhl.usercenter,yhl.lingjbh,yhl.yaohsl as lingjsl,
+	   	  to_char(yhl.pckaissj,'yyyy-MM-dd')as kaissj,
+	   	  to_char(yhl.pcjiessj, 'yyyy-MM-dd') as jiessj,
+	   	  '接口' as leix,yhl.clzt from ${dbSchemal2}pc_in_gevp_yaohl yhl 
+	   	]]>	 
+	  <![CDATA[ 
+	   	  where  (yhl.clzt<>'1' or yhl.clzt is null ) AND yhl.USERCENTER=#usercenter# 
+	   	  and yhl.lingjbh in (
+	   	]]>
+	   	<!-- 计划员权限 -->
+	   	<![CDATA[
+	    SELECT LINGJBH FROM  ${dbSchemal3}CKX_SHENGCX_LINGJ CXLJ 
+	    INNER JOIN ${dbSchemal3}CKX_SHENGCX SCX
+	    ON CXLJ.SHENGCXBH=SCX.SHENGCXBH AND CXLJ.USERCENTER=SCX.USERCENTER
+	    INNER JOIN ${dbSchemal3}CKX_CHANXZ CXZ
+	    ON SCX.CHANXZBH=CXZ.CHANXZBH AND SCX.USERCENTER=CXZ.USERCENTER
+	    WHERE CXZ.JIHYZBH=#jihyzbh# GROUP BY LINGJBH)
+		]]>	
+		<isNotEmpty prepend=" and ((" property="kaissj"><![CDATA[pckaissj <= to_date(#jiessj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="jiessj"><![CDATA[pcjiessj >= to_date(#jiessj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" )or( " property="kaissj"><![CDATA[pckaissj <= to_date(#kaissj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="jiessj"><![CDATA[pcjiessj >= to_date(#kaissj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" )or( " property="kaissj"><![CDATA[pckaissj > to_date(#kaissj#,'yyyy-mm-dd')]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="jiessj"><![CDATA[pcjiessj < to_date(#jiessj#,'yyyy-mm-dd')))]]></isNotEmpty>
+		<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+	   	</isEqual> 
+   	</dynamic>
+	ORDER BY  jiessj DESC , lingjbh
+	</select>
+</sqlMap>

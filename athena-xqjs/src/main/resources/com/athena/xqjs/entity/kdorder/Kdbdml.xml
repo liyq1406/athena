@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kdorder">
+
+	<resultMap class="com.athena.xqjs.entity.kdorder.Kdbdml" id="kdbdml">
+		<result column="ID" property="id" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="DINGHCJ" property="dinghcj" />
+		<result column="LINGJBH" property="lingjbh" />
+		<result column="UCLX" property="uclx" />
+		<result column="UCRL" property="ucrl" />
+		<result column="UALX" property="ualx" />
+		<result column="UARL" property="uarl" />
+		<result column="FAHD" property="fahd" />
+		<result column="ZHIZLX" property="zhizlx" />
+		<result column="DIYCQYSJ" property="diycqysj" />
+		<result column="LINGJLX" property="lingjlx" />
+		<result column="CHEX" property="chex" />
+
+	</resultMap>
+
+	<!-- xss-20161104 v4_014-->
+	<select id="queryKdbdml" resultClass="com.athena.xqjs.entity.kdorder.Kdbdml">
+		select
+		ID,
+		USERCENTER,
+		LINGJBH,
+		UCLX,
+		UCRL,
+		UALX,
+		UARL,
+		Xiehd
+		from
+		${dbSchemal1}XQJS_KDBDML
+		where
+		1=1
+	</select>
+	<insert id="insertKdbdml" parameterClass="com.athena.xqjs.entity.kdorder.Kdbdml">
+		insert into
+		${dbSchemal1}XQJS_KDBDML
+		(
+		ID,
+		USERCENTER,
+		LINGJBH,
+		UCLX,
+		UCRL,
+		UALX,
+		UARL,
+		XIEHD
+		)
+		values(
+		${dbSchemal1}KDBDML_SEQ.nextval,
+		#usercenter#,
+		#lingjbh#,
+		#uclx#,
+		#ucrl#,
+		#ualx#,
+		#uarl#,
+		#xiehd#
+		)
+	</insert>
+	<delete id="deleteKdbdml">
+		delete
+		from
+		${dbSchemal1}XQJS_KDBDML
+		where
+		1 = 1
+		
+	
+	</delete>
+</sqlMap>

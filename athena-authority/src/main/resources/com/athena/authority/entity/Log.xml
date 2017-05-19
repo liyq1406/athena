@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.Log" id="Log">
+		<result column="CID" property="cid" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="OPERATORS" property="operators" />
+		<result column="OPERATORS_IP" property="operatorsIp" />
+		<result column="TRANS_CONTENT" property="tranContent" />
+		<result column="TRANS_DESC" property="transDesc" />
+		<result column="CFLAG" property="cflag" />
+		<result column="TRANS_URL" property="transUrl" />
+		<result column="CLEVEL" property="clevel" />
+		<result column="CCLASS" property="cclass" />
+		<result column="CEXCEPTION" property="cexception" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="MODULE_NAME" property="moduleName" />
+		<result column="PROCESS_NAME" property="processName" />
+	</resultMap>
+	<!-- 多记录查询 -->
+	<select id="queryLog" resultMap="Log">select 
+		CID,
+		USERCENTER,
+		OPERATORS,
+		OPERATORS_IP,
+		TRANS_CONTENT,
+		TRANS_DESC,
+		CFLAG,
+		TRANS_URL,
+		CLEVEL,
+		CCLASS,
+		CEXCEPTION,
+		MODULE_NAME,
+		CREATE_TIME,
+		PROCESS_NAME
+		from ${dbSchemal0}SYS_LOG 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="operatorsIp">
+				OPERATORS_IP = #operatorsIp#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="operators">
+				OPERATORS = #operators#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="transDesc">
+				TRANS_DESC like '%'||#transDesc#||'%'
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="createTime_from">  <![CDATA[CREATE_TIME between to_date(#createTime_from#,'yyyy-MM-dd hh24:mi:ss') and to_date(#createTime_to#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+		</dynamic>
+		order by CREATE_TIME desc
+	</select>
+	<!-- 单记录查询 -->
+	<select id="getLog" resultMap="Log">select 
+		CID,
+		USERCENTER,
+		OPERATORS,
+		OPERATORS_IP,
+		TRANS_CONTENT,
+		TRANS_DESC,
+		CFLAG,
+		TRANS_URL,
+		CLEVEL,
+		CCLASS,
+		CEXCEPTION,
+		MODULE_NAME,
+		CREATE_TIME,
+		PROCESS_NAME
+		from ${dbSchemal0}SYS_LOG 
+		where CID=#cid#
+	</select>
+	<!-- 插入记录 -->
+
+	<!-- 删除记录 -->
+	<delete id="deleteLog" parameterClass="com.athena.authority.entity.Log">
+		delete from ${dbSchemal0}SYS_LOG where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="cid">CID = #cid#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft><!-- 资源跟踪报警action配置文件 -->
+	<package name="zygzbj" extend="toft-default" namespace="/zygzbj">
+		<!-- 初始页面 -->
+
+	    <action name="initJs" class="zygzbjjsAction" method="initJs">
+	    	<result name="zygzbjjs">/WEB-INF/pages/xqjs/zygzbj/zybjjs.jsp</result>
+	    </action>
+	    <!-- 计算 -->
+	    <action name="jiS" class="zygzbjjsAction" method="jiS">
+	    </action>
+	    <!-- 查询毛需求版次 -->
+	    <action name="selectMxq" class="zygzbjjsAction" method="selectMxq">
+	    </action>
+	     <!-- 跳转毛需求明细信息 -->
+	    <action name="mxqMx" class="zygzbjjsAction" method="mxqMx">
+	    <result name="mxqmx">/WEB-INF/pages/xqjs/zygzbj/mxqmx.jsp</result>
+	    </action>
+	     <!-- 查询毛需求明细信息 -->
+	    <action name="selectMxqMx" class="zygzbjjsAction" method="selectMxqMx">
+	    </action>
+	    
+	    <!-- 查询初始页面 -->
+	    <action name="initCx" class="zygzbjcxAction" method="initCx">
+	    	<result name="zq">/WEB-INF/pages/xqjs/zygzbj/zqzybjcx.jsp</result>
+	    	<result name="z">/WEB-INF/pages/xqjs/zygzbj/zzybjcx.jsp</result>
+	    	<result name="r">/WEB-INF/pages/xqjs/zygzbj/rzybjcx.jsp</result>
+	    	<result name="sd">/WEB-INF/pages/xqjs/zygzbj/sdzybjcx.jsp</result>
+	    </action>
+	    
+	    <!-- 查询初始页面 -->
+	    <action name="initZygzR" class="zygzAction" method="initZygz">
+	    	<result name="zygz">/WEB-INF/pages/xqjs/zygzbj/zygz.jsp</result>
+	    </action>
+	    
+	    <!-- 查询初始页面 -->
+	    <action name="initZygzSd" class="zygzAction" method="initZygz">
+	    	<result name="zygz">/WEB-INF/pages/xqjs/zygzbj/zygz.jsp</result>
+	    </action>
+	    
+	    <!-- 查询初始页面 -->
+	    <action name="initZygzZ" class="zygzAction" method="initZygz">
+	    	<result name="zygz">/WEB-INF/pages/xqjs/zygzbj/zygz.jsp</result>
+	    </action>
+	    
+	    <!-- 查询初始页面 -->
+	    <action name="initZygz" class="zygzAction" method="initZygz">
+	    	<result name="zygz">/WEB-INF/pages/xqjs/zygzbj/zygz.jsp</result>
+	    </action>
+	    
+	    
+	    <!-- 查询初始页面 -->
+	    <action name="initZygzZq" class="zygzAction" method="initZygz">
+	    	<result name="zygz">/WEB-INF/pages/xqjs/zygzbj/zygz.jsp</result>
+	    </action>
+	    
+	    <!-- 查询资源跟踪报警汇总信息 -->
+	    <action name="queryZygzbj" class="zygzbjcxAction" method="queryZygzbj">
+	    </action>
+	    
+	   <!-- 资源跟踪报警明细页面初始化 -->
+	    <action name="initMxR" class="zygzbjcxAction" method="initMx">
+	    	<result name="zygzmx">/WEB-INF/pages/xqjs/zygzbj/zybjcxmx.jsp</result>
+	    </action>
+	    
+	    <!-- 资源跟踪报警明细页面初始化 -->
+	    <action name="initMxZ" class="zygzbjcxAction" method="initMx">
+	    	<result name="zygzmx">/WEB-INF/pages/xqjs/zygzbj/zybjcxmx.jsp</result>
+	    </action>
+	    
+	    <!-- 资源跟踪报警明细页面初始化 -->
+	    <action name="initMxZq" class="zygzbjcxAction" method="initMx">
+	    	<result name="zygzmx">/WEB-INF/pages/xqjs/zygzbj/zybjcxmx.jsp</result>
+	    </action>
+	    
+	    <!-- 资源跟踪报警明细页面初始化 -->
+	    <action name="initMxSd" class="zygzbjcxAction" method="initMx">
+	    	<result name="zygzmx">/WEB-INF/pages/xqjs/zygzbj/zybjcxmx.jsp</result>
+	    </action>
+	    
+	    <!-- 资源跟踪报警明细查询 -->
+	    <action name="queryZygzbjmx" class="zygzbjcxAction" method="queryZygzbjmx">
+	    </action>
+	    
+	    <!-- 资源跟踪报警明细查询 -->
+	    <action name="initZygz" class="zygzAction" method="initZygz">
+	    	<result name="zygz">/WEB-INF/pages/xqjs/zygzbj/zygz.jsp</result>
+	    </action>
+	    
+	     <!-- 查询资源跟踪 -->
+	    <action name="queryZygz" class="zygzAction" method="queryZygz">
+	    </action>
+	    <!-- 跳转资源跟踪明细 -->
+	    <action name="initZygzMx" class="zygzAction" method="initZygzMx">
+	    	<result name="zygzMx">/WEB-INF/pages/xqjs/zygzbj/zygzMx.jsp</result>
+	    </action>
+	     <!-- 跳转要货令明细 -->
+	    <action name="initYaohl" class="zygzAction" method="initYaohl">
+	    	<result name="yaohlInfo">/WEB-INF/pages/xqjs/zygzbj/yaohlInfo.jsp</result>
+	    </action>
+	     <!-- 查询要货令明细 -->
+	    <action name="queryYaohl" class="zygzAction" method="queryYaohl">
+	    </action>
+	     <!-- 查询资源跟踪明细 -->
+	    <action name="queryZygzMx" class="zygzAction" method="queryZygzMx">
+	    	<result name="zygzMx">/WEB-INF/pages/xqjs/zygzbj/zygzMx.jsp</result>
+	    </action>
+	    
+	     <!-- 资源跟踪零件页面初始化 -->
+	    <action name="initZygzlj" class="zygzAction" method="initZygzlj">
+	    	<result name="zygzlj">/WEB-INF/pages/xqjs/zygzbj/zygzlj.jsp</result>
+	    </action>
+	    
+	     <!-- 查询集装箱列表 -->
+	    <action name="queryJizxlb" class="zygzAction" method="queryJizxlb">
+	    </action>
+	    
+	    <!-- 查询未发运零件 -->
+	    <action name="queryWeifylj" class="zygzAction" method="queryWeifylj">
+	    </action>
+	    
+	     <!-- 资源跟踪集装箱页面初始化 -->
+	    <action name="initJzx" class="zygzAction" method="initJzx">
+	    	<result name="zygzjzx">/WEB-INF/pages/xqjs/zygzbj/zygzjzx.jsp</result>
+	    </action>
+	    
+	    <!-- 查询资源跟踪报警集装箱列表 -->
+	    <action name="queryZygzjzx" class="zygzAction" method="queryZygzjzx">
+	    </action>
+	    
+	     <!-- 未装箱要货令列表初始化 -->
+	    <action name="initWeizxyhllb" class="zygzAction" method="initWeizxyhllb">
+	    	<result name="weizxljlb">/WEB-INF/pages/xqjs/zygzbj/weizxljlb.jsp</result>
+	    </action>
+	    
+	    <!-- 查询未装箱要货令列表 -->
+	    <action name="queryWeizxyhllb" class="zygzAction" method="queryWeizxyhllb">
+	    </action>
+	    
+	    <!-- 更新交付时间 -->
+	    <action name="updateJiaofsj" class="zygzAction" method="updateJiaofsj">
+	    </action>
+	    
+	    <!-- MAF库存毛需求对比 -->
+	    <action name="initMafmxq" class="mafMxqAction" method="initMafmxq">
+	    	<result name="mafmxq">/WEB-INF/pages/xqjs/zygzbj/mafmxq.jsp</result>
+	    </action>
+	    
+	     <!-- 查询maf库毛需求对比 -->
+	    <action name="queryMafmxq" class="mafMxqAction" method="queryMafmxq">
+	    </action>
+		
+		<!-- maf库毛需求对比 -->
+		<action name="maoxqDuib" class="mafMxqAction" method="maoxqDuib">
+	    </action>
+
+		<!-- 查询资源获取日历 -->
+	    <action name="queryZyhqrq" class="zygzbjjsAction" method="queryZyhqrq">
+	    </action>
+	    
+	    <!-- 查询资源计算类型 -->
+	    <action name="queryZyJslx" class="zygzbjjsAction" method="queryZyJslx">
+	    </action>
+	    
+	    <!-- KD资源跟踪报警计算 -->
+	    <action name="initKdZygzbjjs" class="zygzbjjsAction" method="initKdZygzbjjs">
+	    	<result name="kdZygzbjjs">/WEB-INF/pages/xqjs/zygzbj/kdZygzbjjs.jsp</result>
+	    </action>
+	</package>
+</toft>

@@ -1,0 +1,1583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 资源跟踪报警ibaits配置文件 -->
+<sqlMap namespace="zygzbj">
+	<!-- 查询资源跟踪类型 -->
+	<select id="queryZygzlx" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.zygzbj.Zygzlx">
+		select
+		jislxbh,xuqly,dinghlx as zhizlx,gonghms,jisff,jslxmc,creator,create_time,editor,edit_time
+		from
+		${dbSchemal3}ckx_ziygzlx
+		where
+		1 = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="jslx"> jislxbh = #jslx#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<!-- 查询毛需求信息 -->
+	<select id="queryMxq" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ilorder.Maoxq">
+		select 
+			xuqbc,xuqcfsj,xuqly,beiz,shengxbz,creator,create_time,editor,edit_time,
+			row_number() over (partition by xuqly order by create_time desc) id  
+		from 
+			${dbSchemal3}xqjs_maoxq
+		where
+			active = '1'
+		<dynamic>
+			<isNotNull prepend=" and " property="xqly"> xuqly in ($xqly$) </isNotNull>
+		</dynamic>	
+		order by id
+	</select>
+
+	
+	<!-- 删除资源跟踪报警汇总 -->
+
+	<delete id="delZygzbjhz" parameterClass="java.util.HashMap">
+
+		delete from 
+			${dbSchemal1}xqjs_ziygzbjhz 
+		where  
+			1 = 1
+
+		<dynamic>
+			<isNotNull prepend=" and " property="jslx"> jislx = #jslx#
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> usercenter =
+				#usercenter# </isNotNull>
+		</dynamic>
+	</delete>
+
+	
+	<!-- 删除资源跟踪报警毛需求 -->
+	<delete id="delZiygzbjmxq" parameterClass="java.util.HashMap">
+		truncate table 
+			${dbSchemal1}xqjs_ziygzbjmxq 
+	</delete>
+	
+	<!-- 删除资源跟踪报警断点 -->
+	<delete id="delZiygzbjdd" parameterClass="java.util.HashMap">
+		delete from 
+			${dbSchemal1}xqjs_ziygzbjdd 
+		where 
+			1 = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="jslx"> jislx = #jslx#
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> usercenter =
+				#usercenter# </isNotNull>
+		</dynamic>
+	</delete>
+	
+
+	<!-- 删除资源跟踪报警明细 -->
+	<delete id="delZygzbjmx" parameterClass="java.util.HashMap">
+
+		delete from 
+			${dbSchemal1}xqjs_ziygzbjmx 
+		where  
+			1 = 1
+
+		<dynamic>
+			<isNotNull prepend=" and " property="jslx"> jislx = #jslx#
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> usercenter =
+				#usercenter# </isNotNull>
+		</dynamic>
+	</delete>
+	
+	<!-- 汇总毛需求到仓库 -->
+	<select id="">
+		select 
+			a.usercenter,a.lingjbh,a.zhizlx,b.dinghck as cangkdm,1 as xiaohbl 
+		from 
+			(select 
+      			chanx,lingjbh,usercenter,zhizlx
+      		from   
+        		${dbSchemal1}xqjs_maoxqmx
+      		group by chanx,usercenter,lingjbh,zhizlx)a ,${dbSchemal3}ckx_wullj b
+      where 
+      	a.usercenter = b.usercenter and a.lingjbh = b.lingjbh and b.waibms in ($waibms$)
+	</select>
+
+
+    <select id="shifGZR" resultClass="java.math.BigDecimal">
+		select 
+		    count(*) 
+		from 
+		   ${dbSchemal3}ckx_calendar_version 
+		where 
+		  riq=#riq1# and shifgzr= '1'and usercenter=#usercenter#  and banc=#rilbc#
+	</select>
+	
+	<!-- 查询毛需求明细 -->
+
+	<select id="queryAllMxqmx" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select 
+			chanx,lingjbh,usercenter,zhizlx,danw
+		from 	
+			${dbSchemal1}xqjs_maoxqmx
+		where 
+			active = '1'
+		<dynamic>
+
+			<isNotNull prepend=" and " property="xuqbc"> xuqbc in ($xuqbc$) </isNotNull>
+			<isNotNull prepend=" and " property="zhizlxs"> zhizlx in ($zhizlxs$) </isNotNull>
+		</dynamic>
+		group by chanx,usercenter,lingjbh,zhizlx,danw ORDER BY LINGJBH
+	</select>
+
+	<select id="selLingjgys" resultClass="java.util.HashMap">
+		SELECT DISTINCT LINGJBH,(UCRL*UAUCGS) AS BZRL,USERCENTER FROM  ${dbSchemal1}CKX_LINGJGYS ORDER BY lingjbh 
+	</select>
+   <!-- 查询资源跟踪报警毛需求 -->
+	<select id="queryCDZiygzbjmxq" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.zygzbj.Ziygzbjmxq">
+		select 
+			cangkdm,usercenter,lingjbh,zhizlx,xiaohd,chanx,max(xianbk) as xianbk
+		from 	
+			${dbSchemal1}xqjs_ziygzbjmxq
+		group by 
+			cangkdm,usercenter,lingjbh,zhizlx,xiaohd,chanx
+	</select>
+
+	<!-- 查询资源跟踪报警毛需求 -->
+	<select id="queryZiygzbjmxq" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.zygzbj.Ziygzbjmxq">
+		select distinct
+			cangkdm,usercenter,lingjbh,zhizlx
+		from 	
+			${dbSchemal1}xqjs_ziygzbjmxq
+	</select>
+	
+	<!-- 查询资源跟踪报警毛需求明细 -->
+	<select id="queryZiygzbjmxqmx" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.zygzbj.Ziygzbjmxq">
+		select 
+			 chanx,xiaohbl,xiaohd
+		from 	
+			${dbSchemal1}xqjs_ziygzbjmxq
+		where
+			cangkdm = #cangkdm# and usercenter = #usercenter# and lingjbh = #lingjbh# 
+		<dynamic>
+				<isNotNull prepend=" and " property="zhizlx">
+					 zhizlx = #zhizlx#
+				</isNotNull>
+			</dynamic>
+	</select>
+	
+	<select id="queryZiygzbjmxqmxzq" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.zygzbj.Ziygzbjmxq">
+		select 
+			 chanx,sum(xiaohbl) as xiaohbl,xiaohd
+		from 	
+			${dbSchemal1}xqjs_ziygzbjmxq
+		where
+			cangkdm = #cangkdm# and usercenter = #usercenter# and lingjbh = #lingjbh# 
+		<dynamic>
+				<isNotNull prepend=" and " property="zhizlx">
+					 zhizlx = #zhizlx#
+				</isNotNull>
+			</dynamic>
+			group by chanx,xiaohd
+	</select>
+	
+	<!-- 查询资源跟踪报警毛需求明细 -->
+	<select id="queryCDZiygzbjmxqmx" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.zygzbj.Ziygzbjmxq">
+		select 
+			distinct chanx,xiaohbl,xiaohd
+		from 	
+			${dbSchemal1}xqjs_ziygzbjmxq
+		where
+			cangkdm = #cangkdm# and usercenter = #usercenter# and lingjbh = #lingjbh# 
+		<dynamic>
+				<isNotNull prepend=" and " property="zhizlx">
+					 zhizlx = #zhizlx#
+				</isNotNull>
+				<isNotNull prepend=" and " property="xiaohd">
+					 xiaohd = #xiaohd#
+				</isNotNull>
+			</dynamic>
+	</select>
+	
+	<!-- 查询时间段内毛需求数量 -->
+	<select id="queryRiqMxqsl" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+		select 
+			sum(xuqsl) 
+		from 
+			${dbSchemal1}xqjs_maoxqmx 
+		where 
+			xuqrq <![CDATA[ >= ]]> to_date(#riq1#,'yyyy-MM-dd') and xuqrq <![CDATA[ < ]]> to_date(#riq2#,'yyyy-MM-dd')
+		<dynamic>
+		<isNotNull prepend=" and " property="xuqbc"> xuqbc in ($xuqbc$)</isNotNull>
+		<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter#</isNotNull>
+		<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh#</isNotNull>
+		<isNotNull prepend=" and " property="chanx"> chanx = #chanx#</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 查询毛需求需求数量 -->
+	<select id="queryMxqsl" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+		select 
+			sum(xuqsl) 
+		from 
+			${dbSchemal1}xqjs_maoxqmx 
+		where 
+			1 = 1
+
+		<dynamic>
+
+			<isEqual property="xuqlx" compareValue="nianzq">
+				<isNotNull prepend=" and " property="lxValue"> xuqsszq = #lxValue# </isNotNull>
+			</isEqual>
+			<isEqual property="xuqlx" compareValue="nianzx">
+				<isNotNull prepend=" and " property="lxValue"> xuqz = #lxValue# </isNotNull>
+			</isEqual>
+			<isEqual property="xuqlx" compareValue="riq">
+				<isNotNull prepend=" and " property="lxValue"> xuqrq = to_date(#lxValue#,'yyyy-MM-dd') </isNotNull>
+			</isEqual>
+			<isNotNull prepend=" and " property="xuqbc"> xuqbc in ($xuqbc$)</isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh#</isNotNull>
+			<isNotNull prepend=" and " property="chanx"> chanx = #chanx#</isNotNull>
+
+		</dynamic>
+	</select>
+
+	<!-- 查询按需毛需求明细 -->
+	<select id="selAxMxqmx" resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select 
+			'anx' as xuqbc,usercenter,chejh as shiycj,chanx,xhsj as xuqrq,lingjbh,xiaohxs as xuqsl,danw,zhizlx,
+			'按需' as xuqly,caifsj as xuqcfsj
+		from
+			${dbSchemal1}xqjs_anxmaoxq
+		where 
+			1 = 1
+			<isNotNull prepend=" and " property="usercenter"> usercenter =
+				#usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh#
+			</isNotNull>
+			<isNotNull prepend=" and " property="xuqcfsj"> to_char(caifsj,'yyyyMMdd') =
+				#xuqcfsj#</isNotNull>
+	</select>
+
+	<!-- 查询毛需求明细 -->
+	<select id="selMxqmx" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select
+		a.id,a.xuqbc,a.usercenter,a.shiycj,a.chanx,a.xuqz,a.xuqrq,a.lingjbh,a.xuqsl,a.danw,a.zhizlx,
+		a.xuqsszq,a.xuqksrq,a.xuqjsrq,b.xuqly,b.xuqcfsj
+		from
+		${dbSchemal1}xqjs_maoxqmx a,${dbSchemal1}xqjs_maoxq b
+		where
+		1 = 1 and a.xuqbc = b.xuqbc
+		<dynamic>
+			<isNotNull prepend=" and " property="xuqbc"> a.xuqbc = #xuqbc#
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> a.usercenter =
+				#usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> a.lingjbh = #lingjbh#
+			</isNotNull>
+			<isNotNull prepend=" and " property="xuqly"> b.xuqly = #xuqly#
+			</isNotNull>
+			<isNotNull prepend=" and " property="xuqcfsj"> b.xuqcfsj =
+				to_date(#xuqcfsj#,'yyyyMMdd')</isNotNull>
+		</dynamic>
+	</select>
+
+	<!-- 查询仓库编号 -->
+
+	<select id="selCk" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select 
+			dinghck,xianbck,waibms
+		from 	
+			${dbSchemal3}ckx_wullj
+		where 
+			1 = 1
+
+		<dynamic>
+
+			<isNotNull prepend=" and " property="USERCENTER"> usercenter = #USERCENTER# </isNotNull>
+			<isNotNull prepend=" and " property="FENPQBH"> fenpqh = #FENPQBH# </isNotNull>
+			<isNotNull prepend=" and " property="LINGJBH"> lingjbh = #LINGJBH# </isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh# </isNotNull>
+		</dynamic>	 
+
+	</select>
+	<select id="selCkAll" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select 
+			distinct dinghck,xianbck,waibms,usercenter,lingjbh,fenpqh
+		from 	
+			${dbSchemal3}ckx_wullj
+		where 
+			1 = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+		</dynamic>	 
+
+	</select>
+
+
+	<!-- 保存毛需求仓库 -->
+	<insert id="inZiygzbjmxq" parameterClass="java.util.HashMap">
+		insert into 
+			${dbSchemal1}xqjs_ziygzbjmxq(id,usercenter,chanx,lingjbh,zhizlx,cangkdm,xiaohbl,xiaohd,xianbk)
+		values(#id#,#usercenter#,#shengcxbh#,#lingjbh#,#zhizlx#,#appobj#,#xiaohbl#,#xiaohd#,#xianbk#)
+	</insert>
+	
+	<!-- 保存毛需求仓库 -->
+	<insert id="inCDZiygzbjmxq" parameterClass="com.athena.xqjs.entity.zygzbj.Ziygzbjmxq">
+		insert into 
+			${dbSchemal1}xqjs_ziygzbjmxq(id,usercenter,chanx,lingjbh,zhizlx,cangkdm,xiaohbl,xiaohd,xianbk)
+		values(#id#,#usercenter#,#chanx#,#lingjbh#,#zhizlx#,#cangkdm#,#xiaohbl#,#xiaohd#,#xianbk#)
+	</insert>
+
+
+	<!-- 查询日期内天数差-->
+	<select id="selDaysOfDate" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+		select 
+      		count(riq) 
+    	from 
+      		${dbSchemal3}ckx_calendar_version 
+    	where 
+      		banc = #rilbc# and usercenter = #usercenter# and shifgzr = '1' and riq <![CDATA[ >= ]]> #date1# 
+      		and riq <![CDATA[ <= ]]> #date2#
+
+	</select>
+	
+	<!-- 计算待消耗时查询日期天数差-->
+	<select id="selDaysOfDxh" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+		select 
+      		count(riq) 
+    	from 
+      		${dbSchemal3}ckx_calendar_version 
+    	where 
+      		banc = #rilbc# and usercenter = #usercenter# and shifgzr = '1' and riq <![CDATA[ >= ]]> #date1# 
+      		and riq <![CDATA[ < ]]> #date2#
+
+	</select>
+
+
+	<!-- 查询日历版次 -->
+	<select id="selRilbc" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select 
+			rilbc
+		from 	
+			${dbSchemal3}ckx_calendar_group
+		where 
+			BIAOS = 1
+
+		<dynamic>
+
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="appobj"> appobj = #appobj# </isNotNull>
+		</dynamic>	 
+
+	</select>
+	<select id="selAllRilbc" resultClass="java.util.HashMap">
+		select 
+			distinct usercenter,appobj,rilbc
+		from 	
+			${dbSchemal3}ckx_calendar_group
+		where 
+			BIAOS = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+		</dynamic>	 
+	</select>
+
+	<!-- 查询周期内工作日天数-->
+	<select id="selWorkDays" remapResults="true" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+		select 
+			count(riq) 
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			banc = #rilbc# and usercenter = #usercenter# and shifgzr = '1' 
+			and	$xuqlx$ = #lxValue# and biaos = '1'
+	</select>
+
+
+	<!-- 查询年周期 -->
+	<select id="selXuqlx" remapResults="true" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select 
+			$xuqlx$ 
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			usercenter = #usercenter# and banc = #rilbc# and riq = #riq# and biaos = '1'
+
+	</select>
+
+
+	<!-- 查询周期/周序内最大,最小工作日,最大,最小周序 -->
+	<select id="selMaxMin" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select 
+			min(nianzx) as minNianzx,min(riq) as minRiq,max(nianzx) as maxNianzx,max(riq) as maxRiq
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			  biaos = '1'
+
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="rilbc"> banc = #rilbc# </isNotNull>
+			<isEqual compareValue="nianzq" prepend=" and " property="xuqlx">
+				nianzq = #nianzq# 
+			</isEqual>
+			<isEqual compareValue="nianzx" prepend=" and " property="xuqlx">
+				nianzx = #nianzx# 
+			</isEqual>
+			
+		</dynamic>	 
+
+		
+	</select>
+	<select id="selCVByzqorzx" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select 
+			nianzx,riq
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			  biaos = '1'  and shifgzr = '1'
+
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="rilbc"> banc = #rilbc# </isNotNull>
+			<isEqual compareValue="nianzx" prepend=" and " property="xuqlx">nianzx = #nianzx# </isEqual>
+			
+		</dynamic>	 
+
+		
+	</select>
+
+
+
+	<!-- 查询零件 -->
+
+	<select id="selLj" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.common.Lingj">
+		select 
+			lingjsx,lingjlx,zhongwmc,jihy,danw,usercenter,lingjbh
+		from 	
+			${dbSchemal3}ckx_lingj
+		where 
+			1 = 1
+
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter"> usercenter =
+				#usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh#
+			</isNotNull>
+		</dynamic>
+	</select>
+	<select id="selLjAll" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.common.Lingj">
+			select 
+				usercenter,lingjbh,lingjsx,lingjlx,zhongwmc,jihy,danw
+			from 	
+				${dbSchemal3}ckx_lingj
+			where 
+				1 = 1
+	
+			<dynamic>
+				<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+			</dynamic>
+		</select>
+
+	<!-- 查询包装类型 -->
+	<select id="selBzlx" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		select
+		anqkcsl,zuidkcsl,usbzlx,usbzrl
+		from
+		${dbSchemal3}ckx_lingjck
+		where
+		1 = 1
+		<dynamic>
+
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh# </isNotNull>
+			<isNotNull prepend=" and " property="cangkdm"> cangkbh = #cangkdm# </isNotNull>
+		</dynamic>	 
+
+	</select>
+	<select id="selAllBzlx" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		select
+		usercenter,lingjbh,cangkbh,anqkcsl,zuidkcsl,usbzlx,usbzrl
+		from
+		${dbSchemal3}ckx_lingjck
+		where
+		1 = 1
+	</select>
+
+	<!-- 查询MAF库存 -->
+	<select id="selMaf" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+		select 
+			sum(n_maf_num)
+		from 	
+			${dbSchemal1}in_maf
+		where c_component_code = #lingjbh# and c_user_center = #usercenter#
+			group by c_component_code,c_user_center 
+
+	</select>
+	<select id="selAllMaf" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select 
+			c_user_center,c_component_code,sum(n_maf_num) as MAFNUM
+		from 	
+			${dbSchemal1}in_maf
+		where c_user_center = #usercenter#
+			group by c_component_code,c_user_center
+	</select>
+
+	<!-- 查询到周序内货外部要货令 -->
+	<select id="selZxDaoh" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+	select 
+		sum(yaohsl) 
+	from 
+		(select 
+			yaohsl,b.nianzx 
+		from 
+			${dbSchemal1}ck_yaohl a,${dbSchemal3}ckx_calendar_version b 
+		where 
+			xiughyjjfsj is not null and a.usercenter =#usercenter# and lingjbh = #lingjbh# and cangkbh = #cangkdm# and 
+			to_char(a.xiughyjjfsj,'yyyy-MM-dd') = b.riq and a.usercenter = b.usercenter and b.banc = #rilbc# and biaos = '1')
+	where nianzx = #nianzx# 
+	</select>
+	
+	<!-- 查询到日到货外部要货令 -->
+	<select id="selRiDaoh" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+	select 
+		zuiwsj,yaohsl,xiughyjjfsj,laxzdddsj
+	from 
+		${dbSchemal1}ck_yaohl
+	where 
+		usercenter =#usercenter# and lingjbh = #lingjbh# and cangkbh = #cangkdm# and yaohlzt not in ('00','05') and 
+		(to_char(xiughyjjfsj,'yyyy-MM-dd') = #riq# or to_char(laxzdddsj,'yyyy-MM-dd') = #riq#
+		or (to_char(zuiwsj,'yyyy-MM-dd') = #riq#))
+	</select>
+	<select id="selRiDaohByRi" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+	select 
+		YAOHLH,zuiwsj,yaohsl,xiughyjjfsj,laxzdddsj
+	from 
+		${dbSchemal1}ck_yaohl
+	where 
+		usercenter =#usercenter# and lingjbh = #lingjbh# and cangkbh = #cangkdm# and yaohlzt not in ('00','05') and 
+		((to_char(xiughyjjfsj,'yyyy-MM-dd')   <![CDATA[ > ]]> #lastJisr# and to_char(xiughyjjfsj,'yyyy-MM-dd') <![CDATA[ <= ]]> #riq#)   
+		or (to_char(laxzdddsj,'yyyy-MM-dd')  <![CDATA[ > ]]> #lastJisr# and to_char(laxzdddsj,'yyyy-MM-dd') <![CDATA[ <= ]]> #riq#)   
+		or (to_char(zuiwsj,'yyyy-MM-dd')   <![CDATA[ > ]]> #lastJisr# and to_char(zuiwsj,'yyyy-MM-dd')  <![CDATA[ <= ]]> #riq#))
+	</select>
+	<!-- 查询到日期内到货外部要货令 -->
+	<select id="selRiqDaoh" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+	select 
+		sum(yaohsl)
+	from 
+		${dbSchemal1}ck_yaohl
+	where 
+		usercenter =#usercenter# and lingjbh = #lingjbh# and cangkbh = #cangkdm# and 
+		to_char(xiughyjjfsj,'yyyy-MM-dd') <![CDATA[ >= ]]> #ziyhqrq#
+		and to_char(xiughyjjfsj,'yyyy-MM-dd') <![CDATA[ < ]]> #jisrq#
+	</select>
+	
+	<!-- 查询周到日期内到货外部要货令 -->
+	<select id="selZRiqDaoh" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+	select 
+		zuiwsj,yaohsl,xiughyjjfsj,laxzdddsj
+	from 
+		${dbSchemal1}ck_yaohl
+	where 
+		usercenter =#usercenter# and lingjbh = #lingjbh# and cangkbh = #cangkdm# and yaohlzt not in ('00','05') and 
+		((to_char(xiughyjjfsj,'yyyy-MM-dd') <![CDATA[ >= ]]> #riq1#
+		and to_char(xiughyjjfsj,'yyyy-MM-dd') <![CDATA[ <= ]]> #riq2# ) or
+		(to_char(laxzdddsj,'yyyy-MM-dd') <![CDATA[ >= ]]> #riq1#
+		and to_char(laxzdddsj,'yyyy-MM-dd') <![CDATA[ <= ]]> #riq2# ) 
+		or (to_char(zuiwsj,'yyyy-MM-dd') <![CDATA[ >= ]]> #riq1#
+		and to_char(zuiwsj,'yyyy-MM-dd') <![CDATA[ <= ]]> #riq2#))
+	</select>
+	
+	<!-- 查询未交付要货令 -->
+	<select id="selWeify" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+		select 
+			sum(yaohsl)
+		from 	
+			${dbSchemal1}ck_yaohl
+		where 
+			yaohlzt = '01'
+
+		<dynamic>
+
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh# </isNotNull>
+			<isNotNull prepend=" and " property="cangkdm"> cangkbh = #cangkdm# </isNotNull>
+		</dynamic>	  
+
+	</select>
+
+	<select id="selAllWeify" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select 
+			usercenter,lingjbh,cangkbh,sum(yaohsl) as yaohlsl
+		from 	
+			${dbSchemal1}ck_yaohl
+		where 
+			yaohlzt = '01'
+			group by usercenter,lingjbh,cangkbh
+	</select>
+
+	<!-- 查询未交付要货令(内部要货) -->
+	<select id="selCDWeify" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+		select 
+			sum(yaohsl)
+		from 	
+			${dbSchemal1}ck_yaonbhl
+		where 
+			yaohlzt = '01'
+		<dynamic>
+
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh# </isNotNull>
+			<isNotNull prepend=" and " property="mudd"> mudd like '$mudd$%' </isNotNull>
+		</dynamic>	  
+	</select>
+
+	<!-- 计算日期校验 -->
+	<select id="selJisrq" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select 
+			riq 
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			usercenter = #usercenter# and banc = #rilbc# and riq = #jisrq# and biaos = '1'
+	</select>
+
+	<!-- 查询年周期 -->
+	<select id="selNzq" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select 
+			nianzq 
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			usercenter = #usercenter# and banc = #rilbc# and riq = #riq# and biaos = '1'
+
+	</select>
+
+	<!-- 查询年周序 -->
+
+	<select id="selNzx" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select 
+			nianzx 
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			usercenter = #usercenter# and banc = #rilbc# and riq = #riq# and biaos = '1'
+
+	</select>
+
+	<!-- 查询当前周的下一年周序 -->
+
+	<select id="nextZ" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select 
+			min(nianzx) 
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			<![CDATA[nianzx > #nianzx# ]]> and usercenter = #usercenter# and banc = #rilbc# and biaos = '1'
+
+	</select>
+
+	<!-- 查询当前周期的下一年周期 -->
+
+	<select id="nextZq" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select 
+			min(nianzq) 
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			<![CDATA[nianzq > #nianzq# ]]> and usercenter = #usercenter# and banc = #rilbc# and biaos = '1'
+
+	</select>
+	
+   <!-- 查询当前日期上一个工作日 -->
+	<select id="previousRiq" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select 
+			max(riq) as riq
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			<![CDATA[riq < #riq1# ]]> and usercenter = #usercenter# and banc = #rilbc# and shifgzr = '1' and biaos = '1'
+	</select>
+	
+	<!-- 查询当前日期下一工作日 -->
+	<select id="nextRiq" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select 
+			min(riq) as riq
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			<![CDATA[riq > #riq# ]]> and usercenter = #usercenter# and banc = #rilbc# and shifgzr = '1' and biaos = '1'
+	</select>
+	<select id="lastRiq" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select 
+			max(riq) as riq
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			<![CDATA[riq < #riq# ]]> and usercenter = #usercenter# and banc = #rilbc# and shifgzr = '1' and biaos = '1'
+	</select>
+	<select id="nextRiqThirty" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select 
+			 riq,shifgzr
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where 
+			<![CDATA[riq >= #riq# ]]> and usercenter = #usercenter# and banc = #rilbc# and biaos = '1' order by riq
+	</select>
+	
+	<select id="selAllCalendarVersion" resultClass="java.util.HashMap">
+		select 
+			BANC,USERCENTER,RIQ,NIANZQ,ZHOUX,NIANZX,SHIFGZR
+		from 
+			${dbSchemal3}ckx_calendar_version 
+		where BIAOS = '1'
+	</select>
+	
+	
+	
+	<!-- 统计是否多用户中心使用 -->
+
+	<select id="countUsercenter" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select 
+			count(lingjbh) 
+		from 
+			${dbSchemal3}ckx_lingj  
+		where 
+			lingjbh = #lingjbh# 
+
+	</select>
+	<select id="countAllLingjUc" resultClass="java.util.HashMap">
+		select 
+			lingjbh,count(lingjbh) as COUNTLINGJBH
+		from 
+			${dbSchemal3}ckx_lingj
+		GROUP BY LINGJBH
+	</select>
+	<!-- 保存资源跟踪报警明细 -->
+	<insert id="saveZygzbjmx">
+		insert into
+		${dbSchemal1}xqjs_ziygzbjmx(id,ziyhzid,huizxh,mingxxh,baojlx,usercenter,cangkdm,lingjbh,lingjmc,starttime,endtime,
+		xuql,yijfl,weifyl,jislx)
+		values
+		(#id#,#ziyhzid#,#huizxh#,#mingxxh#,#baojlx#,#usercenter#,#cangkdm#,#lingjbh#,#lingjmc#,
+		to_timestamp(#starttime#,'YYYY-MM-DD
+		HH24:MI:SS'),to_timestamp(#endtime#,'YYYY-MM-DD HH24:MI:SS'),
+		#xuql#,#yijfl#,#weifyl#,#jislx#)  
+	</insert>
+
+	<!-- 保存资源跟踪报警汇总 -->
+	<insert id="saveZygzbjhz">
+		insert into
+		${dbSchemal1}xqjs_ziygzbjhz
+		(id,usercenter,cangkdm,lingjbh,lingjmc,lingjdw,lingjlx,baozlx,baozrl,qickc,daixhl,
+		anqkc,zuidkcsl,mafkc,baojlx,jislx,maoxqbc,jihydm,shifdyhzxsy,weifysl,yijf0,xuq0,yijf1,xuq1,yijf2,xuq2,yijf3,
+		xuq3,yijf4,xuq4,yijf5,xuq5,yijf6,xuq6,yijf7,xuq7,yijf8,xuq8,
+		yijf9,xuq9,yijf10,xuq10,yijf11,xuq11,yijf12,
+		xuq12,yijf13,xuq13,yijf14,xuq14,yijf15,xuq15,yijf16,xuq16,yijf17,xuq17,
+		yijf18,xuq18,yijf19,xuq19,yijf20,xuq20,yijf21,
+		xuq21,yijf22,xuq22,yijf23,xuq23,yijf24,xuq24,yijf25,xuq25,yijf26,xuq26,
+		yijf27,xuq27,yijf28,xuq28,yijf29,xuq29,
+		zongyjf0,zongxq0,zongyjf1,zongxq1,zongyjf2,zongxq2,
+		zongyjf3,zongxq3,zongyjf4,zongxq4,zongyjf5,zongxq5,creator,create_time,jissj,weihr,weihsj,zhizlx,zygy)
+		values
+		(#id#,#usercenter#,#cangkdm#,#lingjbh#,#lingjmc#,#lingjdw#,#lingjlx#,#baozlx#,#baozrl#,#qickc#,#daixhl#,#anqkc#,
+		#zuidkcsl#,#mafkc#,#baojlx#,#jislx#,#maoxqbc#,#jihydm#,#shifdyhzxsy#,#weifysl#,#yijf0#,#xuq0#,#yijf1#,#xuq1#,
+		#yijf2#,#xuq2#,#yijf3#,#xuq3#,#yijf4#,#xuq4#,#yijf5#,#xuq5#,#yijf6#,#xuq6#,#yijf7#,#xuq7#,#yijf8#,#xuq8#,
+		#yijf9#,#xuq9#,#yijf10#,#xuq10#,
+		#yijf11#,#xuq11#,#yijf12#,#xuq12#,#yijf13#,#xuq13#,#yijf14#,#xuq14#,#yijf15#,#xuq15#,#yijf16#,#xuq16#,#yijf17#,#xuq17#,
+		#yijf18#,#xuq18#,#yijf19#,#xuq19#,
+		#yijf20#,#xuq20#,#yijf21#,#xuq21#,#yijf22#,#xuq22#,#yijf23#,#xuq23#,#yijf24#,#xuq24#,#yijf25#,#xuq25#,#yijf26#,#xuq26#,
+		#yijf27#,#xuq27#,#yijf28#,#xuq28#,#yijf29#,#xuq29#,
+		#zongyjf0#,#zongxq0#,#zongyjf1#,#zongxq1#,#zongyjf2#,#zongxq2#,#zongyjf3#,#zongxq3#,#zongyjf4#,#zongxq4#,
+		#zongyjf5#,#zongxq5#,#creator#,to_timestamp(#create_time#,'YYYY-MM-DD
+		HH24:MI:SS'),
+		to_timestamp(#jissj#,'YYYY-MM-DD HH24:MI:SS'),#weihr#,to_timestamp(#weihsj#,'YYYY-MM-DD
+		HH24:MI:SS'),#zhizlx#,#zygy#)  
+	</insert>
+
+	<!-- 查询库存快照 -->
+	<select id="selKckz" parameterClass="java.util.HashMap"
+		resultClass="java.math.BigDecimal">
+		select 
+  			sum(kucsl)
+  		from 
+  			${dbSchemal1}xqjs_ziykzb 
+  		where 
+  			usercenter = #usercenter# and lingjbh = #lingjbh# and ziyhqrq = to_date(#ziyhqrq#,'yyyy-MM-dd') 
+  			and (cangkdm in (
+  								select 
+  									xianbck
+  								from 
+  									${dbSchemal3}ckx_wullj  
+  								where 
+  									usercenter = #usercenter# and lingjbh = #lingjbh# and dinghck = #cangkdm#) 
+  				or cangkdm = #cangkdm#)
+	</select>
+
+	
+	<!-- 查询仓库uc标签,查询辅料消耗-->
+	<select id="selZongXh" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+		select 
+			sum(lingjsl) 
+		from 
+			${dbSchemal1}ck_usbq  
+		where 
+			shixrq between to_date(#riq1#,'yyyy-MM-dd') and to_date(#riq2#,'yyyy-MM-dd')
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh# </isNotNull>
+			<isNotNull prepend=" and " property="cangkdm"> cangkbh = #cangkdm# </isNotNull>
+		</dynamic>	 
+	</select>
+	
+	<!-- 查询仓库uc标签,查询辅料消耗-->
+	<select id="selDxhXh" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+		select 
+			sum(lingjsl) 
+		from 
+			${dbSchemal1}ck_usbq  
+		where 
+			shixrq <![CDATA[ >= ]]> to_date(#riq1#,'yyyy-MM-dd') and shixrq <![CDATA[ < ]]> to_date(#riq2#,'yyyy-MM-dd')
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh# </isNotNull>
+			<isNotNull prepend=" and " property="cangkdm"> cangkbh = #cangkdm# </isNotNull>
+		</dynamic>	 
+	</select>
+	
+	<!-- 查询仓库uc标签,查询辅料消耗-->
+	<select id="selXh" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+		select 
+			sum(lingjsl) 
+		from 
+			${dbSchemal1}ck_usbq  
+		where 
+			1 = 1 AND
+
+		<dynamic>
+			shixrq <![CDATA[ >= ]]> to_date(#shixrq#,'yyyy-MM-dd') and shixrq <![CDATA[ < ]]> to_date(#nextRiq#,'yyyy-MM-dd')
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh# </isNotNull>
+			<isNotNull prepend=" and " property="cangkdm"> cangkbh = #cangkdm# </isNotNull>
+		</dynamic>	 
+
+	</select>
+
+	<!-- 查询资源跟踪报警汇总 -->
+	<select id="selZygzbjhz" 
+		resultClass="com.athena.xqjs.entity.zygzbj.ZiygzbjHz">
+		select
+		id,usercenter,zhizlx, 
+		   (select b.value from
+                (select 
+                   max(jislxbh) as key,
+                   max(jslxmc) as value,
+                   0 as usercenter from 
+                 ${dbSchemal3}ckx_ziygzlx 
+                 group by jislxbh
+                 order by jislxbh) b
+        where b.key = a.jislx) as jislx,cangkdm,lingjbh,lingjmc,lingjdw,lingjlx,baozlx,baozrl,qickc,daixhl,anqkc,
+		zuidkcsl,mafkc,baojlx,maoxqbc,jihydm,shifdyhzxsy,weifysl,yijf0,xuq0,yijf1,xuq1,yijf2,xuq2,yijf3,
+		xuq3,yijf4,xuq4,yijf5,xuq5,yijf6,xuq6,yijf7,xuq7,yijf8,xuq8,
+		yijf9,xuq9,yijf10,xuq10,yijf11,xuq11,yijf12,
+		xuq12,yijf13,xuq13,yijf14,xuq14,yijf15,xuq15,yijf16,xuq16,yijf17,xuq17,
+		yijf18,xuq18,yijf19,xuq19,yijf20,xuq20,yijf21,
+		xuq21,yijf22,xuq22,yijf23,xuq23,yijf24,xuq24,yijf25,xuq25,yijf26,xuq26,
+		yijf27,xuq27,yijf28,xuq28,yijf29,xuq29,
+		zongyjf0,zongxq0,zongyjf1,zongxq1,zongyjf2,
+		zongxq2,zongyjf3,zongxq3,zongyjf4,zongxq4,zongyjf5,zongxq5,a.creator,a.create_time,to_char(jissj,'yyyy-MM-dd') as jissj,weihr,weihsj
+		from
+		${dbSchemal1}xqjs_ziygzbjhz a 
+		where 1=1
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="jislx"> jislx = #jislx#
+			</isNotNull>
+			<isNotNull prepend=" and " property="cangkdm"> cangkdm like '$cangkdm$%'
+			</isNotNull>
+			<isNotNull prepend=" and " property="jihydm"> jihydm = #jihydm#
+			</isNotNull>
+			<isNotNull prepend=" and " property="zhizlx"> zhizlx = #zhizlx#
+			</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh = #lingjbh#
+			</isNotNull>
+			<isEqual prepend=" and " property="zygy" compareValue="1"> zygy = '1'</isEqual>
+			<isEqual prepend=" and "  property="zygy"  compareValue="2"> (zygy = '2' or zygy = '4')</isEqual>
+			<isEqual prepend=" and " property="zygy"  compareValue="3"> (zygy = '3' or zygy = '4')</isEqual>
+			<isEqual prepend=" and " property="type" compareValue="zq"> baojlx
+				= '1' </isEqual>
+			<isEqual prepend=" and " property="type" compareValue="z"> baojlx
+				= '2' </isEqual>
+			<isEqual prepend=" and " property="type" compareValue="r"> baojlx
+				= '3' </isEqual>
+			<isEqual prepend=" and " property="type" compareValue="sd"> baojlx
+				= '4' </isEqual>
+		</dynamic>
+	</select>
+
+	<!-- 查询资源跟踪报警明细 -->
+	<select id="selZygzbjmx" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.zygzbj.Ziygzbjmx">
+		select
+		lingjbh,baojlx,to_char(min(starttime),'yyyy.MM.dd') as starttime,to_char(max(endtime),'yyyy.MM.dd') as endtime
+		from
+		${dbSchemal1}xqjs_ziygzbjmx
+		where 
+			1=1
+		<dynamic>
+			<isNotNull prepend=" and " property="id"> ziyhzid = #id#
+			</isNotNull>
+			<isNotNull prepend=" and " property="xuh"> huizxh = #xuh#
+			</isNotNull>
+		</dynamic>
+		group by lingjbh,baojlx
+	</select>
+
+	<!-- 查询资源跟踪报警明细（时段） -->
+	<select id="selZygzbjmxs" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.zygzbj.Ziygzbjmx">
+		select
+		xuql,yijfl,to_char(starttime,'yyyy-mm-dd hh24:mi:ss') as starttime,to_char(endtime,'yyyy-mm-dd hh24:mi:ss') as endtime
+		from
+		${dbSchemal1}xqjs_ziygzbjmx
+		where
+		1 = 1
+		<dynamic>
+
+			<isNotNull prepend=" and " property="id"> ziyhzid = #id# </isNotNull>
+			<isNotNull prepend=" and " property="xuh"> huizxh = #xuh# </isNotNull>
+			<isNotNull prepend=" and " property="cangkdm"> cangkdm = #cangkdm# </isNotNull>
+		</dynamic>	 
+			order by to_number(mingxxh)
+	</select>
+	<!-- 查询资源跟踪报警明细（非时段） -->
+	<select id="selZygzbjmxsZ" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.zygzbj.Ziygzbjmx">
+		select
+		xuql,yijfl,to_char(starttime,'yyyy-mm-dd') as starttime,to_char(endtime,'yyyy-mm-dd') as endtime
+		from
+		${dbSchemal1}xqjs_ziygzbjmx
+		where
+		1 = 1
+		<dynamic>
+
+			<isNotNull prepend=" and " property="id"> ziyhzid = #id# </isNotNull>
+			<isNotNull prepend=" and " property="xuh"> huizxh = #xuh# </isNotNull>
+			<isNotNull prepend=" and " property="cangkdm"> cangkdm = #cangkdm# </isNotNull>
+		</dynamic>	 
+			order by to_number(mingxxh)
+	</select>
+	
+
+	<!-- 查询资源跟踪 -->
+	<select id="queryZygz" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.zygzbj.ZiygzbjHz">
+		select
+		max(b.id) as id,b.usercenter,b.lingjbh,max(b.lingjmc) as lingjmc,b.jislx,to_char(min(a.duandsj),'yyyy-MM-dd')
+		as duandsj,max(b.lingjdw) as lingjdw,max(b.baozrl) as baozrl,max(b.qickc) as qickc,max(b.daixhl) as daixhl,
+		max(b.anqkc) as anqkc,max(b.cangkdm) as cangkdm,max(b.jihydm) as jihydm,max(a.qimkc) as yijf0
+		from
+		${dbSchemal1}xqjs_ziygzbjdd
+		a,${dbSchemal1}xqjs_ziygzbjhz b
+		where
+		a.huizid = b.id
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter"> b.usercenter =
+				#usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="jislx"> b.jislx = #jislx#
+			</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> b.lingjbh = #lingjbh#
+			</isNotNull>
+			<isNotNull prepend=" and " property="jihydm"> b.jihydm = #jihydm#
+			</isNotNull>
+			<isNotNull prepend=" and " property="cangkdm"> b.cangkdm like '$cangkdm$%' 
+			</isNotNull>
+			<isNotNull prepend=" and " property="ddsj1"> a.duandsj between
+				to_date(#ddsj1#,'yyyy-MM-dd') and to_date(#ddsj2#,'yyyy-MM-dd')
+			</isNotNull>
+			group by b.usercenter,b.lingjbh,b.cangkdm,b.jislx
+		</dynamic>
+	</select>
+
+	<!-- 查询资源跟踪 -->
+	<select id="queryZygzMx" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.zygzbj.ZiygzbjHz">
+		select
+			b.usercenter,b.lingjbh,b.lingjmc,b.jislx,to_char(a.duandsj,'yyyy-MM-dd')
+			as duandsj,b.lingjdw,b.baozrl,b.qickc,b.daixhl,b.anqkc,
+			b.cangkdm,b.jihydm,a.qimkc as yijf0
+		from
+			${dbSchemal1}xqjs_ziygzbjdd a,${dbSchemal1}xqjs_ziygzbjhz b
+		where
+			a.huizid = b.id
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter"> b.usercenter =
+				#usercenter# </isNotNull>
+			<isNotNull prepend=" and " property="id"> b.id =
+				#id# </isNotNull>
+			<isNotNull prepend=" and " property="jislx"> b.jislx = #jislx#
+			</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh"> b.lingjbh = #lingjbh#
+			</isNotNull>
+			<isNotNull prepend=" and " property="jihydm"> b.jihydm = #jihydm#
+			</isNotNull>
+			<isNotNull prepend=" and " property="cangkdm"> b.cangkdm = #cangkdm#
+			</isNotNull>
+			<isNotNull prepend=" and " property="ddsj1"> a.duandsj between
+				to_date(#ddsj1#,'yyyy-MM-dd') and to_date(#ddsj2#,'yyyy-MM-dd')
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<!-- 保存资源跟踪报警 -->
+	<insert id="saveZygzbjdd">
+		insert into
+		${dbSchemal1}xqjs_ziygzbjdd(huizid,duandsj,duandxh,jislx,usercenter,qimkc)
+		values
+		(#huizid#,
+		<dynamic>
+		<isNotNull property="baojlx">to_date(#duandsj#,'yyyy-mm-dd hh24:mi:ss'),</isNotNull>
+		<isNull property="baojlx">to_date(#duandsj#,'yyyy-mm-dd'),</isNull>
+		</dynamic>
+		#duandxh#,#jislx#,#usercenter#,#qimkc#)
+	</insert>
+	
+	<!-- 保存资源跟踪报警 -->
+	<insert id="saveSdZygzbjdd">
+		insert into
+		${dbSchemal1}xqjs_ziygzbjdd(huizid,duandsj,duandxh,jislx,usercenter,qimkc)
+		values
+		(#huizid#,
+		to_date(#duandsj#,'yyyy-mm-dd hh24:mi:ss'),
+		#duandxh#,#jislx#,#usercenter#,#qimkc#)
+	</insert>
+	
+	<!-- 保存资源跟踪报警 -->
+	<insert id="saveCDZygzbjdd" parameterClass="java.util.HashMap">
+		insert into
+		${dbSchemal1}xqjs_ziygzbjdd(huizid,duandsj,duandxh,jislx,usercenter,qimkc)
+		values
+		(#huizid#,
+		<dynamic>
+		<isNotNull property="baojlx">to_date(#duandsj#,'yyyy-mm-dd hh24:mi:ss'),</isNotNull>
+		<isNull property="baojlx">to_date(#duandsj#,'yyyy-mm-dd hh24:mi:ss'),</isNull>
+		</dynamic>
+		#duandxh#,#jislx#,#usercenter#,#qimkc#)
+	</insert>
+
+	<!-- 查询集装箱列表 -->
+	<select id="queryJizxlb" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.zygzbj.Ziygzlj">
+		select 
+			tcno,zuiswld,b.lingjsl as lingjzl,zuixyjddsj,lujdm 
+		from 
+			(select 
+				tcno,utno,zuiswld,to_char(zuixyjddsj, 'yyyy-mm-dd') as zuixyjddsj,lujdm
+  			from 
+  				${dbSchemal1}xqjs_tc
+ 			where 
+ 				tcno in 
+ 					(select 
+ 						tch
+                  	from 
+                  		${dbSchemal4}ck_daohtzd
+                 	where 
+                 		uth in 
+                 			(select 
+                 				uth
+                             from 
+                             	${dbSchemal4}ck_uabq
+                             where 1=1
+                             and lingjbh = #lingjbh#
+                             <dynamic>
+                             <isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter#</isNotNull>
+                             </dynamic>
+                             group by uth))) a,${dbSchemal4}ck_uabq b
+ 		where a.utno = b.uth and  b.lingjbh = #lingjbh# 
+		<dynamic>
+			<isNotNull prepend=" and " property="tcno"> a.tcno = #tcno#
+			</isNotNull>
+			<isNotNull prepend=" and " property="zuixyjddsj"> a.zuixyjddsj = #zuixyjddsj# </isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> b.usercenter = #usercenter#
+			</isNotNull>
+		</dynamic>
+		order by tcno
+	</select>
+
+	<!-- 查询未发运零件列表 -->
+	<select id="queryWeifylj" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		select
+		lingjbh,sum(yaohsl) as yaohsl,max(usercenter) as usercenter,gongysdm,max(gongysmc) as
+		gongysmc,(select zhongwmc from ${dbSchemal3}ckx_lingj where lingjbh =
+		#lingjbh#
+		and usercenter = #usercenter#) as lingjmc
+		from
+		${dbSchemal1}ck_yaohl
+		where
+		lingjbh = #lingjbh# and yaohlzt = #yaohlzt# and usercenter = #usercenter#
+		group by
+		lingjbh,gongysdm
+	</select>
+
+	<!-- 资源跟踪集装箱列表 -->
+	<select id="queryZygzjzx" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.zygzbj.Ziygzlj">
+		select
+		b.yaohlh,a.tcno,b.gongysdm,b.gongysmc,b.uaxh,b.uarl,a.zuiswld,a.zuixyjddsj,a.lujdm
+		from
+		${dbSchemal1}xqjs_tc a,${dbSchemal1}ck_uabq b
+		where
+		a.utno = b.uth and a.tcno = #tcno#
+	</select>
+
+<select id="queryYhlNext" resultClass="java.lang.String">
+		select 
+			zuiwsj 
+		from
+			(select 
+				zuiwsj 
+			from 
+				${dbSchemal1}ck_yaohl 
+			where 
+				zuiwsj <![CDATA[ >= ]]> to_date(#duandsj#,'yyyy-MM-dd') and usercenter = #usercenter#
+				and lingjbh = #lingjbh# and cangkbh = #cangkdm# and YAOHLZT IN ('01','02')
+			 order by zuiwsj) 
+		where rownum <![CDATA[ < ]]> 2
+	</select>
+	<!-- 查询最近一个要货令信息 -->
+	
+	<select id="queryYhl" resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		select 
+				yaohlh,zuiwsj,yaohsl 
+			from 
+				${dbSchemal1}ck_yaohl 
+			where 
+				zuiwsj <![CDATA[ >= ]]> to_date(#duandsj#,'yyyy-MM-dd') 
+				<dynamic>
+					<isNotEmpty prepend=" and " property="nextsj">
+						zuiwsj <![CDATA[ <= ]]> to_date(#nextsj#,'yyyy-MM-dd HH24:mi')
+					</isNotEmpty>
+				</dynamic>
+				
+				and usercenter = #usercenter#
+				and lingjbh = #lingjbh# and cangkbh = #cangkdm# and YAOHLZT IN ('01','02')
+			 order by zuiwsj
+	</select>
+
+	<!-- 查询未发运零件列表 -->
+	<select id="queryWeizxyhllb" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		select
+		yaohlh,yaohsl,gongysdm,gongysmc,baozxh,usxh,zuiwsj
+		from
+		${dbSchemal1}ck_yaohl
+		where
+		lingjbh = #lingjbh# and yaohlzt = #yaohlzt# and usercenter = #usercenter#
+		<dynamic>
+			<isNotNull prepend=" and " property="yaohlh"> yaohlh = #yaohlh#</isNotNull>
+			<isNotNull prepend=" and " property="zuiwsj"> TO_CHAR(zuiwsj, 'yyyy-MM-dd') = #zuiwsj# </isNotNull>
+		</dynamic>
+	</select>
+
+	<!-- 更新交付时间 -->
+	<update id="updateJiaofsj" parameterClass="java.util.HashMap">
+		update
+		${dbSchemal1}xqjs_tc
+		set
+		zuixyjddsj = to_date(#zuixyjddsj#,'yyyy-MM-dd'),
+		lujdm = #lujdm#
+		where
+		tcno = #tcno#
+	</update>
+
+	<!-- 查询MAF库 -->
+	<select id="queryMaf" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.zygzbj.Mafmxq">
+		select
+		n_maf_num as mafkc,c_maf_code as mafcode
+		from
+		${dbSchemal1}in_maf
+		where
+		1 = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="lingjbh"> c_component_code =
+				#lingjbh#</isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> c_user_center =
+				#usercenter#</isNotNull>
+				<isNotNull prepend=" and " property="gongysdm"> c_supplier_code =
+				#gongysdm#</isNotNull>
+		</dynamic>
+	</select>
+
+	<!-- 查询毛需求 -->
+	<select id="queryMafmxq" parameterClass="java.util.HashMap"
+		resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select
+			 max(a.xuqbc) as xuqbc,b.lingjbh,b.usercenter
+		from
+			${dbSchemal1}xqjs_maoxq a,${dbSchemal1}xqjs_maoxqmx b
+		where
+			a.xuqly = 'CLV' and a.active = '1' and a.xuqbc = b.xuqbc 
+			<dynamic>
+			<isNotNull prepend=" and " property="lingjbh"> b.lingjbh =
+				#lingjbh#</isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> b.usercenter =
+				#usercenter#</isNotNull>
+				
+			</dynamic>
+		group by
+			b.lingjbh ,b.usercenter
+	</select>
+	
+	<!-- 查询毛需求版次 -->
+	<select id="queryMaoxqbc"
+		resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select
+			to_char(xuqrq,'yyyy-MM-dd') as xuqrq,sum(xuqsl) as xuqsl,max(shiycj) as shiycj,max(zhizlx) as zhizlx
+		from
+			${dbSchemal1}xqjs_maoxqmx
+		where
+			1 = 1
+			<dynamic>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh =
+				#lingjbh#</isNotNull>
+			<isNotNull prepend=" and " property="usercenter"> usercenter =
+				#usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="xuqbc"> xuqbc =
+				#xuqbc#</isNotNull>
+			</dynamic>
+		group by
+			xuqrq
+		order by 
+			xuqrq
+	</select>
+
+	<!-- 查询零件名称 -->
+	<select id="selLjmc" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		select
+		zhongwmc,jihy,usercenter
+		from
+		${dbSchemal3}ckx_lingj
+		where
+		1 = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="lingjbh"> lingjbh =
+				#lingjbh# </isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 查询分配循环-->
+	<select id="selFenpqbh" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select 
+			lingjbh,usercenter,shengcxbh,fenpqbh,
+			sum(xiaohbl) as xiaohbl,max(xiaohdbh)
+		from 
+			${dbSchemal3}ckx_lingjxhd 
+		where 
+			biaos = '1'
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter"> usercenter = #usercenter# </isNotNull>
+		</dynamic>	
+		group by lingjbh,usercenter,shengcxbh,fenpqbh
+	</select>
+	
+	<!-- 资源获取日期 -->
+	<select id="queryZiyhqrl" resultClass="com.athena.util.cache.CacheValue">
+		select 
+			distinct(to_char(ziyhqrq,'yyyy-MM-dd')) as key,
+     		to_char(ziyhqrq,'yyyy-MM-dd') as value,
+			usercenter 
+		from 
+			${dbSchemal1}xqjs_ziykzb 
+		order by key desc
+	</select>
+	
+	<!-- 资源计算类型 -->
+	<select id="queryJslx" resultClass="com.athena.util.cache.CacheValue">
+		select 
+			max(jislxbh) as key,
+			max(jslxmc) as value,
+			0 as usercenter
+		from 
+			${dbSchemal1}ckx_ziygzlx
+		group by jislxbh
+		order by jislxbh
+	</select>
+	
+	<!-- 查询CD时段毛需求(按需毛需求表) -->
+	<select id="queryCDSdmxq" resultClass="com.athena.xqjs.entity.ilorder.CdSdMaoxuq">
+	    select 
+	    	c.xiaohd,c.lingjbh, c.chanx,c.usercenter,c.zhizlx,c.xianbllkc,d.mos,d.dinghck,d.xianbck,c.fenpqbh 
+	    from
+          (select 
+          xiaohd, a.lingjbh as lingjbh,a.chanx as chanx, a.usercenter as usercenter,zhizlx,b.fenpqbh as fenpqbh,
+          max(b.xianbllkc ) as xianbllkc
+             from 
+             ${dbSchemal1}xqjs_anxmaoxq a, ${dbSchemal1}ckx_lingjxhd b
+             where 
+             a.usercenter = b.usercenter and a.lingjbh = b.lingjbh and a.xiaohd = b.xiaohdbh and b.biaos = '1'
+             group by 
+             xiaohd, a.lingjbh,a.chanx, a.usercenter, zhizlx,b.fenpqbh,b.xiaohbl) c , ${dbSchemal1}ckx_wullj d 
+        where 
+        c.usercenter = d.usercenter and c.fenpqbh = d.fenpqh and c.lingjbh = d.lingjbh and d.mos = 'CD'
+     		<dynamic>
+     		<isNotNull prepend=" and " property="zhizlxs"> d.zhizlx in ($zhizlxs$) </isNotNull>
+     		<isNotNull prepend=" and " property="usercenter"> d.usercenter = #usercenter# </isNotNull>
+     		</dynamic>
+	</select>
+	
+	<!-- 查询CD时段毛需求(按需毛需求表) -->
+	<select id="selectSdmxq" resultClass="com.athena.xqjs.entity.ilorder.CdSdMaoxuq">
+	    select 
+	    	c.xiaohd,c.lingjbh, c.chanx,c.usercenter,c.zhizlx,c.xianbllkc,d.mos,d.dinghck,d.xianbck,c.fenpqbh 
+	    from
+          (select 
+          xiaohd, a.lingjbh as lingjbh,a.chanx as chanx, a.usercenter as usercenter,zhizlx,b.fenpqbh as fenpqbh,
+          max(b.xianbllkc ) as xianbllkc
+             from 
+             ${dbSchemal1}xqjs_anxmaoxq a, ${dbSchemal1}ckx_lingjxhd b
+             where 
+             a.usercenter = b.usercenter and a.lingjbh = b.lingjbh and a.xiaohd = b.xiaohdbh
+             group by 
+             xiaohd, a.lingjbh,a.chanx, a.usercenter, zhizlx,b.fenpqbh,b.xiaohbl) c , ${dbSchemal1}ckx_wullj d 
+        where 
+        c.usercenter = d.usercenter and c.fenpqbh = d.fenpqh and c.lingjbh = d.lingjbh and (d.mos = 'CD' or d.waibms = 'C1')
+     		<dynamic>
+     		<isNotNull prepend=" and " property="zhizlxs"> d.zhizlx in ($zhizlxs$) </isNotNull>
+     		<isNotNull prepend=" and " property="usercenter"> d.usercenter = #usercenter# </isNotNull>
+     		</dynamic>
+	</select>
+	
+	
+	<!-- 查询线边理论库存 -->
+	<select id="queryXianbllkc" parameterClass="java.util.HashMap" resultClass="java.math.BigDecimal">
+	    select 
+	        xianbllkc  
+	    from  
+	        ${dbSchemal1}ckx_lingjxhd
+		where lingjbh=#lingjbh# and  xiaohdbh=#xiaohdbh# and usercenter=#usercenter#
+	</select>
+	
+	<!-- 查询时段毛需求(按需毛需求表) -->
+	<select id="querySdmxq" resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select 
+      		xiaohd,chanx,lingjbh,usercenter,zhizlx
+    	from   
+     		${dbSchemal1}xqjs_anxmaoxq
+     	where 
+     		1 = 1
+     		<dynamic>
+     		<isNotNull prepend=" and " property="zhizlxs"> zhizlx in ($zhizlxs$) </isNotNull>
+     		</dynamic>
+    	group by xiaohd,chanx,usercenter,lingjbh,zhizlx
+    	
+   		<!-- 
+   		SELECT DISTINCT
+		  xiaohd,
+		  chanx,
+		  lingjbh,
+		  usercenter,
+		  zhizlx
+		FROM
+		  ${dbSchemal1}xqjs_anxmaoxq
+		WHERE
+		  1 = 1
+   		
+   		 -->
+    	
+    	
+	</select>
+	
+	<!-- 查询分配循环,仓库,消耗比例等相关信息汇总按需毛需求到仓库 -->
+	<select id="anxQueryCk" resultClass="java.util.HashMap">
+		select 
+			a.usercenter,a.shengcxbh,a.lingjbh,a.fenpqbh,a.xiaohbl,b.dinghck,b.xianbck,a.xiaohdbh,b.mos
+		from 
+			${dbSchemal1}ckx_lingjxhd a,${dbSchemal1}ckx_wullj b 
+		where 
+			a.biaos = '1' and 
+			a.shengcxbh = #shengcxbh# and  a.usercenter = #usercenter# and a.lingjbh = #lingjbh# 
+			and xiaohdbh = #xiaohdbh# and a.fenpqbh = b.fenpqh and a.usercenter = b.usercenter 
+			and a.lingjbh = b.lingjbh and b.waibms in($waibms$) and <![CDATA[ rownum < 2 ]]>
+	</select>
+	
+	<!-- 查询按需毛需求需求数量 -->
+	<select id="queryAnxMxqSl" resultClass="java.math.BigDecimal">
+		select 
+			sum(xiaohxs) 
+		from 
+			${dbSchemal1}xqjs_anxmaoxq 
+		where 
+			chanx = #chanx# 
+			and usercenter = #usercenter# and lingjbh = #lingjbh#
+			<dynamic>
+			<isNotNull prepend="and" property="xiaohsj">
+				to_char(xhsj,'yyyy-MM-dd')  = #xiaohsj# 
+			</isNotNull>
+			</dynamic>
+	</select>
+	
+	<!-- 查询按需毛需求时段内需求数量 -->
+	<select id="queryAnxMxqSdSl" resultClass="java.math.BigDecimal">
+		select 
+			sum(xiaohxs) 
+		from 
+			${dbSchemal1}xqjs_anxmaoxq 
+		where 
+			chanx = #chanx# and usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohd = #xiaohd#
+			<dynamic>
+			<isNotNull prepend="and" property="startTime">
+				<isNotNull property="endTime">
+					xhsj <![CDATA[ >=  ]]> to_date(#startTime#,'yyyy-mm-dd hh24:mi:ss')
+					and xhsj <![CDATA[ <  ]]> to_date(#endTime#,'yyyy-mm-dd hh24:mi:ss')
+				</isNotNull>
+			</isNotNull>
+			</dynamic>
+	</select>
+	
+	<!-- 查询时间段内到货 -->
+	<select id="querySdDh" resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		select 
+			yaohlh,zuiwsj,yaohsl,xiughyjjfsj,laxzdddsj
+		from 
+			${dbSchemal1}ck_yaohl
+		where 
+			usercenter =#usercenter# and lingjbh = #lingjbh# and cangkbh = #cangkdm# and yaohlzt not in ('00','05') and 
+			((to_char(xiughyjjfsj,'yyyy-mm-dd hh24:mi:ss')   <![CDATA[ >= ]]> #startTime# and to_char(xiughyjjfsj,'yyyy-mm-dd hh24:mi:ss') <![CDATA[ < ]]> #endTime#)   
+			or (to_char(laxzdddsj,'yyyy-mm-dd hh24:mi:ss')  <![CDATA[ >= ]]> #startTime# and to_char(laxzdddsj,'yyyy-mm-dd hh24:mi:ss') <![CDATA[ < ]]> #endTime#)   
+			or (to_char(zuiwsj,'yyyy-mm-dd hh24:mi:ss')   <![CDATA[ >= ]]> #startTime# and to_char(zuiwsj,'yyyy-mm-dd hh24:mi:ss')  <![CDATA[ < ]]> #endTime#))
+	</select>
+	
+	<!-- 查询时间段内到货 -->
+	<select id="querySdYhl" resultClass="com.athena.xqjs.entity.yaohl.Yaohl">
+		select 
+			yaohlh,zuiwsj,yaohsl,xiughyjjfsj,laxzdddsj
+		from 
+			${dbSchemal1}ck_yaohl
+		where 
+			usercenter =#usercenter# and lingjbh = #lingjbh# and cangkbh = #cangkdm# and yaohlzt not in ('00','05') and 
+			((to_char(xiughyjjfsj,'yyyy-mm-dd hh24:mi:ss')   <![CDATA[ >= ]]> #startTime#)   
+			or (to_char(laxzdddsj,'yyyy-mm-dd hh24:mi:ss')  <![CDATA[ >= ]]> #startTime#)   
+			or (to_char(zuiwsj,'yyyy-mm-dd hh24:mi:ss')   <![CDATA[ >= ]]> #startTime#))
+		order by xiughyjjfsj,laxzdddsj,zuiwsj
+	</select>
+	
+	<!-- 查询CD时间段内到货 -->
+	<select id="queryCDSdDh" resultClass="java.math.BigDecimal">
+		select 
+			sum(yaohsl)
+		from 
+			${dbSchemal1}ck_yaonbhl
+		where 
+			beihsj is not null and usercenter =#usercenter# and lingjbh = #lingjbh# and mudd like '$xiaohd$%' and 
+			beihsj <![CDATA[ >=  ]]> to_date(#startTime#,'yyyy-mm-dd hh24:mi:ss')
+			and beihsj <![CDATA[ <  ]]> to_date(#endTime#,'yyyy-mm-dd hh24:mi:ss')
+			and yaohlzt not in ('00','05')
+	</select>
+	
+	<!-- 查询CD时间段内到货 -->
+	<select id="queryCDSdDhList" resultClass="java.util.HashMap">
+		select 
+			to_char(beihsj,'yyyy-mm-dd hh24:mi:ss') as beihsj,yaohsl
+		from 
+			${dbSchemal1}ck_yaonbhl
+		where 
+			beihsj is not null and usercenter =#usercenter# and lingjbh = #lingjbh# and mudd like '$xiaohd$%' and 
+			beihsj <![CDATA[ >=  ]]> to_date(#startTime#,'yyyy-mm-dd hh24:mi:ss')
+			and yaohlzt not in ('00','05')
+		order by beihsj
+	</select>
+	
+	<select id="queryTcSheetId" resultClass="java.lang.String">
+	select kdys_sheet_id from ${dbSchemal1}xqjs_tc
+	where tcno = #tcNo# and tczt = '1'
+	</select>
+	
+	<!-- 查询零件是否失效 -->
+	<select id="queryLingsx" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select 
+		    distinct usercenter,ush,cangkbh 
+		from ${dbSchemal3}ck_usbq 
+		where 
+		    usercenter=#usercenter# and cangkbh =#cangkdm# 
+		    and lingjbh =#lingjbh# and shixrq=to_date(#shixrq#,'yyyy-mm-dd')
+	</select>
+	
+	<!-- 删除MAF库毛需求对比表 -->
+	<delete id="deleteMafmxq">
+		truncate table 
+			${dbSchemal1}xqjs_mafmxq 
+	</delete>
+	
+	<!-- 获取零件的供应商集合 -->
+	<select id="queryLingjGysList" resultClass="com.athena.xqjs.entity.common.LingjGongys">
+		select
+			a.usercenter,gongysbh,lingjbh,gongyhth,gongyfe,youxq,a.fayd,shengxsj,shixsj,zuixqdl,cankfz,zhijcjbl,shifyzpch,
+      		ucbzlx,ucrl,uabzlx,uaucgs,gaib,neic,shifczlsbz,b.gongsmc
+    	from 
+      		${dbSchemal3}ckx_lingjgys a,${dbSchemal3}ckx_gongys b
+    	where 
+      		lingjbh = #lingjbh# and a.usercenter = #usercenter# and a.usercenter = b.usercenter and a.gongysbh = b.gcbh 
+      		and b.gonghlx not in ($gonghlx$) and a.biaos = '1' and b.biaos = '1'
+	</select>
+	
+	<!-- 保存登录事务提醒 -->
+	<insert id="insertMafmxq">
+		insert into
+			${dbSchemal1}xqjs_mafmxq(id,usercenter,lingjmc,lingjbh,riq,xuq1,xuq2,xuq3,xuq4,xuq5,mafkc,mafcode,gongzr,
+			gongysdm,gongysmc,fene,jihy,chej,zhizlx,create_time)
+		values(#id#,#usercenter#,#lingjmc#,#lingjbh#,#riq#,#xuq1#,#xuq2#,#xuq3#,#xuq4#,#xuq5#,#mafkc#,#mafcode#,#gongzr#,
+		#gongysdm#,#gongysmc#,#fene#,#jihy#,#chej#,#zhizlx#,current_timestamp)
+	</insert>
+	
+	<!-- 查询MAF毛需求对比信息集合 -->
+	<select id="queryMafmxqDd" resultClass="com.athena.xqjs.entity.zygzbj.Mafmxq">
+		select
+			id,usercenter,lingjmc,lingjbh,riq,xuq1,xuq2,xuq3,xuq4,xuq5,mafkc,mafcode,gongzr,gongysdm,gongysmc,fene,jihy,
+			chej,zhizlx
+    	from 
+      		${dbSchemal1}xqjs_mafmxq 
+    	where 
+      		1 = 1
+      		<dynamic>
+      			<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+      			<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+      			<isNotNull prepend=" and " property="gongysdm">gongysdm = #gongysdm#</isNotNull>
+      			<isNotNull prepend=" and " property="mafcode">mafcode = #mafcode#</isNotNull>
+      			<isNotNull prepend=" and " property="jihy">jihy = #jihy#</isNotNull>
+      		</dynamic>
+	</select>
+	
+	<!-- 查询按需毛需求信息 -->
+	<select id="selAanxmxq" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxq">
+		select 
+      		usercenter,lingjbh,xiaohd,xhsj,xiaohxs,chanx,zhizlx
+    	from 
+     		${dbSchemal1}xqjs_anxmaoxq 
+    	where 
+      		chanx = #chanx# and usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohd = #xiaohd#
+      		and xhsj <![CDATA[ >=  ]]> to_date(#startTime#,'yyyy-mm-dd hh24:mi:ss')
+      	order by xhsj 
+	</select>
+	
+	<!-- 查询按需毛需求信息 -->
+	<select id="selSdAanxmxq" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxq">
+		select 
+      		a.usercenter,a.lingjbh,a.xiaohd,xhsj,xiaohxs,a.chanx
+    	from 
+     		${dbSchemal1}xqjs_anxmaoxq a,${dbSchemal1}xqjs_ziygzbjmxq b
+    	where 
+      		a.usercenter = #usercenter# and a.lingjbh = #lingjbh# and b.cangkdm = #cangkdm#
+      		and a.usercenter = b.usercenter and a.lingjbh = b.lingjbh and a.chanx = b.chanx and a.xiaohd = b.xiaohd
+      		and xhsj <![CDATA[ >=  ]]> to_date(#startTime#,'yyyy-mm-dd hh24:mi:ss')
+      	order by xhsj 
+	</select>
+</sqlMap>

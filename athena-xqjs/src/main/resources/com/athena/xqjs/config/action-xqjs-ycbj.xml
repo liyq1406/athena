@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="ycbj" extend="toft-default" namespace="/ycbj">
+
+
+		<!-- ppl查询初始化 -->
+		<action name="ycbj" class="yicbjAction" method="init">
+			<result name="ycbj">/WEB-INF/pages/xqjs/ycbj/ycbj.jsp</result>
+		</action>
+		<!-- 查询年度ppl -->
+		<action name="searchYicbj" class="yicbjAction" method="searchYicbj">
+		</action>
+		
+		<!-- 导出异常报警 -->
+		<action name="yicbjDownLoad" class="yicbjAction" method="yicbjDownLoad">
+		</action>
+
+	</package>
+</toft>

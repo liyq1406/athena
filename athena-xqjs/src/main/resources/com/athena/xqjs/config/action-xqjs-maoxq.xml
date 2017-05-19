@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="maoxq" extend="toft-default" namespace="/maoxq">
+		<!-- 毛需求主页面初始化 -->
+		<action name="query" class="maoxqAction" method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/maoxq/maoxq_main.jsp</result>
+		</action>
+		<!-- 0007182: 增加按需毛需求查询界面  按需 毛需求主页面初始化 -->
+		<action name="queryAnx" class="maoxqAction" method="executeAn_x">
+			<result name="success">/WEB-INF/pages/xqjs/maoxq/anxMaoxq.jsp</result>
+		</action>
+		<!--0007182 按需毛需求查询 -->
+		<action name="queryMaoxqAnx" class="maoxqAction" method="queryMaoxqAnx" />
+		<!--毛需求查询 -->
+		<action name="queryMaoxq" class="maoxqAction" method="queryMaoxq" />
+
+		<!-- 修改备注 主页面 -->
+		<action name="update" class="maoxqAction" method="updateBeiz" />
+		<!-- 修改备注 主页面 -->
+		<action name="delete" class="maoxqAction" method="deleteMaoxq" />
+
+		<!-- 毛需求明细初始化 年 周 日 -->
+		<action name="initCwD" class="maoxqAction" method="initCwD">
+			<result name="usercenterCyc">/WEB-INF/pages/xqjs/maoxq/usercenter_cyc.jsp</result>
+
+			<result name="chanxCyc">/WEB-INF/pages/xqjs/maoxq/chanx_cyc.jsp</result>
+
+			<result name="usercenterWeek">/WEB-INF/pages/xqjs/maoxq/usercenter_week.jsp</result>
+
+			<result name="chanxWeek">/WEB-INF/pages/xqjs/maoxq/chanx_week.jsp</result>
+
+			<result name="usercenterDays">/WEB-INF/pages/xqjs/maoxq/usercenter_days.jsp</result>
+
+			<result name="chanxDays">/WEB-INF/pages/xqjs/maoxq/chanx_days.jsp</result>
+
+		</action>
+		<action name="downLoadFileDetailRi" class="maoxqAction" method="downLoadFileDetailRi" />
+		<!-- <action name="initWeek" class="maoxqAction" method="initWeek"> <result 
+			name="usercenterWeek">/WEB-INF/pages/xqjs/maoxq/usercenter_week.jsp</result> 
+			<result name="chanxWeek">/WEB-INF/pages/xqjs/maoxq/chanx_week.jsp</result> 
+			</action> <action name="initDays" class="maoxqAction" method="initDays"> 
+			<result name="usercenterDays">/WEB-INF/pages/xqjs/maoxq/usercenter_days.jsp</result> 
+			<result name="chanxDays">/WEB-INF/pages/xqjs/maoxq/chanx_days.jsp</result> 
+			</action> -->
+
+		<!-- 毛需求明细查询 年 汇总 -->
+		<action name="queryMxP" class="maoxqAction" method="queryMxP" />
+		<!-- 毛需求明细查询  日期显示 -->
+		<action name="showDate" class="maoxqAction" method="showDate" />
+		<!--毛需求明细 新增 -->
+		<action name="cycInitAdd" class="maoxqAction" method="initAdd">
+			<result name="add">/WEB-INF/pages/xqjs/maoxq/add_maoxq.jsp</result>
+		</action>
+		<action name="weekInitAdd" class="maoxqAction" method="initAdd">
+			<result name="add">/WEB-INF/pages/xqjs/maoxq/add_maoxq.jsp</result>
+		</action>
+		<action name="dayInitAdd" class="maoxqAction" method="initAdd">
+			<result name="add">/WEB-INF/pages/xqjs/maoxq/add_maoxq.jsp</result>
+		</action>
+		<action name="addMx" class="maoxqAction" method="addMx" />
+		<!--毛需求明细 修改 -->
+		<action name="editPageCyc" class="maoxqAction" method="editPage">
+
+		        <result name="editPage">/WEB-INF/pages/xqjs/maoxq/edit_xuqsl.jsp</result>
+
+		</action>
+		<action name="editPageWeek" class="maoxqAction" method="editPage">
+
+		        <result name="editPage">/WEB-INF/pages/xqjs/maoxq/edit_xuqsl.jsp</result>
+
+		</action>
+		<action name="editPageDay" class="maoxqAction" method="editPage">
+
+		        <result name="editPage">/WEB-INF/pages/xqjs/maoxq/edit_xuqsl.jsp</result>
+
+		</action>
+		<action name="editQr" class="maoxqAction" method="editQr" />
+		<action name="editMx" class="maoxqAction" method="editMx" />
+		<!--毛需求明细 删除 -->
+		<action name="delectMxP" class="maoxqAction" method="delectMxP" />
+		<!--毛需求明细 比较 -->
+		<action name="comparePage" class="maoxqAction" method="comparePage">
+			<result name="cmpUsercenterCyc">/WEB-INF/pages/xqjs/maoxq/usercenter_compareCyc.jsp</result>
+
+			<result name="cmpChanxCyc">/WEB-INF/pages/xqjs/maoxq/chanx_compareCyc.jsp</result>
+
+			<result name="cmpUsercenterWeek">/WEB-INF/pages/xqjs/maoxq/usercenter_compareWeek.jsp</result>
+
+			<result name="cmpChanxWeek">/WEB-INF/pages/xqjs/maoxq/chanx_compareWeek.jsp</result>
+		</action>
+		<action name="compareQr" class="maoxqAction" method="compareQr" />
+		<!-- 导入文件 -->
+		<action name="impExc" class="maoxqAction" method="impExc" />
+		<!-- 指定运输时刻与计算CMJ版本 -->
+		<action name="ifAppoint" class="maoxqAction" method="ifAppoint" />
+		<!-- 另存为 -->
+		<action name="saveAs" class="maoxqAction" method="saveAs" />
+		<!-- 毛需求比较导出 -->
+		<action name="downLoadFileCompare" class="mxqDownLoadExcAction" method="downLoadFileCompare" />
+		<!--  毛需求明细导出-->
+		<action name="downLoadFileDetail" class="mxqDownLoadExcAction" method="downLoadFileDetail" />
+		
+		<action name="validateMxqLj" class="maoxqAction" method="validateMxqLj" />
+		
+		<action name="ddbhclvcompare" class="ddbhClvCompareAction" method="queryDdbhclv">
+			<result name="success">/WEB-INF/pages/xqjs/maoxq/ddbhclv_compare.jsp</result>
+		</action>
+		<action name="queryddbhclv" class="ddbhClvCompareAction" method="ddbhclvCompare" />
+		<action name="showDdbhDate" class="ddbhClvCompareAction" method="showDdbhDate" />
+		<action name="downLoadDdbhclvCompare" class="ddbhClvCompareAction" method="downLoadDdbhclvCompare" />
+		
+		<action name="jlvxinaxcompare" class="jlvXinaxmpareAction" method="queryjlvxinax">
+			<result name="success">/WEB-INF/pages/xqjs/maoxq/jlvxinax_compare.jsp</result>
+		</action>
+		
+		<action name="queryjlvxinax" class="jlvXinaxmpareAction" method="jlvxinaxCompare" />
+		<action name="showXinaxDate" class="jlvXinaxmpareAction" method="showXinaxDate" />
+		<action name="downLoadJlvXinaxCompare" class="jlvXinaxmpareAction" method="downLoadJlvXinaxCompare" />
+		
+		
+		
+		<!-- 0012649: 准备层增加JL毛需求的查询功能 -->
+		<action name="queryJLAnx" class="jlMaoxqAction" method="execute">
+			<result name="success">/WEB-INF/pages/xqjs/maoxq/jlMaoxq.jsp</result>
+		</action>
+		<!--JL毛需求查询 -->
+		<action name="queryJLMaoxq" class="jlMaoxqAction" method="queryJLMaoxq" />
+		
+		<!-- xss 20161010 v4_008 -->
+		<action name="SendComparePage" class="maoxqAction" method="SendComparePage">
+			<result name="success">/WEB-INF/pages/xqjs/maoxq/send_compare.jsp</result>
+		</action>
+		
+		<action name="queryCompareQr" class="maoxqCompareSendAction" method="queryCompareQr" />
+		<action name="removeCompareQr" class="maoxqCompareSendAction" method="removeCompareQr" />
+		
+		<action name="queryCompareQrDetail" class="maoxqCompareSendAction" method="queryCompareQrDetail" >
+			<result name="cmpUsercenterCyc">/WEB-INF/pages/xqjs/maoxq/usercenter_compareCyc.jsp</result>
+		</action>
+		
+		<action name="maoxqSffs" class="maoxqAction" method="maoxqSffs" />
+		
+		<!-- xss_0012943 -->
+		<action name="maoxqSfbj" class="maoxqAction" method="maoxqSfbj" />
+				
+				
+	</package>
+</toft>

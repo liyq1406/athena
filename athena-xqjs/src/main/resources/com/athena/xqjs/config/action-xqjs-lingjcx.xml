@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="lingjcx" extend="toft-default" namespace="/lingjcx">
+		<action name="lingjztcx" class="lingjcxAction" method="execute">
+			<result name="select">/WEB-INF/pages/xqjs/lingjcx/lingjztcx.jsp</result>
+		</action>
+		<action name="queryLingjztcx" class="lingjcxAction" method="queryLingjztcx"/>
+		<action name="selectTCLingjByWuld" class="lingjcxAction" method="selectTCLingjByWuld">
+			<result name="select">/WEB-INF/pages/xqjs/lingjcx/lingjtccx.jsp</result>
+		</action>
+		<action name="selectLingjBytcNo" class="lingjcxAction" method="selectLingjBytcNo">
+		</action>
+		<action name="selectYaohlBytcNo" class="lingjcxAction" method="selectYaohlBytcNo">
+			<result name="select">/WEB-INF/pages/xqjs/lingjcx/lingjtcyaohlcx.jsp</result>
+		</action>
+		<action name="selectYaohlByYaohlh" class="lingjcxAction" method="selectYaohlByYaohlh">
+		</action>
+		<action name="selectYaohlBylaxkaix" class="lingjcxAction" method="selectYaohlBylaxkaix">
+			<result name="select">/WEB-INF/pages/xqjs/lingjcx/laxkaixtcyaohlcx.jsp</result>
+		</action>
+		
+		
+		<action name="selectlingjDingdh" class="lingjcxAction" method="selectlingjDingdh">
+			<result name="select">/WEB-INF/pages/xqjs/lingjcx/lingjdinghcx.jsp</result>
+		</action>
+		<action name="selectlingjDingdhcx" class="lingjcxAction" method="selectlingjDingdhcx">
+		</action>
+		<action name="selectTCLingjByDingdh" class="lingjcxAction" method="selectTCLingjByDingdh">
+			<result name="select">/WEB-INF/pages/xqjs/lingjcx/lingjtccxdingdh.jsp</result>
+		</action>
+		<action name="selectTCLingjByDingdhcx" class="lingjcxAction" method="selectTCLingjByDingdhcx">
+		</action>
+		<action name="selectYaohlBytcNoAndDingdh" class="lingjcxAction" method="selectYaohlBytcNoAndDingdh">
+			<result name="select">/WEB-INF/pages/xqjs/lingjcx/lingjtcyaohldingdcx.jsp</result>
+		</action>
+		
+		<action name="selectTc" class="lingjcxAction" method="selectTc">
+			<result name="select">/WEB-INF/pages/xqjs/lingjcx/selecttc.jsp</result>
+		</action>
+		<action name="selectTccx" class="lingjcxAction" method="selectTccx">
+		</action>
+		
+		<action name="selectTcByQysj" class="lingjcxAction" method="selectTcByQysj">
+			<result name="select">/WEB-INF/pages/xqjs/lingjcx/selecttcqiysj.jsp</result>
+		</action>
+		<action name="selectTcByQysjcx" class="lingjcxAction" method="selectTcByQysjcx">
+		</action>
+		<action name="selectTcByQiysj" class="lingjcxAction" method="selectTcByQiysj">
+			<result name="select">/WEB-INF/pages/xqjs/lingjcx/selecttcbyqiysj.jsp</result>
+		</action>
+		<action name="selectTcBywuld" class="lingjcxAction" method="selectTcBywuld">
+			<result name="select">/WEB-INF/pages/xqjs/lingjcx/selecttcwuld.jsp</result>
+		</action>
+		<action name="selectTcBywuldcx" class="lingjcxAction" method="selectTcBywuldcx">
+		</action>
+		<action name="getYunswuld" class="lingjcxAction" method="getYunswuld"></action>
+	</package>
+</toft>

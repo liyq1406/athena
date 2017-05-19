@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="ts_ckx">
+
+	<!--导出有效期零件报警查询语句 -->
+	<select id="queryYxqljbj" resultClass="com.athena.ckx.entity.baob.Youxqljbj" parameterClass="com.athena.ckx.entity.baob.Youxqljbj">
+	    select  t.usercenter,t.lingjbh,t.lingjmc,t.gongysdm,t.gongysmc, to_char(t.shixrq,'yyyy-MM-dd HH24:mi:ss') as shixrq,t.pich,t.ucgs,t.cangkbh,t.zickbh,t.elh,t.ush,t.kuwbh,t.lingjsl,to_char(t.rukrq,'yyyy-MM-dd HH24:mi:ss') as rukrq 
+	    from  ${dbSchemal3}ck_usbq t
+	    where 1=1
+       <dynamic>
+       		<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[t.usercenter=#usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjbh" prepend="and">
+	    		<![CDATA[t.lingjbh=#lingjbh#]]> 
+	    	</isNotEmpty>
+       		<isEmpty property="shixrq" prepend="and">
+	    		<![CDATA[t.shixrq<to_date(#editime#,'yyyy-MM-dd HH24:mi:ss')]]> 
+	    	</isEmpty>
+			<isEmpty property="lingjsl" prepend="and">
+	    		<![CDATA[t.lingjsl>0]]> 
+	    	</isEmpty>
+	    </dynamic>
+	    order by t.shixrq desc
+	</select>
+</sqlMap>

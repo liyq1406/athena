@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	
+	<!-- 卡车入厂APP -->
+	<package name="kcApp" namespace="/kcApp"  extend="toft-default" >
+    	
+    	<!-- 准备层接口 -->
+    	<!-- 用户登录 -->
+    	<action name="logIn" class="kacAppLoginAction" method="logIn"/>
+    	
+    	<!-- 获取IP -->
+    	<action name="getIp" class="kacAppGetIpAction" method="getIp"/>
+    	
+    	<!-- 执行层接口 -->
+    	<!-- 根据卡车号获取BL单 -->
+    	<action name="getBLByTnumber" class="kacAppGetBLByTnumberAction" method="getBLByTnumber"/>
+    	
+    	<!-- 根据BL号获取BL单 -->
+    	<action name="addBL" class="kacAppAddBLAction" method="addBL"/>
+    	
+    	<!-- 确认申报 -->
+    	<action name="reportBLList" class="kacAppReportBLListAction" method="reportBLList"/>
+    	
+    	<!-- 获取状态 -->
+    	<action name="getState" class="kacAppGetStateAction" method="getState"/>
+    	
+    	<!-- 查看运单 -->
+    	<action name="getYunDan" class="kacAppGetYunDanAction" method="getYunDan"/>
+    	
+    	<!-- 删除运单 -->
+    	<action name="deleteYDList" class="kacAppDeleteYDListAction" method="deleteYDList"/>
+    	
+    	<!-- 获取全部信息 -->
+    	<action name="getAll" class="kacAppGetQueueAction" method="getAll"/>
+    	
+    	<!-- 获取排队信息 -->
+    	<action name="getPaiDui" class="kacAppGetQueueAction" method="getPaiDui"/>
+    	
+    	<!-- 获取准入信息 -->
+    	<action name="getZhunRu" class="kacAppGetQueueAction" method="getZhunRu"/>
+    	
+    	<!-- 获取用户信息 -->
+    	<action name="getMyInfo" class="kacAppGetMyInfoAction" method="getMyInfo"/>
+    	
+    	<!-- 注销 -->
+    	<action name="logOut" class="kacAppLogOutAction" method="logOut"/>
+    	
+    	<!-- 准备层页面 -->
+    	<!-- 卡车入厂承运商司机信息维护 -->
+    	<action name="kacAppCysKcSj" class="kacAppCysKcSjAction" method="execute">
+    		<result name="select">/WEB-INF/pages/kac/kacApp/kacAppCysKcSj.jsp</result>
+    	</action>
+    	<!-- 查询 -->
+    	<action name="querychengyskc" class="kacAppCysKcSjAction" method="query"/>
+    	<action name="querykacsj" class="kacAppCysKcSjAction" method="queryKacsj"/>
+    	<!-- 保存 -->
+    	<action name="savekacsjs" class="kacAppCysKcSjAction" method="saveKacsjxx"/>
+    	<!-- 移除 -->
+    	<action name="removeChengyskc" class="kacAppCysKcSjAction" method="remove"/>
+    	
+    	<!-- 卡车入厂用户中心坐标维护 -->
+    	<action name="kacAppUCIP" class="kacAppUCIPAction" method="execute">
+    		<result name="select">/WEB-INF/pages/kac/kacApp/kacAppUCIP.jsp</result>
+    	</action>
+    	<!-- 查询 -->
+    	<action name="queryKacAppUCIP" class="kacAppUCIPAction" method="query"/>
+    	<!-- 保存 -->
+    	<action name="saveKacAppUCIP" class="kacAppUCIPAction" method="save"/>
+    	
+    </package>
+	
+</toft>

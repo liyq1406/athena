@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="linskeytc">
+
+	<resultMap class="com.athena.xqjs.entity.laxkaix.LinsKeytc"
+		id="LinsKeytc">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="JIHYDM" property="jihydm" />
+		<result column="TCNO" property="tcNo" />
+		<result column="QIYSJ" property="qiysj" />
+		<result column="MUDD" property="mudd" />
+		<result column="TCMYD" property="tcmyd" />
+		<result column="TCZT" property="tczt" />
+		<result column="ZHIXSJ" property="zhixsj" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="EDITOR" property="editor" />
+		<result column="EDIT_TIME" property="editTime" />
+	</resultMap>
+	<delete id="deleteLinsKeytc">
+		DELETE FROM ${dbSchemal1}XQJS_LINS_KEYTC WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="AND" property="usercenter">
+				USERCENTER =
+				#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	<select id="getKeyBypara" resultClass="java.util.HashMap">
+		$para$
+	</select>
+	<insert id="insertKeytc" parameterClass="com.athena.xqjs.entity.laxkaix.LinsKeytc">
+		INSERT INTO
+		${dbSchemal1}XQJS_LINS_KEYTC(
+		USERCENTER,
+		JIHYDM,
+		TCNO,
+		QIYSJ,
+		ZHIXSJ,
+		CREATOR,
+		CREATE_TIME
+		) VALUES(
+		#usercenter#,
+		#jihydm#,
+		#tcNo#,
+		to_date(#qiysj#,'yyyy-MM-dd HH24:mi:ss'),
+		#zhixsj#,
+		#creator#,
+		to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss')
+		)
+	</insert>
+	<update id="updateKeytc" parameterClass="com.athena.xqjs.entity.laxkaix.LinsKeytc">
+		UPDATE
+		${dbSchemal1}XQJS_LINS_KEYTC SET
+		TCMYD = #tcmyd#,
+		TCZT = #tczt#,
+		EDITOR =
+		#editor#,
+		EDIT_TIME = to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		WHERE
+		USERCENTER = #usercenter# and JIHYDM = #jihydm# and TCNO = #tcNo#
+	</update>
+	<update id="updateKeytcByZt" parameterClass="com.athena.xqjs.entity.laxkaix.LinsKeytc">
+		UPDATE
+		${dbSchemal1}XQJS_LINS_KEYTC SET
+		TCZT = #tczt#,
+		EDITOR = #editor#,
+		EDIT_TIME = to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		WHERE
+		USERCENTER = #usercenter# and JIHYDM = #jihydm# and TCNO = #tcNo#
+	</update>
+</sqlMap>

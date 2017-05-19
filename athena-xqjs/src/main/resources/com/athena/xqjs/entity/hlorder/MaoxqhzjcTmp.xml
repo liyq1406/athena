@@ -1,0 +1,1189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="hlorder">
+
+	<resultMap class="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp"
+		id="MaoxqhzjcTmp">
+		<result column="J2" property="j2" />
+		<result column="UABZUCLX" property="uabzuclx" />
+		<result column="DINGDLJ" property="dingdlj" />
+		<result column="XITTZZ" property="xittzz" />
+		<result column="SHIFYLDXH" property="shifyldxh" />
+		<result column="SHIFYLDJF" property="shifyldjf" />
+		<result column="WAIBGHMS" property="waibghms" />
+		<result column="DAIXH" property="daixh" />
+		<result column="J8" property="j8" />
+		<result column="ZIYHQRQ" property="ziyhqrq" />
+		<result column="J1" property="j1" />
+		<result column="DINGDNR" property="dingdnr" />
+		<result column="ZHIZLX" property="zhizlx" />
+		<result column="J3" property="j3" />
+		<result column="TIAOZJSZ" property="tiaozjsz" />
+		<result column="DANW" property="danw" />
+		<result column="DINGHCJ" property="dinghcj" />
+		<result column="LINGJBH" property="lingjbh" />
+		<result column="J14" property="j14" />
+		<result column="UABZUCSL" property="uabzucsl" />
+		<result column="SHIFYLAQKC" property="shifylaqkc" />
+		<result column="BEIHZQ" property="beihzq" />
+		<result column="JIAOFLJ" property="jiaoflj" />
+		<result column="J10" property="j10" />
+		<result column="ID" property="id" />
+		<result column="SHIFYLKC" property="shifylkc" />
+		<result column="GONGYSLX" property="gongyslx" />
+		<result column="J5" property="j5" />
+		<result column="J4" property="j4" />
+		<result column="J12" property="j12" />
+		<result column="J7" property="j7" />
+		<result column="J9" property="j9" />
+		<result column="J0" property="j0" />
+		<result column="KUC" property="kuc" />
+		<result column="GONGYSFE" property="gongysfe" />
+		<result column="ZHIDGYS" property="zhidgys" />
+		<result column="GONGYSDM" property="gongysdm" />
+		<result column="UABZUCRL" property="uabzucrl" />
+		<result column="JIHYZ" property="jihyz" />
+		<result column="J6" property="j6" />
+		<result column="J13" property="j13" />
+		<result column="XUQCFRQ" property="xuqcfrq" />
+		<result column="J0RQ" property="j0rq" />
+		<result column="JIAOFM" property="jiaofm" />
+		<result column="UABZLX" property="uabzlx" />
+		<result column="CANGKDM" property="cangkdm" />
+		<result column="FAYZQ" property="fayzq" />
+		<result column="LUJDM" property="lujdm" />
+		<result column="J15" property="j15" />
+		<result column="baozrl" property="baozrl" />
+		<result column="J11" property="j11" />
+		<result column="ANQKC" property="anqkc" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="YUGSFQZ" property="yugsfqz" />
+		<result column="FAHD" property="fahd" />
+		<result column="LINGJSX" property="lingjsx" />
+		<result column="ZUIXQDL" property="zuixqdl" />
+	</resultMap>
+	<parameterMap class="map" id="parameter_maoxqhzjc">
+		<parameter property="ziyjfrq" jdbcType="VARCHAR" javaType="java.lang.String"
+			mode="IN" />
+	</parameterMap>
+	<select id="queryMaoxqhzjcTmp" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp" >
+		select
+		J2,
+		UABZUCLX,
+		DINGDLJ,
+		XITTZZ,
+		SHIFYLDXH,
+		SHIFYLDJF,
+		WAIBGHMS,
+		DAIXH,
+		J8,
+		ZIYHQRQ,
+		J1,
+		DINGDNR,
+		ZHIZLX,
+		J3,
+		TIAOZJSZ,
+		DANW,
+		DINGHCJ,
+		LINGJBH,
+		J14,
+		UABZUCSL,
+		SHIFYLAQKC,
+		BEIHZQ,
+		JIAOFLJ,
+		J10,
+		ID,
+		SHIFYLKC,
+		GONGYSLX,
+		J5,
+		J4,
+		J12,
+		J7,
+		J9,
+		J0,
+		KUC,
+		GONGYSFE,
+		ZHIDGYS,
+		GONGYSDM,
+		UABZUCRL,
+		JIHYZ,
+		J6,
+		J13,
+		XUQCFRQ,
+		J0RQ,
+		JIAOFM,
+		UABZLX,
+		CANGKDM,
+		FAYZQ,
+		LUJDM,
+		J15,
+		baozrl,
+		J11,
+		ANQKC,
+		YUGSFQZ,
+		DINGDZZLJ,
+		LINGJSX,
+		FAHD,
+		ZUIXQDL,
+		lingjmc,
+		gongsmc,
+		neibyhzx,
+		USERCENTER,
+		wulgyyz,
+		XIEHZTBH,
+		wulgyyz1.
+		GCBH
+		from
+		${dbSchemal1}XQJS_maoxqhzjc_tmp
+		where
+		1=1
+	</select>
+
+	<insert id="insertMaoxqhzjcTmp" parameterClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">insert into
+		${dbSchemal1}XQJS_maoxqhzjc_tmp
+		(J2,UABZUCLX,DINGDLJ,XITTZZ,SHIFYLDXH,SHIFYLDJF,WAIBGHMS,DAIXH,J8,ZIYHQRQ,J1,DINGDNR,ZHIZLX,J3,
+		TIAOZJSZ,DANW,DINGHCJ,LINGJBH,J14,UABZUCSL,SHIFYLAQKC,BEIHZQ,JIAOFLJ,J10,ID,SHIFYLKC,GONGYSLX,
+		J5,J4,J12,J7,J9,J0,KUC,GONGYSFE,ZHIDGYS,GONGYSDM,UABZUCRL,JIHYZ,J6,J13,
+		XUQCFRQ,J0RQ,JIAOFM,UABZLX,CANGKDM,FAYZQ,LUJDM,J15,baozrl,J11,ANQKC,YUGSFQZ,
+		DINGDZZLJ,USERCENTER,FAHD,ZUIXQDL,LINGJSX,J1RIQ,J2RIQ,J3RIQ,J4RIQ,J5RIQ,J6RIQ,
+		J7RIQ,J8RIQ,J9RIQ,J10RIQ,J11RIQ,J12RIQ,J13RIQ,J14RIQ,J15RIQ,lingjmc,
+		gongsmc,
+		neibyhzx,CANGKLX,wulgyyz,wulgyyz1,XIEHZTBH,GCBH)
+		values(
+		#j2#,
+		#uabzuclx#,
+		#dingdlj#,
+		#xittzz#,
+		#shifyldxh#,
+		#shifyldjf#,
+		#waibghms#,
+		#daixh#,
+		#j8#,
+		to_date(substr(#ziyhqrq#, 0, 10), 'yyyy-mm-dd'),
+		#j1#,
+		#dingdnr#,
+		#zhizlx#,
+		#j3#,
+		#tiaozjsz#,
+		#danw#,
+		#dinghcj#,
+		#lingjbh#,
+		#j14#,
+		#uabzucsl#,
+		#shifylaqkc#,
+		#beihzq#,
+		#jiaoflj#,
+		#j10#,
+		${dbSchemal1}XQJS_MAOXQHZJC_SEQ.nextval,
+		#shifylkc#,
+		#gongyslx#,
+		#j5#,
+		#j4#,
+		#j12#,
+		#j7#,
+		#j9#,
+		#j0#,
+		#kuc#,
+		#gongysfe#,
+		#zhidgys#,
+		#gongysdm#,
+		#uabzucrl#,
+		#jihyz#,
+		#j6#,
+		#j13#,
+		to_date(substr(#xuqcfrq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j0rq#,0,10),'yyyy-mm-dd'),
+		#jiaofm#,
+		#uabzlx#,
+		#cangkdm#,
+		#fayzq#,
+		#lujdm#,
+		#j15#,
+		#baozrl#,
+		#j11#,
+		#anqkc#,
+		#yugsfqz#,
+		#dingdzzlj#,
+		#usercenter#,
+		#fahd#,
+		#zuixqdl#,
+		#lingjsx#，
+		to_date(substr(#j1riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j2riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j3riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j4riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j5riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j6riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j7riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j8riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j9riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j10riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j11riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j12riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j13riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j14riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j15riq#,0,10),'yyyy-mm-dd'),
+		#lingjmc#,
+		#gongsmc#,
+		#neibyhzx#,
+		#cangklx#,
+		#wulgyyz#,
+		#wulgyyz1#,
+		#xiehztbh#,
+		#gcbh#)
+	</insert>
+
+	<update id="updateMaoxqhzjcTmp" parameterClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+		update ${dbSchemal1}XQJS_maoxqhzjc_tmp set
+		J2=#j2#,
+		UABZUCLX=#uabzuclx#,
+		DINGDLJ=#dingdlj#,
+		XITTZZ=#xittzz#,
+		SHIFYLDXH=#shifyldxh#,
+		SHIFYLDJF=#shifyldjf#,
+		WAIBGHMS=#waibghms#,
+		DAIXH=#daixh#,
+		J8=#j8#,
+		ZIYHQRQ=#ziyhqrq#,
+		J1=#j1#,
+		DINGDNR=#dingdnr#,
+		ZHIZLX=#zhizlx#,
+		J3=#j3#,
+		TIAOZJSZ=#tiaozjsz#,
+		DANW=#danw#,
+		DINGHCJ=#dinghcj#,
+		LINGJBH=#lingjbh#,
+		J14=#j14#,
+		UABZUCSL=#uabzucsl#,
+		SHIFYLAQKC=#shifylaqkc#,
+		BEIHZQ=#beihzq#,
+		JIAOFLJ=#jiaoflj#,
+		J10=#j10#,
+		ID=#id#,
+		SHIFYLKC=#shifylkc#,
+		GONGYSLX=#gongyslx#,
+		J5=#j5#,
+		J4=#j4#,
+		J12=#j12#,
+		J7=#j7#,
+		J9=#j9#,
+		J0=#j0#,
+		KUC=#kuc#,
+		GONGYSFE=#gongysfe#,
+		ZHIDGYS=#zhidgys#,
+		GONGYSDM=#gongysdm#,
+		UABZUCRL=#uabzucrl#,
+		JIHYZ=#jihyz#,
+		J6=#j6#,
+		J13=#j13#,
+		XUQCFRQ=#xuqcfrq#,
+		J0RQ=#j0rq#,
+		JIAOFM=#jiaofm#,
+		UABZLX=#uabzlx#,
+		CANGKDM=#cangkdm#,
+		FAYZQ=#fayzq#,
+		LUJDM=#lujdm#,
+		J15=#j15#,
+		baozrl=#baozrl#,
+		J11=#j11#,
+		ANQKC=#anqkc#,
+		YUGSFQZ=#yugsfqz#,
+		DINGDZZLJ=#dingdzzlj#,
+		FAHD=#fahd#,
+		LINGJSX=#lingjsx#,
+		ZUIXQDL=#zuixqdl#,
+		USERCENTER=#usercenter# where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 用户中心 - xss-20160422 -->
+	<select id="queryWaiBuWuLiuLuJingByjc" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+		select
+		J2,
+		UABZUCLX,
+		DINGDLJ,
+		XITTZZ,
+		SHIFYLDXH,
+		SHIFYLDJF,
+		WAIBGHMS,
+		DAIXH,
+		J8,
+		ZIYHQRQ,
+		J1,
+		DINGDNR,
+		ZHIZLX,
+		J3,
+		TIAOZJSZ,
+		DANW,
+		DINGHCJ,
+		LINGJBH,
+		J14,
+		UABZUCSL,
+		SHIFYLAQKC,
+		BEIHZQ,
+		JIAOFLJ,
+		J10,
+		ID,
+		SHIFYLKC,
+		GONGYSLX,
+		J5,
+		J4,
+		J12,
+		J7,
+		J9,
+		J0,
+		KUC,
+		GONGYSFE,
+		ZHIDGYS,
+		GONGYSDM,
+		UABZUCRL,
+		JIHYZ,
+		J6,
+		J13,
+		XUQCFRQ,
+		J0RQ,
+		JIAOFM,
+		UABZLX,
+		CANGKDM,
+		FAYZQ,
+		LUJDM,
+		J15,
+		baozrl,
+		J11,
+		ANQKC,
+		YUGSFQZ,
+		DINGDZZLJ,
+		FAHD,
+		LINGJSX,
+		ZUIXQDL,
+		USERCENTER,
+		J1RIQ,
+		J2RIQ,
+		J3RIQ,
+		J4RIQ,
+		J5RIQ,
+		J6RIQ,
+		J7RIQ,
+		J8RIQ,
+		J9RIQ,
+		J10RIQ,
+		J11RIQ,
+		J12RIQ,
+		J13RIQ,
+		J14RIQ,
+		lingjmc,
+		gongsmc,
+		neibyhzx,
+		XIEHZTBH,
+		wulgyyz1,
+		wulgyyz,
+		J15RIQ,
+		gcbh
+		 from
+		${dbSchemal1}XQJS_maoxqhzjc_tmp where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="waibghms">WAIBGHMS =
+				#waibghms#
+			</isNotEmpty>
+		</dynamic>
+		order by usercenter,
+          lingjbh,
+          cangkdm
+	</select>
+	<select id="queryYuGaoByjc" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+		select
+		J2,
+		UABZUCLX,
+		DINGDLJ,
+		XITTZZ,
+		SHIFYLDXH,
+		SHIFYLDJF,
+		WAIBGHMS,
+		DAIXH,
+		J8,
+		ZIYHQRQ,
+		J1,
+		DINGDNR,
+		ZHIZLX,
+		J3,
+		TIAOZJSZ,
+		DANW,
+		DINGHCJ,
+		LINGJBH,
+		J14,
+		UABZUCSL,
+		SHIFYLAQKC,
+		BEIHZQ,
+		JIAOFLJ,
+		J10,
+		ID,
+		SHIFYLKC,
+		GONGYSLX,
+		J5,
+		J4,
+		J12,
+		J7,
+		J9,
+		J0,
+		KUC,
+		GONGYSFE,
+		ZHIDGYS,
+		GONGYSDM,
+		UABZUCRL,
+		JIHYZ,
+		J6,
+		J13,
+		XUQCFRQ,
+		J0RQ,
+		J1RIQ,
+		J2RIQ,
+		J3RIQ,
+		J4RIQ,
+		J5RIQ,
+		J6RIQ,
+		J7RIQ,
+		J8RIQ,
+		J9RIQ,
+		J10RIQ,
+		J11RIQ,
+		J12RIQ,
+		J13RIQ,
+		J14RIQ,
+		J15RIQ,
+		JIAOFM,
+		UABZLX,
+		CANGKDM,
+		FAYZQ,
+		LUJDM,
+		J15,
+		baozrl,
+		J11,
+		ANQKC,
+		YUGSFQZ,
+		DINGDZZLJ,
+		FAHD,
+		LINGJSX,
+		ZUIXQDL,
+		lingjmc,
+		gongsmc,
+		neibyhzx,
+		XIEHZTBH,
+		USERCENTER,
+		wulgyyz1,
+		wulgyyz,
+		gcbh
+		 from
+		${dbSchemal1}XQJS_maoxqhzjc_tmp where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="waibghms">WAIBGHMS !=
+				#waibghms#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<delete id="deleteMaoxqhzjcTmp" parameterClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+		delete from ${dbSchemal1}XQJS_maoxqhzjc_tmp where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+
+	<delete id="deleteAllMaoxqhzjcTmp"  parameterClass="java.util.Map">
+		delete from
+		${dbSchemal1}XQJS_maoxqhzjc_tmp where USERCENTER=#usercenter#
+	</delete>
+
+   <!-- 用户中心 - xss-20160422 -->
+	<select id="selectIntoMaoxqhzjcTmp" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+  		select hzb.usercenter,
+       hzb.xuqcfrq,
+       hzb.lingjbh,
+       hzb.zhizlx,
+       hzb.danw,
+       hzb.j0,
+       hzb.j1,
+       hzb.j2,
+       hzb.j3,
+       hzb.j4,
+       hzb.j5,
+       hzb.j6,
+       hzb.j7,
+       hzb.j8,
+       hzb.j9,
+       hzb.j10,
+       hzb.j11,
+       hzb.j12,
+       hzb.j13,
+       hzb.j14,
+       hzb.j15,
+       hzb.j0rq as J0RQ,
+       hzb.j1rq as J1RIQ,
+       hzb.j2rq as J2RIQ,
+       hzb.j3rq as J3RIQ,
+       hzb.j4rq as J4RIQ,
+       hzb.j5rq as J5RIQ,
+       hzb.j6rq as J6RIQ,
+       hzb.j7rq as J7RIQ,
+       hzb.j8rq as J8RIQ,
+       hzb.j9rq as J9RIQ,
+       hzb.j10rq as J10RIQ,
+       hzb.j11rq as J11RIQ,
+       hzb.j12rq as J12RIQ,
+       hzb.j13rq as J13RIQ,
+       hzb.j14rq as J14RIQ,
+       hzb.j15rq as J15RIQ,
+       hzb.cangkdm,
+       clj.dinghcj,
+       clk.ANQKCSL as anqkc,
+        (
+               select sum(kucsl) as kucsl
+                from ${dbSchemal1}xqjs_ziykzb zykz
+               where zykz.ziyhqrq = to_date(#ziyhqrq#, 'yyyy-MM-dd')
+               and zykz.usercenter = hzb.usercenter and zykz.lingjbh =  hzb.lingjbh
+                and zykz.cangkdm in (          
+	                	select  distinct xianbck  as cangkdm
+	                   	from  ${dbSchemal3}CKX_WULLJ wl
+	                  	where  mudd = hzb.cangkdm
+	                  	and  zhizlx = '97W'
+	                  	and  waibms = 'VJ'
+	                  	and zykz.lingjbh = wl.lingjbh
+	                  	and zykz.usercenter = wl.usercenter
+		           union all
+		              (
+		                select distinct dinghck  as cangkdm
+	                    from  ${dbSchemal3}CKX_WULLJ wl
+	                  	where zhizlx = '97W'                  
+	                   	and  waibms = 'VJ'
+	                   	and  mudd = hzb.cangkdm
+	                   	and zykz.lingjbh = wl.lingjbh
+	                   	and zykz.usercenter = wl.usercenter
+		              )
+               ) 
+      )
+       
+       as KUC,
+       hzb.gongysbh as GONGYSDM,
+       cg.leix as GONGYSLX,
+       hzb.beihzq,
+       hzb.yunszq as FAYZQ,
+       hzb.gongyfe as GONGYSFE,
+       clk.JISTZZ as TIAOZJSZ,
+       clg.uabzlx as UABZLX,
+       clg.ucbzlx as UABZUCLX,
+       clg.ucrl as UABZUCRL,
+       clg.uaucgs as UABZUCSL,
+       clg.uaucgs * clg.ucrl as BAOZRL,
+       to_date(#ziyhqrq#, 'yyyy-MM-dd') as ziyhqrq,
+       hzb.waibms as WAIBGHMS,
+       nvl(temp.shifylkc,1) as shifylkc,
+       nvl(temp.shifylaqkc,1) as shifylaqkc,
+       nvl(temp.shifyldjf,1) as shifyldjf,
+       nvl(temp.shifyldxh,1)as shifyldxh,
+       clj.jihy as jihyz,
+       hzb.lujbh as LUJDM,
+       zy.DINGDLJ as DINGDLJ,
+       zy.JIAOFLJ as JIAOFLJ,
+       zy.XTTZZ as XITTZZ,
+       hzb.zhidgys as ZHIDGYS,
+       clg.zuixqdl as ZUIXQDL,
+       hzb.jiaofm,
+       nvl(temp.yugsfqz,1) as yugsfqz,
+       zy.DINGDZZLJ as DINGDZZLJ,
+       clg.gongyhth,
+       hzb.shiycj,
+       clj.lingjsx,
+       hzb.fahd,
+        clj.zhongwmc as lingjmc,
+       cg.gongsmc,
+       cg.NEIBYHZX,
+       hzb.cangklx as CANGKLX,
+       clk.XIEHZTBH,
+       hzb.gcbh
+  from (select zjb.usercenter,
+               zjb.xuqcfrq,
+               zjb.lingjbh,
+               zjb.zhizlx,
+               zjb.danw,
+               nvl(sum((zjb.j0 * cl.xiaohbl)),0) as j0,
+               nvl(sum((zjb.j1 * cl.xiaohbl)),0) as j1,
+               nvl(sum((zjb.j2 * cl.xiaohbl)),0) as j2,
+               nvl(sum((zjb.j3 * cl.xiaohbl)),0) as j3,
+               nvl(sum((zjb.j4 * cl.xiaohbl)),0) as j4,
+               nvl(sum((zjb.j5 * cl.xiaohbl)),0) as j5,
+               nvl(sum((zjb.j6 * cl.xiaohbl)),0) as j6,
+               nvl(sum((zjb.j7 * cl.xiaohbl)),0) as j7,
+               nvl(sum((zjb.j8 * cl.xiaohbl)),0) as j8,
+               nvl(sum((zjb.j9 * cl.xiaohbl)),0) as j9,
+               nvl(sum((zjb.j10 * cl.xiaohbl)),0) as j10,
+               nvl(sum((zjb.j11 * cl.xiaohbl)),0) as j11,
+               nvl(sum((zjb.j12 * cl.xiaohbl)),0) as j12,
+               nvl(sum((zjb.j13 * cl.xiaohbl)),0) as j13,
+               nvl(sum((zjb.j14 * cl.xiaohbl)),0) as j14,
+               nvl(sum((zjb.j15 * cl.xiaohbl)),0) as j15,
+               zjb.j0rq,
+               zjb.j1rq,
+               zjb.j2rq,
+               zjb.j3rq,
+               zjb.j4rq,
+               zjb.j5rq,
+               zjb.j6rq,
+               zjb.j7rq,
+               zjb.j8rq,
+               zjb.j9rq,
+               zjb.j10rq,
+               zjb.j11rq,
+               zjb.j12rq,
+               zjb.j13rq,
+               zjb.j14rq,
+               zjb.j15rq,
+               zjb.cangkdm,
+               zjb.gongysbh,
+               zjb.beihzq,
+               zjb.yunszq,
+               zjb.gongyfe,
+               zjb.waibms,
+               zjb.lujbh,
+               zjb.zhidgys,
+               zjb.jiaofm,
+               zjb.shiycj,
+               zjb.fahd,
+               zjb.cangklx,
+               zjb.gcbh
+          from (select m.xuqcfrq,
+                       m.usercenter,
+                       m.lingjbh,
+                       cw.shengcxbh,
+                       cw.fenpqh as fenpxh,
+                       m.zhizlx,
+                       m.danw,
+                       m.j0,
+                       m.j1,
+                       m.j2,
+                       m.j3,
+                       m.j4,
+                       m.j5,
+                       m.j6,
+                       m.j7,
+                       m.j8,
+                       m.j9,
+                       m.j10,
+                       m.j11,
+                       m.j12,
+                       m.j13,
+                       m.j14,
+                       m.j15,
+                       m.j0rq,
+                       m.j1rq,
+                       m.j2rq,
+                       m.j3rq,
+                       m.j4rq,
+                       m.j5rq,
+                       m.j6rq,
+                       m.j7rq,
+                       m.j8rq,
+                       m.j9rq,
+                       m.j10rq,
+                       m.j11rq,
+                       m.j12rq,
+                       m.j13rq,
+                       m.j14rq,
+                       m.j15rq,
+                       case
+                         when cw.dinghck is null then
+                          cw.xianbck
+                         else
+                          cw.dinghck
+                       end as cangkdm,
+                       cw.gongysbh,
+                       cw.beihzq,
+                       cw.yunszq,
+                       cw.fenpqh,
+                       cw.gongyfe,
+                       cw.waibms,
+                       cw.lujbh,
+                       cw.zhidgys,
+                       cw.jiaofm,
+                       '' as shiycj,
+                       cw.fahd,
+                       0 as cangklx,
+                        cw.gcbh
+                  from ${dbSchemal1}XQJS_maoxqhzj_tmp m, ${dbSchemal3}CKX_WULLJ cw
+                 where  m.usercenter = #usercenter# and   m.usercenter = cw.usercenter(+)
+                   and m.lingjbh = cw.lingjbh(+)
+                   and m.chanx = cw.shengcxbh(+)
+                    and m.zhizlx = cw.zhizlx(+)
+                       and cw.waibms = 'VJ'
+                   and m.waibms = 'VJ'
+                    
+                   ) zjb,
+               ${dbSchemal3}ckx_lingjxhd cl
+         where zjb.usercenter = cl.usercenter(+)
+           and zjb.lingjbh = cl.lingjbh(+)
+           and zjb.fenpxh = cl.fenpqbh(+)
+           and zjb.shengcxbh = cl.shengcxbh(+)
+            and cl.biaos = '1'
+         group by zjb.usercenter,
+                  zjb.xuqcfrq,
+                  zjb.usercenter,
+                  zjb.lingjbh,
+                  zjb.zhizlx,
+                  zjb.danw,
+                  zjb.j0rq,
+                  zjb.cangkdm,
+                  zjb.gongysbh,
+                  zjb.beihzq,
+                  zjb.gongyfe,
+                  zjb.waibms,
+                  zjb.lujbh,
+                  zjb.zhidgys,
+                  zjb.jiaofm,
+                  zjb.shiycj,
+                  zjb.fahd,
+                  zjb.yunszq,
+                  zjb.cangklx,
+                  zjb.j1rq,
+               zjb.j2rq,
+               zjb.j3rq,
+               zjb.j4rq,
+               zjb.j5rq,
+               zjb.j6rq,
+               zjb.j7rq,
+               zjb.j8rq,
+               zjb.j9rq,
+               zjb.j10rq,
+               zjb.j11rq,
+               zjb.j12rq,
+               zjb.j13rq,
+               zjb.j14rq,
+               zjb.j15rq,
+                  zjb.gcbh) hzb,
+      (select * from ${dbSchemal3}CKX_GONGYS where biaos = '1') cg,
+       (select t.gongysbh,
+               t.waibghms as waibghms,
+               min(decode(t.yilgx, 'YQZ', '0', null, '1', '1')) as yugsfqz,
+               min(decode(t.yilgx, 'YKC', '0', null, '1', '1')) as shifylkc,
+               min(decode(t.yilgx, 'YAC', '0', null, '1', '1')) as shifylaqkc,
+               min(decode(t.yilgx, 'YJF', '0', null, '1', '1')) as shifyldjf,
+               min(decode(t.yilgx, 'YXH', '0', null, '1', '1')) as shifyldxh
+          from ${dbSchemal3}ckx_dingdjsyl t
+         group by t.gongysbh, t.waibghms) temp,
+       (select * from ${dbSchemal3}CKX_LINGJ where biaos = '1') clj,
+  (select * from ${dbSchemal1}xqjs_ziykzb where ziyhqrq = to_date(#ziyhqrq#, 'yyyy-MM-dd')) zy,
+       (select * from ${dbSchemal3}Ckx_Lingjgys where biaos ='1') clg,
+       ${dbSchemal3}CKX_LINGJCK clk
+ where hzb.usercenter = cg.usercenter(+)
+   and hzb.gongysbh = cg.gcbh(+)
+   and hzb.zhizlx = cg.GONGHLX(+)
+   and hzb.gongysbh = temp.gongysbh(+)
+   and hzb.waibms = temp.waibghms(+)
+   and hzb.usercenter = clj.usercenter(+)
+   and hzb.lingjbh = clj.lingjbh(+)
+  
+   and hzb.usercenter = clg.usercenter(+)
+   and hzb.lingjbh = clg.lingjbh(+)
+   and hzb.gongysbh = clg.gongysbh(+)
+   and hzb.usercenter = clk.usercenter(+)
+   and hzb.lingjbh = clk.lingjbh(+)
+   and hzb.cangkdm = clk.cangkbh(+)
+       and hzb.usercenter = zy.usercenter(+)
+   and hzb.lingjbh = zy.lingjbh(+)
+   and hzb.cangkdm = zy.CANGKDM(+)
+    
+	</select>
+	
+	
+	
+	<select  id="pjCheckMaoxqhzjcWullj" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	
+	select 
+	   id,
+	   usercenter,
+	   lingjbh,
+	   zhizlx,
+	   jihyz
+	   from 
+	   (
+	
+	select 
+	       m.id,
+	       lj.jihy as jihyz,
+	       m.xuqcfrq,
+                       m.usercenter,
+                       m.lingjbh,
+                       cw.shengcxbh,
+                       cw.fenpqh as fenpxh,
+                       m.zhizlx,
+                       m.danw,
+                       m.j0,
+                       m.j1,
+                       m.j2,
+                       m.j3,
+                       m.j4,
+                       m.j5,
+                       m.j6,
+                       m.j7,
+                       m.j8,
+                       m.j9,
+                       m.j10,
+                       m.j11,
+                       m.j12,
+                       m.j13,
+                       m.j14,
+                       m.j15,
+                       m.j0rq,
+                       m.j1rq,
+                       m.j2rq,
+                       m.j3rq,
+                       m.j4rq,
+                       m.j5rq,
+                       m.j6rq,
+                       m.j7rq,
+                       m.j8rq,
+                       m.j9rq,
+                       m.j10rq,
+                       m.j11rq,
+                       m.j12rq,
+                       m.j13rq,
+                       m.j14rq,
+                       m.j15rq,
+                       case
+                         when cw.dinghck is null then
+                          cw.xianbck
+                         else
+                          cw.dinghck
+                       end as cangkdm,
+                       cw.gongysbh,
+                       cw.beihzq,
+                       cw.yunszq,
+                       cw.fenpqh,
+                       cw.gongyfe,
+                       cw.waibms,
+                       cw.lujbh,
+                       cw.zhidgys,
+                       cw.jiaofm,
+                       m.shiycj,
+                       cw.fahd,
+                       case
+                         when cw.dinghck is null then
+                          0
+                         else
+                          1
+                       end as cangklx,
+                        cw.gcbh
+                  from ${dbSchemal1}XQJS_maoxqhzj_tmp m, ${dbSchemal3}CKX_WULLJ cw ,${dbSchemal3}ckx_lingj lj
+                 where m.usercenter = cw.usercenter(+)
+                   and m.lingjbh = cw.lingjbh(+)
+                   and m.chanx = cw.shengcxbh(+)
+                    and m.zhizlx = cw.zhizlx(+)
+                     and m.usercenter = lj.usercenter (+)
+                    and m.lingjbh = lj.lingjbh (+)
+                     and m.waibms = 'VJ'
+		)
+		where shengcxbh is null
+		                     
+	</select>
+	
+	
+	<select id = "jcheckFene" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	select * from (select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.cangkdm,
+       t.jihyz,
+       sum(t.gongysfe) as fene
+  from ${dbSchemal1}XQJS_MAOXQHZJC_tmp t
+   where t.waibghms = 'VJ'
+ group by t.usercenter, t.lingjbh, t.danw, t.cangkdm,t.jihyz) ad
+ where ad.fene !='1' or ad.fene is null
+	</select>
+	
+	<!-- xss_12970 	-->
+ <select id = "jcheckFene_new" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+select *
+  from (select ad.usercenter, ad.lingjbh, sum(ad.gongyfe) as fene
+          from (select distinct cw.usercenter,
+                                cw.lingjbh,
+                                cw.gongysbh,
+                                cw.gongyfe 
+                  from ${dbSchemal1}XQJS_MAOXQHZJC_tmp m,${dbSchemal3}CKX_WULLJ cw
+                 where m.usercenter = cw.usercenter
+                   and m.lingjbh = cw.lingjbh
+                   and m.gongysdm = cw.gongysbh) ad
+         group by ad.usercenter, ad.lingjbh)
+ where fene != '1' or fene is null
+	</select>
+	
+	
+	<select id = "jcheckZhizlx" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.jihyz
+        from ${dbSchemal1}XQJS_MAOXQHZJC_tmp t where t.zhizlx is null
+	</select>
+	
+	
+	<select id = "jcheckGongysdm" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.jihyz
+        from ${dbSchemal1}XQJS_MAOXQHZJC_tmp t where t.gongysdm is null
+	</select>
+	
+	<select id = "jcheckDinghcj" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.jihyz
+        from ${dbSchemal1}XQJS_MAOXQHZJC_tmp t where t.dinghcj is null
+	</select>
+	
+	<select id = "jcheckBeihzq" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.jihyz
+        from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where t.beihzq is null or t.beihzq &lt;=0
+	</select>
+	
+	<select id = "jcheckFayzq" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.jihyz
+        from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where t.fayzq is null or t.fayzq &lt;=0
+	</select>
+	
+	<select id = "jcheckZiyhqrq" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.jihyz
+        from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where t.ziyhqrq is null
+	</select>
+	
+	
+	<select id = "jcheckLujdm" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.jihyz
+        from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where t.lujdm is null  and t.waibghms = 'VJ'
+	</select>
+	
+	<select id = "jcheckCangkdm" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	 select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.wulgyyz1
+        from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where t.cangkdm is null and t.waibghms = 'VJ'
+	</select>
+	
+	<select id = "jcheckUabzlx" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	 select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.wulgyyz1
+        from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where t.uabzlx is null and t.waibghms = 'VJ'
+	</select>
+	
+	<select id = "jcheckUabzuclx" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	 select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.wulgyyz1
+        from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where t.uabzuclx is null and t.waibghms = 'VJ'
+	</select>
+	
+	<select id = "jcheckUabzucsl" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	 select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.wulgyyz1
+        from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where (t.uabzucsl is null or t.uabzucsl &lt;=0) and t.waibghms = 'VJ'
+	</select>
+	
+	<select id = "jcheckUabzucrl" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	 select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.wulgyyz1
+        from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where (t.uabzucrl is null or t.uabzucrl &lt;=0)   and t.waibghms = 'VJ'
+	</select>
+	
+	<select id = "jcheckWaibghms" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	 select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.jihyz
+        from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where t.waibghms is null
+	</select>
+	
+	<select id = "jcheckJihyz" resultClass="com.athena.xqjs.entity.hlorder.MaoxqhzjcTmp">
+	 select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.gongysdm,
+       t.cangkdm,
+       t.jihyz
+        from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where t.jihyz is null
+	</select>
+	
+	<delete id="jDeleteFene">
+	delete from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where t.lingjbh in (select ad.lingjbh from (select t.usercenter,
+       t.lingjbh,
+       t.danw,
+       t.cangkdm,
+       t.jihyz,
+       sum(t.gongysfe) as fene
+  from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t
+ where  t.waibghms = 'VJ'
+  group by t.usercenter, t.lingjbh, t.danw, t.cangkdm,t.jihyz) ad
+  where ad.fene !='1' or ad.fene is null)
+	</delete>
+	
+	<!-- xss_12970 -->
+	<delete id="jDeleteFene_New">
+  delete from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t where t.lingjbh in (select lingjbh
+  from (select ad.usercenter, ad.lingjbh, sum(ad.gongyfe) as fene
+          from (select distinct cw.usercenter,
+                                cw.lingjbh,
+                                cw.gongysbh,
+                                cw.gongyfe 
+                  from ${dbSchemal1}XQJS_MAOXQHZJC_tmp m,${dbSchemal3}CKX_WULLJ cw
+                 where m.usercenter = cw.usercenter
+                   and m.lingjbh = cw.lingjbh
+                   and m.gongysdm = cw.gongysbh) ad
+         group by ad.usercenter, ad.lingjbh)
+ where fene != '1' or fene is null)
+	</delete>
+	
+	<delete id="jDeleteOther">
+	   delete
+  from ${dbSchemal1}XQJS_MAOXQHZJC_TMP t
+ where t.zhizlx is null
+    or t.gongysdm is null
+    or t.dinghcj is null
+    or t.beihzq is null
+    or t.beihzq &lt;= 0
+    or t.fayzq is null or t.fayzq &lt;=0
+    or t.ziyhqrq is null
+    or (t.lujdm is null  and t.waibghms = 'VJ')
+    or (t.cangkdm is null  and t.waibghms = 'VJ')
+    or (t.uabzlx is null and t.waibghms = 'VJ')
+    or (t.uabzuclx is null and t.waibghms = 'VJ')
+    or ((t.uabzucsl is null or t.uabzucsl &lt;=0) and t.waibghms = 'VJ')
+    or ((t.uabzucrl is null or t.uabzucrl &lt;=0) and t.waibghms = 'VJ')
+    or t.waibghms is null
+    or t.jihyz is null
+    or t.gongysfe is null or t.gongysfe &lt;0 
+	</delete>
+	<!-- 获取最大的fayrq add by zbb-->
+	<select id = "getMaxYaohqsrq" resultClass="java.lang.String">
+	 select 
+	 	Max(to_char(t.yaohqsrq,'yyyy-MM-dd'))
+	 from 
+		 (select yaohqsrq
+	        from ${dbSchemal1}xqjs_dingdmx
+		 where 1=1
+		 	<dynamic>
+					<isNotNull prepend=" and " property="usercenter">
+						usercenter = #usercenter# 
+					</isNotNull>
+					<isNotNull prepend=" and " property="lingjbh">
+						lingjbh = #lingjbh# 
+					</isNotNull>
+					<isNotNull prepend=" and " property="gonghlx">
+						gonghlx = #gonghlx# 
+					</isNotNull>
+			</dynamic>
+			and leix = '9' and creator in ('4311','4312','4313','4314')) t
+	</select>
+	
+	<select id = "getMaxYaohqsrq4Mj" resultClass="java.lang.String">
+	 select 
+	 	Max(to_char(t.yaohqsrq,'yyyy-MM-dd'))
+	 from 
+		 (select yaohqsrq
+	        from ${dbSchemal1}xqjs_dingdmx
+		 where 1=1
+		 	<dynamic>
+					<isNotNull prepend=" and " property="usercenter">
+						usercenter = #usercenter# 
+					</isNotNull>
+					<isNotNull prepend=" and " property="lingjbh">
+						lingjbh = #lingjbh# 
+					</isNotNull>
+					<isNotNull prepend=" and " property="gonghlx">
+						gonghlx = #gonghlx# 
+					</isNotNull>
+			</dynamic>
+			and leix = '9' and creator in ('4321','4322','4323')) t
+	</select>
+	
+	<!-- 获取最大的封闭期 add by yangfan 2016-03-17   | 用户中心 - xss-20160422-->
+	<select id = "getMaxPx" resultClass="java.math.BigDecimal">
+	select  max(beihzq+fayzq) from 
+		${dbSchemal1}xqjs_maoxqhzjc_tmp
+		 where 1=1
+		 	<dynamic>
+		 			<isNotNull prepend=" and " property="usercenter">
+						usercenter = #usercenter# 
+					</isNotNull>
+					<isNotNull prepend=" and " property="lingjbh">
+						lingjbh = #lingjbh# 
+					</isNotNull>
+			</dynamic>
+	</select>
+	
+		<!-- 获取最大的封闭期 add by yangfan 2016-03-17 | 用户中心 - xss-20160422-->
+	<select id = "getMaxPxMj" resultClass="java.math.BigDecimal">
+	select  max(beihsj2+cangkshsj2+cangkfhsj2) from 
+		${dbSchemal1}xqjs_maoxqhzjc_mjtmp
+		 where 1=1
+		 	<dynamic>
+		 			<isNotNull prepend=" and " property="usercenter">
+						usercenter = #usercenter# 
+					</isNotNull>
+					<isNotNull prepend=" and " property="lingjbh">
+						lingjbh = #lingjbh# 
+					</isNotNull>
+			</dynamic>
+	</select>
+	
+</sqlMap>

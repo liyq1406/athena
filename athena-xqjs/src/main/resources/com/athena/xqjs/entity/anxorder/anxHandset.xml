@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 按需初计算手动下发设置 -->
+<sqlMap namespace="anxhand">
+
+	<!-- 查询按需手动下发流水 -->
+	<select id="queryAnxHandSet" resultClass="com.athena.xqjs.entity.anxorder.AnxHandSet">
+		<![CDATA[
+				select usercenter,
+						zhuangt,
+						shezrq,
+						beiz,
+						beiz1,
+						beiz2,
+						creator,
+						create_time,
+						editor,
+						edit_time
+				 from ${dbSchemal3}ckx_anxhandset where 1=1
+		]]> 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhuangt">
+				zhuangt = #zhuangt#
+			</isNotEmpty>
+			<isNotNull prepend=" and " property="startTime">
+				create_time <![CDATA[>=]]> to_date(#startTime#,'yyyy-MM-dd hh24:mi:ss')
+			</isNotNull>
+			<isNotNull prepend=" and " property="endTime">
+				create_time <![CDATA[<=]]> to_date(#endTime#,'yyyy-MM-dd hh24:mi:ss')
+			</isNotNull>
+			 order by create_time desc
+		</dynamic>
+	</select>
+	
+	<insert id="insertAnxHandSet" parameterClass="com.athena.xqjs.entity.anxorder.AnxHandSet">
+		<![CDATA[
+				insert into  
+				     ${dbSchemal3}ckx_anxhandset(usercenter,
+				     	zhuangt,
+						shezrq,
+						beiz,
+						beiz1,
+						beiz2,
+						creator,
+						create_time,
+						editor,
+						edit_time)
+				  values(#usercenter#,
+						#zhuangt#,
+				]]> 
+			<dynamic>
+				<isNull property="shezrq">null,</isNull>
+				<isNotNull property="shezrq">to_date(#shezrq#,'yyyy-MM-dd'),</isNotNull>
+			</dynamic>
+			<dynamic>
+				<isNull property="beiz">null,</isNull>
+				<isNotNull property="beiz">#beiz#,</isNotNull>
+			</dynamic>
+			<dynamic>
+				<isNull property="beiz1">null,</isNull>
+				<isNotNull property="beiz1">#beiz1#,</isNotNull>
+			</dynamic>
+			<dynamic>
+				<isNull property="beiz2">null,</isNull>
+				<isNotNull property="beiz2">#beiz2#,</isNotNull>
+			</dynamic>
+			<dynamic>
+				<isNull property="creator">null,</isNull>
+				<isNotNull property="creator">#creator#,</isNotNull>
+			</dynamic>
+			<dynamic>
+				<isNull property="create_time">null,</isNull>
+				<isNotNull property="create_time">to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'),</isNotNull>
+			</dynamic>
+			<dynamic>
+				<isNull property="editor">null,</isNull>
+				<isNotNull property="editor">#editor#,</isNotNull>
+			</dynamic>
+			<dynamic>
+				<isNull property="edit_time">null</isNull>
+				<isNotNull property="edit_time">to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')</isNotNull>
+			</dynamic>
+	   )
+	</insert>
+	
+	<!-- 生效当天的按需订单 -->
+	<update id="updateDingdzt" parameterClass="java.util.Map">
+		<![CDATA[
+			update ${dbSchemal3}xqjs_dingd set dingdzt='4' ,active = '1',
+				dingdsxczr = #creator#,
+				dingdsxsj = to_date(#create_time#,'yyyy-mm-dd hh24:mi:ss')
+			where dingdzt = 'A' and  creator = #creator# 
+			and trunc(dingdjssj) = trunc(sysdate)
+			and usercenter = #usercenter# 
+			and dingdlx in ($dingdlx$)
+
+				]]> 
+	</update>
+	
+</sqlMap>

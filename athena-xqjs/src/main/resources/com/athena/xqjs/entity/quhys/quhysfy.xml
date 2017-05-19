@@ -1,0 +1,977 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_quhysfy">
+
+	<!-- 包装  denggq 2012-3-19 -->
+	
+	<!-- 多数据查询 -->
+	<select id="queryYunsfyhz" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz" resultClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		  select  usercenter ,NULL danjh,'未审核费用' danjmc,NULL danjlx,shenhzt,NULL banch, sum(XINYSFY+XINFKFY+XINJJFY+XINLXFY+XINTPFY+XINTPFKFY) yunszfy,
+		  sum(XINYSFY) yunsfy,
+         sum(XINFKFY)fankfy,
+         sum(XINJJFY) jinjfy,
+         sum(XINLXFY) lingxfy,
+         sum(XINTPFY) tuopfy,
+         sum(XINTPFKFY) tuopfkfy,
+      	 NULL yusr,NULL yus_time, NULL chusr
+		,NULL chus_time,NULL zhongsr,NULL zhongs_time,NULL biaos,NULL jinjjdjh,NULL shenhkssj,NULL shenhjssj
+    from   ${dbSchemal1}ck_rukmx 
+   where  shenhzt='1' and    jiszt = '1' 
+   	<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+	<isNotEmpty  prepend=" and " property="biaos"><![CDATA[biaos=#biaos#]]></isNotEmpty>
+   group by SHENHZT, usercenter
+		union all
+		select usercenter ,danjh,danjmc,danjlx,shenhzt,banch,yunszfy,yunsfy,fankfy,jinjfy,lingxfy,tuopfy,tuopfkfy,yusr,yus_time,chusr
+		,chus_time,zhongsr,zhongs_time,biaos,jinjjdjh,to_char(shenhkssj, 'yyyy-MM-dd') shenhkssj,to_char(shenhjssj, 'yyyy-MM-dd') shenhjssj
+		 from    ${dbSchemal1}CK_YUNSFYHZ
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty  prepend=" and " property="biaos"><![CDATA[biaos=#biaos#]]></isNotEmpty>
+			<isNotEmpty  prepend=" and " property="danjmc"><![CDATA[danjmc like '$danjmc$%']]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjlx"><![CDATA[danjlx = #danjlx#]]></isNotEmpty>
+			<isNotEmpty  prepend=" and " property="shenhzt"><![CDATA[shenhzt=#shenhzt#]]></isNotEmpty>	
+			<isNotEmpty prepend=" and " property="danjh"><![CDATA[danjh = #danjh#]]></isNotEmpty>		
+		</dynamic>	
+		order  by  YUS_TIME desc,danjh desc
+	</select>
+	
+		<select id="getYunsfyhz" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz" resultClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		select * from ${dbSchemal1}CK_YUNSFYHZ
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty  prepend=" and " property="biaos"><![CDATA[biaos=#biaos#]]></isNotEmpty>
+			<isNotEmpty  prepend=" and " property="danjmc"><![CDATA[danjmc like '$danjmc$%']]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjlx"><![CDATA[danjlx = #danjlx#]]></isNotEmpty>
+			<isNotEmpty  prepend=" and " property="shenhzt"><![CDATA[shenhzt=#shenhzt#]]></isNotEmpty>	
+			<isNotEmpty prepend=" and " property="danjh"><![CDATA[danjh = #danjh#]]></isNotEmpty>		
+		</dynamic>	
+	</select>
+	
+	<!-- 查询最大的单据号 -->
+	
+	<select id="queryMaxDanjh" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz" resultClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		select * from ( select * from  ${dbSchemal1}CK_YUNSFYHZ   where 1=1    and danjmc!='未审核费用'
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="danjlx"><![CDATA[danjlx = #danjlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+		</dynamic>	
+		order by danjh  desc   )where rownum = 1  
+	</select>
+	
+	
+
+	
+	
+	<select id="queryRukmx" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx" resultClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		select usercenter,    CASE lingjbh WHEN 'DEFAULT' THEN  '' ELSE lingjbh END lingjbh,lingjmc,lingjsl,
+		CASE gongysdm WHEN 'DEFAULT' THEN  '' ELSE gongysdm END  gongysdm,gongysmc, CASE chengysdm WHEN 'DEFAULT' THEN  '' ELSE chengysdm END chengysdm,chengysmc, 
+		 CASE baozxh WHEN 'DEFAULT' THEN  '' ELSE baozxh END baozxh,baozrl,to_char(ruksj,'yyyy-MM-dd') ruksj,lingjlx,danjlx,
+		xinljdj,lingjdj,xinlfmdj,lifmdj, CASE lingjlx
+WHEN 2 THEN xinjjfy
+WHEN 3 THEN xinlxfy
+ELSE xinysfy END  xinysfy,yunsfy,xinfkfy,fankfy,xintpfy,tuopfy,xintpfkfy,tuopfkfy,xinjjfy,jinjfy,
+		xinlxfy,lingxfy,baozgs,biaos,shenhzt,danjh,jiszt,zhengctj,tuoptj,lingxjtj,zhengcjfktj,tuopfktj,edit_time,CASE ybaozxh WHEN 'DEFAULT' THEN  '' ELSE ybaozxh END ybaozxh,ybaozrl,ytangc,editor,CASE lxjlb WHEN 'DEFAULT' THEN  '' ELSE lxjlb END lxjlb
+		 from ${dbSchemal1}CK_RUKMX
+		where 1=1 
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shenhzt"><![CDATA[shenhzt = #shenhzt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjlx"><![CDATA[danjlx = #danjlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiszt"><![CDATA[jiszt = #jiszt#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjlx"><![CDATA[lingjlx = #lingjlx#]]></isNotEmpty>
+	
+			<isNotEmpty prepend=" and " property="qisruksj"><![CDATA[to_date(#qisruksj#,'yyyy-MM-dd hh24:mi:ss')<=ruksj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jisruksj"><![CDATA[to_date(#jisruksj#,'yyyy-MM-dd hh24:mi:ss')>=ruksj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjh"><![CDATA[danjh = #danjh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lxjlb"><![CDATA[lxjlb = #lxjlb#]]></isNotEmpty>
+			<isNotEmpty prepend="  and " property="uclist">usercenter in( $uclist$)</isNotEmpty>
+		</dynamic>	
+		order by RUKSJ desc,USERCENTER, CHENGYSDM,GONGYSDM,LINGJBH, BAOZXH, LINGJLX, RUKSJ, BAOZRL desc
+	</select>
+	
+		<select id="queryRukmxDownload" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx" resultClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		select usercenter,    CASE lingjbh WHEN 'DEFAULT' THEN  '' ELSE lingjbh END lingjbh,lingjmc,lingjsl, CASE gongysdm WHEN 'DEFAULT' THEN  '' ELSE gongysdm END  gongysdm,
+		gongysmc,CASE chengysdm WHEN 'DEFAULT' THEN  '' ELSE chengysdm END chengysdm,chengysmc,  CASE baozxh WHEN 'DEFAULT' THEN  '' ELSE baozxh END baozxh,baozrl,to_char(ruksj,'yyyy-MM-dd') ruksj,
+		CASE lingjlx
+         WHEN 1 THEN
+          '正常件'
+         WHEN 2 THEN
+          '紧急件'
+         WHEN 3 THEN
+          '零星件'
+       END lingjlx,
+       CASE danjlx
+         WHEN 1 THEN
+          '正常件'
+         WHEN 2 THEN
+          '紧急件'
+       END danjlx,
+		xinljdj,lingjdj,xinlfmdj,lifmdj, CASE lingjlx
+WHEN 2 THEN xinjjfy
+WHEN 3 THEN xinlxfy
+ELSE xinysfy END  xinysfy,yunsfy,xinfkfy,fankfy,xintpfy,tuopfy,xintpfkfy,tuopfkfy,xinjjfy,jinjfy,
+		xinlxfy,lingxfy,baozgs,biaos,shenhzt,danjh,jiszt,zhengctj,tuoptj,lingxjtj,zhengcjfktj,tuopfktj,edit_time,(select ZIDMC  from ckx_xitcsdy where ZIDBM=lxjlb and ZIDLX='LXJLB') lxjlb
+		 from ${dbSchemal1}CK_RUKMX
+		where 1=1 
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shenhzt"><![CDATA[shenhzt = #shenhzt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjlx"><![CDATA[danjlx = #danjlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiszt"><![CDATA[jiszt = #jiszt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjlx"><![CDATA[lingjlx = #lingjlx#]]></isNotEmpty>	
+			<isNotEmpty prepend=" and " property="qisruksj"><![CDATA[to_date(#qisruksj#,'yyyy-MM-dd hh24:mi:ss')<=ruksj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jisruksj"><![CDATA[to_date(#jisruksj#,'yyyy-MM-dd hh24:mi:ss')>=ruksj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjh"><![CDATA[danjh = #danjh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lxjlb"><![CDATA[lxjlb = #lxjlb#]]></isNotEmpty>
+		</dynamic>	
+		order by RUKSJ desc,USERCENTER, CHENGYSDM,GONGYSDM,LINGJBH, BAOZXH, LINGJLX, RUKSJ, BAOZRL desc
+	</select>
+	
+		<select id="queryRukmxChus" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx" resultClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		select usercenter,    CASE lingjbh WHEN 'DEFAULT' THEN  '' ELSE lingjbh END lingjbh,lingjmc,lingjsl, CASE gongysdm WHEN 'DEFAULT' THEN  '' ELSE gongysdm END  gongysdm,
+		gongysmc,CASE chengysdm WHEN 'DEFAULT' THEN  '' ELSE chengysdm END chengysdm,chengysmc,  CASE baozxh WHEN 'DEFAULT' THEN  '' ELSE baozxh END baozxh,baozrl,to_char(ruksj,'yyyy-MM-dd') ruksj,
+		CASE lingjlx
+         WHEN 1 THEN
+          '正常件'
+         WHEN 2 THEN
+          '紧急件'
+         WHEN 3 THEN
+          '零星件'
+       END lingjlx,danjlx,
+		xinljdj,lingjdj,xinlfmdj,lifmdj, CASE lingjlx
+WHEN 2 THEN xinjjfy
+WHEN 3 THEN xinlxfy
+ELSE xinysfy END  xinysfy,yunsfy,xinfkfy,fankfy,xintpfy,tuopfy,xintpfkfy,tuopfkfy,xinjjfy,jinjfy,
+		xinlxfy,lingxfy,baozgs,biaos,shenhzt,danjh,jiszt,zhengctj,tuoptj,lingxjtj,zhengcjfktj,tuopfktj,(select ZIDMC  from ckx_xitcsdy where ZIDBM=lxjlb and ZIDLX='LXJLB') lxjlb
+		 from ${dbSchemal1}CK_RUKMX
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shenhzt"><![CDATA[shenhzt = #shenhzt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjlx"><![CDATA[danjlx = #danjlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiszt"><![CDATA[jiszt = #jiszt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjlx"><![CDATA[lingjlx = #lingjlx#]]></isNotEmpty>
+
+			<isNotEmpty prepend=" and " property="qisruksj"><![CDATA[to_date(#qisruksj#,'yyyy-MM-dd hh24:mi:ss')<=ruksj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jisruksj"><![CDATA[to_date(#jisruksj#,'yyyy-MM-dd hh24:mi:ss')>=ruksj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjh"><![CDATA[danjh in ($danjh$)]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lxjlb"><![CDATA[lxjlb = #lxjlb#]]></isNotEmpty>
+		</dynamic>	
+			order by RUKSJ desc,USERCENTER, CHENGYSDM,GONGYSDM,LINGJBH, BAOZXH, LINGJLX, RUKSJ, BAOZRL desc
+	</select>
+	
+	
+	
+	<!-- 预审费用统计 -->
+		<select id="totalyunf" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx" resultClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		select sum(xinysfy+xinfkfy+xintpfy+xintpfkfy+xinjjfy+xinlxfy) yunszfy, sum(xinysfy) yunsfy, sum(xinfkfy) fankfy,sum(xintpfy) tuopfy,sum(xintpfkfy) tuopfkfy ,sum(xinjjfy) jinjfy ,sum(xinlxfy) lingxfy from 
+		${dbSchemal1}CK_RUKMX
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjh"><![CDATA[danjh = #danjh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shenhzt"><![CDATA[shenhzt = #shenhzt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjlx"><![CDATA[danjlx = #danjlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiszt"><![CDATA[jiszt = #jiszt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="qisruksj"><![CDATA[to_date(#qisruksj#,'yyyy-MM-dd hh24:mi:ss')<=ruksj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jisruksj"><![CDATA[to_date(#jisruksj#,'yyyy-MM-dd hh24:mi:ss')>=ruksj]]></isNotEmpty>
+			<isNotEmpty  prepend=" and " property="biaos"><![CDATA[biaos=#biaos#]]></isNotEmpty>
+		</dynamic>	
+	</select>
+	
+		<!-- 统计预审条数 -->
+		<select id="totalrukmx" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx" resultClass="java.lang.String">
+		select count(usercenter) from 
+		${dbSchemal1}CK_RUKMX
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjh"><![CDATA[danjh = #danjh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shenhzt"><![CDATA[shenhzt = #shenhzt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjlx"><![CDATA[danjlx = #danjlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiszt"><![CDATA[jiszt = #jiszt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="qisruksj"><![CDATA[to_date(#qisruksj#,'yyyy-MM-dd hh24:mi:ss')<=ruksj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jisruksj"><![CDATA[to_date(#jisruksj#,'yyyy-MM-dd hh24:mi:ss')>=ruksj]]></isNotEmpty>
+		</dynamic>	
+	</select>
+	
+	<!-- 打印费用统计 -->
+		<select id="getprinttotalyunf" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx" resultClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		select * from (	select  usercenter, CASE gongysdm WHEN 'DEFAULT' THEN  '' ELSE gongysdm END  gongysdm ,sum(xinysfy + xinfkfy + xintpfy + xintpfkfy  + xinlxfy) yunszfy,
+	         sum(xinysfy) yunsfy,
+	         sum(xinfkfy) fankfy,
+	         sum(xintpfy) tuopfy,
+	         sum(xintpfkfy) tuopfkfy,
+	         sum(xinlxfy) lingxfy,        
+	        sum(xinysfy  + xintpfy  ) zhengxzfy,sum(zhengctj+tuoptj) zhengxztj,
+	        sum(xinfkfy  + xintpfkfy) fanxzfy,sum(zhengcjfktj+tuopfktj)   fanxztj ,
+	               CASE sum(zhengctj + tuoptj )
+WHEN 0 THEN 0
+ELSE  round(sum(xinysfy + xintpfy ) / sum(zhengctj + tuoptj ),6) END  zhengxlfmdj,
+  
+   CASE sum(zhengcjfktj + tuopfktj)
+WHEN 0 THEN 0
+ELSE  round(sum(xinfkfy + xintpfkfy) / sum(zhengcjfktj + tuopfktj),6) END fanxlfmdj 	    
+	    from ${dbSchemal1}CK_RUKMX 
+	   where 1 = 1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shenhzt"><![CDATA[shenhzt = #shenhzt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjlx"><![CDATA[danjlx = #danjlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjh"><![CDATA[danjh = #danjh#]]></isNotEmpty>		
+		</dynamic>	
+		   group by usercenter, gongysdm order by gongysdm ) where yunszfy!=0
+	</select>
+	
+	
+		<select id="getprinttotalyunfjinj" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx" resultClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		select * from (	select  usercenter, gongysdm, sum(XINJJFY) yunszfy 
+	    from ${dbSchemal1}CK_RUKMX 
+	   where 1 = 1
+
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjh"><![CDATA[danjh = #danjh#]]></isNotEmpty>		
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+		</dynamic>	
+		   group by usercenter, gongysdm order by gongysdm  ) where yunszfy!=0
+	</select>
+	
+			<!-- 插入数据 -->
+	<insert id="insertYunsfyhz" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		insert into ${dbSchemal1}CK_YUNSFYHZ (usercenter,danjh,danjmc,danjlx,shenhzt,banch,yunszfy,yunsfy,fankfy,jinjfy,lingxfy,tuopfy,tuopfkfy,yusr,yus_time,chusr,chus_time,zhongsr,zhongs_time,shenhkssj,shenhjssj)
+		values(<![CDATA[#usercenter#,#danjh#,#danjmc#,#danjlx#,#shenhzt#,#banch#,#yunszfy#,#yunsfy#,#fankfy#,#jinjfy#,#lingxfy#,#tuopfy#,#tuopfkfy#,#yusr#,to_date(#yus_time#,'yyyy-MM-dd hh24:mi:ss'),
+		#chusr#,to_date(#chus_time#,'yyyy-MM-dd hh24:mi:ss'),#zhongsr#,to_date(#zhongs_time#,'yyyy-MM-dd hh24:mi:ss'),to_date(#shenhkssj#,'yyyy-MM-dd'),to_date(#shenhjssj#,'yyyy-MM-dd')]]>)
+	</insert>
+	
+			<!-- 更新入库明细 -->
+	<update id="updateRukmxYushen" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		<dynamic> 
+		update ${dbSchemal1}CK_RUKMX 
+		set 
+
+	    	shenhzt = #shenhzt# ,
+
+	    	danjh = #danjh# ,
+	  
+	    	editor = #editor# ,
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+	    where   shenhzt='1'
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjlx"><![CDATA[danjlx = #danjlx#]]></isNotEmpty>
+			 <isNotEmpty prepend=" and " property="qisruksj"><![CDATA[to_date(#qisruksj#,'yyyy-MM-dd hh24:mi:ss')<=ruksj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jisruksj"><![CDATA[to_date(#jisruksj#,'yyyy-MM-dd hh24:mi:ss')>=ruksj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiszt"><![CDATA[jiszt = #jiszt#]]></isNotEmpty>
+		</dynamic>	
+	</update>
+	
+	
+	
+			<!-- 更新入库明细的所有费用 -->
+	<update id="updateRukmxJiszt" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		<dynamic> 
+		update ${dbSchemal1}CK_RUKMX 
+		set 
+			<isNotEmpty  prepend=" " property="xinljdj"><![CDATA[xinljdj=#xinljdj#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="lingjdj"><![CDATA[lingjdj=#lingjdj#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="xinlfmdj"><![CDATA[xinlfmdj=#xinlfmdj#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="lifmdj"><![CDATA[lifmdj=#lifmdj#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="xinysfy"><![CDATA[xinysfy=#xinysfy#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="yunsfy"><![CDATA[yunsfy=#yunsfy#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="xinfkfy"><![CDATA[xinfkfy=#xinfkfy#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="fankfy"><![CDATA[fankfy=#fankfy#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="xintpfy"><![CDATA[xintpfy=#xintpfy#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="tuopfy"><![CDATA[tuopfy=#tuopfy#,]]></isNotEmpty>
+		    <isNotEmpty  prepend=" " property="xintpfkfy"><![CDATA[xintpfkfy=#xintpfkfy#,]]></isNotEmpty>	
+			<isNotEmpty  prepend=" " property="tuopfkfy"><![CDATA[tuopfkfy=#tuopfkfy#,]]></isNotEmpty>	
+			<isNotEmpty  prepend=" " property="zhengctj"><![CDATA[zhengctj=#zhengctj#,]]></isNotEmpty>	
+			<isNotEmpty  prepend=" " property="tuoptj"><![CDATA[tuoptj=#tuoptj#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="tuopfktj"><![CDATA[tuopfktj=#tuopfktj#,]]></isNotEmpty>	
+			<isNotEmpty  prepend=" " property="zhengcjfktj"><![CDATA[zhengcjfktj=#zhengcjfktj#,]]></isNotEmpty>	
+			<isNotEmpty  prepend=" " property="yzhengctj"><![CDATA[yzhengctj=#yzhengctj#,]]></isNotEmpty>		
+			<isNotEmpty  prepend=" " property="ytuoptj"><![CDATA[ytuoptj=#ytuoptj#,]]></isNotEmpty>		
+			<isNotEmpty  prepend=" " property="ytuopfktj"><![CDATA[ytuopfktj=#ytuopfktj#,]]></isNotEmpty>	
+			<isNotEmpty  prepend=" " property="yzhengcjfktj"><![CDATA[yzhengcjfktj=#yzhengcjfktj#,]]></isNotEmpty>		
+				
+			<isNotEmpty  prepend=" " property="editor"><![CDATA[editor=#editor#,]]></isNotEmpty>		
+			<isNotEmpty  prepend=" " property="jiszt"><![CDATA[jiszt=#jiszt#,]]></isNotEmpty>		
+		 	chengysdm = #chengysdm# ,
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+	    where  	usercenter = #usercenter#
+			and 	gongysdm = #gongysdm#		
+			and 	lingjbh = #lingjbh#
+			and     ybaozxh = #ybaozxh#
+			and 	lingjlx = #lingjlx#
+			and 	ruksj = to_date(#ruksj#,'yyyy-MM-dd')
+			and 	ybaozrl = #ybaozrl#
+		</dynamic>	
+	</update>
+	
+	
+		<update id="updateYunsfyhz" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		<dynamic> 
+		update ${dbSchemal1}CK_YUNSFYHZ 
+		set 
+		  yunszfy=#yunszfy#,
+		   jinjfy=#jinjfy#,
+			<isNotEmpty  prepend=" " property="chusr"><![CDATA[chusr=#chusr#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="chus_time"><![CDATA[chus_time=to_date(#chus_time#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="biaos"><![CDATA[biaos=#biaos#,]]></isNotEmpty>	
+			<isNotEmpty  prepend=" " property="shenhzt"><![CDATA[shenhzt=#shenhzt#,]]></isNotEmpty>	
+			<isNotEmpty  prepend=" " property="banch"><![CDATA[banch=#banch#,]]></isNotEmpty>	
+			<isNotEmpty  prepend=" " property="jinjjdjh"><![CDATA[jinjjdjh=#jinjjdjh#,]]></isNotEmpty>			
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ,
+		    EDITOR = #editor#
+	    where   usercenter = #usercenter#
+			and danjh = #danjh#
+		</dynamic>	
+	</update>
+	
+	
+	<!-- 手工重算更新主单的总费用 -->
+			<update id="shougcsupdateYunsfyhz" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		<dynamic> 
+		update ${dbSchemal1}CK_YUNSFYHZ 
+		set 
+			flag=#flag#,
+			yunszfy=#yunszfy#,
+			yunsfy=#yunsfy#,
+			fankfy=#fankfy#,
+			jinjfy=#jinjfy#,
+			lingxfy=#lingxfy#,
+			tuopfy=#tuopfy#,
+			tuopfkfy=#tuopfkfy#,
+			banch=#banch#,
+			chongs_time=to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ,
+		    EDITOR = #editor#
+	     where   usercenter = #usercenter#
+			and danjh = #danjh#
+		</dynamic>	
+	</update>
+	
+	<!-- 初审修改主单总费用 -->
+		<update id="updatechusYunsfyhz" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		<dynamic> 
+		update ${dbSchemal1}CK_YUNSFYHZ 
+		set 
+		    yunszfy=#yunszfy#,
+		    <isNotEmpty  prepend=" " property="jinjfy"><![CDATA[jinjfy=#jinjfy#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="chusr"><![CDATA[chusr=#chusr#,]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="chus_time"><![CDATA[chus_time=to_date(#chus_time#,'yyyy-MM-dd hh24:mi:ss'),]]></isNotEmpty>
+			<isNotEmpty  prepend=" " property="biaos"><![CDATA[biaos=#biaos#,]]></isNotEmpty>	
+			<isNotEmpty  prepend=" " property="shenhzt"><![CDATA[shenhzt=#shenhzt#,]]></isNotEmpty>	
+			<isNotEmpty  prepend=" " property="jinjjdjh"><![CDATA[jinjjdjh=#jinjjdjh#,]]></isNotEmpty>			
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ,
+		    EDITOR = #editor#
+    where   usercenter = #usercenter#
+			and danjh = #danjh#
+		</dynamic>	
+	</update>
+	
+	
+	<!-- 多数据查询 -->
+	<select id="queryQuhYuns" parameterClass="com.athena.xqjs.entity.quhyuns.QuhYuns" resultClass="com.athena.xqjs.entity.quhyuns.QuhYuns">
+		select quhid,usercenter,gongysdm,chengysdm,to_char(shengxsj, 'yyyy-MM-dd') shengxsj,to_char(shixsj, 'yyyy-MM-dd') shixsj,zhixqhdj,quyjpdj,ganxysdj,cangcpsdj,fankdj,biaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}CKX_QUHYSFY
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="youxsj"><![CDATA[to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')>=shengxsj and to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')<=shixsj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengxsj"><![CDATA[to_date(#shengxsj#,'yyyy-MM-dd hh24:mi:ss')=shengxsj ]]></isNotEmpty>
+		    <isNotEmpty prepend=" and " property="shixsj"><![CDATA[to_date(#shixsj#,'yyyy-MM-dd hh24:mi:ss')=shixsj ]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="quhid"><![CDATA[quhid = #quhid#]]></isNotEmpty>
+		
+		</dynamic>
+		order by EDIT_TIME desc
+	</select>
+	
+		<!-- 多数据查询 -->
+	<select id="queryJinjjQuhYuns" parameterClass="com.athena.xqjs.entity.quhyuns.JinjjQuhYuns" resultClass="com.athena.xqjs.entity.quhyuns.JinjjQuhYuns">
+		select usercenter,gongysmc,gongysdm ,  chengysmc ,chengysdm ,to_char(shengxsj, 'yyyy-MM-dd') shengxsj,to_char(shixsj, 'yyyy-MM-dd') shixsj,biaos,tangcdj,creator,create_time,editor,edit_time from ${dbSchemal3}ckx_quhysfy_jinjj
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="youxsj"><![CDATA[to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')>=shengxsj and to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')<=shixsj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jinjjid"><![CDATA[jinjjid = #jinjjid#]]></isNotEmpty>
+		</dynamic>
+		order by EDIT_TIME desc
+	</select>
+	
+	<!-- 通过优先级顺序查找参考系 -->
+		<select id="queryQuhYunsByyouxj" parameterClass="com.athena.xqjs.entity.quhyuns.QuhYuns" resultClass="com.athena.xqjs.entity.quhyuns.QuhYuns">
+		select quhid,usercenter,gongysdm,chengysdm,to_char(shengxsj, 'yyyy-MM-dd') shengxsj,to_char(shixsj, 'yyyy-MM-dd') shixsj,zhixqhdj,quyjpdj,ganxysdj,cangcpsdj,fankdj,biaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}CKX_QUHYSFY
+		where 1=1 
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNull prepend=" and " property="gongysdm"> gongysdm is null </isNull>
+			<isNull prepend=" and " property="chengysdm">chengysdm is null </isNull>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="youxsj"><![CDATA[to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')>=shengxsj and to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')<=shixsj]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengxsj"><![CDATA[to_date(#shengxsj#,'yyyy-MM-dd hh24:mi:ss')=shengxsj ]]></isNotEmpty>
+		    <isNotEmpty prepend=" and " property="shixsj"><![CDATA[to_date(#shixsj#,'yyyy-MM-dd hh24:mi:ss')=shixsj ]]></isNotEmpty>
+		</dynamic>
+		order by EDIT_TIME desc
+	</select>
+	
+	
+		<!-- 通过优先级顺序查找参考系 -->
+	<select id="queryJinjjQuhYunsByyouxj" parameterClass="com.athena.xqjs.entity.quhyuns.JinjjQuhYuns" resultClass="com.athena.xqjs.entity.quhyuns.JinjjQuhYuns">
+		select usercenter,gongysmc,gongysdm ,  chengysmc ,chengysdm ,to_char(shengxsj, 'yyyy-MM-dd') shengxsj,to_char(shixsj, 'yyyy-MM-dd') shixsj,biaos,tangcdj,creator,create_time,editor,edit_time from ${dbSchemal3}ckx_quhysfy_jinjj
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+					<isNull prepend=" and " property="gongysdm"> gongysdm is null </isNull>
+			<isNull prepend=" and " property="chengysdm">chengysdm is null </isNull>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="youxsj"><![CDATA[to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')>=shengxsj and to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')<=shixsj]]></isNotEmpty>
+			
+		</dynamic>
+		order by EDIT_TIME desc
+	</select>
+	
+	
+
+	
+		<!-- 多数据查询 -->
+	<select id="getQuhYuns" parameterClass="com.athena.xqjs.entity.quhyuns.QuhYuns" resultClass="com.athena.xqjs.entity.quhyuns.QuhYuns">
+		select quhid,usercenter,gongysdm,chengysdm,to_char(shengxsj, 'yyyy-MM-dd') shengxsj,to_char(shixsj, 'yyyy-MM-dd') shixsj,zhixqhdj,quyjpdj,ganxysdj,cangcpsdj,fankdj,biaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}CKX_QUHYSFY
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="quhid"><![CDATA[quhid != #quhid#]]></isNotEmpty>
+		</dynamic>
+		order by EDIT_TIME desc
+	</select>
+
+		
+	
+		<!-- 查询距离入库时间最近的时间段-->
+	
+	<select id="queryzuijsjd" parameterClass="com.athena.xqjs.entity.quhyuns.QuhYuns" resultClass="com.athena.xqjs.entity.quhyuns.QuhYuns">
+	 select quhid,shixsj,shengxsj from ( select  quhid,shixsj,shengxsj, min(to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')-shixsj)  from 
+	${dbSchemal3}CKX_QUHYSFY  where 1=1 and to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')-shixsj>0
+	  		
+	  	    <isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			
+	  group by SHIXSJ,SHENGXSJ,quhid order by  min(sysdate-SHIXSJ) asc )where rownum = 1 
+	</select>
+	
+			<!-- 查询距离入库时间最近的时间段-->
+	
+	<select id="queryzuijsjdJinjj" parameterClass="com.athena.xqjs.entity.quhyuns.JinjjQuhYuns" resultClass="com.athena.xqjs.entity.quhyuns.JinjjQuhYuns">
+	 select jinjjid,shixsj,shengxsj from ( select  jinjjid,shixsj,shengxsj, min(to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')-shixsj)  from 
+ ${dbSchemal3} CKX_QUHYSFY_jinjj  where 1=1 and to_date(#youxsj#,'yyyy-MM-dd hh24:mi:ss')-shixsj>0
+
+	  	    <isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			
+	  group by SHIXSJ,SHENGXSJ,jinjjid order by  min(sysdate-SHIXSJ) asc )where rownum = 1 
+	</select>
+	
+	
+		<!-- 多数据查询 -->
+	<select id="queryTuopbzdygx" parameterClass="com.athena.xqjs.entity.quhyuns.Tuopbzdygx" resultClass="com.athena.xqjs.entity.quhyuns.Tuopbzdygx">
+		select * from ${dbSchemal3}CKX_TUOPBZDYGX
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="tuopxh"><![CDATA[tuopxh = #tuopxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by EDIT_TIME desc
+	</select>
+	
+		<!-- 多数据查询 -->
+	<select id="queryBaoz" parameterClass="com.athena.xqjs.entity.quhyuns.Baoz" resultClass="com.athena.xqjs.entity.quhyuns.Baoz">
+		select baozlx,baozmc,changd,kuand,gaod,baozzl,caiz,shifhs,leib,zhedgd,duidcs,baiffx,biaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_baoz
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="baozlx"><![CDATA[baozlx = #baozlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="leib"><![CDATA[leib = #leib#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by baozlx
+	</select>
+	
+	
+				<!-- 更新包装型号 -->
+	<update id="updateRukmxBaoz" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		<dynamic> 
+		update ${dbSchemal1}CK_RUKMX 
+		set 
+			<isNotEmpty  prepend=" " property="baozxh"><![CDATA[baozxh=#baozxh#,]]></isNotEmpty>
+			<isEqual compareValue="1"  property="lingjlx"><![CDATA[baozrl=#baozrl#,]]></isEqual>
+			 EDITOR = #editor#,
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+	    where  	usercenter = #usercenter#
+			and	gongysdm = #gongysdm#
+			<!--   承运商已不是固定的
+			and	chengysdm = #chengysdm#
+			 -->
+			and	lingjbh = #lingjbh#
+			and	danjlx = #danjlx#
+			and	lingjlx = #lingjlx#
+			and	ruksj = to_date(#ruksj#, 'yyyy-MM-dd')
+			and	ybaozxh = #ybaozxh#
+			and	ybaozrl = #ybaozrl#
+		</dynamic>	
+	</update>
+	
+	
+		<!-- 更新入库明细的所有费用 -->
+	<update id="updateRukmxJinjj" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		<dynamic> 
+		update ${dbSchemal1}CK_RUKMX 
+		set 
+		xinljdj=#xinljdj#,
+		lingjdj=#lingjdj#,
+		lingjsl=#lingjsl#,
+		ytangc=#ytangc#,
+		xinjjfy=#xinjjfy#,
+		jinjfy=#jinjfy#,
+
+		biaos=#biaos#,
+		editor = #editor#,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+	    where  	usercenter = #usercenter#
+			and	gongysdm = #gongysdm#
+			and	chengysdm = #chengysdm#
+			and lingjlx = #lingjlx#
+			and	ruksj = to_date(#ruksj#, 'yyyy-MM-dd')
+		</dynamic>	
+	</update>
+	
+	
+	
+			<!-- 更新入库明细的所有费用 -->
+	<update id="chongsuanupdateRukmxJinjj" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		<dynamic> 
+		update ${dbSchemal1}CK_RUKMX 
+		set 
+		xinljdj=#xinljdj#,
+		lingjsl=#lingjsl#,
+		xinjjfy=#xinjjfy#,
+		editor = #editor#,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+	    where  1=1  
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjlx"><![CDATA[danjlx = #danjlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjlx"><![CDATA[lingjlx = #lingjlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="ruksj"><![CDATA[ruksj = to_date(#ruksj#, 'yyyy-MM-dd')]]></isNotEmpty>
+		</dynamic>	
+	</update>
+	<!-- 预审撤回主单 -->
+			<update id="yuschYunsfyhz" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		<dynamic> 
+		update ${dbSchemal1}CK_YUNSFYHZ 
+		set 
+			<isNotEmpty  prepend=" " property="biaos"><![CDATA[biaos=#biaos#,]]></isNotEmpty>			
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ,
+		    EDITOR = #editor#
+	    where usercenter = #usercenter# and danjh = #danjh#
+		</dynamic>	
+	</update>
+	
+	
+				<!--预审撤回 入库明细 -->
+	<update id="yuschRukmx" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		<dynamic> 
+		update ${dbSchemal1}CK_RUKMX 
+		set 
+	    	shenhzt = #shenhzt# ,
+	    	danjh = null,
+	    	xinljdj=lingjdj,
+	        xinysfy=yunsfy,
+		    xinfkfy=fankfy,
+			xintpfy=tuopfy,
+		    xintpfkfy=tuopfkfy,
+		    zhengctj=yzhengctj,
+		    tuoptj=ytuoptj,
+		    lingxjtj=ylingxjtj,
+		    zhengcjfktj=yzhengcjfktj,
+		    tuopfktj=ytuopfktj,
+		    baozxh=ybaozxh,
+		    baozrl=ybaozrl,
+		    <isEqual property="danjlx" compareValue="2"  > xinjjfy=jinjfy,</isEqual>
+		    <isEqual property="danjlx" compareValue="2"  > lingjsl=ytangc,</isEqual>
+	    	editor = #editor# ,
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+	    where usercenter = #usercenter# and danjh = #danjh#
+
+		</dynamic>	
+	</update>
+	
+		<!-- 初审撤回紧急主单 -->
+			<update id="yuschJinjYunsfyhz" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		<dynamic> 
+		update ${dbSchemal1}CK_YUNSFYHZ 
+		set 
+		biaos='1',
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ,
+		    EDITOR = #editor#
+	    where  
+	usercenter = #usercenter# and danjh = #jinjjdjh#
+		</dynamic>	
+	</update>
+	
+			<!-- 初审撤回主单 -->
+			<update id="chuschYunsfyhz" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		<dynamic> 
+		update ${dbSchemal1}CK_YUNSFYHZ 
+		set 
+		  	shenhzt ='2' ,
+		yunszfy=yunszfy-jinjfy,
+		jinjfy=0,
+		jinjjdjh=null,
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ,
+		    EDITOR = #editor#
+	    where usercenter = #usercenter# and danjh = #danjh#
+		</dynamic>	
+		</update>
+			
+		<!-- 终审撤回主单 -->
+			<update id="zhongschYunsfyhz" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		<dynamic> 
+		update ${dbSchemal1}CK_YUNSFYHZ 
+		set 
+	  	shenhzt ='3' ,
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ,
+		    EDITOR = #editor#
+	    where usercenter = #usercenter# and danjh = #danjh#
+		</dynamic>	
+	</update>
+	
+		<!-- 终审 -->
+			<update id="zhongshenYunsfyhz" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		<dynamic> 
+		update ${dbSchemal1}CK_YUNSFYHZ 
+		set 
+	  	shenhzt =#shenhzt# ,
+		    zhongs_time = to_date(#zhongs_time#,'yyyy-MM-dd hh24:mi:ss') ,
+		    zhongsr = #zhongsr#
+	    where usercenter = #usercenter# and danjh = #danjh#
+		</dynamic>	
+	</update>
+	
+	
+				<!-- 插入数据 -->
+	<insert id="insertRukmxJinjj" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		insert into ${dbSchemal1}CK_RUKMX (usercenter,gongysdm,chengysdm,xinljdj,lingjdj,lingjsl,xinjjfy,jinjfy,lingjlx,danjlx,shenhzt,biaos,ruksj,CREATOR,CREATE_TIME,EDITOR,EDIT_TIME,jiszt,ytangc)
+		values(<![CDATA[#usercenter#,#gongysdm#,#chengysdm#,#xinljdj#,#lingjdj#,#lingjsl#,#xinjjfy#,#jinjfy#,#lingjlx#,#danjlx#,'1',#biaos#,to_date(#ruksj#,'yyyy-MM-dd hh24:mi:ss'),#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),1,#lingjsl#]]>)
+	</insert>
+	
+	<!-- 零星件运费管理  -->
+	<select id="queryLxjfygl" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx" resultClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		select t.usercenter, CASE gongysdm WHEN 'DEFAULT' THEN  '' ELSE gongysdm END  gongysdm, t.chengysdm, CASE lingjbh WHEN 'DEFAULT' THEN  '' ELSE lingjbh END lingjbh  , t.baozxh, 
+		       t.baozgs, t.xinlxfy, to_char(t.ruksj,'yyyy-MM-dd') ruksj, t.biaos,t.shenhzt,t.lxjlb
+          from ${dbSchemal1}ck_rukmx t
+         where t.lingjlx = '3'
+        <dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[t.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[t.gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[t.chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[t.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[t.baozxh = #baozxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="qisruksj"><![CDATA[t.ruksj >= to_date(#qisruksj#, 'yyyy-MM-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jisruksj"><![CDATA[t.ruksj <= to_date(#jisruksj#, 'yyyy-MM-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[t.biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shenhzt"><![CDATA[shenhzt = #shenhzt#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lxjlb"><![CDATA[lxjlb = #lxjlb#]]></isNotEmpty>
+			<isNotEmpty prepend="  and " property="uclist">usercenter in( $uclist$)</isNotEmpty>
+		</dynamic>  
+         order by t.ruksj desc, t.usercenter,t.chengysdm, t.gongysdm, t.lingjbh, t.baozxh
+	</select>
+	
+	<!-- 插入零星件数据 -->
+	<insert id="insertRukmxLingxj" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		insert into ${dbSchemal1}ck_rukmx   (usercenter,
+    gongysdm,
+    chengysdm,
+    lingjbh,
+    xinlxfy,
+    lingxfy,
+    lingjlx,
+    shenhzt,
+    biaos,
+    ruksj,
+    CREATOR,
+    CREATE_TIME,
+    EDITOR,
+    EDIT_TIME,
+    jiszt,
+    LXJLB)
+		values(<![CDATA[#usercenter#,#gongysdm#,#chengysdm#,#lingjbh#,#xinlxfy#,#xinlxfy#,'3','1',#biaos#,to_date(#ruksj#,'yyyy-MM-dd'),#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),1,#lxjlb#]]>)
+	</insert>
+	
+	<!-- 更新零星件数据  -->
+	<update id="updateRukmxLingxj" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		<dynamic> 
+		    update ${dbSchemal1}ck_rukmx 
+		       set 
+		           xinlxfy = #xinlxfy#,
+		           biaos = #biaos#,
+		           editor = #editor#,
+		           edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+	         where lingjlx = '3'
+	           and shenhzt = '1'  
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="ruksj"><![CDATA[ruksj = to_date(#ruksj#, 'yyyy-MM-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjlx"><![CDATA[lingjlx = #lingjlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lxjlb"><![CDATA[lxjlb = #lxjlb#]]></isNotEmpty>
+		</dynamic>	
+	</update>
+	
+	<select id="queryLxj" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal1}ck_rukmx
+         where lingjlx='3' and usercenter = #usercenter# 
+           and gongysdm = #gongysdm#
+		   and chengysdm = #chengysdm#
+		   and lingjbh = #lingjbh#
+		    and lxjlb = #lxjlb#
+		   and ruksj = to_date(#ruksj#, 'yyyy-MM-dd')		
+	</select>
+	
+	
+		<!--插入报警信息 -->
+	<insert id="insertWarnMessage" parameterClass="com.athena.xqjs.entity.quhyuns.WarnMessage">
+		insert into ${dbSchemal1}quhys_message(usercenter,leix,xiaox,beiz1,beiz2,creator,create_time)
+		values(<![CDATA[#usercenter#,#leix#,#xiaox#,#beiz1#,#beiz2#,#creator#,to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3')]]> )
+    </insert>
+    
+    
+    	<delete id="delrukmx"  parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		delete from ${dbSchemal1}ck_rukmx
+		where 1=1
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gongysdm = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm"><![CDATA[chengysdm = #chengysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="ruksj"><![CDATA[ruksj = to_date(#ruksj#, 'yyyy-MM-dd')]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjlx"><![CDATA[lingjlx = #lingjlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lxjlb"><![CDATA[lxjlb = #lxjlb#]]></isNotEmpty>
+	</delete>
+	
+	  		<select id="getCountGongys" resultClass="java.lang.String" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		select count(usercenter) from ${dbSchemal3}ckx_gongys where 1=1
+		 <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[gcbh = #gongysdm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjlx"><![CDATA[leix != #lingjlx#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+		<select id="getCountLingj" resultClass="java.lang.String" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		select count(usercenter) from ${dbSchemal3}ckx_lingj
+		where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos = #biaos#</isNotEmpty>
+		</dynamic>
+	</select>  
+	
+	
+			<update id="updateYunsfyhzSaveTime" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		update ${dbSchemal1}CK_YUNSFYHZ 
+		set 
+			save_time=to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+	    where usercenter = #usercenter# and danjh = #danjh#
+
+	</update>
+	
+	
+		<!-- 零星件字典   denggq 2012-03-05-->
+   	<select id="queryPostLxjlb"  resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='LXJLB'
+		<isNotEmpty property="zidbm" prepend="and">
+	    		<![CDATA[zidbm = #zidbm#]]> 
+	    	</isNotEmpty>
+  	</select>
+  	
+  	
+  		<select id="getMaxShenhjssj" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz" resultClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">		    
+  select * from (  
+select to_char(SHENHJSSJ+1,'yyyy-MM-dd')  SHENHJSSJ from ${dbSchemal1}CK_YUNSFYHZ where danjlx=#danjlx# and usercenter=#usercenter# and biaos='1'
+  AND SHENHJSSJ IS NOT NULL  ORDER BY SHENHJSSJ DESC  )where rownum = 1  
+	</select>
+	
+	
+			<select id="checkRukrq" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz" resultClass="java.lang.String">
+		select COUNT(usercenter) from ${dbSchemal1}CK_YUNSFYHZ
+		where  <![CDATA[to_date(#shenhkssj#,'yyyy-MM-dd')<=shenhjssj ]]> and to_date(#shenhkssj#,'yyyy-MM-dd')>=shenhkssj
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty  prepend=" and " property="biaos"><![CDATA[biaos!=#biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="danjlx"><![CDATA[danjlx = #danjlx#]]></isNotEmpty>	
+		</dynamic>	
+	</select>
+	
+	
+	
+	
+		<select id="checkWullj" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx" 
+		resultClass="java.lang.String">
+		SELECT
+		   COUNT(usercenter)
+		FROM
+			${dbSchemal3}CKX_QUHYSFY
+		WHERE
+			1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+				gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysdm">
+				chengysdm = #chengysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+			<![CDATA[shengxsj <= to_date(#ruksj#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+			<![CDATA[shixsj >= to_date(#ruksj#, 'yyyy-MM-dd')]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+		<select id="querychengysdm" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx" resultClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+	SELECT chengysdm FROM ${dbSchemal1}CK_RUKMX where 1 = 1
+		   and usercenter = #usercenter#
+		   and chengysdm!='DEFAULT'
+		   and danjh = #danjh#	
+		   	<isNotEmpty prepend=" or " property="jinjjdjh">
+			danjh = #jinjjdjh#
+			</isNotEmpty>
+	 group by chengysdm order by chengysdm
+	</select>
+	
+		<select id="querylingxfy" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz" resultClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+
+select  usercenter ,       CASE gongysdm
+                 WHEN 'DEFAULT' THEN
+                  ''
+                 ELSE
+                  gongysdm END  gongysdm, sum( xinlxfy) lingxfy $lingxing1$  from ${dbSchemal1}CK_RUKMX 
+where    usercenter = #usercenter#  and danjh=#danjh#  and  gongysdm=#gongysdm# AND LINGJLX='3' AND   chengysdm=#chengysdm# GROUP BY usercenter,gongysdm
+
+	</select>
+	
+	
+	
+			<!-- 零星件字典   denggq 2012-03-05-->
+   	<select id="queryzdbm"  resultClass="com.athena.xqjs.entity.common.Xitcsdy" parameterClass="com.athena.xqjs.entity.common.Xitcsdy">
+		select zidbm ,zidmc
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx=#zidlx#
+	    	order by paix asc
+  	</select>
+  	
+  	<update id="updatejiszt" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		update ${dbSchemal1}CK_YUNSFYHZ 
+		set 
+			flag=#flag#
+	    where usercenter = #usercenter# and danjh = #danjh#
+
+	</update>
+	
+			<select id="checksuo" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz" resultClass="java.lang.String">
+		select count(usercenter)  from ${dbSchemal1}CK_YUNSFYHZ
+		where flag='1' and biaos='1'
+
+	</select>
+	
+	
+				<update id="updatesuo" parameterClass="com.athena.xqjs.entity.quhyuns.Yunsfyhz">
+		<dynamic> 
+		update ${dbSchemal1}CK_YUNSFYHZ 
+		set 
+			flag=#flag#
+	     where   usercenter = #usercenter#
+			and danjh = #danjh#
+		</dynamic>	
+	</update>
+	
+	
+	
+		<!-- 把计算完的所有单据改为已计算 -->
+	<update id="updateRukmxAllJiszt" parameterClass="com.athena.xqjs.entity.quhyuns.Rukmx">
+		<dynamic> 
+		update ${dbSchemal1}CK_RUKMX 
+		set 	
+		jiszt='1'
+	    where  jiszt = '0' 
+		and	lingjlx = #lingjlx#
+		</dynamic>	
+	</update>
+</sqlMap>

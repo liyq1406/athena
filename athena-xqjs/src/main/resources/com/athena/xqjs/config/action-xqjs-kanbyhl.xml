@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="kanbyhl" extend="toft-default" namespace="/kanbyhl">
+
+		<!-- 看板循环管理 -->
+		<!-- 看板循环管理查询初始化 -->
+		<action name="initkbglw" class="kanbxhgmAction" method="init">
+			<result name="kanbxhw">/WEB-INF/pages/xqjs/kbyhl/kbyhl.jsp</result>
+		</action>
+<!-- 		看板循环管理 跳转已交付 -->
+		<action name="queryYjf" class="kanbxhgmAction" method="queryYjf">
+			
+		</action>
+		<!-- 		看板循环管理 查询已交付 -->
+		<action name="initYjf" class="kanbxhgmAction" method="initYjf">
+			<result name="initYjf">/WEB-INF/pages/xqjs/kbyhl/kbyhl_yjf.jsp</result>
+		</action>
+		
+		<!-- 看板循环管理查询（内部） -->
+		<action name="initkbgln" class="kanbxhgmAction" method="kanbxhn">
+			<result name="kanbxhn">/WEB-INF/pages/xqjs/kbyhl/kbyhln.jsp</result>
+		</action>
+		
+		<!-- 看板循环管理导出（内部） -->
+		<action name="expKanbxhgm" class="kanbxhgmAction" method="expKanbxhgm"></action>
+		
+		<!-- 查询看板循环管理（外部） -->
+		<action name="searchKanbxhgm" class="kanbxhgmAction" method="searchKanbxhgm"></action>
+		
+		<!-- 查询零件编号 -->
+		<action name="selectLingj" class="kanbxhgmAction" method="selectLingj"></action>
+		<!--查询生产线编号 -->
+		<action name="selectChanx" class="kanbxhgmAction" method="selectChanx"></action>
+         <!-- 下载导入最大要货量模板 -->
+        <action name="downloadZuidyhlMob" class="kanbxhgmAction" method="downloadZuidyhlMob"></action>
+        <!--导入最大要货量 -->
+        <action name="importAth_zuidyhl" class="kanbxhgmAction" method="uploadzuidyhl">
+        	<result name="upload">/WEB-INF/pages/xqjs/kbyhl/kbyhl.jsp</result>
+        	<!--hanwu 20150711 0011502 -->
+        	<result name="upload_lingjjzxh">/WEB-INF/pages/xqjs/kbyhl/lingjjzxh.jsp</result>
+		</action>
+        
+        <!-- 下载看板循环规模模板  by CSY 20161024 -->
+        <action name="downloadKanbxhgmMob" class="kanbxhgmAction" method="downloadKanbxhgmMob"></action>
+        
+        <!--导入看板循环规模模板（内部）  by CSY 20161024 -->
+        <action name="importAth_xhgmdr" class="kanbxhgmAction" method="uploadxhgmdr">
+        	<result name="upload">/WEB-INF/pages/xqjs/kbyhl/kbyhln.jsp</result>
+        	<result name="uploadw">/WEB-INF/pages/xqjs/kbyhl/kbyhl.jsp</result>
+		</action>
+        
+		 <!-- 设置最大要货量的值 -->
+		 <action name="zuidyhl" class="kanbxhgmAction" method="zuidyhl"></action>
+		 <!-- 导入最大要货量 -->
+		 <action name="daoryhl" class="kanbxhgmAction" method="daoryhl">
+		 <result name="execl">/WEB-INF/pages/xqjs/kbyhl/daoryhl.jsp</result>
+		 </action>
+		  <action name="impZdyhl" class="kanbxhgmAction" method="impZdyhl"></action>
+		 <!-- 生效看板循环规模-->
+		 <action name="shengXKanbxhgm" class="kanbxhgmAction" method="shengXKanbxhgm"></action>
+		  <!-- 解冻看板循环规模-->
+		 <action name="jieDKanbxhgm" class="kanbxhgmAction" method="jieDKanbxhgm"></action>
+		  <!-- 冻洁看板循环规模-->
+		 <action name="dongJKanbxhgm" class="kanbxhgmAction" method="dongJKanbxhgm"></action>
+		 
+		 <!-- 看板手工设置 -->
+		 <!-- 看板手工设置初始化 (外部) -->
+
+		<action name="initxhgmszw" class="kanbsgszAction" method="kbszw">
+			<result name="kanbszw">/WEB-INF/pages/xqjs/kbyhl/xhszw.jsp</result>
+		</action>
+		<!-- 看板手工设置初始化（内部） -->
+		<action name="initxhgmszn" class="kanbsgszAction" method="kbszn">
+			<result name="kanbszn">/WEB-INF/pages/xqjs/kbyhl/xhszn.jsp</result>
+		</action>
+		<!-- 查询看板循环管理（外部） -->
+		<action name="searchKbsz" class="kanbsgszAction" method="searchKbsz"></action>
+		<!-- 查询零件编号 -->
+		<action name="selectLingj" class="kanbsgszAction" method="selectLingj"></action>
+		<!--查询生产线编号 -->
+		<action name="selectChanx" class="kanbsgszAction" method="selectChanx"></action>
+		<!-- 创建看板循环规模 -->
+		<action name="chuangJKanbxhgm" class="kanbsgszAction" method="chuangJKanbxhgm"></action>
+        <!-- 失效看板循环规模 -->
+		<action name="unEffectKanbxhgm" class="kanbxhgmAction" method="unEffectKanbxhgm"></action>
+
+
+    	<!-- 零件截止循环 hanwu 20150629 0011502-->            
+		<action name="lingjjzxh" class="lingjjzxhAction" method="execute">
+    		<result name="select">/WEB-INF/pages/xqjs/kbyhl/lingjjzxh.jsp</result>
+    	</action>
+    	<!-- 下载导入批量截止零件循环模板 -->
+        <action name="downloadLingjjzxhMob" class="lingjjzxhAction" method="downloadLingjjzxhMob"></action>
+        <!-- 导入批量截止零件循环 -->
+        <action name="importAth_lingjjzxh" class="lingjjzxhAction" method="uploadlingjjzxh">
+        	<result name="upload">/WEB-INF/pages/xqjs/kbyhl/lingjjzxh.jsp</result>
+		</action>
+		<!-- 查询零件截止循环导入的看板循环 -->
+		<action name="queryLingjjzxh" class="lingjjzxhAction" method="queryLingjjzxh"></action>
+		<!-- 零件截止循环 跳转已交付 -->
+		<action name="initLingjjzxhYjf" class="lingjjzxhAction" method="initYjf">
+			<result name="initYjf">/WEB-INF/pages/xqjs/kbyhl/lingjjzxh_yjf.jsp</result>
+		</action>
+		<!-- 零件截止循环 查询已交付 -->
+		<action name="queryLingjjzxhYjf" class="lingjjzxhAction" method="queryYjf"></action>
+		<!-- 零件截止循环导出 -->
+		<action name="expLingjjzxhKanbxhgm" class="lingjjzxhAction" method="expKanbxhgm"></action>
+		
+
+
+
+
+
+
+
+		<!-- 看板循环规模计算 -->
+		<!-- 看板计算初始化 -->
+		<action name="initkbjs" class="kanbjsAction" method="init">
+<!-- 			<result name="success">/WEB-INF/pages/xqjs/kanbyhl/kanbxhjs.jsp</result> -->
+			<result name="success">/WEB-INF/pages/xqjs/kanbyhl/kanbjs.jsp</result>
+		</action>
+		<action name="initJS" class="kanbjsAction" method="initJS" />
+		<!-- 毛需求查询 初始化 -->
+		<action name="queryMX" class="kanbjsAction" method="queryMX">
+			<result name="mxQuery">/WEB-INF/pages/xqjs/kanbyhl/kanbMXQ.jsp</result>
+		</action>
+
+		 <!-- 毛需求查询  -->
+		 <action name="maoxqMxQr" class="kanbjsAction" method="maoxqMxQr" />
+		 
+		 <!--看板计算点击确认按钮  -->
+		 <action name="verify" class="kanbjsAction" method="verify" />
+
+		 <action name="computer" class="kanbjsAction" method="computer" />
+         
+         <!-- 物流组 -->
+	     <action name="getWulzKehd" class="wulzAuthorityAction" method="getWulzKehd" />
+
+	</package>
+</toft>

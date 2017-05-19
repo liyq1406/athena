@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="linstclj">
+
+	<resultMap class="com.athena.xqjs.entity.laxkaix.LinsTclj"
+		id="LinsTclj">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="JIHYDM" property="jihydm" />
+		<result column="TCNO" property="tcNo" />
+		<result column="QIYSJ" property="qiysj" />
+		<result column="MUDD" property="mudd" />
+		<result column="LINGJH" property="lingjh" />
+		<result column="LINGJSL" property="lingjsl" />
+		<result column="WULD" property="wuld" />
+		<result column="YUJDDSJ" property="yujddsj" />
+		<result column="LAXZDDDSJ" property="laxzdddsj" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="EDITOR" property="editor" />
+		<result column="EDIT_TIME" property="editTime" />
+	</resultMap>
+	<!-- 拉箱计划可利用集装箱 -->
+	<select id="getTc" resultClass="java.util.HashMap">
+		SELECT DISTINCT TCNO FROM ${dbSchemal1}XQJS_TC tc_ WHERE 1=1 and tc_.LAXZDDDSJ is null AND TCZT ='1'
+		<isEqual compareValue="1" property="suanfcl">
+			and (tc_.ZUISWLD != '107' and tc_.ZUISWLD !='108')
+		</isEqual>
+		<isEqual compareValue="2" property="suanfcl">and tc_.ZUISWLD = #wuld#</isEqual>
+		<isNotEmpty prepend="and" property="zuixyjddsj">
+			tc_.ZUIXYJDDSJ &lt;= to_date(#zuixyjddsj#,'yyyy-MM-dd')
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="ziysj">
+			tc_.ZUIXYJDDSJ &gt;= to_date(#ziysj#,'yyyy-MM-dd')
+		</isNotEmpty>
+		
+	</select>
+	<select id="getLinsTclj" resultMap="LinsTclj">
+		SELECT tclj_.USERCENTER,
+		tclj_.JIHYDM,
+		tclj_.TCNO,
+		tclj_.QIYSJ,
+		tclj_.MUDD,
+		tclj_.LINGJH,
+		tclj_.LINGJSL,
+		tclj_.WULD,
+		tclj_.YUJDDSJ,
+		tclj_.LAXZDDDSJ,
+		tclj_.CREATOR,
+		tclj_.CREATE_TIME,
+		tclj_.EDITOR,
+		tclj_.EDIT_TIME
+		FROM ${dbSchemal1}XQJS_LINS_TCLJ tclj_  WHERE 1=1
+	</select>
+	<!-- 获取各TC的零件数量 -->
+	<select id="getLinsTcljsl" resultClass="java.util.HashMap">
+		SELECT USERCENTER,JIHYDM,
+		TCNO,
+		LINGJH,
+		LINGJSL,
+		WULD,
+		to_char(YUJDDSJ,'yyyy-MM-dd') AS YUJDDSJ
+		FROM ${dbSchemal1}XQJS_LINS_TCLJ WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter">
+				USERCENTER = #usercenter#	
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="wuld">
+				WULD = #wuld#	
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="zuixyjddsj">
+				YUJDDSJ &lt;= to_date(#zuixyjddsj#,'yyyy-MM-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="ziysj">
+				YUJDDSJ &gt;= to_date(#ziysj#,'yyyy-MM-dd')
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY LINGJH
+	</select>
+	<!-- 获取滞箱天数 -->
+	<select id="getLinsTcljzxts" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DISTINCT
+		TCNO,(SYSDATE-DAODWLDSJ) AS ZXTS
+		FROM ${dbSchemal1}XQJS_TC WHERE 1=1 AND TCZT = '1'
+		<dynamic>
+			<isNotEmpty prepend="and" property="wuldgk">
+				ZUISWLD = #wuldgk#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<insert id="insertLinsTclj" parameterClass="com.athena.xqjs.entity.laxkaix.LinsTclj">
+		insert into ${dbSchemal1}XQJS_LINS_TCLJ(
+		USERCENTER,
+		JIHYDM,
+		TCNO,
+		QIYSJ,
+		MUDD,
+		LINGJH,
+		LINGJSL,
+		WULD,
+		<dynamic>
+			<isNotEmpty property="yujddsj">
+				YUJDDSJ,
+				</isNotEmpty>
+			<isNotEmpty property="laxzdddsj">
+				LAXZDDDSJ,
+				</isNotEmpty>
+		</dynamic>
+		CREATOR,
+		CREATE_TIME
+		) VALUES(
+		#usercenter#,
+		#jihydm#,
+		#tcNo#,
+		to_date(#qiysj#,'yyyy-MM-dd
+		HH24:mi:ss'),
+		#mudd#,
+		#lingjh#,
+		#lingjsl#,
+		#wuld#,
+		<dynamic>
+			<isNotEmpty property="yujddsj">
+				to_date(#yujddsj#,'yyyy-MM-dd HH24:mi:ss'),
+				</isNotEmpty>
+			<isNotEmpty property="laxzdddsj">
+				to_date(#laxzdddsj#,'yyyy-MM-dd HH24:mi:ss'),
+				</isNotEmpty>
+		</dynamic>
+		#creator#,
+		to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	<delete id="deleteLinstclj">
+		delete from ${dbSchemal1}XQJS_LINS_TCLJ WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="and" property="usercenter">
+				USERCENTER =
+				#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	<!-- 开箱计划可利用集装箱 -->
+	<select id="getKaixLinsTclj" resultMap="LinsTclj">
+		SELECT tclj_.USERCENTER,
+		tclj_.JIHYDM,
+		tclj_.TCNO,
+		tclj_.QIYSJ,
+		tclj_.MUDD,
+		tclj_.LINGJH,
+		tclj_.LINGJSL,
+		tclj_.WULD,
+		tclj_.YUJDDSJ,
+		tclj_.LAXZDDDSJ,
+		tclj_.CREATOR,
+		tclj_.CREATE_TIME,
+		tclj_.EDITOR,
+		tclj_.EDIT_TIME
+		FROM ${dbSchemal1}XQJS_LINS_TCLJ tclj_ INNER JOIN ${dbSchemal1}XQJS_TC
+		tc_
+		ON tclj_.TCNO = tc_.TCNO WHERE 1=1 and tc_.KAIXZDSJ is null AND tc_.TCZT = '1'
+
+		<isNotEmpty prepend="and" property="zuixyjddsj">
+			tc_.ZUIXYJDDSJ &lt;=
+			to_date(#zuixyjddsj#,'yyyy-MM-dd')
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="wuld">
+			tc_.ZUISWLD = #wuld#
+		</isNotEmpty>
+	</select>
+	
+	<select id="getKaiTc"  resultClass="java.util.HashMap">
+		SELECT TCNO FROM ${dbSchemal1}XQJS_TC tc_ WHERE 1=1 and  tc_.KAIXZDSJ is null AND tc_.TCZT = '1'
+		<isNotEmpty prepend="and" property="zuixyjddsj">
+			tc_.ZUIXYJDDSJ &lt;=
+			to_date(#zuixyjddsj#,'yyyy-MM-dd')
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="wuld">
+			tc_.ZUISWLD = #wuld#
+		</isNotEmpty>
+	</select>
+</sqlMap>

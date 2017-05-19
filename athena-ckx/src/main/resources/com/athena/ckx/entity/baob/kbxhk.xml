@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="ts_ckx">
+
+	<!-- 查询参考系生产线 -->
+	<select id="selectChanx" resultClass="com.athena.ckx.entity.xuqjs.Shengcx"
+		parameterClass="java.util.Map">
+		select shengcxbh from ${dbSchemal3}ckx_shengcx where usercenter=#usercenter#
+	</select>
+	<!--导出看板循环卡的查询语句 -->
+	<select id="queryKbxhk" resultClass="com.athena.ckx.entity.baob.Kanbxhgm" parameterClass="com.athena.ckx.entity.baob.Kanbxhgm">
+	   select t.xunhbm,t.usercenter,t.lingjbh,t.gonghms,t.xiaohd,t.cangkdm,t.dinghck,t.dangqxhgm,t.jisxhgm,t.kanbkh,t.yaohlh, t.zuizsj,t.zuiwsj,t.danw,
+       t.yaohsl,t.baozxh,t.usxh,t.ucxh,t.ucrl,t.xiehd,t.xinxhd,t.cangkbh,t.zickbh,t.mudd,t.xinmdd,t.gongysdm,t.gongysmc,t.chanx,t.keh,t.shiflsk,
+       t.yaohlscsj,t.chengysdm,t.chengysmc,t.edit_time from
+		
+	   (select k.xunhbm,k.usercenter,k.lingjbh,k.gonghms,k.xiaohd,k.cangkdm,k.dinghck,k.dangqxhgm,k.jisxhgm,y.kanbkh,y.yaohlh, to_char(y.zuizsj, 'yyyy-MM-dd HH24:mi:ss') as zuizsj,to_char(y.zuiwsj, 'yyyy-MM-dd HH24:mi:ss') as zuiwsj,y.danw,
+       y.yaohsl,y.baozxh,y.usxh,y.ucxh,y.ucrl,y.xiehd,y.xinxhd,y.cangkbh,y.zickbh,y.mudd,y.xinmdd,y.gongysdm,y.gongysmc,y.chanx,y.keh,decode(y.shiflsk, '0', '否','1' , '是') as shiflsk,
+       to_char( y.yaohlscsj, 'yyyy-MM-dd HH24:mi:ss') as yaohlscsj,y.chengysdm,y.chengysmc,y.edit_time
+       from ${dbSchemal3}xqjs_kanbxhgm k 
+       left join ${dbSchemal3}ck_yaohl y  
+       on k.usercenter=y.usercenter and k.xunhbm=y.xunhbm
+       union      
+	   select s.xunhbm,s.usercenter,s.lingjbh,s.gonghms,s.xiaohd,s.cangkdm,s.dinghck,s.dangqxhgm,s.jisxhgm,s.kanbkh,s.yaohlh,s.zuizsj,s.zuiwsj,s.danw,s.yaohsl,
+       s.baozxh,s.usxh,'' as ucxh,0 as ucrl,s.xiehd,'' as xinxhd,s.cangkbh,s.zickbh,s.mudd,'' as xinmdd,s.gongysdm,s.gongysmc,s.chanx,s.keh,decode(s.shiflsk, '0', '否','1' , '是') as shiflsk,
+       s.yaohlscsj,'' as chengysdm,'' as chengysmc ,s.edit_time from (
+	   select k.xunhbm,k.usercenter,k.lingjbh,k.gonghms,k.xiaohd,k.cangkdm,k.dinghck,k.dangqxhgm,k.jisxhgm,n.kanbkh,n.yaohlh,to_char(n.zuizsj, 'yyyy-MM-dd HH24:mi:ss') as zuizsj,to_char(n.zuiwsj, 'yyyy-MM-dd HH24:mi:ss') as zuiwsj,n.danw,n.yaohsl,
+       n.baozxh,n.usxh,'' as ucxh,0 as ucrl,n.xiehd,'' as xinxhd,n.cangkbh,n.zickbh,n.mudd,'' as xinmdd,n.gongysdm,n.gongysmc,n.chanx,n.keh,n.shiflsk,
+       to_char(n.yaohlscsj, 'yyyy-MM-dd HH24:mi:ss') as yaohlscsj,'' as chengysdm,'' as chengysmc,n.edit_time from ${dbSchemal3}xqjs_kanbxhgm k left join ${dbSchemal3}ck_yaonbhl n on k.usercenter = n.usercenter and k.xunhbm = n.xunhbm) s) t 
+       where 1=1
+       <dynamic>
+			<isNotEmpty property="xunhbm" prepend="and">
+	    		<![CDATA[t.xunhbm=#xunhbm#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[t.usercenter=#usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjbh" prepend="and">
+	    		<![CDATA[t.lingjbh=#lingjbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="gonghms" prepend="and">
+	    		<![CDATA[t.gonghms=#gonghms#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkdm" prepend="and">
+	    		<![CDATA[t.cangkdm=#cangkdm#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="dinghck" prepend="and">
+	    		<![CDATA[ t.dinghck=#dinghck#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="yaohlh" prepend="and">
+	    		<![CDATA[t.yaohlh=#yaohlh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xinmdd" prepend="and">
+	    		<![CDATA[t.xinmdd=#xinmdd#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="gongysdm" prepend="and">
+	    		<![CDATA[t.gongysdm=#gongysdm#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chanx" prepend="and">
+	    		<![CDATA[t.chanx=#chanx#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="keh" prepend="and">
+	    		<![CDATA[t.keh=#keh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chengysdm" prepend="and">
+	    		<![CDATA[t.chengysdm=#chengysdm#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="edit_time" prepend="and">
+	    		<![CDATA[t.edit_time <to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+       order by  t.yaohlscsj
+	</select>
+	
+	
+	<!--导出看板循环卡的查询语句 -->
+	<select id="selectKbxhk" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	   select t.xunhbm,t.usercenter,t.lingjbh,t.gonghms,t.xiaohd,t.cangkdm,t.dinghck,t.dangqxhgm,t.jisxhgm,t.kanbkh,t.yaohlh, t.zuizsj,t.zuiwsj,t.danw,
+       t.yaohsl,t.baozxh,t.usxh,t.ucxh,t.ucrl,t.xiehd,t.xinxhd,t.cangkbh,t.zickbh,t.mudd,t.xinmdd,t.gongysdm,t.gongysmc,t.chanx,t.keh,t.shiflsk,
+       t.yaohlscsj,t.chengysdm,t.chengysmc,t.edit_time from
+		
+	   (select k.xunhbm,k.usercenter,k.lingjbh,k.gonghms,k.xiaohd,k.cangkdm,k.dinghck,k.dangqxhgm,k.jisxhgm,y.kanbkh,y.yaohlh, to_char(y.zuizsj, 'yyyy-MM-dd HH24:mi:ss') as zuizsj,to_char(y.zuiwsj, 'yyyy-MM-dd HH24:mi:ss') as zuiwsj,y.danw,
+       y.yaohsl,y.baozxh,y.usxh,y.ucxh,y.ucrl,y.xiehd,y.xinxhd,y.cangkbh,y.zickbh,y.mudd,y.xinmdd,y.gongysdm,y.gongysmc,y.chanx,y.keh,decode(y.shiflsk, '0', '否','1' , '是') as shiflsk,
+       to_char( y.yaohlscsj, 'yyyy-MM-dd HH24:mi:ss') as yaohlscsj,y.chengysdm,y.chengysmc,y.edit_time
+       from ${dbSchemal3}xqjs_kanbxhgm k 
+       left join ${dbSchemal3}ck_yaohl y  
+       on k.usercenter=y.usercenter and k.xunhbm=y.xunhbm
+       union      
+	   select s.xunhbm,s.usercenter,s.lingjbh,s.gonghms,s.xiaohd,s.cangkdm,s.dinghck,s.dangqxhgm,s.jisxhgm,s.kanbkh,s.yaohlh,s.zuizsj,s.zuiwsj,s.danw,s.yaohsl,
+       s.baozxh,s.usxh,'' as ucxh,0 as ucrl,s.xiehd,'' as xinxhd,s.cangkbh,s.zickbh,s.mudd,'' as xinmdd,s.gongysdm,s.gongysmc,s.chanx,s.keh,decode(s.shiflsk, '0', '否','1' , '是') as shiflsk,
+       s.yaohlscsj,'' as chengysdm,'' as chengysmc ,s.edit_time from (
+	   select k.xunhbm,k.usercenter,k.lingjbh,k.gonghms,k.xiaohd,k.cangkdm,k.dinghck,k.dangqxhgm,k.jisxhgm,n.kanbkh,n.yaohlh,to_char(n.zuizsj, 'yyyy-MM-dd HH24:mi:ss') as zuizsj,to_char(n.zuiwsj, 'yyyy-MM-dd HH24:mi:ss') as zuiwsj,n.danw,n.yaohsl,
+       n.baozxh,n.usxh,'' as ucxh,0 as ucrl,n.xiehd,'' as xinxhd,n.cangkbh,n.zickbh,n.mudd,'' as xinmdd,n.gongysdm,n.gongysmc,n.chanx,n.keh,n.shiflsk,
+       to_char(n.yaohlscsj, 'yyyy-MM-dd HH24:mi:ss') as yaohlscsj,'' as chengysdm,'' as chengysmc,n.edit_time from ${dbSchemal3}xqjs_kanbxhgm k left join ${dbSchemal3}ck_yaonbhl n on k.usercenter = n.usercenter and k.xunhbm = n.xunhbm) s) t 
+       where 1=1
+       <dynamic>
+			<isNotEmpty property="xunhbm" prepend="and">
+	    		<![CDATA[t.xunhbm=#xunhbm#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[t.usercenter=#usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="lingjbh" prepend="and">
+	    		<![CDATA[t.lingjbh=#lingjbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="gonghms" prepend="and">
+	    		<![CDATA[t.gonghms=#gonghms#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkdm" prepend="and">
+	    		<![CDATA[t.cangkdm=#cangkdm#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="dinghck" prepend="and">
+	    		<![CDATA[ t.dinghck=#dinghck#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="yaohlh" prepend="and">
+	    		<![CDATA[t.yaohlh=#yaohlh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xinmdd" prepend="and">
+	    		<![CDATA[t.xinmdd=#xinmdd#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="gongysdm" prepend="and">
+	    		<![CDATA[t.gongysdm=#gongysdm#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chanx" prepend="and">
+	    		<![CDATA[t.chanx=#chanx#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="keh" prepend="and">
+	    		<![CDATA[t.keh=#keh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chengysdm" prepend="and">
+	    		<![CDATA[t.chengysdm=#chengysdm#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="edit_time" prepend="and">
+	    		<![CDATA[t.edit_time <to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+       order by  t.yaohlscsj
+
+	</select>
+</sqlMap>

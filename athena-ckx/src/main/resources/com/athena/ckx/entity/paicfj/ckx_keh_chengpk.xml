@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+<select id="queryCkx_keh_chengpk" resultClass="com.athena.ckx.entity.paicfj.Ckx_keh_chengpk">
+   select usercenter , cangkbh , kehbh , chengysbh , kehtqq , shifpz , beihlx , dingdtqq ,yaoctqq , yunslxbh
+   from ${dbSchemal3}ckx_keh_chengpk
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="kehbh"><![CDATA[kehbh = #kehbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysbh"><![CDATA[chengysbh = #chengysbh#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,cangkbh,kehbh,chengysbh
+</select>
+<insert id="insertCkx_keh_chengpk" parameterClass="com.athena.ckx.entity.paicfj.Ckx_keh_chengpk">
+insert into ${dbSchemal3}ckx_keh_chengpk
+(usercenter , cangkbh , kehbh , chengysbh , kehtqq , shifpz , beihlx , dingdtqq , yaoctqq , yunslxbh ,
+      creator , create_time , editor , edit_time)
+values(#usercenter# , #cangkbh# , #kehbh# , #chengysbh# , #kehtqq# , #shifpz# ,  #beihlx# , #dingdtqq# , #yaoctqq# , #yunslxbh# ,
+
+ #creator# , #create_time# , #editor# , #edit_time# )
+</insert>
+
+<update id="updateCkx_keh_chengpk" parameterClass="com.athena.ckx.entity.paicfj.Ckx_keh_chengpk">
+update ${dbSchemal3}ckx_keh_chengpk
+set 
+      
+    		   <![CDATA[kehtqq = #kehtqq#]]> ,    	
+    		   <![CDATA[shifpz = #shifpz#]]> ,    	
+    		   <![CDATA[beihlx = #beihlx#]]> ,    	
+    		   <![CDATA[dingdtqq = #dingdtqq#]]> ,    	
+    		   <![CDATA[yunslxbh = #yunslxbh#]]> ,    	
+    		   <![CDATA[yaoctqq = #yaoctqq#]]> ,    	
+    		   <![CDATA[editor = #editor#]]> ,    	
+    		   <![CDATA[edit_time = sysdate]]> 
+   
+       where  1=1
+       <isNotEmpty property="usercenter" prepend=" and ">
+    		   <![CDATA[usercenter = #usercenter#]]> 
+    	</isNotEmpty>
+        <isNotEmpty property="cangkbh" prepend=" and ">
+    		   <![CDATA[cangkbh = #cangkbh#]]> 
+    	</isNotEmpty>
+    	 <isNotEmpty property="kehbh" prepend=" and ">
+    		   <![CDATA[kehbh = #kehbh#]]> 
+    	</isNotEmpty>
+    	
+    	 <isNotEmpty property="chengysbh" prepend=" and ">
+    		   <![CDATA[chengysbh = #chengysbh#]]> 
+    	</isNotEmpty>      
+</update>
+<!-- 只修改是否需要配载、备货类型、运输路线编号字段（根据相同用户中心、仓库编号、客户编号） -->
+<update id="updateCkx_keh_chengpkYSB" parameterClass="com.athena.ckx.entity.paicfj.Ckx_keh_chengpk">
+update ${dbSchemal3}ckx_keh_chengpk
+set 
+      	 <![CDATA[shifpz = #shifpz#]]> ,    
+      	  <![CDATA[kehtqq = #kehtqq#]]> ,    		
+    	 <![CDATA[beihlx = #beihlx#]]> ,     		
+    	<![CDATA[yunslxbh = #yunslxbh#]]> , 
+    		<![CDATA[dingdtqq = #dingdtqq#]]> , 
+    	 <![CDATA[editor = #editor#]]> ,    	
+    	<![CDATA[edit_time = sysdate]]>
+       where  1=1
+       <isNotEmpty property="usercenter" prepend=" and ">
+    		   <![CDATA[usercenter = #usercenter#]]> 
+    	</isNotEmpty>
+        <isNotEmpty property="cangkbh" prepend=" and ">
+    		   <![CDATA[cangkbh = #cangkbh#]]> 
+    	</isNotEmpty>
+    	 <isNotEmpty property="kehbh" prepend=" and ">
+    		   <![CDATA[kehbh = #kehbh#]]> 
+    	</isNotEmpty>    	
+    	 <isNotEmpty property="chengysbh" prepend=" and ">
+    		   <![CDATA[chengysbh = #chengysbh#]]> 
+    	</isNotEmpty>
+    	
+    	
+    	
+</update>
+
+<delete id="deleteCkx_keh_chengpk" parameterClass="com.athena.ckx.entity.paicfj.Ckx_keh_chengpk">
+delete ${dbSchemal3}ckx_keh_chengpk
+where <![CDATA[ usercenter = #usercenter# and cangkbh = #cangkbh# and kehbh = #kehbh# and chengysbh = #chengysbh#]]>
+</delete>
+</sqlMap>

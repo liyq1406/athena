@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<properties resource="com/athena/pc/config/sqlmap.properties" />
+
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="10"
+		maxTransactions="5" useStatementNamespaces="true" />  
+		<!--王国首-->
+		<sqlMap resource="com/athena/pc/entity/sqlmap-beic.xml" /> 
+		<sqlMap resource="com/athena/pc/entity/sqlmap-monpc.xml" /> 
+		<sqlMap resource="com/athena/pc/entity/sqlmap-monpc-test.xml" /> 
+		<sqlMap resource="com/athena/pc/entity/sqlmap-yuemn.xml" />
+		<sqlMap resource="com/athena/pc/entity/sqlmap-yuemnjhgz.xml" />
+		<sqlMap resource="com/athena/pc/entity/sqlmap-rigd.xml" />
+		<sqlMap resource="com/athena/pc/entity/sqlmap-maoxqhz.xml" />
+		<sqlMap resource="com/athena/pc/entity/sqlmap-leijce.xml" />
+		<sqlMap resource="com/athena/pc/entity/sqlmap-yancyhl.xml" />
+		<sqlMap resource="com/athena/pc/entity/sqlmap-qickc.xml" />
+		<sqlMap resource="com/athena/pc/entity/sqlmap-weiclxq.xml" />
+		<sqlMap resource="com/athena/pc/entity/sqlmap-sgeq.xml" />
+		<!-- 王冲 -->
+		<sqlMap resource="com/athena/pc/entity/sqlmap-equilib.xml" />
+</sqlMapConfig>

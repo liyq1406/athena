@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="ckx">
+
+	<!-- 根据生效日期和失效日期 更新零件 -->
+  	<update id="updateckxLingjBiaos" >
+  	update  ${dbSchemal3}ckx_lingj 
+  	<![CDATA[set biaos= case when sysdate between kaisrq and jiesrq then '1' else '0' end ,editor='sys',edit_time=sysdate]]>
+  	<![CDATA[where biaos <> case when sysdate between kaisrq and jiesrq then '1' else '0' end ]]>
+  	</update>
+  	<!-- 根据生效日期和失效日期 更新零件-供应商 -->
+  	<update id="updateckxLingjgysBiaos" >
+  	update  ${dbSchemal3}ckx_lingjgys 
+  	<![CDATA[set biaos= 
+  	case when sysdate between 
+		case when shengxsj is null then to_date('2000-12-31','yyyy-MM-dd') else shengxsj end
+ 	and 
+        case when shixsj is null then to_date('9999-12-31','yyyy-MM-dd') else shixsj end 
+    then '1' else '0' end ,editor='sys',edit_time=sysdate
+    where shengxsj is not null or shixsj is not null ]]>
+   <![CDATA[and biaos <> 	case when sysdate between 
+		case when shixsj is null then to_date('2000-12-31','yyyy-MM-dd') else shengxsj end
+ 	and 
+        case when shixsj is null then to_date('9999-12-31','yyyy-MM-dd') else shixsj end 
+    then '1' else '0' end  ]]>
+  	</update>
+  	<!-- 根据生效日期和失效日期 更新零件-消耗点 -->
+  	<update id="updateckxLingjXHDBiaos" >
+  	  update  ${dbSchemal3}ckx_lingjxhd x
+<!--     <![CDATA[  set biaos= '0' ,editor=#creator#,edit_time=sysdate -->
+<!--     where   jiesr<= sysdate -->
+<!--     ]]> -->
+    <![CDATA[  set biaos = case  when sysdate  between  x.shengxr and x.jiesr then 1 else 0 end,editor=#creator#,edit_time=sysdate
+    where   x.shengxr is not null and x.jiesr is not null  and biaos<>  case  when sysdate  between  x.shengxr and x.jiesr then 1 else 0 end
+      ]]>
+  	</update>
+  	<!-- 根据原消耗点 、生效日期和失效日期 更新零件-消耗点  -->
+  	<update id="updateckxLingjXHDBiaosByYxhd" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+  	 
+    update ${dbSchemal3}ckx_lingjxhd t set biaos='0',jiesr = to_date(#jiesr#,'yyyy-MM-dd'),editor=#creator#,edit_time=sysdate
+    where 1=1
+          <dynamic >
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohdbh"><![CDATA[xiaohdbh=#xiaohdbh#]]></isNotEmpty>
+			</dynamic>
+  	</update>
+  	<!-- 如果模式切换时由MD,CD,C0切换到其他模式，则清除掉对应的零件-消耗点的线边理论库存-->
+  	<update id="clearLingjxhdXianbLlkc" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+  	 
+    update ${dbSchemal3}ckx_lingjxhd t set xianbllkc=0,editor=#creator#,edit_time=sysdate
+    where 1=1
+          <dynamic >
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenpqbh"><![CDATA[fenpqbh=#fenpqbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos=#biaos#]]></isNotEmpty>
+			</dynamic>
+  	</update>
+  		<!-- 根据生效日期 更新零件-消耗点的原消耗点  -->
+  	<update id="updateckxLingjXHDYxhdBySxr" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+  	 <!-- 0007177  提前计算消耗比例/100    t.tiqjsxhbl=#tiqjsxhbl#/100  -->
+    update ${dbSchemal3}ckx_lingjxhd t set t.yuanxhdbh=null,
+    t.peislxbh = #peislxbh#,t.qianhcbs=#qianhcbs#,t.jipbzwz=#jipbzwz#,
+    t.guanlybh=#guanlybh#,t.tiqjsxhbl=#tiqjsxhbl#/100,t.xiaohbl=#xiaohbl#/100,
+    t.gongysbh=#gongysbh#,t.shunxglbz=#shunxglbz#,t.zidfhbz=#zidfhbz#,
+    t.xianbyhlx=#xianbyhlx#,t.yancsxbz=#yancsxbz#,t.beihdbz=#beihdbz#,
+    t.anqkcts=#anqkcts#,
+    t.anqkcs=#anqkcs#,t.xianbllkc=#xianbllkc#,t.yifyhlzl=#yifyhlzl#,
+    t.jiaofzl=#jiaofzl#,t.xittzz=#xittzz#,t.pdsbz=#pdsbz#,
+    t.zhongzzl=#zhongzzl#,t.zuh=#zuh#,
+    editor=#creator#,edit_time=sysdate
+    where 1=1
+   <![CDATA[ and usercenter=#usercenter#]]>
+			<![CDATA[ and lingjbh=#lingjbh#]]>
+				<![CDATA[ and xiaohdbh=#xiaohdbh#]]>
+			
+  	</update>
+  		<!-- 根据生效日期 查询零件-消耗点的原消耗点  -->
+  	<select id="queryckxLingjXHDYxhdBySxr"  resultClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd">
+  	select t.usercenter,t.shengcxbh,t.lingjbh,t.xiaohdbh,t.yuanxhdbh,to_char(t.shengxr,'yyyy-MM-dd') shengxr,t.editor from ${dbSchemal3}ckx_lingjxhd t
+    <![CDATA[where t.shengxr<=sysdate and t.yuanxhdbh is not null ]]>
+  	</select>
+  	
+  		<!-- 根据将来模式生效时间  记录外部模式变更记录   -->
+  	<select id="queryckxWaibmsList"  resultClass="com.athena.ckx.entity.carry.CkxWaibms">
+  	select t.usercenter,t.lingjbh,t.fenpqh,t.zhidgys,t.mos,t.jianglms,t.shengxsj,t.editor ,
+  	<!-- 根据是否存在订货库来确定切换外部模式变更记录时的仓库编号 -->
+  	case when d.qid is not null then d.qid else x.qid end qid,
+  	d.qid creator <!--  creator  记录订货库-->
+  	from ${dbSchemal3}ckx_waibms t  
+  	inner join ${dbSchemal3}ckx_shengcx_xianb x
+  	on x.usercenter =  t.usercenter   	and x.fenpqh = t.fenpqh  	and x.lingjbh = t.lingjbh
+  	left join ${dbSchemal3}ckx_xianb_dingh d
+    on  d.usercenter = t.usercenter and d.lingjbh = t.lingjbh and d.xianbk = x.qid
+    <![CDATA[  
+    where t.jianglms is not null 
+    and t.shengxsj is not null 
+    and to_date(t.shengxsj,'yyyy-MM-dd')<=sysdate
+    ]]>
+  	</select>
+  		<!-- 根据将来模式生效时间  记录生产线-线边变更记录 -->
+  	<select id="queryckxShengcxXianbList"  resultClass="com.athena.ckx.entity.carry.CkxShengcxXianb">
+  	select t.usercenter,t.lingjbh,t.fenpqh,t.qid,t.mos,
+  	t.jianglms,t.jianglmssxsj,t.shengcxbh,t.zick,t.editor,d.qid creator  <!--  creator  记录订货库-->
+    from ${dbSchemal3}ckx_shengcx_xianb t 	
+    left join ${dbSchemal3}ckx_xianb_dingh d
+    on  d.usercenter = t.usercenter and d.lingjbh = t.lingjbh and d.xianbk = t.qid    
+    <![CDATA[  
+    where t.jianglms is not null 
+    and t.jianglmssxsj is not null 
+    and to_date(t.jianglmssxsj,'yyyy-MM-dd')<=sysdate
+    ]]>
+  	</select>
+  		<!-- 根据将来模式生效时间  记录线边-订货变更记录 -->
+  	<select id="queryckxXianbDinghList"  resultClass="com.athena.ckx.entity.carry.CkxXianbDingh">
+  	 select t.usercenter,t.lingjbh,t.qid,t.mos,t.jianglms,t.jianglmssxsj,t.zick,t.editor,t.xianbk as xianbck
+    from ${dbSchemal3}ckx_xianb_dingh t  	     
+    <![CDATA[  
+    where jianglms is not null 
+    and jianglmssxsj is not null 
+    and to_date(jianglmssxsj,'yyyy-MM-dd')<=sysdate
+    ]]>
+  	</select>
+  	<!-- 清空模式切换表 -->
+  	<delete id="clearckxMosqh" >  	 
+      delete from ${dbSchemal3}ckx_msqhb where xunhbm is not null or yuanxhbm is not null
+  	</delete>
+  	<insert id="insertCkxMosqh" parameterClass="com.athena.ckx.entity.carry.CkxMsqhb">
+  	insert into ${dbSchemal3}ckx_msqhb
+  	(liush,usercenter,xunhbm,yuanxhbm,lingjbh,cangkbh,
+  	xiaohd,muddlx,mos,yuanms,shifkbqh,zhuangt,
+  	creator,create_time,editor,edit_time)
+    values(#liush#,#usercenter#,#xunhbm#,#yuanxhbm#,#lingjbh#,#cangkbh#,
+  	#xiaohd#,#muddlx#,#mos#,#yuanms#,#shifkbqh#,#zhuangt#,
+  	#creator#,sysdate,#editor#,sysdate)
+  	</insert>
+  	<!-- 根据将来模式生效时间  更新外部模式 -->
+  	<update id="updateckxWaibms">
+  	 update  ${dbSchemal3}ckx_waibms 
+    <![CDATA[  set mos= jianglms ,jianglms=null ,shengxsj=null ,editor=#creator#,edit_time=sysdate 
+    where jianglms is not null 
+    and shengxsj is not null 
+    and to_date(shengxsj,'yyyy-MM-dd')<=sysdate
+    ]]>
+  	</update>
+  		<!-- 根据将来模式生效时间  更新生产线-线边 -->
+  	<update id="updateckxShengcxXianb" >
+  	 update  ${dbSchemal3}ckx_shengcx_xianb 
+    <![CDATA[ set mos= jianglms ,jianglms=null ,jianglmssxsj=null  ,editor=#creator#,edit_time=sysdate
+    where jianglms is not null 
+    and jianglmssxsj is not null 
+    and to_date(jianglmssxsj,'yyyy-MM-dd')<=sysdate
+    ]]>
+  	</update>
+  		<!-- 根据将来模式生效时间  更新线边-订货-->
+  	<update id="updateckxXianbDingh" >
+  	 update  ${dbSchemal3}ckx_xianb_dingh 
+    <![CDATA[ set mos= jianglms ,jianglms=null ,jianglmssxsj=null  ,editor=#creator#,edit_time=sysdate
+    where jianglms is not null 
+    and jianglmssxsj is not null 
+    and to_date(jianglmssxsj,'yyyy-MM-dd')<=sysdate
+    ]]>
+  	</update>
+  		<!-- 根据切换时间  更新生产线-->
+  	<update id="updateckxShengcxScjp" >
+  	 update  ${dbSchemal3}ckx_shengcx 
+<!--   	  <![CDATA[ set shengcjp= weilscjp ,weilscjp=null ,qiehsj=null   -->
+  <![CDATA[ set CPSHENGCJP= weilscjp,shengcjp= weilscjp ,weilscjp=null ,qiehsj=null ,editor=#creator#,edit_time=sysdate  
+    where weilscjp is not null 
+    and qiehsj is not null 
+    and qiehsj<=sysdate
+    ]]>
+  	</update>
+  		<!-- 根据切换时间  更新生产平台-->
+  	<update id="updateckxShengcPTScjp" >
+  	 update  ${dbSchemal3}ckx_shengcpt 
+    <![CDATA[ set shengcjp= weilscjp ,weilscjp=null ,qiehsj=null  ,editor=#creator#,edit_time=sysdate
+    where weilscjp is not null 
+    and qiehsj is not null 
+    and qiehsj<=sysdate
+    ]]>
+  	</update>
+  		<!-- 根据生效时间  更新工作时间关联	 modify by hanwu 20160104 	0011972：支持多个未来编组-->
+  	<update id="updateckxCalendarGroupSXSJ" >
+  	 update  ${dbSchemal3}ckx_calendar_group 
+    <![CDATA[ set BIANZH= WEILBZH ,
+    WEILBZH=WEILBZH2, SHENGXSJ=SHENGXSJ2,
+    WEILBZH2=WEILBZH3, SHENGXSJ2=SHENGXSJ3,
+    WEILBZH3=WEILBZH4, SHENGXSJ3=SHENGXSJ4,
+    WEILBZH4=null, SHENGXSJ4=null,
+    editor=#creator#,edit_time=sysdate
+    where WEILBZH is not null 
+    and SHENGXSJ is not null 
+    and to_date(SHENGXSJ,'yyyy-mm-dd')<=sysdate
+    ]]>
+  	</update>
+  		<!-- 根据生效时间  更新排产工作时间关联-->
+  	<update id="updateckxPCCalendarGroupSXSJ" >
+  	 update  ${dbSchemal3}ckx_pc_calendar_group 
+    <![CDATA[ set BIANZH= WEILBZH ,WEILBZH=null ,SHENGXSJ=null  ,editor=#creator#,edit_time=sysdate
+    where WEILBZH is not null 
+    and SHENGXSJ is not null 
+    and to_date(SHENGXSJ,'yyyy-mm-dd')<=sysdate
+    ]]>
+  	</update>
+</sqlMap>

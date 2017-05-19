@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="xianbkc">
+	<!-- 插入线边库存 -->
+	<insert id="insertXianbkc" >
+		<![CDATA[
+		insert into ${dbSchemal1}XQJS_XIANBKC(
+			usercenter, 
+			chanx, 
+			lingjbh, 
+			mudd,
+			leix,
+			danw, 
+			yingy, 
+			zongzlsh, 
+			zhengcxh, 
+			pandcy, 
+			biaos, 
+			status, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3
+			)
+		values(
+			#usercenter#, 
+			#chanx#, 
+			#lingjbh#, 
+			#mudd#,
+			#leix#,
+			#danw#,
+			$yingy$, 
+			#zongzlsh#, 
+			#zhengcxh#, 
+			#pandcy#, 
+			#biaos#, 
+			#status#, 
+			#creator#,
+			sysdate,
+			#creator#,
+			sysdate,
+			#beiz1#,
+			#beiz2#,
+			#beiz3#		  
+		)]]>
+	</insert>
+  
+  <!-- 更新线边库存 -->
+	<update id="updateXianbkcByParam" >
+		update
+		${dbSchemal1}XQJS_XIANBKC
+		set
+			yingy=$yingy$,
+			editor=#editor#,
+			edit_time=sysdate
+		where
+			1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				chanx =
+				#chanx#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh =
+				#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">
+				mudd =
+				#mudd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="leix">
+				leix =
+				#leix#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 更新线边库存 -->
+	<update id="updatePandcyByParam" >
+		update
+		${dbSchemal1}XQJS_XIANBKC
+		set
+			pandcy=$pandcy$,
+			editor=#editor#,
+			edit_time=sysdate
+		where
+			1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>			
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh =
+				#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">
+				mudd =
+				#mudd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="leix">
+				leix =
+				#leix#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+<!-- 删除线边库存 -->
+	<delete id="deleteXianbkc" >
+		delete
+		from
+		${dbSchemal1}XQJS_XIANBKC
+		where
+		1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				chanx =
+				#chanx#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh =
+				#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">
+				mudd =
+				#mudd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="leix">
+				leix =
+				#leix#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+<!-- 查询线边库存 -->
+	<select id="queryXianbkcByParam" resultClass="com.athena.xqjs.entity.anxorder.Xianbkc">
+		select
+		usercenter, 
+			chanx, 
+			lingjbh, 
+			mudd, 
+			leix, 
+			danw,
+			yingy, 
+			zongzlsh, 
+			zhengcxh, 
+			pandcy, 
+			biaos, 
+			status, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3
+		from
+		${dbSchemal1}XQJS_XIANBKC
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanx">
+				chanx =
+				#chanx#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh =
+				#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">
+				mudd =
+				#mudd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="leix">
+				leix =
+				#leix#
+			</isNotEmpty>
+		</dynamic>
+	</select>	
+</sqlMap>

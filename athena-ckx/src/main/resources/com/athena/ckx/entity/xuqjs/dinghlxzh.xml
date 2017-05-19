@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 订货路线转换  qizhongtao 2012-4-05 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryDinghlxzh" resultClass="com.athena.ckx.entity.xuqjs.Dinghlxzh">
+			select  usercenter,lingjbh,zhizlx,dinghlx,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_dinghlxzh
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="zhizlx"><![CDATA[zhizlx=#zhizlx#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="dinghlx"><![CDATA[dinghlx=#dinghlx#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,lingjbh
+		</select>
+		
+		<!--单数据查询	 -->
+		<select id="getDinghlxzh" resultClass="com.athena.ckx.entity.xuqjs.Dinghlxzh">
+			select  usercenter,lingjbh,zhizlx,dinghlx
+			from ${dbSchemal3}ckx_dinghlxzh
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="zhizlx"><![CDATA[zhizlx=#zhizlx#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertDinghlxzh" parameterClass="com.athena.ckx.entity.xuqjs.Dinghlxzh" >
+			insert into ${dbSchemal3}ckx_dinghlxzh(usercenter,lingjbh,zhizlx,dinghlx,creator,create_time,editor,edit_time)
+			values(<![CDATA[#usercenter#,#lingjbh#,#zhizlx#,#dinghlx#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="updateDinghlxzh" parameterClass="com.athena.ckx.entity.xuqjs.Dinghlxzh">
+			update ${dbSchemal3}ckx_dinghlxzh
+			set dinghlx = #dinghlx#,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and zhizlx = #zhizlx#]]>
+		</update>
+		
+		<!-- 删除数据 -->
+		<delete id="deleteDinghlxzh" parameterClass="com.athena.ckx.entity.xuqjs.Dinghlxzh">
+			delete from ${dbSchemal3}ckx_dinghlxzh where
+			<dynamic prepend=" ">
+				<isNotEmpty property="usercenter" prepend=" and "><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty property="lingjbh" prepend=" and "><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+				<isNotEmpty property="zhizlx" prepend=" and "><![CDATA[zhizlx = #zhizlx#]]></isNotEmpty>
+			</dynamic>
+		</delete>
+	
+</sqlMap>

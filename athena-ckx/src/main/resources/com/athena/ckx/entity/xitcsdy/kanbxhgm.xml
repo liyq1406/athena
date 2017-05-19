@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="xqjs_ckx">
+
+  	
+  	<!-- 看板循环规模   hj 2013-11-28-->
+   	<select id="queryKanbxhgm"  resultClass="java.util.HashMap">
+		select		   
+			USERCENTER,
+			LINGJBH,			
+			CANGKDM,
+			XIAOHD,
+			KEHD,
+			SHENGXZT
+		from ${dbSchemal1}xqjs_kanbxhgm
+		where 1=1  
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="kehd">
+				kehd = #kehd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengxzt">
+				shengxzt = #shengxzt#
+			</isNotEmpty>
+			
+		</dynamic>
+  	</select>
+</sqlMap>

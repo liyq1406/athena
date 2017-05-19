@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="hlorder">
+
+
+		<select id="mjQueryWullj" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.common.Wullj">
+		SELECT
+		usercenter,
+		fenpqh,
+		lingjbh,
+		gongysbh,
+		lujbh,
+		lujmc,
+		fahd,
+		waibms,
+		zhidgys,
+		jiaofm,
+		beihzq,
+		yunszq,
+		gcbh,
+		xiehztbh,
+		songhpc,
+		mudd,
+		dinghck,
+		mos2,
+		cangkshpc2,
+		cangkshsj2,
+		cangkfhsj2,
+		beihsj2,
+		ibeihsj2,
+		pbeihsj2,
+		beihsjc,
+		xianbck,
+		mos,
+		cangkshpc,
+		cangkshsj,
+		cangkfhsj,
+		beihsj,
+		ibeihsj,
+		pbeihsj,
+		wulgyyz,
+		wulgyyz1,
+		wulgyyz2
+		FROM
+		${dbSchemal3}ckx_wullj
+		WHERE
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx">
+				zhizlx = #zhizlx#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">
+				gongysbh = #gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				shengcxbh = #shengcxbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fenpqh">
+				fenpqh = #fenpqh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="waibms">
+				mos2 = #mos2#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notwaibms">
+				waibms not in ( $notwaibms$ )
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">
+				mudd = #mudd#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+  
+  
+  <!-- 汇总线边待消耗 -->
+	<select id="mjQueryXhlByXianbk" resultClass="java.math.BigDecimal">
+		select 
+			sum(a.xiaohxs) as xiaohxs
+		from 
+			${dbSchemal1}xqjs_anxmaoxqzjb a,${dbSchemal1}xqjs_anxjscszjb b 
+		where 
+			a.usercenter = b.usercenter and a.lingjbh = b.lingjbh and a.xiaohd = b.xiaohd 
+			and a.lingjbh = #lingjbh# and a.xuqly = #xuqly#
+			and xhsj <![CDATA[>=]]> to_date(#xiaohsj#,'yyyy-mm-dd hh24:mi')
+      		and xhsj <![CDATA[< ]]>  to_date(#xiaohsj2#,'yyyy-mm-dd hh24:mi')
+			and xianbck = #xianbck#
+	</select>
+  
+ </sqlMap>

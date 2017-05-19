@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="carry">
+	<select id="queryCkxWaibwl" resultClass="com.athena.ckx.entity.carry.CkxWaibwl">
+		select lujbh,lujmc,usercenter,gongysbh,fahd,mudd,jiaofm,beihzq,panysj,creator,create_Time,editor,edit_Time ,xiehztbz,chengysbh
+		from ${dbSchemal3}ckx_waibwl t where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lujbh">lujbh = #lujbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">gongysbh = #gongysbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahd">fahd = #fahd#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">mudd = #mudd#</isNotEmpty>
+			order by usercenter,gongysbh,lujbh,fahd,mudd
+		</dynamic>
+	</select>
+	<select id="getCkxWaibwl" resultClass="com.athena.ckx.entity.carry.CkxWaibwl">
+		select lujbh,lujmc,usercenter,gongysbh,fahd,mudd,jiaofm,beihzq,panysj,creator,create_Time,editor,edit_Time ,xiehztbz,chengysbh
+		from ${dbSchemal3}ckx_waibwl where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lujbh">lujbh = #lujbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">gongysbh = #gongysbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahd">fahd = #fahd#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">mudd = #mudd#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiaofm">jiaofm = #jiaofm#</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 检测有多少条数据被修改 2012-9-21  hj-->
+	<select id="checkEditCkxOuterPath" resultClass="java.lang.Integer">
+		select count(*)
+		from ${dbSchemal3}ckx_waibwl where 1=1 
+		and usercenter = #usercenter#
+		and xiehztbz = #xiehztbz#
+		and chengysbh = #chengysbh#
+	</select>
+	<insert id="insertCkxWaibwl" parameterClass="com.athena.ckx.entity.carry.CkxWaibwl">insert into ${dbSchemal3}ckx_waibwl
+	(lujbh,lujmc,usercenter,gongysbh,fahd,mudd,jiaofm,beihzq,panysj,creator,create_Time,editor,edit_Time,xiehztbz,chengysbh)
+	values(
+		#lujbh#,#lujmc#,#usercenter#,#gongysbh#,#fahd#,#mudd#,#jiaofm#,#beihzq#,#panysj#
+		,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'),#xiehztbz#,#chengysbh#
+	)
+	
+	</insert>
+	
+	
+	<update id="updateCkxWaibwl" parameterClass="com.athena.ckx.entity.carry.CkxWaibwl">
+		update ${dbSchemal3}ckx_waibwl set 
+			 lujbh=#lujbh#
+			,lujmc=#lujmc#
+			,jiaofm=#jiaofm#
+			,beihzq=#beihzq#
+			,panysj=#panysj#
+			,xiehztbz=#xiehztbz#
+			,chengysbh=#chengysbh#
+			,editor=#editor#
+			,edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+			where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">gongysbh = #gongysbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahd">fahd = #fahd#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">mudd = #mudd#</isNotEmpty>
+		</dynamic>
+	</update>
+	<!-- 0007120 根据目的地对应的卸货站台变化，更新所有相同目的地对应的卸货站台 -->
+	<update id="updateCkxWaibwlByMudd" parameterClass="com.athena.ckx.entity.carry.CkxWaibwl">
+		update ${dbSchemal3}ckx_waibwl set 			
+			xiehztbz=#xiehztbz#			
+			,editor=#editor#
+			,edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+			where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysbh">gongysbh = #gongysbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahd">fahd = #fahd#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mudd">mudd = #mudd#</isNotEmpty>
+		</dynamic>
+	</update>
+	<!-- 根据承运商和卸货站台编组 更新所有相同的备货周期和发运周期  2012-9-21  hj-->
+	<update id="updateCkxWaibwlByXiehztbz" parameterClass="com.athena.ckx.entity.carry.CkxWaibwl">
+		update ${dbSchemal3}ckx_waibwl set 			
+			beihzq=#beihzq#
+			,panysj=#panysj#
+			,editor=#editor#
+			,edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+			where 1=1 
+		and usercenter = #usercenter#
+		and xiehztbz = #xiehztbz#
+		and chengysbh = #chengysbh#
+	</update>
+
+	<!-- 物理删除 -->
+	<delete id="deleteCkxWaibwl" parameterClass="com.athena.ckx.entity.carry.CkxWaibwl">
+		delete from ${dbSchemal3}ckx_waibwl where 
+			usercenter = #usercenter#
+		and	gongysbh = #gongysbh#
+		and	fahd = #fahd#
+		and	mudd = #mudd#
+		
+	</delete>
+	
+	
+	
+	
+	
+	
+	
+	<!-- 从表操作 -->
+	<!-- XSS -0011509 -->
+	<select id="queryCkxWaibwlxx" resultClass="com.athena.ckx.entity.carry.CkxWaibwlxx">
+		select usercenter,lujbh,xuh,shifqhbs,wuldbh,wuldmc,shifjk,guanjdbs,jihdhsysj,gcbh,yunsms,beihzq,yunssj,shengxbs,to_char(shengxrq,'yyyy-MM-dd') shengxrq,yaohlzkbs,creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_waibwlxx where shengxbs=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lujbh">lujbh = #lujbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuh">xuh = #xuh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wuldbh">wuldbh = #wuldbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wuldmc">wuldmc = #wuldmc#</isNotEmpty>
+			<!-- hj 2012-11-19 验证同一路径同一承运商的要货令展开只能有一个 -->
+			<isNotEmpty prepend=" and " property="yaohlzkbs">yaohlzkbs = #yaohlzkbs#</isNotEmpty>
+		</dynamic>
+		order by usercenter,lujbh,xuh 
+	</select>
+	
+	<!-- xss-0011509 -->
+	<select id="getCkxWaibwlxx" resultClass="com.athena.ckx.entity.carry.CkxWaibwlxx">
+		select usercenter,lujbh,xuh,shifqhbs,wuldbh,wuldmc,shifjk,guanjdbs,jihdhsysj,gcbh,yunsms,beihzq,yunssj,shengxbs,to_char(shengxrq,'yyyy-MM-dd') shengxrq,yaohlzkbs,creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_waibwlxx where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lujbh">lujbh = #lujbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuh">xuh = #xuh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wuldbh">wuldbh = #wuldbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="wuldmc">wuldmc = #wuldmc#</isNotEmpty>
+		</dynamic>
+		order by usercenter,lujbh,xuh 
+	</select>
+	
+	<!-- 获取同一路径下的最大物理点序号 -->
+	<select id="getMaxXuh" resultClass="com.athena.ckx.entity.carry.CkxWaibwlxx">
+		select usercenter,lujbh,xuh,wuldbh,wuldmc,shifjk,guanjdbs,jihdhsysj,gcbh,yunsms,beihzq,yunssj,shengxbs,to_char(shengxrq,'yyyy-MM-dd') shengxrq,yaohlzkbs,creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_waibwlxx 
+		where lujbh=#lujbh# and usercenter=#usercenter#
+ 			and xuh=(select max(xuh) from ${dbSchemal3}ckx_waibwlxx  where lujbh=#lujbh# and usercenter=#usercenter#)
+	</select>
+	
+	<!-- 获取同一路径下的最大物理点序号 -->
+	<select id="getMaxXuhBywbwl" resultClass="java.lang.String" parameterClass="com.athena.ckx.entity.carry.CkxWaibwlxx">
+		select max(xuh) from ${dbSchemal3}ckx_waibwlxx  where lujbh=#lujbh# and usercenter=#usercenter#
+	</select>
+	
+	<!-- 获取同路径编码下 当前序号之后的所有集合 -->
+	<select id="getAfterCkxWaibwlxx" resultClass="com.athena.ckx.entity.carry.CkxWaibwlxx">
+		select usercenter,lujbh,xuh,wuldbh,wuldmc,shifjk,guanjdbs,jihdhsysj,gcbh,yunsms,beihzq,yunssj,shengxbs,to_char(shengxrq,'yyyy-MM-dd') shengxrq,yaohlzkbs,creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_waibwlxx 
+		where lujbh=#lujbh# and usercenter=#usercenter#
+ 			and xuh>#xuh# order by usercenter,lujbh, xuh
+	</select>
+	
+	
+	<!-- 获取路径编号集合 -->
+	<select id="getSelectLujbhCode" resultClass="java.lang.String">
+		select Lujbh,usercenter
+		 from ${dbSchemal3}ckx_waibwlxx   where shengxbs=1 and usercenter=#usercenter#
+		 group by Lujbh,usercenter  order by usercenter,Lujbh
+	</select>
+	
+	<!-- 根据路径编号获取第一个物理点对象 -->
+	<select id="getFastWuldByLujbh" resultClass="com.athena.ckx.entity.carry.CkxWaibwlxx">
+		select 
+			usercenter,lujbh,xuh,wuldbh,wuldmc,shifjk,guanjdbs,jihdhsysj,gcbh,yunsms,beihzq,yunssj,shengxbs,to_char(shengxrq,'yyyy-MM-dd') shengxrq,yaohlzkbs,creator,create_Time,editor,edit_Time
+		 from ${dbSchemal3}ckx_waibwlxx where lujbh=#lujbh# and usercenter=#usercenter# and xuh=1
+		
+	</select>
+	
+	<!-- xss-0011509 -->
+	<insert id="insertCkxWaibwlxx" parameterClass="com.athena.ckx.entity.carry.CkxWaibwlxx">
+		insert into ${dbSchemal3}ckx_waibwlxx (usercenter,
+			lujbh,xuh,shifqhbs,wuldbh,wuldmc,shifjk,guanjdbs,jihdhsysj,gcbh,yunsms,
+			beihzq,yunssj,shengxbs,shengxrq,yaohlzkbs
+			,creator,create_Time,editor,edit_Time
+		)values(
+			#usercenter#,#lujbh#,#xuh#,#shifqhbs#,#wuldbh#,#wuldmc#,#shifjk#,#guanjdbs#,#jihdhsysj#,#gcbh#,#yunsms#
+			,#beihzq#,#yunssj#,1,to_date(#shengxrq#,'yyyy-MM-dd'),#yaohlzkbs#
+			,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		)
+	</insert>
+	
+	<!-- xss-0011509 -->
+	<update id="updateCkxWaibwlxx" parameterClass="com.athena.ckx.entity.carry.CkxWaibwlxx">
+		update ${dbSchemal3}ckx_waibwlxx set 
+			shifqhbs =#shifqhbs#,
+			wuldbh=#wuldbh#,
+			wuldmc=#wuldmc#,
+			shifjk=#shifjk#,
+			guanjdbs=#guanjdbs#,
+			jihdhsysj=#jihdhsysj#,
+			gcbh=#gcbh#,
+			yunsms=#yunsms#,
+			beihzq=#beihzq#,
+			yunssj=#yunssj#,
+			shengxrq=to_date(#shengxrq#,'yyyy-MM-dd'),
+			yaohlzkbs=#yaohlzkbs#,
+			editor=#editor#,
+			edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+			where 1=1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="lujbh">lujbh = #lujbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuh">xuh = #xuh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+		</dynamic>
+	</update>
+	<update id="updateCkxWaibwlxxForXuh" parameterClass="com.athena.ckx.entity.carry.CkxWaibwlxx">
+		update ${dbSchemal3}ckx_waibwlxx set 
+			
+			xuh=#newXuh#
+			where 1=1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lujbh">lujbh = #lujbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuh">xuh = #xuh#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<update id="updateCkxwaibwlbywaibwlxx" parameterClass="java.util.Map">
+		update ${dbSchemal3}ckx_waibwl set 
+			chengysbh=#chengysbh#,
+			editor=#editor#,
+			edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+			where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lujbh">lujbh = #lujbh#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<update id="deleteCkxWaibwlxxLogic" parameterClass="com.athena.ckx.entity.carry.CkxWaibwlxx">
+	update ${dbSchemal3}ckx_waibwlxx set 
+			shengxbs=0
+			
+			,editor=#editor#
+			,edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+			where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lujbh">lujbh = #lujbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuh">xuh = #xuh#</isNotEmpty>
+		</dynamic>
+	</update>
+	<delete id="deleteCkxWaibwlxx" parameterClass="com.athena.ckx.entity.carry.CkxWaibwlxx">
+		delete from  ${dbSchemal3}ckx_waibwlxx where 
+			lujbh = #lujbh#
+		and	xuh = #xuh#
+		and usercenter = #usercenter#
+		
+	</delete>
+</sqlMap>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="common">
+
+	<resultMap class="com.athena.xqjs.entity.common.Jiaofrl" id="Jiaofrl">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="RI" property="ri" />
+		<result column="JIAOFM" property="jiaofm" />
+		<result column="NIANZQ" property="nianzq" />
+	</resultMap>
+
+	<select id="queryJiaofrl" resultMap="Jiaofrl">
+		SELECT
+			usercenter,
+			ri,
+			jiaofm,
+			nianzq
+		FROM
+			${dbSchemal3}ckx_jiaofrl
+		WHERE
+			usercenter = #usercenter#
+			and
+			jiaofm = #jiaofm#
+			and
+			nianzq = #nianzq#
+		order by
+			ri
+  	</select>
+
+</sqlMap>

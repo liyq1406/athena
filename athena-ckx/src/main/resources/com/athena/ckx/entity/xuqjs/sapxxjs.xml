@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sapxxjs">
+	
+	<!-- 查询  |0013580:页面查询按照用户中心，产线 ，零件编号排序  lc 2017-04-17-->
+	<select id="querySapxxjs" resultClass="com.athena.ckx.entity.xuqjs.Sapxxjs">
+		select usercenter,chanx,lingjbh,shifzc,zongch,creator,create_time,editor,edit_time from ${dbSchemal5}ckx_xiaxjs where 1 = 1
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotNull>
+			<isNotNull property="chanx" prepend=" and ">chanx = #chanx#</isNotNull>
+			<isNotNull property="lingjbh" prepend=" and ">lingjbh = #lingjbh#</isNotNull>
+			<isNotNull property="shifzc" prepend=" and ">shifzc = #shifzc#</isNotNull>
+			<isNotNull property="zongch" prepend=" and ">zongch = #zongch#</isNotNull>
+		</dynamic>
+		 order by usercenter,chanx,lingjbh
+	</select>
+	
+	<!-- 保存-->
+	<insert id="saveSapxxjs">
+		insert into ${dbSchemal5}ckx_xiaxjs(usercenter,chanx,lingjbh,shifzc,zongch,creator,create_time,editor,edit_time)values(#usercenter#,#chanx#,#lingjbh#,'N',#zongch#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="updateSapxxjs" parameterClass="com.athena.ckx.entity.xuqjs.Sapxxjs">
+		update 
+			${dbSchemal5}ckx_xiaxjs
+		set
+			chanx = #chanx#,
+			lingjbh = #lingjbh#,
+			shifzc = #shifzc#,
+			zongch = #zongch#,
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')	
+		where 
+		<![CDATA[usercenter = #usercenter# and lingjbh=#lingjbh# and chanx = #chanx#]]>
+	</update>
+	
+		<!-- 删除  |0013620:删除去掉where 1=1 条件  lc 2017-04-19 -->
+	<delete id="deleteSapxxjs" parameterClass="com.athena.ckx.entity.xuqjs.Sapxxjs">	 
+		delete from ${dbSchemal5}ckx_xiaxjs where usercenter = #usercenter# and chanx = #chanx# and lingjbh = #lingjbh#	
+	</delete>
+</sqlMap>

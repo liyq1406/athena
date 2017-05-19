@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	小火车运输时刻模板
+	@author denggq
+	@date 2012-4-11
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryXiaohcmb" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohcmb" resultClass="com.athena.ckx.entity.xuqjs.Xiaohcmb">
+		select usercenter,shengcxbh,xiaohcbh,tangc,beihpysj,shangxpysj,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_huocmb 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="tangc" prepend="and">
+	    		<![CDATA[tangc = #tangc#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,shengcxbh,xiaohcbh,tangc
+	</select>
+	
+	<!-- 获取同组最大趟次 -->
+	<select id="getMaxTangc" resultClass="com.athena.ckx.entity.xuqjs.Xiaohcmb">
+		select usercenter,shengcxbh,xiaohcbh,tangc,beihpysj,shangxpysj
+		from ${dbSchemal3}ckx_huocmb 
+		where usercenter = #usercenter#  and shengcxbh = #shengcxbh# and xiaohcbh = #xiaohcbh#  and tangc=
+			(select max(tangc) from ${dbSchemal3}ckx_huocmb  where usercenter = #usercenter#  and shengcxbh = #shengcxbh# and xiaohcbh = #xiaohcbh#)
+	</select>
+	
+	<!-- 获取当前趟的后一趟 -->
+	<select id="getHuocmbAfter" resultClass="com.athena.ckx.entity.xuqjs.Xiaohcmb">
+		select usercenter,shengcxbh,xiaohcbh,tangc,beihpysj,shangxpysj
+		from ${dbSchemal3}ckx_huocmb 
+		where usercenter = #usercenter#  and shengcxbh = #shengcxbh# and xiaohcbh = #xiaohcbh#  and tangc =
+	 		(select min(tangc) from ${dbSchemal3}ckx_huocmb where usercenter = #usercenter#  and shengcxbh = #shengcxbh# and xiaohcbh = #xiaohcbh# <![CDATA[and tangc>#tangc#]]> )
+	</select>
+	
+	<!-- 获取当前趟的前一趟 -->
+	<select id="getHuocmbBefore" resultClass="com.athena.ckx.entity.xuqjs.Xiaohcmb">
+		select usercenter,shengcxbh,xiaohcbh,tangc,beihpysj,shangxpysj
+		from ${dbSchemal3}ckx_huocmb 
+		where usercenter = #usercenter#  and shengcxbh = #shengcxbh# and xiaohcbh = #xiaohcbh#  and tangc =
+	 		(select max(tangc) from ${dbSchemal3}ckx_huocmb where usercenter = #usercenter#  and shengcxbh = #shengcxbh# and xiaohcbh = #xiaohcbh# <![CDATA[and tangc<#tangc#]]>  )
+	</select>
+	
+	<!-- 获取当前趟之后的所有趟次 -->
+	<select id="getAllHuocmbAfter" resultClass="com.athena.ckx.entity.xuqjs.Xiaohcmb">
+		select usercenter,shengcxbh,xiaohcbh,tangc,beihpysj,shangxpysj
+		from ${dbSchemal3}ckx_huocmb 
+		where usercenter = #usercenter#  and shengcxbh = #shengcxbh# and xiaohcbh = #xiaohcbh#  and tangc > #tangc#
+	</select>
+	
+	<select id="getXiaohcmb" resultClass="com.athena.ckx.entity.xuqjs.Xiaohcmb">
+		select usercenter,shengcxbh,xiaohcbh,tangc,beihpysj,shangxpysj  
+		from ${dbSchemal3}ckx_huocmb 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="tangc" prepend="and">
+	    		<![CDATA[tangc = #tangc#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,shengcxbh,xiaohcbh,beihpysj
+	</select>
+	
+	<select id="DistinctXiaohc"  resultClass="com.athena.ckx.entity.xuqjs.Xiaohcmb">
+		 select distinct usercenter,shengcxbh,xiaohcbh from ${dbSchemal3}ckx_huocmb 
+	</select>
+	
+	<insert id="insertXiaohcmb" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohcmb">
+		insert into ${dbSchemal3}ckx_huocmb(usercenter,shengcxbh,xiaohcbh,tangc,beihpysj,shangxpysj,creator,create_time,editor,edit_time)
+		values(#usercenter#,#shengcxbh#,#xiaohcbh#,#tangc#,#beihpysj#,#shangxpysj#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<update id="updateAllTangc" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohcmb">
+		update ${dbSchemal3}ckx_huocmb 
+		set tangc = ($tangc$-1)
+		where <![CDATA[usercenter = #usercenter# and shengcxbh = #shengcxbh# and xiaohcbh = #xiaohcbh# and tangc = #tangc#]]> 
+	</update>
+	
+	<update id="updateXiaohcmb" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohcmb">
+		update ${dbSchemal3}ckx_huocmb 
+		set beihpysj = #beihpysj#,
+			shangxpysj = #shangxpysj#,
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+		where <![CDATA[usercenter = #usercenter# and shengcxbh = #shengcxbh# and xiaohcbh = #xiaohcbh# and tangc = #tangc#]]> 
+	</update>
+	
+	<delete id="deleteXiaohcmb" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohcmb">
+		delete from ${dbSchemal3}ckx_huocmb where
+		<dynamic prepend=" ">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="tangc" prepend="and">
+	    		<![CDATA[tangc = #tangc#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+</sqlMap>

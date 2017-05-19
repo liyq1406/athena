@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	小火车车厢
+	@author denggq
+	@date 2012-4-10
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryXiaohccx" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohccx" resultClass="com.athena.ckx.entity.xuqjs.Xiaohccx">
+		select usercenter,shengcxbh,xiaohcbh,chexh,biaos ,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_xiaohccx 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chexh" prepend="and">
+	    		<![CDATA[chexh = #chexh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,shengcxbh,xiaohcbh,chexh
+	</select>
+	
+	<select id="getXiaohccx" resultClass="com.athena.ckx.entity.xuqjs.Xiaohccx">
+		select usercenter,shengcxbh,xiaohcbh,chexh,biaos  
+		from ${dbSchemal3}ckx_xiaohccx 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chexh" prepend="and">
+	    		<![CDATA[chexh = #chexh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<insert id="insertXiaohccx" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohccx">
+		insert into ${dbSchemal3}ckx_xiaohccx(usercenter,shengcxbh,xiaohcbh,chexh,biaos,creator,create_time,editor,edit_time)
+		values(#usercenter#,#shengcxbh#,#xiaohcbh#,#chexh#,'1',#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<update id="updateXiaohccx" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohccx">
+		update ${dbSchemal3}ckx_xiaohccx 
+		set biaos = #biaos# ,
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where <![CDATA[usercenter = #usercenter# and shengcxbh = #shengcxbh# and xiaohcbh = #xiaohcbh# and chexh = #chexh#]]> 
+	</update>
+	
+	<!-- 逻辑删除 -->
+	<delete id="deleteXiaohccx" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohccx">
+		update ${dbSchemal3}ckx_xiaohccx 
+		set <![CDATA[biaos = '0' , editor = #editor# , edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chexh" prepend="and">
+	    		<![CDATA[chexh = #chexh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+	<!-- 物理删除 -->
+	<delete id="removeXiaohccx" parameterClass="com.athena.ckx.entity.xuqjs.Xiaohccx">
+		delete from ${dbSchemal3}ckx_xiaohccx  where
+		<dynamic prepend=" ">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		<![CDATA[shengcxbh = #shengcxbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="xiaohcbh" prepend="and">
+	    		<![CDATA[xiaohcbh = #xiaohcbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chexh" prepend="and">
+	    		<![CDATA[chexh = #chexh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+</sqlMap>

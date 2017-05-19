@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="hlorder" >
+  <resultMap id="DdbhMaoxqmx" class="com.athena.xqjs.entity.hlorder.DdbhMaoxqmx" >
+    <result column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="USERCENTER" property="usercenter" jdbcType="VARCHAR" />
+    <result column="SHIYCJ" property="shiycj" jdbcType="VARCHAR" />
+    <result column="CHANX" property="chanx" jdbcType="VARCHAR" />
+    <result column="XUQRQ" property="xuqrq" jdbcType="DATE" />
+    <result column="LINGJBH" property="lingjbh" jdbcType="VARCHAR" />
+    <result column="LINGJSL" property="lingjsl" jdbcType="DECIMAL" />
+    <result column="DANW" property="danw" jdbcType="VARCHAR" />
+    <result column="ZHIZLX" property="zhizlx" jdbcType="VARCHAR" />
+    <result column="XUQKSRQ" property="xuqksrq" jdbcType="DATE" />
+    <result column="XUQJSRQ" property="xuqjsrq" jdbcType="DATE" />
+    
+    <result column="FLAG" property="flag" jdbcType="CHAR" />
+    <result column="XUQCFSJ" property="xuqcfsj" jdbcType="DATE" />
+    <result column="BEIZ" property="beiz" jdbcType="VARCHAR" />
+    <result column="BEIZ1" property="beiz1" jdbcType="DECIMAL" />
+   
+  </resultMap>
+ 
+
+ 
+  <insert id="insertDdbhMaoxqmxtmp" parameterClass="com.athena.xqjs.entity.hlorder.DdbhMaoxqmx" >
+      insert into ${dbSchemal5}DDBH_MAOXQMX_TMP (ID, 
+	      USERCENTER, 
+	      SHIYCJ,      
+	      CHANX, 
+	      XUQRQ, 
+	      LINGJBH, 
+	      LINGJSL, 
+	      DANW, 
+	      ZHIZLX, 
+	      XUQKSRQ, 
+	      XUQJSRQ,
+	      FLAG,
+	      XUQCFSJ,
+	      BEIZ,
+	      BEIZ1
+      )
+      values(
+				#id#,
+				#usercenter#,  
+				#shiycj#,
+				#chanx#,  
+				#xuqrq#,
+				#lingjbh#,
+				#lingjsl#,
+				#danw#,
+				#zhizlx#,
+				#xuqksrq#,
+				#xuqjsrq#,
+				#flag#,
+				#xuqcfsj#,
+				#beiz#,
+				#beiz1#
+			) 
+  </insert>
+ 
+ 
+ <insert id="insertDdbhMaoxqmx" parameterClass="com.athena.xqjs.entity.hlorder.DdbhMaoxqmx" >
+      insert into ${dbSchemal5}DDBH_MAOXQMX (ID, 
+	      USERCENTER, 
+	      SHIYCJ,      
+	      CHANX, 
+	      XUQRQ, 
+	      LINGJBH, 
+	      LINGJSL, 
+	      DANW, 
+	      ZHIZLX, 
+	      XUQKSRQ, 
+	      XUQJSRQ,
+	      FLAG,
+	      XUQCFSJ,
+	      BEIZ,
+	      BEIZ1
+      )
+      values(
+				#id#,
+				#usercenter#,  
+				#shiycj#,
+				#chanx#,  
+				#xuqrq#,
+				#lingjbh#,
+				#lingjsl#,
+				#danw#,
+				#zhizlx#,
+				#xuqksrq#,
+				#xuqjsrq#,
+				#flag#,
+				#xuqcfsj#,
+				#beiz#,
+				#beiz1#
+			) 
+  </insert>
+ 
+ <delete id="deleteallDDBH_DdbhMaoxqmx" >
+		truncate table ${dbSchemal5}DDBH_MAOXQMX 
+  </delete>
+ 
+  
+</sqlMap>

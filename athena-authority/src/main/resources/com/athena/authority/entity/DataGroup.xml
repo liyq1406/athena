@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.DataGroup" id="DataGroup">
+		<result column="GROUP_ID" property="groupId" />
+		<result column="DATA_ID" property="dataId" />
+		<result column="GROUP_NAME" property="groupName" />
+		<result column="GROUP_DESC" property="groupDesc" />
+		<result column="MENDER" property="mender" />
+		<result column="MODIFY_TIME" property="modifyTime" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="BIAOS" property="biaos" />
+		<result column="USERCENTER" property="usercenter" />
+	</resultMap>
+	
+	<select id="queryDataGroup" resultMap="DataGroup">select 
+		GROUP_ID,
+		DATA_ID,
+		GROUP_NAME,
+		GROUP_DESC, 
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		USERCENTER
+		from ${dbSchemal0}SYS_DATA_GROUP 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="groupName">GROUP_NAME like '%'||#groupName#||'%'
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="listDataGroup" resultMap="DataGroup">select 
+		GROUP_ID,
+		DATA_ID,
+		GROUP_NAME,
+		GROUP_DESC, 
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		USERCENTER
+		from ${dbSchemal0}SYS_DATA_GROUP 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dataId">DATA_ID = #dataId#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getDataGroup" resultMap="DataGroup">select 
+		GROUP_ID,
+		DATA_ID,
+		GROUP_NAME,
+		GROUP_DESC, 
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		USERCENTER
+		from ${dbSchemal0}SYS_DATA_GROUP 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="groupId">GROUP_ID = #groupId#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getAllData" resultClass="com.athena.util.cache.CacheValue">select 
+		DATA_ID key,
+		DATA_NAME value,
+		0 usercenter
+		from ${dbSchemal0}SYS_DATA_TYPE 
+		where 1=1
+
+	</select>
+	
+	<resultMap class="java.util.HashMap" id="ParamItem">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="VALUE" property="value" />
+		<result column="TEXT" property="text" />
+	</resultMap>
+	<select id="getDataParam" resultMap="ParamItem">$newDataParam$
+	</select>
+	
+	<insert id="insertDataGroup" parameterClass="com.athena.authority.entity.DataGroup">
+		insert into
+		${dbSchemal0}SYS_DATA_GROUP (GROUP_ID,DATA_ID,GROUP_NAME,GROUP_DESC, MENDER,
+		MODIFY_TIME,CREATOR,CREATE_TIME,BIAOS,USERCENTER)
+		values(
+			#groupId#,
+			#dataId#,
+			#groupName#,
+			#groupDesc#,
+			#mender#,
+			#modifyTime#,
+			#creator#,
+			#createTime#,
+			#biaos#,#usercenter#)
+	</insert>
+	
+	<update id="updateDataGroup" parameterClass="com.athena.authority.entity.DataGroup">
+		update ${dbSchemal0}SYS_DATA_GROUP set 
+		GROUP_ID=#groupId#,
+		DATA_ID=#dataId#,
+		GROUP_NAME=#groupName#,
+		GROUP_DESC=#groupDesc#, 
+		MENDER=#mender#,
+		MODIFY_TIME=#modifyTime#,
+		CREATOR=#creator#,
+		CREATE_TIME=#createTime#,
+		BIAOS=#biaos#,
+		USERCENTER = #usercenter#
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">GROUP_ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deleteDataGroup" parameterClass="com.athena.authority.entity.DataGroup">
+		delete from ${dbSchemal0}SYS_DATA_GROUP where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">GROUP_ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+
+	<package name="xuqjs" extend="toft-default" namespace="/xuqjs">
+	
+	
+   				
+		<!-- 取货运输费用参考系 -->
+			<action name="quhyuns" class="quhyunsAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/quhyuns/quhyuns.jsp</result>
+    	</action>
+    	 	<action name="queryQuhYuns" class="quhyunsAction" method="query"/>
+	   		<action name="savesquhyuns" class="quhyunsAction" method="saves"/> 
+   			<action name="downloadquhyunsMob" class="quhyunsAction" method="downloadMob"/> 
+   		<action name="importAth_uploadquhyuns" class="quhyunsAction" method="upload">
+   			<result name="upload">/WEB-INF/pages/ckx/xuqjs/quhyuns/quhyuns.jsp</result> 
+   		</action>
+  
+   		
+   		
+   				<action name="tuopbzdygx" class="tuopbzdygxAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/quhyuns/tuopbzdygx.jsp</result>
+    	</action>
+    		<action name="queryTuopbzdygx" class="tuopbzdygxAction" method="query"/>
+    
+	  		<action name="savesTuopbzdygx" class="tuopbzdygxAction" method="saves"/> 
+	  	
+	  	
+	  			
+   				<action name="jinjjquhyuns" class="jinjjQuhYunsAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/quhyuns/jinjjquhyuns.jsp</result>
+    	</action>
+    	   	 	<action name="queryJinjjQuhYuns" class="jinjjQuhYunsAction" method="query"/>
+    	   	 	   		<action name="savesJinjjQuhYuns" class="jinjjQuhYunsAction" method="saves"/> 	
+    	   	 	   		
+    	   	<action name="downloadquhyunsJinjjMob" class="jinjjQuhYunsAction" method="downloadMob"/> 
+    	   	
+    	   	   		<action name="importAth_uploadquhyunsJinjj" class="jinjjQuhYunsAction" method="upload">
+   			<result name="upload">/WEB-INF/pages/ckx/xuqjs/quhyuns/jinjjquhyuns.jsp</result> 
+   		</action>
+    	   	
+		<!-- 按件目录卸货点 -->
+   		<action name="queryAnjmlxhd" class="anjmlxhdAction" method="queryAnjmlxhd"/>
+   		<action name="saveAnjmlxhd" class="anjmlxhdAction" method="saveAnjmlxhd"/>
+   		<action name="selectAnjmlxhd" class="anjmlxhdAction" method="selectAnjmlxhd"/>
+   		<action name="initAnjmlxhd" class="anjmlxhdAction" method="initAnjmlxhd">
+   			<result name="anjmlxhd">/WEB-INF/pages/ckx/xuqjs/anjmlxhd.jsp</result>
+   		</action>
+	
+   		<!-- 用户中心  denggq 20120319-->
+    	<action name="usercenter" class="usercenterAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/usercenter.jsp</result>
+    	</action>
+    	<action name="queryUsercenter" class="usercenterAction" method="query"/>
+   		<action name="saveUsercenter" class="usercenterAction" method="save"/>
+   		<action name="getUsercenter" class="usercenterAction" method="get"/>
+   		<action name="listUsercenter" class="usercenterAction" method="list"/>
+   		<action name="removeUsercenter" class="usercenterAction" method="remove"/>
+   		
+   		<!-- 车间  denggq 20120705-->
+    	<action name="chej" class="chejAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/chej.jsp</result>
+    	</action>
+    	<action name="queryChej" class="chejAction" method="query"/>
+   		<action name="saveChej" class="chejAction" method="save"/>
+   		<action name="getChej" class="chejAction" method="get"/>
+   		<action name="listChej" class="chejAction" method="list"/>
+   		<action name="removeChej" class="chejAction" method="remove"/>
+   		
+   		
+   		<!-- 系统参数定义  denggq 20120320-->
+    	<action name="xitcsdy" class="xitcsdyAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/xitcsdy.jsp</result>
+    	</action>
+    	<action name="queryXitcsdy" class="xitcsdyAction" method="query"/>
+   		<action name="saveXitcsdy" class="xitcsdyAction" method="save"/>
+   		<action name="getXitcsdy" class="xitcsdyAction" method="get"/>
+   		<action name="listXitcsdy" class="xitcsdyAction" method="list"/>
+   		<action name="removeXitcsdy" class="xitcsdyAction" method="remove"/>
+   		<action name="copyXitcsdy" class="xitcsdyAction" method="copy"/>
+   		<action name="getZidlxmc" class="xitcsdyAction" method="getZidlxmc"/>
+   		
+    	<!-- 拆分天数参数设置  wangyu 20121011-->
+    	<action name="chaftscssz" class="chaftscsszAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/chaftscssz.jsp</result>
+    	</action>
+    	<action name="queryChaftscssz" class="chaftscsszAction" method="query"/>
+   		<action name="saveChaftscssz" class="chaftscsszAction" method="save"/>
+   		
+   		<!-- 生产线  denggq 20120321-->
+    	<action name="shengcx" class="shengcxAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/shengcx.jsp</result>
+    	</action>
+    	<action name="queryShengcx" class="shengcxAction" method="query"/>
+   		<action name="getShengcx" class="shengcxAction" method="get"/>
+   		<action name="listShengcx" class="shengcxAction" method="list"/>
+   		<action name="removeShengcx" class="shengcxAction" method="remove"/>
+   		
+   		<action name="saveFenpqs" class="shengcxAction" method="saveFenpqs"/>
+   		
+   		<action name="downloadShengcx" class="shengcxAction" method="download"/><!-- 导出生产线分配区 -->
+   		
+   		<!-- 分配区  denggq 20120321-->
+    	<action name="queryFenpq" class="fenpqAction" method="query"/>
+   		<action name="getFenpq" class="fenpqAction" method="get"/>
+   		<action name="listFenpq" class="fenpqAction" method="list"/>
+   		<action name="removeFenpq" class="fenpqAction" method="remove"/>
+   		
+   		
+   		<!-- 生产平台  denggq 20120328-->
+    	<action name="queryShengcpt" class="shengcptAction" method="query"/>
+   		<action name="saveShengcpt" class="shengcptAction" method="save"/>
+   		<action name="getShengcpt" class="shengcptAction" method="get"/>
+   		<action name="listShengcpt" class="shengcptAction" method="list"/>
+   		
+   		<!-- 车型平台关系  denggq 20120418-->
+    	<action name="chexpt" class="chexptAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/chexpt.jsp</result>
+    	</action>
+    	<action name="queryChexpt" class="chexptAction" method="query"/>
+   		<action name="saveChexpt" class="chexptAction" method="save"/>
+   		
+
+
+   		<!-- 单表 -->
+   		
+   		<!-- 包装  denggq 20120224-->
+    	<action name="baoz" class="baozAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/baoz.jsp</result>
+    	</action>
+    	<action name="queryBaoz" class="baozAction" method="query"/>
+   		<action name="savesBaoz" class="baozAction" method="saves"/><!-- 行编辑 -->
+   		<action name="getBaoz" class="baozAction" method="get"/>
+   		<action name="listBaoz" class="baozAction" method="list"/>
+   		<action name="removeBaoz" class="baozAction" method="remove"/>
+   		<!--xh 141219  10798 导入权限控制 -->
+   		<action name="importAth_uploadBaoz" class="baozAction" method="upload">
+   			<result name="upload">/WEB-INF/pages/ckx/xuqjs/baoz.jsp</result> 
+   		</action>
+   		<action name="downloadBaozMob" class="baozAction" method="downloadMob"/>
+   		<action name="downloadBaoz" class="baozAction" method="download"/><!-- 导出包装数据-->
+   		
+   		
+   		<!-- 计划员分组  denggq 20120320-->
+    	<action name="manager" class="managerAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/manager.jsp</result>
+    	</action>
+    	<action name="queryManager" class="managerAction" method="query"/>
+   		<action name="saveManager" class="managerAction" method="save"/>
+   		<action name="getManager" class="managerAction" method="get"/>
+   		<action name="listManager" class="managerAction" method="list"/>
+   		<action name="removeManager" class="managerAction" method="remove"/>
+   		
+   		
+   		<!-- CMJ  denggq 20120326-->
+    	<action name="cmj" class="cmjAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/cmj.jsp</result>
+    	</action>
+    	<action name="queryCmj" class="cmjAction" method="query"/>
+    	<action name="calculateCmj" class="cmjAction" method="calculateCmj"/>
+    	<action name="downloadCmj" class="cmjAction" method="download"/>
+   		
+   		
+   		<!-- 订货路线转换  qizhongtao 20120405-->
+    	<action name="dinghlxzh" class="dinghlxzhAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/dinghlxzh.jsp</result>
+    	</action>
+    	<action name="queryDinghlxzh" class="dinghlxzhAction" method="query"/>
+    	<action name="getDinghlxzh" class="dinghlxzhAction" method="get"/>
+    	<action name="listDinghlxzh" class="dinghlxzhAction" method="list"/>
+    	<action name="saveDinghlxzh" class="dinghlxzhAction" method="save"/>
+    	
+    	
+    	<!-- 供货模式-毛需求  qizhongtao 20120409-->
+    	<action name="gonghmsMxq" class="gonghmsMxqAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/gonghmsMxq.jsp</result>
+    	</action>
+    	<action name="queryGonghmsMxq" class="gonghmsMxqAction" method="query"/>
+    	<action name="getGonghmsMxq" class="gonghmsMxqAction" method="get"/>
+    	<action name="listGonghmsMxq" class="gonghmsMxqAction" method="list"/>
+    	<action name="saveGonghmsMxq" class="gonghmsMxqAction" method="save"/>
+    	
+    	
+    	<!-- 资源获取日历 qizhongtao 20120416-->
+    	<action name="ziyhqrl" class="ziyhqrlAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/ziyhqrl.jsp</result>
+    	</action>
+    	<action name="queryZiyhqrl" class="ziyhqrlAction" method="query"/>
+    	<action name="getZiyhqrl" class="ziyhqrlAction" method="get"/>
+    	<action name="listZiyhqrl" class="ziyhqrlAction" method="list"/>
+    	<action name="saveZiyhqrl" class="ziyhqrlAction" method="save"/>
+    	
+    	
+    	<!-- 既定-预告-周期 qizhongtao 20120416-->
+    	<action name="jdygzq" class="jdygzqAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/jdygzq.jsp</result>
+    	</action>
+    	<action name="queryJdygzq" class="jdygzqAction" method="query"/>
+    	<action name="getJdygzq" class="jdygzqAction" method="get"/>
+    	<action name="listJdygzq" class="jdygzqAction" method="list"/>
+    	<action name="saveJdygzq" class="jdygzqAction" method="save"/>
+    	
+    	
+    	<!-- 订单计算依赖关系 qizhongtao 20120416-->
+    	<action name="dingdjsyl" class="dingdjsylAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/dingdjsyl.jsp</result>
+    	</action>
+    	<action name="queryDingdjsyl" class="dingdjsylAction" method="query"/>
+    	<action name="getDingdjsyl" class="dingdjsylAction" method="get"/>
+    	<action name="listDingdjsyl" class="dingdjsylAction" method="list"/>
+    	<action name="saveDingdjsyl" class="dingdjsylAction" method="save"/>
+    	
+    	
+		<!--资源跟踪类型对应表 qizhongtao 20120417 -->
+    	<action name="ziygzlx" class="ziygzlxAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/ziygzlx.jsp</result>
+    	</action>
+    	<action name="queryZiygzlx" class="ziygzlxAction" method="query"/>
+    	<action name="getZiygzlx" class="ziygzlxAction" method="get"/>
+    	<action name="listZiygzlx" class="ziygzlxAction" method="list"/>
+    	<action name="saveZiygzlx" class="ziygzlxAction" method="save"/>
+    	<action name="removeZiygzlx" class="ziygzlxAction" method="remove"/>
+    	
+    	
+		<!--需求来源-作用域 qizhongtao 20120417 -->
+    	<action name="xuqly" class="xuqlyAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/xuqly.jsp</result>
+    	</action>
+    	<action name="queryXuqly" class="xuqlyAction" method="query"/>
+    	<action name="getXuqly" class="xuqlyAction" method="get"/>
+    	<action name="listXuqly" class="xuqlyAction" method="list"/>
+    	<action name="saveXuqly" class="xuqlyAction" method="save"/>
+    	
+    	
+		<!--制造路线转换 qizhongtao 20120417 -->
+    	<action name="zhizlxzh" class="zhizlxzhAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/zhizlxzh.jsp</result>
+    	</action>
+    	<action name="queryZhizlxzh" class="zhizlxzhAction" method="query"/>
+    	<action name="getZhizlxzh" class="zhizlxzhAction" method="get"/>
+    	<action name="listZhizlxzh" class="zhizlxzhAction" method="list"/>
+    	<action name="saveZhizlxzh" class="zhizlxzhAction" method="save"/>
+    	<action name="zhizlxzhDown" class="zhizlxzhAction" method="downloadMob"/>
+    	<!--xh 141219  10798 导入权限控制 -->
+    	<action name="importAth_zhizlxzh_upload" class="zhizlxzhAction" method="upload">
+   		<result name="select">/WEB-INF/pages/ckx/xuqjs/zhizlxzh.jsp</result>
+   		</action>
+    	
+		<!--产线合并 qizhongtao 20120417 -->
+    	<action name="chanxhb" class="chanxhbAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/chanxhb.jsp</result>
+    	</action>
+    	<action name="queryChanxhb" class="chanxhbAction" method="query"/>
+    	<action name="getChanxhb" class="chanxhbAction" method="get"/>
+    	<action name="listChanxhb" class="chanxhbAction" method="list"/>
+    	<action name="saveChanxhb" class="chanxhbAction" method="save"/>
+    	
+    	
+		<!--单位换算 qizhongtao 20120417 -->
+    	<action name="danwhs" class="danwhsAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/danwhs.jsp</result>
+    	</action>
+    	<action name="queryDanwhs" class="danwhsAction" method="query"/>
+    	<action name="getDanwhs" class="danwhsAction" method="get"/>
+    	<action name="listDanwhs" class="danwhsAction" method="list"/>
+    	<action name="saveDanwhs" class="danwhsAction" method="save"/>
+    	
+
+
+
+
+
+
+    	<!-- 交互码字典  denggq 20120329-->
+    	<action name="jiaofmzd" class="jiaofmzdAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/jiaofmzd.jsp</result>
+    	</action>
+    	<action name="queryJiaofmzd" class="jiaofmzdAction" method="query"/>
+   		<action name="saveJiaofmzd" class="jiaofmzdAction" method="save"/>
+   		<action name="getJiaofmzd" class="jiaofmzdAction" method="get"/>
+   		<action name="listJiaofmzd" class="jiaofmzdAction" method="list"/>
+   		<action name="removeJiaofmzd" class="jiaofmzdAction" method="remove"/>
+   		
+   		
+   		<!-- 交互码设定  denggq 20120406-->
+    	<action name="jiaofmsd" class="jiaofmsdAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/jiaofmsd.jsp</result>
+    	</action>
+    	<action name="queryJiaofmsd" class="jiaofmsdAction" method="query"/>
+   		<action name="saveJiaofmsd" class="jiaofmsdAction" method="save"/>
+   		<action name="getJiaofmsd" class="jiaofmsdAction" method="get"/>
+   		<action name="listJiaofmsd" class="jiaofmsdAction" method="list"/>
+   		<action name="removeJiaofmsd" class="jiaofmsdAction" method="remove"/>
+   		
+   		
+   		<!-- 交互日历  denggq 20120406-->
+    	<action name="jiaofrl" class="ckxJiaofrlAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/jiaofrl.jsp</result>
+    	</action>
+    	<action name="queryJiaofrl" class="ckxJiaofrlAction" method="query"/>
+    	<action name="calculateJiaofrl" class="ckxJiaofrlAction" method="calculate"/>
+    	
+    	
+    	<!-- 未来几日剔除休息时间  denggq 20120407-->
+    	<action name="ticxxsj" class="ticxxsjAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/ticxxsj.jsp</result>
+    	</action>
+    	<action name="queryTicxxsj" class="ticxxsjAction" method="query"/>
+    	<action name="calculateTicxxsj" class="ticxxsjAction" method="calculate"/>
+    	
+    	
+    	 	<action name="ticxxsjsgjs" class="ticxxsjAction" method="executesgjs">
+    		<result name="selectsgjs">/WEB-INF/pages/ckx/xuqjs/ticxxsjsgjs.jsp</result>
+    	</action>
+    	<action name="querySgjsTicxxsj" class="ticxxsjAction" method="querySgjs"/>
+   		
+   		
+   		
+   		<!-- 零件  denggq 20120320-->
+    	<action name="lingj" class="ckxLingjAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/lingj.jsp</result>
+    	</action>
+    	<action name="lingjs" class="ckxLingjAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/lingj.jsp</result>
+    	</action>
+    	<action name="queryLingj" class="ckxLingjAction" method="query"/>
+   		<action name="saveLingj" class="ckxLingjAction" method="save"/>
+   		<action name="getLingj" class="ckxLingjAction" method="get"/>
+   		<action name="listLingj" class="ckxLingjAction" method="list"/>
+   		<action name="removeLingj" class="ckxLingjAction" method="remove"/>
+   		
+   		<action name="downloadLingj" class="ckxLingjAction" method="download"/><!-- 导出零件数据 -->
+   		<action name="edit" class="ckxLingjAction" method="edit"/>
+   		
+   		<!--  数据权限 -->
+   		<action name="getZudmByAthority" class="ckxLingjAction" method="getZudmByAthority"/><!-- 查询权限组代码 -->
+   			<action name="getZJYQX" class="ckxLingjAction" method="getZJYQX"/><!-- 查询权限组代码 -->
+   		
+   	
+   		<action name="downloadCkxlingjMob" class="ckxLingjAction" method="downloadMob"/><!-- 模板下载 -->
+   		<!--xh 141219  10798 导入权限控制 -->
+   		<action name="importAth_uploadCkxlingj" class="ckxLingjAction" method="upload"><!-- 导入数据据 -->
+   			<result name="upload">/WEB-INF/pages/ckx/xuqjs/lingj.jsp</result> 
+   		</action>
+   		
+   		<!-- 供应商承运商运输商  denggq 20120320-->
+    	<action name="gongys" class="gongcyAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/gongys.jsp</result>
+    	</action>
+    	<action name="gongyss" class="gongcyAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/gongys.jsp</result>
+    	</action>
+    	<action name="queryGongys" class="gongcyAction" method="query"/>
+   		<action name="saveGongys" class="gongcyAction" method="save"/>
+   		<action name="getGongys" class="gongcyAction" method="get"/>
+   		<action name="listGongys" class="gongcyAction" method="list"/>
+   		<action name="getFaydByGongys" class="gongcyAction" method="getFaydByGongys"/>
+   		<action name="downloadGongys" class="gongcyAction" method="download"/><!-- 导出供应商承运商-->
+   		
+   		<action name="removeGongys" class="gongcyAction" method="remove"/>
+   		
+   		
+    	<!-- 替代件 qizhongtao  20120328 -->
+    	<action name="tidj" class="ckxTidjAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/tidj.jsp</result>
+    	</action>
+    	<action name="queryTidj" class="ckxTidjAction" method="query"/>
+    	<action name="getTidj" class="ckxTidjAction" method="get"/>
+    	<action name="listTidj" class="ckxTidjAction" method="list"/>
+    	<action name="saveTidj" class="ckxTidjAction" method="save"/>
+    	
+    	
+    	<!-- 最大订货数量  denggq 20120407-->
+    	<action name="zuiddhsl" class="ckxZuiddhslAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/zuiddhsl.jsp</result>
+    	</action>
+    	<action name="queryZuiddhsl" class="ckxZuiddhslAction" method="query"/>
+    	<action name="getZuiddhsl" class="ckxZuiddhslAction" method="get"/>
+    	<action name="listZuiddhsl" class="ckxZuiddhslAction" method="list"/>
+    	<action name="saveZuiddhsl" class="ckxZuiddhslAction" method="save"/>
+    	<action name="exports" class="ckxZuiddhslAction" method="exports"/>
+    	<!--xh 141219  10798 导入权限控制 -->
+    	<action name="importAth_zuiddhsl_upload" class="ckxZuiddhslAction" method="upload">
+   		<result name="select">/WEB-INF/pages/ckx/xuqjs/zuiddhsl.jsp</result>
+   		</action>
+    	
+    	
+    	<!-- 供应商-柔性比例 qizhongtao 20120409-->
+    	<action name="gongysRouxbl" class="gongysRouxblAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/gongysRxbl.jsp</result>
+    	</action>
+    	<action name="queryGongysRouxbl" class="gongysRouxblAction" method="query"/>
+    	<action name="getGongysRouxbl" class="gongysRouxblAction" method="get"/>
+    	<action name="listGongysRouxbl" class="gongysRouxblAction" method="list"/>
+    	<action name="saveGongysRouxbl" class="gongysRouxblAction" method="save"/>
+    	
+    	
+    	
+    	
+    	
+    	<!-- 配送类别  qizhongtao 20120410-->
+    	<action name="peislb" class="peislbAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/peislb.jsp</result>
+    	</action>
+    	<action name="queryPeislb" class="peislbAction" method="query"/>
+    	<action name="getPeislb" class="peislbAction" method="get"/>
+    	<action name="listPeislb" class="peislbAction" method="list"/>
+    	<action name="savePeislb" class="peislbAction" method="save"/>
+    	<!--hanwu 20150626  0011487 关联项校验 -->
+    	<action name="guanlxjy" class="peislbAction" method="check"/>
+    	<action name="downloadErrorList" class="peislbAction" method="downloadErrorList"/>
+    	
+    	
+    	<!-- 同步集配零件分类  qizhongtao 20120411-->
+    	<action name="tongbjplj" class="tongbjpljAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/tongbjplj.jsp</result>
+    	</action>
+    	<action name="queryTongbjplj" class="tongbjpljAction" method="query"/>
+    	<action name="getTongbjplj" class="tongbjpljAction" method="get"/>
+    	<action name="listTongbjplj" class="tongbjpljAction" method="list"/>
+    	<action name="saveTongbjplj" class="tongbjpljAction" method="save"/>
+    	<action name="getLingjmc" class="tongbjpljAction" method="getLingjmc"/>
+    	<action name="downloadTongbjpljMob" class="tongbjpljAction" method="downloadMob"/><!-- 模板下载 -->
+   		<action name="uploadCkxctongbjplj" class="tongbjpljAction" method="upload">
+   		    <result name="upload">/WEB-INF/pages/ckx/xuqjs/tongbjplj.jsp</result> 
+   		</action>
+    	<action name="downloadTongbjplj" class="tongbjpljAction" method="download"/>
+    	
+    	
+    	
+    	<!-- 零件供应商  qizhongtao  20120329-->
+    	<action name="lingjgys" class="lingjgysAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/lingjgys.jsp</result>
+    	</action>
+    	<action name="queryLingjgys" class="lingjgysAction" method="query"/>
+    	<action name="queryLingjgys-baoz" class="lingjgysAction" method="queryByBaoz"/><!-- 零件供应商包装专用查询  mantis 5547-->
+    	<action name="getLingjgys" class="lingjgysAction" method="get"/>
+    	<action name="saveLingjgys" class="lingjgysAction" method="save"/>
+    	<action name="listLingjgys" class="lingjgysAction" method="list"/>
+    	<action name="downloadLingjgys" class="lingjgysAction" method="download"/><!-- 导出零件供应商数据-->
+    	
+    	<!-- 零件仓库设置  denggq 20120413-->
+    	<action name="lingjck" class="lingjckAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/lingjck.jsp</result>
+    	</action>
+    	<action name="queryLingjck" class="lingjckAction" method="query"/>
+    	<action name="queryLingjck-baoz" class="lingjckAction" method="queryByBaoz"/><!-- 零件仓库包装专用查询   mantis 5547-->
+   		<action name="saveLingjck" class="lingjckAction" method="save"/><!-- 弹出保存 -->
+   		<action name="replaceLingjck" class="lingjckAction" method="replace"/><!-- 弹出保存 -->
+   		<action name="getLingjck" class="lingjckAction" method="get"/>
+   		<action name="listLingjck" class="lingjckAction" method="list"/>
+   		<action name="removeLingjck" class="lingjckAction" method="delete"/>
+   		<action name="downloadLingjck" class="lingjckAction" method="download"/><!-- 导出零件仓库数据-->
+   		<action name="downloadLingjckdMob" class="lingjckAction" method="downloadlingjckMob"/><!-- 零件仓库模板下载 -->
+   		<action name="downloadDingzkwMob" class="lingjckAction" method="downloadDingzkwMob"/><!-- 定置库位导入模板下载 -->
+   		<!--xh 141219  10798 导入权限控制 -->
+   		<action name="importAth_uploadLingjck" class="lingjckAction" method="uploadlingjck">
+   			<result name="upload">/WEB-INF/pages/ckx/xuqjs/lingjck.jsp</result> 
+   		</action>
+   		<!--定置库位导入 20161107 by CSY -->
+   		<action name="importAth_uploadDingzkw" class="lingjckAction" method="uploadDingzkw">
+   			<result name="upload">/WEB-INF/pages/ckx/xuqjs/lingjck.jsp</result> 
+   		</action>
+   		
+   		<!-- 零件-供应商|仓库-包装  denggq  20120416-->
+    	<action name="lingjgcb" class="lingjgcbAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/lingjgcb.jsp</result>
+    	</action>
+    	<action name="lingjgcbs" class="lingjgcbAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/lingjgcb.jsp</result>
+    	</action>
+    	<action name="saveLingjcb" class="lingjgcbAction" method="saveLingjcb"/><!-- 零件-仓库-包装 -->
+    	<action name="saveLingjgb" class="lingjgcbAction" method="saveLingjgb"/><!-- 零件-供应商-包装  -->
+    	<action name="copyLingjgcb" class="lingjgcbAction" method="copyLingjgcb"/><!-- 零件-供应商|仓库-包装 复制 -->
+    	<action name="downloadLingjgcbMob" class="lingjgcbAction" method="downloadlingjgcbMob"/><!-- 零件-供应商-包装模板下载 -->
+    	<!--xh 141219  10798 导入权限控制 -->
+    	<action name="importAth_uploadLingjgysb" class="lingjgcbAction" method="uploadlingjgysb">
+   			<result name="upload">/WEB-INF/pages/ckx/xuqjs/lingjgcb.jsp</result> 
+   		</action>
+    	
+    	<!-- 零件-供应商-临时包装  denggq  20120417-->
+    	<action name="queryLingjgyslsbz" class="lingjgyslsbzAction" method="query"/>
+    	<action name="saveLingjgyslsbz" class="lingjgyslsbzAction" method="save"/>
+    	<action name="getLingjgyslsbz" class="lingjgyslsbzAction" method="get"/>
+    	<action name="listLingjgyslsbz" class="lingjgyslsbzAction" method="list"/>
+   		<action name="removeLingjgyslsbz" class="lingjgyslsbzAction" method="remove"/>
+   		
+   		
+   		
+   		
+   		
+   		
+   		
+   		
+   		
+   		<!-- 工艺消耗点  denggq 20120417-->
+    	<action name="gongyxhd" class="ckxGongyxhdAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/gongyxhd.jsp</result>
+    	</action>
+    	<action name="gongyxhds" class="ckxGongyxhdAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/gongyxhd.jsp</result>
+    	</action>
+    	<action name="queryGongyxhd" class="ckxGongyxhdAction" method="query"/>
+   		<action name="saveGongyxhd" class="ckxGongyxhdAction" method="save"/>
+   		<action name="getGongyxhd" class="ckxGongyxhdAction" method="get"/>
+   		<action name="listGongyxhd" class="ckxGongyxhdAction" method="list"/>
+   		<action name="removeGongyxhd" class="ckxGongyxhdAction" method="remove"/> 
+   		<action name="gongyxhdInterface" class="ckxGongyxhdAction" method="gongyxhdInterface"/> 
+   		<action name="yanzscxbh" class="ckxGongyxhdAction" method="yanzscxbh"/> 
+   		<action name="downloadGongyxhd" class="ckxGongyxhdAction" method="download"/><!-- 导出工艺消耗点-->
+   		<action name="downloadGongyxhdMob" class="ckxGongyxhdAction" method="downloadMob"/><!-- 模板下载 -->
+   		<!--xh 141219  10798 导入权限控制 -->
+   		<action name="importAth_uploadGongyxhd" class="ckxGongyxhdAction" method="upload">
+   		<result name="upload">/WEB-INF/pages/ckx/xuqjs/gongyxhd.jsp</result> 
+   		</action>
+   		<action name="errdownLoad" class="ckxGongyxhdAction" method="errdownLoad"></action>
+
+
+   		
+   		
+   		<!-- 消耗点-零件  denggq 20120418-->
+    	<action name="lingjxhd" class="ckxLingjxhdAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/lingjxhd.jsp</result>
+    	</action>
+    	<action name="lingjxhds" class="ckxLingjxhdAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/lingjxhd.jsp</result>
+    	</action>
+    	
+    	<action name="jipxx" class="ckxLingjxhdAction" method="executejipxx">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/jipxx.jsp</result>
+    	</action>
+    	
+    	<!-- 同步信息 add by CSY 2016-03-18 -->
+     	<action name="tongbxx" class="ckxLingjxhdAction" method="executetongbxx">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/tongbxx.jsp</result>
+    	</action> 
+    	
+    	<action name="saveJipxx" class="ckxLingjxhdAction" method="savejipxx"/>	
+    	<action name="saveTongbxx" class="ckxLingjxhdAction" method="savetongbxx"/>
+    	<action name="shixiaoxiaohd" class="ckxLingjxhdAction" method="shixiao"/>
+    	<action name="junfenbilixiaohd" class="ckxLingjxhdAction" method="junf"/>
+    	<action name="queryLingjxhd" class="ckxLingjxhdAction" method="query"/>
+    	<action name="queryJipxx" class="ckxLingjxhdAction" method="queryjipxx"/>
+    	<action name="queryTongbxx" class="ckxLingjxhdAction" method="querytongbxx"/>
+    	<action name="saveLingjxhd" class="ckxLingjxhdAction" method="save"/>			<!-- 弹出窗口 -->
+    	<action name="savesLingjxhd" class="ckxLingjxhdAction" method="saves"/>		<!-- 行编辑 -->
+    	<action name="getLingjxhd" class="ckxLingjxhdAction" method="get"/>
+    	<action name="listLingjxhd" class="ckxLingjxhdAction" method="list"/>
+    	<action name="removeLingjxhd" class="ckxLingjxhdAction" method="remove"/>
+    	<action name="queryLingjxhdByCarry" class="ckxLingjxhdAction" method="queryLingjxhdByCarry"/>
+    	<action name="pdssj" class="ckxLingjxhdAction" method="pdssj"/> <!-- pds查询生效时间 -->
+   		<!--xh 141219  10798 导入权限控制 -->
+   		<action name="importAth_uploadLingjxhd" class="ckxLingjxhdAction" method="upload">
+   			<result name="upload">/WEB-INF/pages/ckx/xuqjs/lingjxhd.jsp</result> 
+   		</action>
+   		<!--xh 141219  10798 导入权限控制 -->
+   		<action name="importAth_uploadLingjxhdInsert" class="ckxLingjxhdAction" method="uploadlingjxhd">
+   			<result name="upload">/WEB-INF/pages/ckx/xuqjs/lingjxhd.jsp</result> 
+   		</action>
+   		<!--xh 141219  10798 导入权限控制 -->
+   		<action name="importAth_uploadJipxx" class="ckxLingjxhdAction" method="uploadjipxx">
+   			<result name="upload">/WEB-INF/pages/ckx/xuqjs/jipxx.jsp</result> 
+   		</action>
+   		<action name="importAth_uploadTongbxx" class="ckxLingjxhdAction" method="uploadtongbxx">
+   			<result name="upload">/WEB-INF/pages/ckx/xuqjs/tongbxx.jsp</result> 
+   		</action>
+   		<action name="downloadLingjxhd" class="ckxLingjxhdAction" method="download"/><!-- 下载模板 -->
+   		<action name="downloadLingjxhdMob" class="ckxLingjxhdAction" method="downloadMob"/><!-- 模板下载 -->
+   		<action name="downloadJipxxdMob" class="ckxLingjxhdAction" method="downloadJipxxMob"/><!-- 模板下载 -->
+   		<action name="downloadTongbxxdMob" class="ckxLingjxhdAction" method="downloadTongbxxMob"/><!-- 模板下载 -->
+   		<action name="downloadLingjxhdInsertorUpdate" class="ckxLingjxhdAction" method="downloadljxhdMob"/><!-- 模板下载 -->
+   		
+   		
+   		<!-- 零件消耗点变更-->
+    	<action name="lingjxhdbg" class="lingjxhdbgAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/lingjxhds.jsp</result>
+    	</action>
+    	<action name="queryLingjxhdbg" class="lingjxhdbgAction" method="query"/>
+    	<action name="getLingjxhdbg" class="lingjxhdbgAction" method="get"/>
+    	<action name="listLingjxhdbg" class="lingjxhdbgAction" method="list"/>
+    	<action name="saveLingjxhdbg" class="lingjxhdbgAction" method="saves"/>
+    	<action name="saveLingjxhds" class="lingjxhdbgAction" method="save"/>	
+    	<action name="shengxiaolingjxhds" class="lingjxhdbgAction" method="shengxiao"/>
+    	<action name="shixiaolingjxhds" class="lingjxhdbgAction" method="shixiao"/>
+	
+	   		
+   		<!-- 容器记账  xss-10495-20150203-->
+    	<action name="rongqjz" class="rongqjzAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/rongqjz.jsp</result>
+    	</action>
+    	<action name="queryRongqjz" class="rongqjzAction" method="queryRongqjz"/>
+    	<action name="selectRongqjz" class="rongqjzAction" method="selectRongqjz"/>    	
+   		<action name="saveRongqjz" class="rongqjzAction" method="saveRongqjz"/>
+   		<action name="deleteRongqjz" class="rongqjzAction" method="deleteRongqjz"/>
+   		
+   		<!-- 主从供应商  xss-10495-20150204-->
+    	<action name="zhucgys" class="zhucgysAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/zhucgys.jsp</result>
+    	</action>
+    	<action name="queryZhucgys" class="zhucgysAction" method="query"/>
+   		<action name="saveZhucgys" class="zhucgysAction" method="save"/>
+   		<action name="removeZhucgys" class="zhucgysAction" method="remove"/>
+   		<action name="getZhucgys" class="zhucgysAction" method="get"/>
+   		<action name="listZhucgys" class="zhucgysAction" method="list"/>
+   		
+   		<!-- 返还记账商  xss-10495-20150326-->
+    	<action name="fanhjzs" class="fanhjzsAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/fanhjzs.jsp</result>
+    	</action>
+   		
+   		<action name="queryFanhjzs" class="fanhjzsAction" method="query"/>
+    	<action name="saveFanhjzs" class="fanhjzsAction" method="save"/>
+    	<action name="getFanhjzs" class="fanhjzsAction" method="get"/>
+    	<action name="listFanhjzs" class="fanhjzsAction" method="list"/>
+    	<action name="removeFanhjzs" class="fanhjzsAction" method="remove"/>
+    	
+   		<!-- 容器区-仓库  xss-10495-20150410-->
+    	<action name="rongqick" class="rongqickAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/rongqick.jsp</result>
+    	</action>
+    	
+    	<action name="queryRongqick" class="rongqickAction" method="queryRongqick"/>
+    	<action name="selectRongqick" class="rongqickAction" method="selectRongqick"/>    	
+   		<action name="saveRongqick" class="rongqickAction" method="saveRongqick"/>
+   		<action name="deleteRongqick" class="rongqickAction" method="deleteRongqick"/>   
+   				
+   		<action name="queryRongqqbh" class="rongqickAction" method="queryRongqqbh"/>
+   		<action name="queryCangkbh" class="rongqickAction" method="queryCangkbh"/>
+   		
+   		<!-- AB份额重置  hanwu 20150624 0011488-->	
+		<action name="gongysfe" class="gongysfeAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/gongysfe.jsp</result>
+    	</action>
+    	<action name="queryGongysfe" class="gongysfeAction" method="queryGongysfe"/>
+    	<action name="fenecz" class="gongysfeAction" method="fenecz"/>
+
+		<!--xss-0011505  按需需求平移 -->
+		<action name="anxpy" class="anxpyAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/xuqjs/anxpy.jsp</result>
+		</action>
+		<action name="queryAnxpy" class="anxpyAction" method="query"/>
+   		<action name="saveAnxpy" class="anxpyAction" method="save"/>
+   		<action name="getAnxpy" class="anxpyAction" method="get"/>
+   		<action name="listAnxpy" class="anxpyAction" method="list"/>
+   		
+
+		<!-- begin 供应商小火车趟次合并 add by zbb  -->	
+		<action name="gongysxhc" class="gongysxhcAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/gongysxhc.jsp</result>
+    	</action>
+    	<action name="queryGongysxhc" class="gongysxhcAction" method="query"/>
+    	<action name="removeGongysxhc" class="gongysxhcAction" method="remove"/>    	
+    	<action name="saveGongysxhc" class="gongysxhcAction" method="saves"/>    	
+   		<!-- end 供应商小火车趟次合并 add by zbb  -->	
+   		
+   		<!-- begin 库存置换 add by zbb  -->	
+		<action name="kuczh" class="kuczhAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/kuczh.jsp</result>
+    	</action>
+    	<action name="queryKuczh" class="kuczhAction" method="query"/>    	  	
+    	<action name="saveKuczh" class="kuczhAction" method="saves"/>    	
+   		<!-- end 库存置换 add by zbb  -->	
+   		
+   		<!-- begin 盈余修正 add by zbb  -->	
+		<action name="xianbkc" class="xianbkcAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/xianbkc.jsp</result>
+    	</action>
+    	<action name="queryXianbkc" class="xianbkcAction" method="query"/>    	  	
+    	<action name="saveXianbkc" class="xianbkcAction" method="saves"/>    	
+   		<!-- end 盈余修正 add by zbb  -->	
+   		
+   		<!-- begin 小火车上线指导 add by zbb  -->	
+		<action name="xiaohcsxzd" class="xiaohcsxzdAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/xiaohcsxzd.jsp</result>
+    	</action>  
+    	<action name="getSxzdPage" class="xiaohcsxzdAction" method="getsxzd">   
+    		<result name="xiaohcsxzd">/WEB-INF/pages/ckx/xuqjs/xiaohcjk.jsp</result> 
+    	</action>
+    	<action name="monitorXiaohc" class="xiaohcsxzdAction" method="sxzd"/>    		
+   		<!-- end 小火车上线指导 add by zbb  -->	
+   		
+
+   		<!-- 焊装大线  hanwu 20151109 -->	
+   		<action name="listHanzdx" class="daxAction" method="listHanzdx"/>
+    	<action name="getDaxInfo" class="daxAction" method="getDaxInfo"/>
+   		<action name="saveHanzdx" class="daxAction" method="saveHanzdx"/>
+   		
+   		<!-- 焊装分装线  hanwu 20151109 -->	
+    	<action name="getFenzxInfo" class="fenzxAction" method="getFenzxInfo"/>
+   		<action name="saveHanzfzx" class="fenzxAction" method="saveHanzfzx"/>
+   		
+   		<!-- 离线点  hanwu 20151112 -->	
+   		<action name="lixd" class="lixdAction" method="execute">
+   			<result name="select">/WEB-INF/pages/ckx/xuqjs/lixd.jsp</result>
+   		</action>
+   		<action name="queryLixd" class="lixdAction" method="queryLixd"/>
+   		<action name="saveLixd" class="lixdAction" method="saveLixd"/>
+   		
+   		<!-- 分装线排产数量  hanwu 20151117 -->	
+   		<action name="fenzxpcsl" class="fenzxpcslAction" method="execute">
+   			<result name="select">/WEB-INF/pages/ckx/xuqjs/fenzxpcsl.jsp</result>
+   		</action>
+   		<action name="queryFenzxpcsl" class="fenzxpcslAction" method="queryFenzxpcsl"/>
+   		<action name="saveFenzxpcsl" class="fenzxpcslAction" method="saveFenzxpcsl"/>
+   		<action name="deleteFenzxpcsl" class="fenzxpcslAction" method="deleteFenzxpcsl"/>
+
+		
+		<!-- SAP下线结算-->
+    	<action name="sapxxjs" class="sapxxjsAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/sapxxjs.jsp</result>
+    	</action>
+    	<action name="querySapxxjs" class="sapxxjsAction" method="querySapxxjs"/>
+    	<action name="selectSapxxjs" class="sapxxjsAction" method="selectSapxxjs"/>    	
+   		<action name="saveSapxxjs" class="sapxxjsAction" method="saveSapxxjs"/>
+   		<action name="deleteSapxxjs" class="sapxxjsAction" method="deleteSapxxjs"/>
+   		
+   		<!-- SAP整车维护-->
+    	<action name="sapzcwh" class="sapzcwhAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/sapzcwh.jsp</result>
+    	</action>
+    	<action name="querySapzcwh" class="sapzcwhAction" method="querySapzcwh"/>
+    	<action name="selectSapzcwh" class="sapzcwhsAction" method="selectSapzcwh"/>    	
+   		<action name="saveSapzcwh" class="sapzcwhAction" method="saveSapzcwh"/>
+   		<action name="deleteSapzcwh" class="sapzcwhAction" method="deleteSapzcwh"/>
+	
+		<!-- 零件预处理（切换）BOM更改 -->
+    	<action name="dfpvlingjqh" class="dfpvlingjqhAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/dfpvlingjqh.jsp</result>
+    	</action>
+    	<action name="queryDFPVLingjqh" class="dfpvlingjqhAction" method="queryLingjqh"/><!-- 查询零件切换明细 -->
+    	<action name="queryDFPVLingjqhLCDV" class="dfpvlingjqhAction" method="queryLingjqhLCDV"/><!-- 查询版本号对应车型 -->
+    	<action name="getDFPVLingjqhBBH" class="dfpvlingjqhAction" method="queryLingjqhBBH"/><!-- 查询最近十次版本号 -->
+    	<action name="downloadDFPVLingjqhMob" class="dfpvlingjqhAction" method="downloadMob"/><!-- 按车型切换模板下载 -->
+    	<action name="downloadDFPVLingjqhLSMob" class="dfpvlingjqhAction" method="downloadLSMob"/><!-- 按流水号切换模板下载 -->
+		<action name="lingjqhshix" class="dfpvlingjqhAction" method="shixiao"/><!-- 批量失效 -->
+		<action name="lingjqhshengx" class="dfpvlingjqhAction" method="shengx"/><!-- 批量生效 -->
+		<action name="importAth_uploadLingjqhLCDV" class="dfpvlingjqhAction" method="upload"><!-- 上传 -->
+			<result name="upload">/WEB-INF/pages/ckx/xuqjs/dfpvlingjqh.jsp</result>
+    	</action>
+    	
+    	<!-- 零件汇总 -->
+    	<action name="dfpvlingjhz" class="dfpvlingjhzAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/dfpvlingjhz.jsp</result>
+    	</action>
+    	<action name="queryDFPVLingjhz" class="dfpvlingjhzAction" method="queryLingjhz"/><!-- 查询零件切换明细 -->
+    	<action name="getDFPVLingjhzBBH" class="dfpvlingjhzAction" method="queryLingjhzBBH"/><!-- 查询最近十次版本号 -->
+    	
+		<!-- DFPV流水帐审核-->
+    	<action name="dfpvlszsh" class="dfpvlszshAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/dfpvlszsh.jsp</result>
+    	</action>
+		<action name="queryDfpvlszsh" class="dfpvlszshAction" method="queryDfpvlszsh"/>
+   		<action name="queryCaozm" class="dfpvlszshAction" method="queryCaozm"/>
+   		<action name="insertShenh" class="dfpvlszshAction" method="Shenh"/>
+   		<action name="updateShenh" class="dfpvlszshAction" method="Shenh"/>
+   		<action name="deleteShenh" class="dfpvlszshAction" method="Shenh"/>
+   		<action name="insertA36" class="dfpvlszshAction" method="Shenh"/>
+   		
+   		
+	
+	</package>
+	
+	
+	
+	
+	
+	<package name="xiaohc" extend="toft-default" namespace="/xiaohc">
+		 <!-- 小火车  -->                   
+    	<action name="xiaohc" class="xiaohcAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/xiaohc.jsp</result>
+    	</action>
+    	 <!-- 小火车  执行层-->                   
+    	<action name="xiaohcZxc" class="xiaohcAction" method="executeZxc">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/xiaohcZxc.jsp</result>
+    	</action>
+<!--     	执行层保存 -->
+    	<action name="saveXiaohcZxc" class="xiaohcAction" method="savesZxc"/>
+    	<action name="queryXiaohc" class="xiaohcAction" method="query"/>
+    	<action name="getXiaohc" class="xiaohcAction" method="get"/>
+    	<action name="listXiaohc" class="xiaohcAction" method="list"/>
+    	<action name="removeXiaohc" class="xiaohcAction" method="remove"/>
+   		<action name="saveXiaohccxs" class="xiaohcAction" method="saves"/>
+   		
+   		
+   		<!-- 小火车车厢  -->	
+    	<action name="queryXiaohccx" class="xiaohccxAction" method="query"/>
+    	<action name="getXiaohccx" class="xiaohccxAction" method="get"/>
+    	<action name="listXiaohccx" class="xiaohccxAction" method="list"/>
+    	<action name="removeXiaohccx" class="xiaohccxAction" method="remove"/>
+    	<action name="deleteXiaohccx" class="xiaohccxAction" method="delete"/>
+    	
+    	<!-- 小火车运输时刻模板  -->	
+		<action name="xiaohcmb" class="xiaohcmbAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/xiaohcmb.jsp</result>
+    	</action>
+    	<action name="queryXiaohcmb" class="xiaohcmbAction" method="query"/>
+    	<action name="getXiaohcmb" class="xiaohcmbAction" method="get"/>
+    	<action name="listXiaohcmb" class="xiaohcmbAction" method="list"/>
+    	<action name="removeXiaohcmb" class="xiaohcmbAction" method="remove"/>
+   		<action name="saveXiaohcmb" class="xiaohcmbAction" method="save"/> 
+   		<action name="savesXiaohcmb" class="xiaohcmbAction" method="saves"/> 
+   		
+   		
+   		<!-- 小火车运输时刻表  -->	
+		<action name="xiaohcyssk" class="ckxXiaohcysskAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/xuqjs/xiaohcyssk.jsp</result>
+    	</action>
+    	<action name="queryXiaohcyssk" class="ckxXiaohcysskAction" method="query"/>
+    	<action name="getXiaohcyssk" class="ckxXiaohcysskAction" method="get"/>
+    	<action name="listXiaohcyssk" class="ckxXiaohcysskAction" method="list"/>
+    	<action name="removeXiaohcyssk" class="ckxXiaohcysskAction" method="remove"/>
+   		<action name="saveXiaohcyssk" class="ckxXiaohcysskAction" method="save"/>
+
+   		<action name="calculateXiaohcyssk" class="ckxXiaohcysskAction" method="calculate"/>  	
+
+   		<action name="calculateXiaohcyssk" class="ckxXiaohcysskAction" method="calculate"/>
+
+
+	</package>
+</toft>

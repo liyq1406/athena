@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- ibatis数据库操作配置文件 -->
+<sqlMap namespace="fjschedule">
+ <!-- 更新内部要货令表仓库子仓库字段 by 王国首 -->
+	<update id="updateCangkh" parameterClass="java.util.Map">
+		<![CDATA[ 
+		UPDATE ${dbSchemal4}CK_YAONBHL T
+   SET (t.usercenter,t.gongysdm,t.lingjbh,T.CANGKBH,t.yaohlh, T.ZICKBH,t.YAOHLLB) =
+       (SELECT TMP.USERCENTER,
+                       TMP.GONGYSDM,
+                       TMP.LINGJBH,
+                       TMP.CANGKBH,
+                       tmp.YAOHLH,
+                 J.ZICKBH,'05'
+          FROM (SELECT L.USERCENTER,
+                       L.GONGYSDM,
+                       L.LINGJBH,
+                       Y.cangkbh,
+                       L.YAOHLH,
+                       L.zuiwsj
+                  FROM ${dbSchemal4}CK_YAONBHL L
+                  JOIN (select kec.usercenter,kec.cangkbh,kec.kehbh from ${dbSchemal3}ckx_keh_chengpk kec group by kec.usercenter,kec.cangkbh,kec.kehbh) Y
+                   on Y.USERCENTER = L.USERCENTER
+                   and y.kehbh=l.keh
+                 WHERE l.keh IS NOT NULL
+                   AND L.CANGKBH IS NULL and L.SHIFPZ = '9' ) TMP
+          JOIN ${dbSchemal3}CKX_LINGJCK J
+            ON TMP.USERCENTER = J.USERCENTER
+           AND TMP.LINGJBH = J.LINGJBH
+           AND TMP.cangkbh = J.CANGKBH
+           where TMP.USERCENTER = T.USERCENTER AND TMP.YAOHLH = T.YAOHLH )
+ WHERE EXISTS (SELECT 1
+          FROM (
+                SELECT t2.USERCENTER,
+                        t2.GONGYSDM,
+                        t2.LINGJBH,
+                        t2.cangkbh,
+                        t2.YAOHLH,
+                        j.ZICKBH,'05'
+                  FROM (SELECT L.USERCENTER,
+                                L.GONGYSDM,
+                                L.LINGJBH,
+                                Y.cangkbh,
+                                L.YAOHLH, L.zuiwsj
+                           FROM ${dbSchemal4}CK_YAONBHL L
+                           JOIN (select kec.usercenter,kec.cangkbh,kec.kehbh from ${dbSchemal3}ckx_keh_chengpk kec group by kec.usercenter,kec.cangkbh,kec.kehbh) Y
+		                   on Y.USERCENTER = L.USERCENTER
+		                   and y.kehbh=l.keh
+                          WHERE l.keh IS NOT NULL
+                            AND L.CANGKBH IS NULL  and L.SHIFPZ = '9') t2
+                  JOIN ${dbSchemal3}CKX_LINGJCK J
+                    ON t2.USERCENTER = J.USERCENTER
+                   AND t2.LINGJBH = J.LINGJBH
+                   AND t2.cangkbh = J.CANGKBH
+                ) TMP
+         WHERE TMP.USERCENTER = T.USERCENTER
+           AND TMP.LINGJBH = T.LINGJBH
+           AND TMP.YAOHLH = T.YAOHLH
+           and T.SHIFPZ = '9' and T.CANGKBH IS NULL) 
+	    ]]>
+	</update>
+	
+		<update id="updateJiaofj" parameterClass="java.util.Map">
+		<![CDATA[ 
+		UPDATE ${dbSchemal4}CK_YAONBHL T SET  T.jiaofj = T.zuiwsj,t.editor=#editor#,t.edit_time = sysdate WHERE T.SHIFPZ = '9' 
+	    ]]>
+	</update>
+</sqlMap>
+

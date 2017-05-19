@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>athena</artifactId>
+		<groupId>com.athena</groupId>
+		<version>1.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>com.athena</groupId>
+	<artifactId>athena-ws</artifactId>
+	<version>1.0.1-SNAPSHOT</version>
+	<name>athena-ws</name>
+	<url>http://maven.apache.org</url>
+
+	<repositories>
+		<repository>
+			<id>releases</id>
+			<url>http://10.26.218.194:8081/nexus/content/repositories/releases</url>
+		</repository>
+
+		<repository>
+			<id>snapshots</id>
+			<url>http://10.26.218.194:8081/nexus/content/repositories/snapshots</url>
+			<releases>
+				<updatePolicy>interval:60000</updatePolicy>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+
+		<repository>
+			<id>maven.central</id>
+			<url>http://10.26.218.194:8081/nexus/content/repositories/central</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>local-plugin-repositories</id>
+			<url>http://10.26.218.194:8081/nexus/content/repositories/releases</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<properties>
+		<cxf.version>2.2.3</cxf.version>
+	</properties>
+	<!-- 导入项目公共包 -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.athena</groupId>
+				<artifactId>athena</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.athena</groupId>
+			<artifactId>athena-core</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- CXF 相关包 -->
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-simple</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-api</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-core</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-bindings-soap</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-common-utilities</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.ws.commons.schema</groupId>
+			<artifactId>XmlSchema</artifactId>
+			<version>1.4.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-databinding-jaxb</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-tools-common</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+
+		<!-- web 容器相关包 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>

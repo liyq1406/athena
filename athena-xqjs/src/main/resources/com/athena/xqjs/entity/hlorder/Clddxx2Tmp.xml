@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="hlorder" >
+  <resultMap id="Clddxx2Tmp" class="com.athena.xqjs.entity.hlorder.Clddxx2Tmp" >
+    <result column="LCDV24" property="lcdv24" />
+    <result column="LCDVBZK" property="lcdvbzk" />
+    <result column="SCXH" property="scxh" />
+    <result column="USERCENTER" property="usercenter" />
+    <result column="YJSYHSJ" property="yjsyhsj" />
+    <result column="SHUL" property="shul"  />
+    <result column="YJSXSJ" property="yjsxsj" />
+  </resultMap>
+  
+  
+  <delete id="deleteClddxx2TmpAlldata" >
+		truncate table ${dbSchemal5}IN_CLDDXX2_TMP 
+  </delete>
+
+  <delete id="deleteDDBH_MAOXQMX_TMP" >
+		truncate table ${dbSchemal5}DDBH_MAOXQMX_TMP 
+  </delete>
+ 
+  <sql id="Base_Column_List" >
+    SCXH, YJSYHSJ, LCDV24, LCDVBZK, USERCENTER, SHUL, YJSXSJ
+  </sql>
+
+   <insert id="insertClddxx2Tmp" parameterClass="com.athena.xqjs.entity.hlorder.Clddxx2Tmp" >
+      insert into ${dbSchemal5}IN_CLDDXX2_TMP (SCXH,
+      YJSYHSJ, 
+      LCDV24, 
+      LCDVBZK, 
+      USERCENTER, 
+      SHUL, 
+      YJSXSJ)
+      values(
+				#scxh#,
+				#yjsyhsj#,  
+				#lcdv24#,
+				#lcdvbzk#,  
+				#usercenter#,
+				#shul#,
+				#yjsxsj#
+			)
+  </insert>
+ 
+  
+</sqlMap>

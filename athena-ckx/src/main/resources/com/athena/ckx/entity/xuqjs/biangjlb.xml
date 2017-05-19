@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!--  变更记录表 denggq 2012-4-26 -->
+	
+	<!-- 多数据查询 -->
+	<select id="queryBiangjlb" parameterClass="com.athena.ckx.entity.xuqjs.Biangjlb" resultClass="com.athena.ckx.entity.xuqjs.Biangjlb">
+		select usercenter,bianglx,lingjbh,yuanbh,xianbh,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_biangjlb
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xianbh"><![CDATA[xianbh = #xianbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,bianglx,lingjbh
+	</select>
+	
+	<!-- 单数据查询 -->
+	<select id="getBiangjlb" parameterClass="com.athena.ckx.entity.xuqjs.Biangjlb" resultClass="com.athena.ckx.entity.xuqjs.Biangjlb">
+		select usercenter,bianglx,lingjbh,yuanbh,xianbh
+		from ${dbSchemal3}ckx_biangjlb
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xianbh"><![CDATA[xianbh = #xianbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 插入数据 -->
+	<insert id="insertBiangjlb" parameterClass="com.athena.ckx.entity.xuqjs.Biangjlb">
+		insert into ${dbSchemal3}ckx_biangjlb (usercenter,bianglx,lingjbh,yuanbh,xianbh,creator,create_time,editor,edit_time,shifsy)
+		values(<![CDATA[#usercenter#,#bianglx#,#lingjbh#,#yuanbh#,#xianbh#,#creator#,sysdate,#editor#,sysdate,#shifsy#]]>)
+	</insert>
+	
+	<!-- 修改数据 -->
+		<update id="updateBiangjlb" parameterClass="com.athena.ckx.entity.xuqjs.Biangjlb">
+			update ${dbSchemal3}ckx_biangjlb
+			set yuanbh = #yuanbh#,
+				bianglx = #bianglx#,
+				editor = #editor#,
+				edit_time = sysdate
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and xianbh = #xianbh#]]>
+		</update>
+	
+	<!-- 删除数据 -->
+	<delete id="deleteBiangjlb" parameterClass="com.athena.ckx.entity.xuqjs.Biangjlb">
+		delete from ${dbSchemal3}ckx_biangjlb where
+		<dynamic prepend=" "> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xianbh"><![CDATA[xianbh = #xianbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	
+</sqlMap>

@@ -1,0 +1,833 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="anx">
+
+
+	<select id="queryWorkDay" resultClass="com.athena.xqjs.entity.common.CalendarCenter"
+		parameterClass="java.util.Map">
+		SELECT 
+			usercenter,
+			xingq,
+			zhoux,
+			nianzx,
+			nianzq,
+			xis,
+			shifjfr,
+			shifgzr,
+			biaos,
+			riq
+		FROM
+			${dbSchemal3}ckx_calendar_center
+		WHERE
+			1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				USERCENTER = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="shifgzr">
+				shifgzr = #shifgzr#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="riq">
+				<![CDATA[ riq < #riq# ]]>
+			</isNotEmpty>
+		</dynamic>
+		order by
+			riq desc
+	</select>
+
+
+	
+	<select id="queryDingdmxCount" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+	select 
+		SHUL,
+		JISSL,
+		LINGJBH,
+		USERCENTER,
+		DINGDH,
+		GONGYSDM,
+		xiaohd
+	from(
+	select 
+		SHUL,
+		JISSL,
+		LINGJBH,
+		USERCENTER,
+		DINGDH,
+		GONGYSDM,
+		xiaohd
+	from 
+			${dbSchemal1}XQJS_DINGDMX 
+	where 
+			1=1 
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysdm">
+				gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdh">
+				dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xiaohd">
+				xiaohd = #xiaohd#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xianbck">
+				cangkdm = #xianbck#
+			</isNotEmpty>
+		</dynamic>
+		order by xiaohsj desc
+		)
+		where rownum <![CDATA[<]]> 2
+	</select>
+
+	<select id="queryDingdmxDh" parameterClass="java.util.Map" resultClass="java.math.BigDecimal">
+	select 
+		SHUL
+	from(
+	select 
+		sum(SHUL) as SHUL
+	from 
+			${dbSchemal1}XQJS_DINGDMX 
+	where 
+			1=1 
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysdm">
+				gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdh">
+				dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xiaohd">
+				xiaohd = #xiaohd#
+			</isNotEmpty>
+		</dynamic>
+		order by shid desc
+		)
+		where rownum <![CDATA[<]]> 2
+	</select>
+	
+	
+	
+	<select id="queryAllObjectCount" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxq" parameterClass="java.util.Map">
+		select 
+			usercenter ,
+			ofh ,
+			zhongzlxh ,
+			hanzbs ,
+			emon ,
+			shunxh ,
+			lingjbh,
+			danw,
+			xiaohd,
+			xhsj,
+			xuqly ,
+			chejh ,
+			chanx ,
+			zhizlx ,
+			caifsj ,
+			sum(xiaohxs) as xiaohxs
+		from 
+			${dbSchemal1}xqjs_anxmaoxq 
+		where 
+			1=1
+		<dynamic>
+				<isNotEmpty prepend=" and " property="xhsj">
+					$xhsj$
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+					lingjbh = #lingjbh#
+				</isNotEmpty>
+			</dynamic>
+		group by 
+			usercenter ,
+			ofh ,
+			zhongzlxh ,
+			hanzbs ,
+			emon ,
+			shunxh ,
+			lingjbh,
+			danw,
+			xiaohd,
+			xhsj,
+			xuqly ,
+			chejh ,
+			chanx ,
+			zhizlx ,
+			caifsj
+	</select>
+	
+	<select id="queryAllObject" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxq" parameterClass="java.util.Map">
+		select 
+			usercenter ,
+			ofh ,
+			zhongzlxh ,
+			hanzbs ,
+			emon ,
+			shunxh ,
+			lingjbh,
+			danw,
+			xiaohd,
+			xhsj,
+			xuqly ,
+			chejh ,
+			chanx ,
+			zhizlx ,
+			caifsj ,
+			xiaohxs
+		from 
+			${dbSchemal1}xqjs_anxmaoxq 
+		where 
+			1=1
+		<dynamic>
+				<isNotEmpty prepend=" and " property="xhsj">
+					xhsj= to_date(#xhsj#,'yyyy-mm-dd HH24:MI')
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+					lingjbh = #lingjbh#
+				</isNotEmpty>
+			</dynamic>
+		order by 
+			xhsj
+	</select>
+	<select id="queryObjectMaoxq" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxq" parameterClass="java.util.Map">
+		select 
+			usercenter ,
+			ofh ,
+			zhongzlxh ,
+			hanzbs ,
+			emon ,
+			shunxh ,
+			lingjbh,
+			danw,
+			xiaohd,
+			xhsj,
+			xuqly ,
+			chejh ,
+			chanx ,
+			zhizlx ,
+			caifsj ,
+			xiaohxs
+		from 
+			${dbSchemal1}xqjs_anxmaoxq 
+		where 
+			1=1
+		<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+					lingjbh = #lingjbh#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="zhongzlxh">
+					zhongzlxh = #zhongzlxh#
+				</isNotEmpty>
+			</dynamic>
+		order by 
+			xhsj
+	</select>
+	
+	<select id="anxMaoxqhz" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb" parameterClass="java.util.Map">
+		select
+			anx.usercenter as usercenter ,
+			anx.lingjbh as lingjbh,
+			xhd.anqkcs as anqkcs ,
+			xhd.xianbllkc as xianbllkc ,
+			xhd.yifyhlzl as yifyhlzl ,
+			xhd.jiaofzl as jiaofzl ,
+			xhd.zhongzzl as zhongzzl ,
+			xhd.xiaohcbh as xiaohcbh ,
+			xhd.xiaohccxbh as xiaohccxbh ,
+			xhd.xianbyhlx as xianbyhlx ,
+			anx.chejh as chej,
+			anx.zhongzlxh as liush,
+			anx.chanx as xianh,
+			anx.xiaohd as xiaohd,
+			anx.xiaohxs as shul,
+			anx.danw as danw,
+			anx.zhizlx as zhizlx,
+			anx.xhsj as xiaohsj,
+			anx.caifsj as chaifsj,
+			ckx.gongysbh as gongysbh ,
+			ckx.lujbh as lujbh ,
+			ckx.lujmc as lujmc ,
+			ckx.fahd as fahd ,
+			ckx.zhidgys as zhidgys ,
+			ckx.jiaofm as jiaofm ,
+			ckx.beihzq as beihzq ,
+			ckx.yunszq as yunszq ,
+			ckx.gcbh as gcbh ,
+			ckx.xiehztbh as xiehztbh ,
+			ckx.songhpc as songhpc ,
+			ckx.mudd as mudd ,
+			ckx.dinghck as dinghck ,
+			ckx.mos2 as mos2 ,
+			ckx.cangkshpc2 as cangkshpc2 ,
+			ckx.cangkshsj2 as cangkshsj2 ,
+			ckx.cangkfhsj2 as cangkfhsj2 ,
+			ckx.beihsj2 as beihsj2 ,
+			ckx.ibeihsj2 as ibeihsj2 ,
+			ckx.pbeihsj2 as pbeihsj2 ,
+			ckx.xianbck as xianbck ,
+			ckx.waibms as mos ,
+			ckx.cangkshpc as cangkshpc ,
+			ckx.cangkshsj as cangkshsj ,
+			ckx.cangkfhsj as cangkfhsj ,
+			ckx.beihsj as beihsj ,
+			ckx.ibeihsj as ibeihsj ,
+			ckx.pbeihsj as pbeihsj ,
+			ckx.shengcxbh as shengcxbh ,
+			ckx.beihsjc as beihsjc ,
+			ckx.zhizlx as zhizlx,
+			ckx.jianglms2 as jianglms2,
+			ckx.shengxsj2 as shengxsj2,
+			ckx.jianglms as jianglms ,
+			ckx.shengxsj as shengxsj,
+			gys.ucbzlx as gysucbzlx ,
+			gys.ucrl as gysucrl ,
+			gys.uabzlx as gysuabzlx ,
+			gys.gongyhth as gongyhth ,
+			gys.uaucgs as gysuaucgs ,
+			gys.zuixqdl as zuixqdl ,
+			gys.gongyfe as gongysfe ,
+			ck.usbzlx as ckusbzlx ,
+			ck.usbzrl as ckusbzrl ,
+			ck.uclx as ckuclx ,
+			ck.ucrl as ckucrl,
+			ckx.fenpqh as fenpbh
+		from
+				${dbSchemal1}xqjs_anxmaoxqzjb anx
+			left join
+				${dbSchemal3}ckx_lingjxhd xhd
+			on
+				anx.usercenter = xhd.usercenter
+			and
+				anx.lingjbh = xhd.lingjbh
+			and
+				anx.xiaohd = xhd.xiaohdbh
+			left join ${dbSchemal3}ckx_wullj ckx
+			on
+				ckx.usercenter = xhd.usercenter
+			and
+				ckx.fenpqh = xhd.fenpqbh
+			and
+				ckx.lingjbh = xhd.lingjbh
+			left join ${dbSchemal3}ckx_lingjgys gys
+			on
+				gys.usercenter = ckx.usercenter
+			and
+				gys.lingjbh = ckx.lingjbh
+			and
+				gys.gongysbh = ckx.gongysbh
+			and
+				(ckx.waibms = 'CD' or ckx.waibms = 'C1')
+			left join ${dbSchemal3}CKX_LINGJCK ck
+			on
+				ck.usercenter = ckx.usercenter
+			and
+				ck.lingjbh = ckx.lingjbh
+			and
+				ck.cangkbh = substr(ckx.xianbck,0,3)
+			and
+				(ckx.mos2 = 'MD' or ckx.mos2 = 'M1')		
+	</select>
+	
+	<insert id="insertAnxMaoxqhz">
+			insert into ${dbSchemal1}xqjs_anxjscszjb        
+		  (                                              
+		       usercenter,      
+		lingjbh,         
+		anqkcs,          
+		xianbllkc,       
+		yifyhlzl,        
+		jiaofzl,         
+		zhongzzl,        
+		xiaohcbh,        
+		xiaohccxbh,      
+		xianbyhlx,       
+		chej,            
+		liush,           
+		xianh,           
+		xiaohd,          
+		shul,            
+		danw,            
+		zhizlx,          
+		xiaohsj,         
+		chaifsj,         
+		gongysbh,        
+		lujbh,           
+		lujmc,           
+		fahd,                     
+		zhidgys,         
+		jiaofm,          
+		beihzq,          
+		yunszq,          
+		gcbh,            
+		xiehztbh,        
+		songhpc,         
+		mudd,            
+		dinghck,         
+		mos2,            
+		cangkshpc2,      
+		cangkshsj2,      
+		cangkfhsj2,      
+		beihsj2,         
+		ibeihsj2,        
+		pbeihsj2,        
+		xianbck,         
+		mos,             
+		cangkshpc,       
+		cangkshsj,       
+		cangkfhsj,       
+		beihsj,          
+		ibeihsj,         
+		pbeihsj,         
+		shengcxbh,       
+		beihsjc,         
+		jianglms2,       
+		shengxsj2,       
+		jianglms,        
+		shengxsj,        
+		gysucbzlx,       
+		gysucrl,         
+		gysuabzlx,       
+		gongyhth,        
+		gysuaucgs,       
+		zuixqdl,         
+		gongysfe,        
+		ckusbzlx,        
+		ckusbzrl,        
+		ckuclx,          
+		ckucrl,          
+		fenpbh,
+		gongyslx,
+		dinghcklx                                                 
+		   )      
+		   select usercenter,lingjbh,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,xiaohcbh,xiaohccxbh,xianbyhlx,
+		   chej,liush,xianh,xiaohd,shul,danw,zhizlx,xiaohsj,chaifsj,gongysbh,lujbh,lujmc,fahd,zhidgys,
+		   jiaofm,beihzq,yunszq,gcbh,xiehztbh,songhpc,mudd,dinghck,mos2,cangkshpc2,cangkshsj2,cangkfhsj2,beihsj2,ibeihsj2,
+		   pbeihsj2,xianbck,mos,cangkshpc,cangkshsj,cangkfhsj,beihsj,ibeihsj,pbeihsj,shengcxbh,beihsjc,jianglms2,shengxsj2,
+		   jianglms,shengxsj,gysucbzlx,gysucrl,gysuabzlx,gongyhth,gysuaucgs,zuixqdl,gongysfe,ckusbzlx,ckusbzrl,ckuclx,ckucrl,
+		   fenpbh,gongyslx,dinghcklx
+		   from  (                    
+		  select anx.usercenter as usercenter,           
+		         anx.lingjbh    as lingjbh,              
+		         xhd.anqkcs     as anqkcs,               
+		         xhd.xianbllkc  as xianbllkc,            
+		         xhd.yifyhlzl   as yifyhlzl,             
+		         xhd.jiaofzl    as jiaofzl,              
+		         xhd.zhongzzl   as zhongzzl,             
+		         xhd.xiaohcbh   as xiaohcbh,             
+		         xhd.xiaohccxbh as xiaohccxbh,           
+		         xhd.xianbyhlx  as xianbyhlx,            
+		         anx.chejh      as chej,                 
+		         anx.zhongzlxh  as liush,                
+		         anx.chanx      as xianh,                
+		         anx.xiaohd     as xiaohd,               
+		         anx.xiaohxs    as shul,                 
+		         anx.danw       as danw,                 
+		         anx.zhizlx     as zhizlx,               
+		         to_char(anx.xhsj,'yyyy-mm-dd hh24:mi')      as xiaohsj,              
+		         anx.caifsj     as chaifsj,              
+		         ckx.gongysbh   as gongysbh,             
+		         ckx.lujbh      as lujbh,                
+		         ckx.lujmc      as lujmc,                
+		         ckx.fahd       as fahd,                              
+		         ckx.zhidgys    as zhidgys,              
+		         ckx.jiaofm     as jiaofm,               
+		         ckx.beihzq     as beihzq,               
+		         ckx.yunszq     as yunszq,               
+		         ckx.gcbh       as gcbh,                 
+		         ckx.xiehztbh   as xiehztbh,             
+		         ckx.songhpc    as songhpc,              
+		         ckx.mudd       as mudd,                 
+		         ckx.dinghck    as dinghck,              
+		         ckx.mos2       as mos2,                 
+		         ckx.cangkshpc2 as cangkshpc2,           
+		         ckx.cangkshsj2 as cangkshsj2,           
+		         ckx.cangkfhsj2 as cangkfhsj2,           
+		         ckx.beihsj2    as beihsj2,              
+		         ckx.ibeihsj2   as ibeihsj2,             
+		         ckx.pbeihsj2   as pbeihsj2,             
+		         ckx.xianbck    as xianbck,              
+		         ckx.waibms     as mos,                  
+		         ckx.cangkshpc  as cangkshpc,            
+		         ckx.cangkshsj  as cangkshsj,            
+		         ckx.cangkfhsj  as cangkfhsj,            
+		         ckx.beihsj     as beihsj,               
+		         ckx.ibeihsj    as ibeihsj,              
+		         ckx.pbeihsj    as pbeihsj,              
+		         ckx.shengcxbh  as shengcxbh,            
+		         ckx.beihsjc    as beihsjc,              
+		         ckx.jianglms2  as jianglms2,            
+		         ckx.shengxsj2  as shengxsj2,            
+		         ckx.wjianglms   as jianglms,             
+		         ckx.wshengxsj   as shengxsj,             
+		         gys.ucbzlx     as gysucbzlx,            
+		         gys.ucrl       as gysucrl,              
+		         gys.uabzlx     as gysuabzlx,            
+		         gys.gongyhth   as gongyhth,             
+		         gys.uaucgs     as gysuaucgs,            
+		         gys.zuixqdl    as zuixqdl,              
+		         gys.gongyfe    as gongysfe,             
+		         ck.usbzlx      as ckusbzlx,             
+		         ck.usbzrl      as ckusbzrl,             
+		         ck.uclx        as ckuclx,               
+		         ck.ucrl        as ckucrl,               
+		         ckx.fenpqh     as fenpbh,
+		         ckx.gongyslx,
+		         ckx.dinghcklx                
+		    from 
+		    	(select usercenter,lingjbh,xiaohd,chejh,zhongzlxh,chanx,xiaohxs,danw,zhizlx,xhsj,caifsj 
+		    	from ${dbSchemal1}xqjs_anxmaoxq ) anx       
+		    left join ${dbSchemal3}ckx_lingjxhd xhd      
+		      on anx.usercenter = xhd.usercenter         
+		     and anx.lingjbh = xhd.lingjbh               
+		     and anx.xiaohd = xhd.xiaohdbh               
+		     and xhd.biaos = '1' 
+		    left join ${dbSchemal3}ckx_wullj ckx         
+		      on ckx.usercenter = xhd.usercenter         
+		     and ckx.fenpqh = xhd.fenpqbh                
+		     and ckx.lingjbh = xhd.lingjbh   
+		    left join ${dbSchemal3}ckx_lingjgys gys      
+		      on gys.usercenter = ckx.usercenter         
+		     and gys.lingjbh = ckx.lingjbh               
+		     and gys.gongysbh = ckx.gongysbh             
+		     and (ckx.waibms = 'CD' or ckx.waibms = 'C1')
+		    left join ${dbSchemal3}CKX_LINGJCK ck        
+		      on ck.usercenter = ckx.usercenter          
+		     and ck.lingjbh = ckx.lingjbh                
+		     and ck.cangkbh = substr(ckx.xianbck, 0, 3)  
+		     and (ckx.mos2 = 'MD' or ckx.mos2 = 'M1'))               
+		     where mos in('CD','C1') or mos2 in('MD','M1')  
+	</insert>
+	
+	<select id="queryAnxmaoxqObject" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxq" parameterClass="java.util.Map">
+		select  
+		  usercenter ,
+		  min(chejh)  ,
+		  (select LIUSH from ${dbSchemal1}XQJS_ANXMAOXQ anxMxq2 where anxMxq2.xhsj=#xiaohsj2#),
+		  min(XIANH) ,
+		  XIAOHD     ,
+		  LINGJBH    ,
+		  sum(xiaohxs)  ,
+		  min(DANW)  ,
+		  min(ZHIZLX),
+		  #xiaohsj2#,
+		  min(CAIFSJ),
+		  min(xuqly)       
+		from 
+			${dbSchemal1}XQJS_ANXMAOXQ 
+		where 
+			1=1
+		<dynamic>
+				<isNotEmpty prepend=" and " property="xhsj">
+					<![CDATA[xhsj like '$xhsj$%']]>
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+					lingjbh = #lingjbh#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiaohd">
+					xiaohd = #xiaohd#
+				</isNotEmpty>
+			</dynamic>
+		group by 
+			usercenter,
+			lingjbh,
+			xiaohd
+	</select>
+	
+	<select id="queryAnxmaoxqObjectOrderby" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxq">
+		SELECT 
+		    usercenter,
+		    lingjbh,
+		    xiaohd,
+		    xhsj
+	  	FROM 
+	    	${dbSchemal1}xqjs_anxmaoxq 
+	  	WHERE 
+	    	1=1
+	  	GROUP BY 
+		    usercenter,
+		    lingjbh,
+		    xiaohd,
+		    xhsj
+	  	ORDER BY 
+	    	xhsj
+	</select>
+	
+	
+	
+	<select id="queryZiykzbObject" resultClass="com.athena.xqjs.entity.ilorder.Ziykzb" parameterClass="java.util.Map">
+		select	
+			usercenter,
+			lingjbh as LINGJH,
+			cangkdm,
+			kucsl,
+			ziyhqrq,
+			xttzz,
+			dingdlj,
+			jiaoflj,
+			jstzsz,
+			dingdzzlj,
+			anqkc
+		from 
+			${dbSchemal1}XQJS_ZIYKZB
+		where 
+			1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="ziyhqrq">
+				ziyhqrq = to_date(#ziyhqrq#,'yyyy-mm-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkdm">
+				cangkdm = #cangkdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+				gongysdm = #gongysdm#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY ZIYHQRQ DESC
+	</select>
+	
+	
+	<!-- wuyichao change  2014-05-16 -->
+	<select id="queryZiykzbObjects" resultClass="com.athena.xqjs.entity.ilorder.Ziykzb" parameterClass="java.util.Map">
+		select	
+			nvl(sum(kucsl),0) as kucsl
+		from 
+			${dbSchemal1}XQJS_ZIYKZB
+		where 
+			1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="ziyhqrq">
+				ziyhqrq = to_date(#ziyhqrq#,'yyyy-mm-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkdm">
+				cangkdm = #cangkdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+				gongysdm = #gongysdm#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY ZIYHQRQ DESC
+	</select>
+	<!-- wuyichao change  2014-05-16 -->
+
+	<!-- 系统参数 -->
+	<select id="queryShijjg" resultClass="com.athena.xqjs.entity.common.Xitcsdy">
+		select
+
+			c.usercenter as usercenter ,
+			c.qujzxz  as qujzxz
+		from 
+			${dbSchemal3}CKX_XITCSDY c
+		where 
+			1=1
+		<dynamic>
+			
+			<isNotEmpty prepend=" and " property="zidmc">
+				zidmc = #zidmc#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询最近一个工作日 -->
+	<select id="queryGzr" resultClass="java.lang.String">
+		select 
+			gongzr
+		 from 
+		 	(select 
+		 		gongzr 
+		 	from 
+		 		${dbSchemal1}ckx_ticxxsj 
+		 	where 
+		 		usercenter = #usercenter# and chanxck = #chanxck# and gongzr <![CDATA[ > ]]> #gongzr# 
+		 		order by gongzr) 
+		 where 
+		 	rownum <![CDATA[ < ]]> 2
+	</select>
+
+	<!-- 查询初始化计算未来模式为CD,C1,MD,M1 -->
+	<select id="queryCMMos" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxq">
+		select 
+			a.USERCENTER,a.LINGJBH,b.shengcxbh as chanx,b.xiaohdbh as xiaohd,wjianglms as waibms,jianglms2 as mos2,startTime,startTime2
+		from 
+			(select 
+				usercenter,lingjbh,fenpqh,max(a.wjianglms) as wjianglms,max(a.jianglms2) as jianglms2,max(wshengxsj) as startTime,
+				max(a.shengxsj2) as startTime2
+			from 
+				${dbSchemal1}ckx_wullj a 
+			where 
+				(WJIANGLMS = #ms# or JIANGLMS2 = #ms2#)
+			group by usercenter,lingjbh,FENPQH) a,
+			${dbSchemal1}ckx_lingjxhd b 
+		where  
+			a.usercenter = b.usercenter and a.lingjbh = b.lingjbh and a.fenpqh = b.fenpqbh
+	</select>
+
+	<!-- 查询要计算的按需毛需求明细 -->
+	<select id="queryAnxMaoxqDistinct" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxq" parameterClass="java.util.Map">
+		SELECT 
+			USERCENTER,
+			LINGJBH,
+			XIAOHD,
+			MAX(xhsj) as xhsj ,
+			to_char(MIN(xhsj),'yyyy-mm-dd HH24:mi') as startTime
+		FROM 
+			${dbSchemal1}XQJS_ANXMAOXQ 
+		GROUP BY 
+			USERCENTER,LINGJBH,XIAOHD
+	</select>
+	
+	<!-- 得到一个毛需求明细的计算初始点 CD MD按需初始化布线计算 -->
+	<select id="queryStartXiaohsj" resultClass="java.lang.String">
+		select 
+			to_char(min(xhsj),'yyyy-mm-dd HH24:mi') as starttime,to_char(max(xhsj),'yyyy-mm-dd HH24:mi') as endtime
+		from ${dbSchemal1}XQJS_ANXMAOXQ
+		where 
+			usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohd = #xiaohd# and 
+		ZHONGZLXH <![CDATA[ >= ]]> (select zyb.liush from ${dbSchemal1}XQJS_CHUSHZYB zyb 
+						where zyb.USERCENTER = #usercenter# and LINGJBH = #lingjbh# and XIAOHDBH = #xiaohd#)
+	</select>
+	
+	<!-- 得到一个毛需求明细的计算结束点 CD MD按需初始化布线计算 -->
+	<select id="queryEndXiaohsj" resultClass="java.lang.String">
+		select to_char(max(xhsj),'yyyy-mm-dd HH24:mi') from ${dbSchemal1}XQJS_ANXMAOXQ
+	</select>
+	
+	<!-- 得到一个毛需求明细的计算初始点  C1 M1按需初始化计算 当天的第一个时刻-->
+	<select id="queryStartXiaohsjForC1M1" resultClass="java.lang.String">
+		select 
+			to_char(min(xhsj),'yyyy-mm-dd HH24:mi') as xhsj
+		from ${dbSchemal1}XQJS_ANXMAOXQ
+		where to_char(xhsj, 'yyyy-mm-dd') = #nowTime#
+	</select>
+	
+	<!-- 卸货站台 -->
+	<select id="queryXiehztObject" resultClass="com.athena.xqjs.entity.common.Xiehzt">
+		select 
+			xiehztbh ,
+			usercenter ,
+			xiehztmc ,
+			yunxtqdhsj ,
+			shjgsj 
+		from 
+			${dbSchemal3}ckx_xiehzt
+		where 
+			1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">
+				xiehztbh = #xiehztbh#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询子仓库编号 -->
+	<select id="selZickbh" resultClass="java.lang.String">
+		select 
+			zickbh 
+		from 
+			${dbSchemal3}ckx_lingjck 
+		where 
+			usercenter = #usercenter# and lingjbh = #lingjbh# and cangkbh = #cangkbh#
+	</select>
+	
+	<!-- 卸货站台循环时间 -->
+	<select id="queryXiehztxhsjObject" resultClass="com.athena.xqjs.entity.common.Xiehztxhsj">
+		select 
+			xiehztbh ,
+			usercenter ,
+			cangkbh ,
+			mos ,
+			beihsj ,
+			shengxbs 
+		from 
+			${dbSchemal3}CKX_XIEHZTXHSJ
+		where 
+			shengxbs = '1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">
+				xiehztbh = #xiehztbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">
+				cangkbh = #cangkbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">
+				mos = #mos#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 运输时刻 -->
+	<select id="queryYunsskObject" resultClass="com.athena.xqjs.entity.common.Yunssk" parameterClass="java.util.Map">
+		select 
+			m.usercenter as usercenter ,
+			m.xiehztbh as  xiehztbh ,
+			m.gcbh as gcbh ,
+			m.facsj as fassj ,
+			m.daohsj as daohsj ,
+			m.xuh as xuh
+		from 
+			${dbSchemal3}ckx_yunssk m
+		where 
+			1 = 1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter">
+					m.usercenter = #usercenter# 
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiehztbh">
+					m.xiehztbh = #xiehztbh# 
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="gcbh">
+					m.gcbh = #gcbh# 
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="daohsj">
+					m.daohsj <![CDATA[ < ]]> to_date(#daohsj#,'yyyy-MM-dd HH24:mi')
+				</isNotEmpty>
+			</dynamic>		
+			order by daohsj desc
+	</select>
+	
+	<delete id="deleteAnxMaoxqzjb" parameterClass="com.athena.xqjs.entity.anxorder.AnxMaoxqzjb">
+			truncate table  
+			${dbSchemal1}XQJS_ANXMAOXQZJB
+	</delete>
+</sqlMap>

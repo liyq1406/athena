@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 零件供应商临时包装  denggq 2012-4-16 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryLingjgyslsbz" resultClass="com.athena.ckx.entity.xuqjs.Lingjgyslsbz">
+			select  usercenter,gongysbh,lingjbh,xuh,to_char(shengxsj,'yyyy-MM-dd') as shengxsj,to_char(shixsj,'yyyy-MM-dd') as shixsj,ucbzlx,ucrl,uabzlx,uaucgs,
+				gaib,neic,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_lingjgyslsbz
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[gongysbh=#gongysbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xuh"><![CDATA[xuh=#xuh#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,gongysbh,lingjbh,xuh
+		</select>
+		
+		<!--单数据查询	 -->
+		<select id="getLingjgyslsbz" resultClass="com.athena.ckx.entity.xuqjs.Lingjgyslsbz">
+			select  usercenter,gongysbh,lingjbh,xuh,to_char(shengxsj,'yyyy-MM-dd') as shengxsj,to_char(shixsj,'yyyy-MM-dd') as shixsj,ucbzlx,ucrl,uabzlx,uaucgs,gaib,neic
+			from ${dbSchemal3}ckx_lingjgyslsbz
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[gongysbh=#gongysbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xuh"><![CDATA[xuh=#xuh#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertLingjgyslsbz" parameterClass="com.athena.ckx.entity.xuqjs.Lingjgyslsbz" >
+			insert into ${dbSchemal3}ckx_lingjgyslsbz(usercenter,gongysbh,lingjbh,xuh,shengxsj,shixsj,ucbzlx,ucrl,uabzlx,uaucgs,gaib,neic,creator,create_time,editor,edit_time)
+			values(<![CDATA[#usercenter#,#gongysbh#,#lingjbh#,#xuh#,to_date(#shengxsj#,'yyyy-MM-dd hh24:mi:ss'),to_date(#shengxsj#,'yyyy-MM-dd'),#ucbzlx#,#ucrl#,#uabzlx#,#uaucgs#,#gaib#,#neic#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="updateLingjgyslsbz" parameterClass="com.athena.ckx.entity.xuqjs.Lingjgyslsbz">
+			update ${dbSchemal3}ckx_lingjgyslsbz
+			set shengxsj = to_date(#shengxsj#,'yyyy-MM-dd hh24:mi:ss'),
+				shixsj = to_date(#shixsj#,'yyyy-MM-dd hh24:mi:ss'),
+				ucbzlx = #ucbzlx#,
+				ucrl = #ucrl#,
+				uabzlx = #uabzlx#,
+				uaucgs = #uaucgs#,
+				gaib = #gaib#,
+				neic = #neic#,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[gongysbh = #gongysbh# and usercenter = #usercenter# and lingjbh = #lingjbh# and xuh = #xuh#]]>
+		</update>
+		
+		<!-- 删除数据 -->
+		<delete id="deleteLingjgyslsbz" parameterClass="com.athena.ckx.entity.xuqjs.Lingjgyslsbz">
+			delete from ${dbSchemal3}ckx_lingjgyslsbz where
+			<dynamic prepend=" ">
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[gongysbh=#gongysbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xuh"><![CDATA[xuh = #xuh#]]></isNotEmpty>
+			</dynamic>
+		</delete>
+	
+</sqlMap>

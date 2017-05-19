@@ -1,0 +1,98 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>athena</artifactId>
+    <groupId>com.athena</groupId>
+    <version>4.2.1-SNAPSHOT</version>
+  </parent>
+  <groupId>com.athena</groupId>
+  <artifactId>athena-print</artifactId>
+  <version>4.2.1-SNAPSHOT</version>
+  <name>athena-print</name>
+  <url>http://maven.apache.org</url>
+  
+  
+    <!-- 导入项目公共包 -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency> 
+                <groupId>com.athena</groupId>
+                <artifactId>athena</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.athena</groupId>
+            <artifactId>athena-core</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.athena</groupId>
+            <artifactId>athena-ckx</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.snmp4j</groupId>
+            <artifactId>snmp4j</artifactId>
+            <version>1.8.1</version>
+            <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        
+<!--        <dependency> -->
+<!--            <groupId>org.snmp4j</groupId> -->
+<!--            <artifactId>snmp4j-agent</artifactId> -->
+<!--            <version>1.8.1</version> -->
+<!--            <scope>compile</scope> -->
+<!--        </dependency> -->
+    </dependencies>
+            <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar</artifactId>
+                <version>2.12</version>
+                <configuration>
+                    <encoding>utf-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.7.2</version>
+                <configuration>
+                    <skip>true</skip>
+                    <includes>
+                            <!-- <include>com/athena/ckx/module/carry/CkxXiehztxhsjTest.java</include> -->
+                            <!-- <include>com/athena/ckx/module/workCalendar/*Test.java</include> -->
+                            <!-- <include>com/athena/ckx/module/cangk/*Test.java</include> -->
+                            <!--<include>com/athena/ckx/module/pcfj/YonghcysTest.java</include> -->
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

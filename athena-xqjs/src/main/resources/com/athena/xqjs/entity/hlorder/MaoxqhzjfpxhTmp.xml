@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="hlorder">
+
+	<resultMap class="com.athena.xqjs.entity.ilorder.Maoxqhzjfpxh"
+		id="Maoxqhzjfpxh">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="LINGJBH" property="lingjbh" />
+		<result column="FENPXH" property="fenpxh" />
+		<result column="ZHIZLX" property="zhizlx" />
+		<result column="SHIYCJ" property="shiycj" />
+		<result column="DANW" property="danw" />
+		<result column="J0" property="j0" />
+		<result column="J1" property="j1" />
+		<result column="J2" property="j2" />
+		<result column="J3" property="j3" />
+		<result column="J4" property="j4" />
+		<result column="J5" property="j5" />
+		<result column="J6" property="j6" />
+		<result column="J7" property="j7" />
+		<result column="J8" property="j8" />
+		<result column="J9" property="j9" />
+		<result column="J10" property="j10" />
+		<result column="J11" property="j11" />
+		<result column="J12" property="j12" />
+		<result column="J13" property="j13" />
+		<result column="J14" property="j14" />
+		<result column="J15" property="j15" />
+		<result column="XUQCFRQ" property="xuqcfrq" />
+		<result column="J0RIQ" property="j0riq" />
+		<result column="CANGKDM" property="cangkdm" />
+		<result column="CANGKLX" property="cangklx" />
+		<result column="LUJBH" property="lujbh" />
+		<result column="JIAOFM" property="jiaofm" />
+		<result column="BEIHZQ" property="beihzq" />
+		<result column="YUNSZQ" property="yunszq" />
+		<result column="GONGYS" property="gongys" />
+		<result column="ZHIDGYS" property="zhidgys" />
+		<result column="WAIBGHMS" property="waibghms" />
+		<result column="FAHD" property="fahd" />
+	</resultMap>
+	<select id="queryInMaoxqhzjfpxh" resultClass="com.athena.xqjs.entity.ilorder.Maoxqhzjfpxh">
+		select 
+
+temp.usercenter,
+       temp.lingjbh,
+       temp.zhizlx,
+       temp.shiycj,
+       temp.danw,
+       sum(temp.j0) as j0,
+       sum(temp.j1) as j1,
+       sum(temp.j2) as j2,
+       sum(temp.j3) as j3,
+       sum(temp.j4) as j4,
+       sum(temp.j5) as j5,
+       sum(temp.j6) as j6,
+       sum(temp.j7) as j7,
+       sum(temp.j8) as j8,
+       sum(temp.j9) as j9,
+       sum(temp.j10) as j10,
+       sum(temp.j11) as j11,
+       sum(temp.j12) as j12,
+       sum(temp.j13) as j13,
+       sum(temp.j14) as j14,
+       sum(temp.j15) as j15,
+       temp.xuqcfrq,
+       temp.j0riq,
+       temp.j1riq,
+       temp.j2riq,
+       temp.j3riq,
+       temp.j4riq,
+       temp.j5riq,
+       temp.j6riq,
+       temp.j7riq,
+       temp.j8riq,
+       temp.j9riq,
+       temp.j10riq,
+       temp.j11riq,
+       temp.j12riq,
+       temp.j13riq,
+       temp.j14riq,
+       temp.j15riq,
+      temp.cangkdm,
+      temp.cangklx,
+       temp.lujbh,
+       temp.beihzq,
+       temp.yunszq,
+       temp.zhidgys,
+       temp.waibghms,
+       temp.fahd
+from (
+select distinct m.usercenter,
+       m.lingjbh,
+       m.zhizlx,
+       cl.fenpqbh as fenpxh,
+       m.shiycj,
+       m.danw,
+       (m.j0 * cl.xiaohbl) as j0,
+       (m.j1 * cl.xiaohbl) as j1,
+       (m.j2 * cl.xiaohbl) as j2,
+       (m.j3 * cl.xiaohbl) as j3,
+       (m.j4 * cl.xiaohbl) as j4,
+       (m.j5 * cl.xiaohbl) as j5,
+       (m.j6 * cl.xiaohbl) as j6,
+       (m.j7 * cl.xiaohbl) as j7,
+       (m.j8 * cl.xiaohbl) as j8,
+       (m.j9 * cl.xiaohbl) as j9,
+       (m.j10 * cl.xiaohbl) as j10,
+       (m.j11 * cl.xiaohbl) as j11,
+       (m.j12 * cl.xiaohbl) as j12,
+       (m.j13 * cl.xiaohbl) as j13,
+       (m.j14 * cl.xiaohbl) as j14,
+       (m.j15 * cl.xiaohbl) as j15,
+       m.xuqcfrq,
+       m.j0riq,
+       m.j1riq,
+       m.j2riq,
+       m.j3riq,
+       m.j4riq,
+       m.j5riq,
+       m.j6riq,
+       m.j7riq,
+       m.j8riq,
+       m.j9riq,
+       m.j10riq,
+       m.j11riq,
+       m.j12riq,
+       m.j13riq,
+       m.j14riq,
+       m.j15riq,
+       case
+         when cw.dinghck is null then
+          cw.xianbck
+         else
+          cw.dinghck
+       end as cangkdm,
+       case
+         when cw.dinghck is null then
+          0
+         else
+          1
+       end as cangklx,
+       cw.lujbh,
+       cw.beihzq,
+       cw.yunszq,
+       cw.zhidgys,
+       cw.waibms as waibghms,
+       cw.fahd
+  from ${dbSchemal3}ckx_lingjxhd  cl,
+       ${dbSchemal1}XQJS_maoxqhzj_tmp m,
+       ${dbSchemal3}CKX_WULLJ     cw
+ where 1 = 1
+   and m.usercenter = cl.usercenter
+   and m.lingjbh = cl.lingjbh
+   and m.chanx = cl.shengcxbh
+   and m.usercenter = cw.usercenter
+   and m.lingjbh = cw.lingjbh
+   and cl.fenpqbh = cw.fenpqh
+   and m.zhizlx = cw.zhizlx
+   and sysdate &gt; to_date(cl.shengxr,'yyyy-mm-dd')
+    and sysdate &lt; to_date(cl.jiesr,'yyyy-mm-dd') ) temp
+   group by 
+   temp.usercenter,
+       temp.lingjbh,
+       temp.zhizlx,
+       temp.shiycj,
+       temp.danw,
+       temp.xuqcfrq,
+       temp.j0riq,
+       temp.j1riq,
+       temp.j2riq,
+       temp.j3riq,
+       temp.j4riq,
+       temp.j5riq,
+       temp.j6riq,
+       temp.j7riq,
+       temp.j8riq,
+       temp.j9riq,
+       temp.j10riq,
+       temp.j11riq,
+       temp.j12riq,
+       temp.j13riq,
+       temp.j14riq,
+       temp.j15riq,
+      temp.cangkdm,
+      temp.cangklx,
+       temp.lujbh,
+       temp.beihzq,
+       temp.yunszq,
+       temp.zhidgys,
+       temp.waibghms,
+       temp.fahd
+  
+	</select>
+	
+	<insert id="insertMaoxqhzjfpxh" parameterClass="com.athena.xqjs.entity.ilorder.Maoxqhzjfpxh">
+		insert into
+		${dbSchemal1}XQJS_maoxqhzjfpxh
+		(USERCENTER,LINGJBH,FENPXH,ZHIZLX,SHIYCJ,DANW,J0,J1,J2,J3,J4,J5,J6,J7,J8,J9,
+		J10,J11,J12,J13,J14,J15,XUQCFRQ,J0RIQ,CANGKDM,CANGKLX,LUJBH,JIAOFM,BEIHZQ,
+		YUNSZQ,GONGYS,ZHIDGYS,WAIBGHMS,FAHD,ID,
+		J1RIQ,J2RIQ,J3RIQ,J4RIQ,J5RIQ,J6RIQ,J7RIQ,J8RIQ,J9RIQ,J10RIQ,J11RIQ,J12RIQ,J13RIQ,J14RIQ,J15RIQ)
+		values(
+		#usercenter#,
+		#lingjbh#,
+		#fenpxh#,
+		#zhizlx#,
+		#shiycj#,
+		#danw#,
+		#j0#,
+		#j1#,
+		#j2#,
+		#j3#,
+		#j4#,
+		#j5#,
+		#j6#,
+		#j7#,
+		#j8#,
+		#j9#,
+		#j10#,
+		#j11#,
+		#j12#,
+		#j13#,
+		#j14#,
+		#j15#,
+		to_date(substr(#xuqcfrq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j0riq#,0,10),'yyyy-mm-dd'),
+		#cangkdm#,
+		#cangklx#,
+		#lujbh#,
+		#jiaofm#,
+		#beihzq#,
+		#yunszq#,
+		#gongys#,
+		#zhidgys#,
+		#waibghms#,
+		#fahd#,
+		${dbSchemal1}MAOXQHZJFPXH_SEQ.nextval,
+		to_date(substr(#j1riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j2riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j3riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j4riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j5riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j6riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j7riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j8riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j9riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j10riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j11riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j12riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j13riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j14riq#,0,10),'yyyy-mm-dd'),
+		to_date(substr(#j15riq#,0,10),'yyyy-mm-dd')
+		)
+	</insert>
+	<select id="queryMaoxqhzjfpxh" resultClass="com.athena.xqjs.entity.ilorder.Maoxqhzjfpxh">
+		select
+		ID,
+		USERCENTER,
+		LINGJBH,
+		FENPXH,
+		ZHIZLX,
+		SHIYCJ,
+		DANW,
+		J0,
+		J1,
+		J2,
+		J3,
+		J4,
+		J5,
+		J6,
+		J7,
+		J8,
+		J9,
+		J10,
+		J11,
+		J12,
+		J13,
+		J14,
+		J15,
+		XUQCFRQ,
+		J0RIQ,
+		CANGKDM,
+		CANGKLX,
+		LUJBH,
+		JIAOFM,
+		BEIHZQ,
+		YUNSZQ,
+		GONGYS,
+		ZHIDGYS,
+		WAIBGHMS,
+		FAHD
+		from ${dbSchemal1}XQJS_maoxqhzjfpxh where 1=1
+	</select>
+
+	<delete id="deleteAllJ">
+		delete
+		from
+		${dbSchemal1}XQJS_maoxqhzjfpxh
+		where
+		1=1 
+	</delete>
+</sqlMap>
+
+
+

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="time">
+	
+	<resultMap class="com.athena.ckx.entity.time.Rilbc" id="Rilbc">
+		<result column="niany" property="niany" />
+		<result column="banc" property="banc" />
+		<result column="shifjfr" property="shifjfr" />
+		<result column="usercenter" property="usercenter" />
+		<result column="biaos" property="biaos" />
+		<result column="shifgzr" property="shifgzr" />
+		<result column="xingq" property="xingq" />
+		<result column="nianzqzx" property="nianzqzx" />
+		<result column="nianz" property="nianz" />
+		<result column="xis" property="xis" />
+		<result column="ri" property="ri" />
+	</resultMap>
+	
+	<select id="queryRilbc" resultMap="Rilbc">select 
+		niany,
+		banc,
+		shifjfr,
+		usercenter,
+		biaos,
+		shifgzr,
+		xingq,
+		nianzqzx,
+		nianz,
+		xis,
+		ri from RILBC where 1=1 and biaos='1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="banc">banc = #banc#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="niany">niany = #niany#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ri">ri = #ri#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getRilbc" parameterClass="com.athena.ckx.entity.time.Rilbc" resultClass="com.athena.ckx.entity.time.Rilbc">
+		select 	niany,
+		banc,
+		shifjfr,
+		usercenter,
+		biaos,
+		shifgzr,
+		xingq,
+		nianzqzx,
+		nianz,
+		xis,
+		ri from RILBC where 1=1 and banc = #banc# and usercenter = #usercenter# and niany = #niany# and ri = #ri#
+	</select>
+	
+	
+	
+	<insert id="insertRilbc" parameterClass="com.athena.ckx.entity.time.Rilbc">insert into
+		RILBC (niany,banc,shifjfr,usercenter,biaos,shifgzr,xingq,nianzqzx,nianz,xis,ri)
+		values(
+			#niany#,
+			#banc#,
+			#shifjfr#,
+			#usercenter#,
+			#biaos#,
+			#shifgzr#,
+			#xingq#,
+			#nianzqzx#,
+			#nianz#,
+			#xis#,
+			#ri#)
+	</insert>
+	
+	<update id="updateRilbc" parameterClass="com.athena.ckx.entity.time.Rilbc">
+		update RILBC set 
+		niany=#niany#,
+		banc=#banc#,
+		shifjfr=#shifjfr#,
+		usercenter=#usercenter#,
+		biaos=#biaos#,
+		shifgzr=#shifgzr#,
+		xingq=#xingq#,
+		nianzqzx=#nianzqzx#,
+		nianz=#nianz#,
+		xis=#xis#,
+		ri=#ri# where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="banc">banc = #banc#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="niany">niany = #niany#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ri">ri = #ri#</isNotEmpty>
+		
+		</dynamic>
+	</update>
+	
+	<update id="deleteLogicRilbc" parameterClass="com.athena.ckx.entity.time.Rilbc">
+		update RILBC set biaos=#biaos# where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="banc">banc = #banc#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deleteRilbc" parameterClass="com.athena.ckx.entity.time.Rilbc">
+		delete from RILBC where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="banc">banc = #banc#</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

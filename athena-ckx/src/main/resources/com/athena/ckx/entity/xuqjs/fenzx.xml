@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<select id="getFenzx" parameterClass="com.athena.ckx.entity.xuqjs.Fenzx" resultClass="com.athena.ckx.entity.xuqjs.Fenzx">
+		select usercenter,fenzxh,daxxh,xiaohdbh,fenzxddxxlzcs,fenzxxs,beijwxpxfs,biaos,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_fenzx
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="fenzxh"><![CDATA[fenzxh = #fenzxh#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<insert id="insertHanzfzx" parameterClass="com.athena.ckx.entity.xuqjs.Fenzx">
+		insert into ${dbSchemal3}ckx_fenzx(usercenter,fenzxh,daxxh,xiaohdbh,fenzxddxxlzcs,fenzxxs,beijwxpxfs,biaos,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter#,#fenzxh#,#daxxh#,#xiaohdbh#,#fenzxddxxlzcs#,#fenzxxs#,#beijwxpxfs#,#biaos#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]> )
+	</insert>
+	
+	<update id="updateHanzfzx" parameterClass="com.athena.ckx.entity.xuqjs.Fenzx">
+		update ${dbSchemal3}ckx_fenzx set 
+		daxxh = #daxxh# ,
+		xiaohdbh = #xiaohdbh#,
+		fenzxddxxlzcs = #fenzxddxxlzcs# ,
+		fenzxxs = #fenzxxs# ,
+		beijwxpxfs = #beijwxpxfs# ,
+		biaos = #biaos# ,
+		editor = #editor# ,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  usercenter = #usercenter# and  fenzxh = #fenzxh#
+	</update>
+	
+	<!-- 获取大线数量 -->
+	<select id="getCountDax" parameterClass="com.athena.ckx.entity.xuqjs.Fenzx" resultClass="java.lang.String">
+		select count(1) from ${dbSchemal3}ckx_dax  where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="daxxh" prepend="and">
+	    		<![CDATA[daxxh = #daxxh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="fenzxh" prepend="and">
+	    		<![CDATA[daxxh = #fenzxh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    and biaos = '1'
+	</select>
+	
+	<!-- 生效分装线时，修改对应的零件消耗点-->
+	<update id="updateLingjxhdByTakeEffectFenzx" parameterClass="com.athena.ckx.entity.xuqjs.Fenzx">
+        update ${dbSchemal3}ckx_lingjxhd l set 
+		l.fenzxh = #fenzxh# ,
+		l.shengcxbh = #daxxh# ,
+		l.editor = #editor# ,
+		l.edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where exists (select 1 from ckx_fenpq f where l.usercenter = f.usercenter and l.fenpqbh = f.fenpqh and f.fenzxh = #fenzxh# and f.usercenter = #usercenter#)
+	</update>
+	
+	<!-- 失效分装线时，修改对应的零件消耗点-->
+	<update id="updateLingjxhdByLoseEffectFenzx" parameterClass="com.athena.ckx.entity.xuqjs.Fenzx">
+        update ${dbSchemal3}ckx_lingjxhd l set 
+		l.fenzxh = null ,
+		l.shengcxbh = #fenzxh#,
+		l.editor = #editor# ,
+		l.edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		where exists (select 1 from ckx_fenpq f where l.usercenter = f.usercenter and l.fenpqbh = f.fenpqh and f.shengcxbh = #fenzxh# and f.usercenter = #usercenter#)
+	</update>
+	
+	<!-- 修改分装线大线线号时，修改对应的零件消耗点-->
+	<update id="updateLingjxhdByModifyDaxxh" parameterClass="java.util.HashMap">
+		update ${dbSchemal3}ckx_lingjxhd set 
+		shengcxbh = #xian_daxxh#,
+		editor = #editor# ,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  usercenter = #usercenter# and shengcxbh = #yuan_daxxh# and fenzxh = #fenzxh#
+	</update>
+	
+	<!-- 生效分装线时，修改对应的分配区-->
+	<update id="updateFenpqByTakeEffectFenzx" parameterClass="com.athena.ckx.entity.xuqjs.Fenzx">
+		update ${dbSchemal3}ckx_fenpq set 
+		fenzxh = #fenzxh# ,
+		shengcxbh = #daxxh#,
+		editor = #editor# ,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  usercenter = #usercenter# and  shengcxbh = #fenzxh#
+	</update>
+	
+	<!-- 失效分装线时，修改对应的分配区-->
+	<update id="updateFenpqByLoseEffectFenzx" parameterClass="com.athena.ckx.entity.xuqjs.Fenzx">
+		update ${dbSchemal3}ckx_fenpq set 
+		fenzxh = null ,
+		shengcxbh = #fenzxh#,
+		editor = #editor# ,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  usercenter = #usercenter# and  shengcxbh = #daxxh# and fenzxh = #fenzxh#
+	</update>
+	
+	<!-- 修改分装线大线线号时，修改对应的分配区-->
+	<update id="updateFenpqByModifyDaxxh" parameterClass="java.util.HashMap">
+		update ${dbSchemal3}ckx_fenpq set 
+		shengcxbh = #xian_daxxh#,
+		editor = #editor# ,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  usercenter = #usercenter# and shengcxbh = #yuan_daxxh# and fenzxh = #fenzxh#
+	</update>
+	
+	<!-- 获取分装线和离线点的工艺消耗点数量 -->
+	<select id="getCountGongyxhdInFenzxAndLixd" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select count(1) from(
+		select xiaohdbh from ${dbSchemal3}ckx_fenzx where xiaohdbh = #gongyxhd#
+		union all
+		select duiyxhd as xiaohdbh from ${dbSchemal3}ckx_lixd where  duiyxhd = #gongyxhd#)
+	</select>
+	
+	<!-- 获取离线点的工艺消耗点数量 -->
+	<select id="getCountGongyxhdInLixd" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select count(1) from ${dbSchemal3}ckx_lixd where  duiyxhd = #gongyxhd#
+	</select>
+	
+</sqlMap>

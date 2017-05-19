@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="diaobsqTest">
+
+	<!--删除调拨申请 -->
+	<delete id="desq" parameterClass="java.util.Map">
+		<![CDATA[
+			delete from ${dbSchemal1}xqjs_diaobsq where diaobsqdh=#diaobsqdh#
+		]]>
+	</delete>
+	<!--删除调拨申请明细 -->
+	<delete id="desqmx" parameterClass="java.util.Map">
+		<![CDATA[
+			delete from ${dbSchemal1}xqjs_diaobsqmx where diaobsqdh=#diaobsqdh#
+		]]>
+	</delete>
+
+	<!-- 插入状态为20的调拨申请 -->
+	<insert id="ins_passed" parameterClass="com.athena.xqjs.entity.diaobl.Diaobsq">
+	       	<![CDATA[insert into  ${dbSchemal1}xqjs_diaobsq(usercenter,diaobsqdh,diaobsqsj,banc,huijkm,chengbzx,beiz,zhuangt,create_time,creator,edit_time,editor)
+		values(
+		    #usercenter#,
+		    #diaobsqdh#,
+			to_date(#diaobsqsj#,'yyyy-MM-dd HH24:mi:ss'),
+			#banc#,
+			#huijkm#,
+			#chengbzx#,
+			#beiz#,
+			#zhuangt#,
+			to_timestamp(#create_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+			#creator#,
+			to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+			#editor#
+		)]]>
+	</insert>
+
+	<!-- 查询调拨明细记录 -->
+	<select id="selDbmx" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobmx">
+		select t.* from
+		${dbSchemal1}xqjs_diaobmx t
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">t.usercenter =
+				#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">t.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">t.cangkbh = #cangkbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux">t.lux = #lux#
+			</isNotEmpty>
+		</dynamic>
+
+	</select>
+
+	<!-- 删除调拨明细记录 -->
+	<delete id="detelDbmx" parameterClass="java.util.Map">
+		delete from ${dbSchemal1}xqjs_diaobmx t
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">t.usercenter =
+				#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">t.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">t.cangkbh = #cangkbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux">t.lux = #lux#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+
+	<!--查询毛需求明细某版次的开始年份 -->
+	<select id="startYear" parameterClass="com.athena.xqjs.entity.maoxq.CompareCyc"
+		resultClass="java.util.HashMap">
+	   <![CDATA[select min(substr(m.xuqsszq,0,4)) as minyear 
+	                  from  ${dbSchemal1}xqjs_maoxqmx m
+	                  where active = '1'  and  xuqbc = #xuqbc#
+	                  group by substr(m.xuqsszq,0,4)
+	                  order by  minyear]]>
+	</select>
+
+	<!--测试 调拨令申请明细查询 -->
+	<statement id="test_selectDiaobsqmx" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.diaobl.Diaobsqmx">
+		select
+		xuh,
+		usercenter,
+		diaobsqdh,
+		lingjbh,
+		lux,
+		zhuangt,
+		shenbsl
+		from ${dbSchemal1}xqjs_diaobsqmx
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[ usercenter = #usercenter# ]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="diaobsqdh"><![CDATA[ diaobsqdh = #diaobsqdh# ]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[ lingjbh = #lingjbh# ]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lux"><![CDATA[ lux = #lux# ]]></isNotEmpty>
+		</dynamic>
+	</statement>
+
+
+
+
+
+
+
+</sqlMap>

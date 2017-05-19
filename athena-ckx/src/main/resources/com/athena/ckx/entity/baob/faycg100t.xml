@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- xryuan -->
+	<!-- 2.15.9.1发运超过100天汇总零件清单-->
+	<select id="queryfaycg100t" parameterClass="java.util.Map" resultClass="com.athena.ckx.entity.baob.Faycg100t">
+			select USBQ_.USERCENTER,USBQ_.LINGJBH,
+                 case
+                 when USBQ_.zhuangtsx = '1' then
+                  '正常'
+                 when USBQ_.zhuangtsx = '2' then
+                  '冻结'
+                 when USBQ_.zhuangtsx = '3' then
+                  '收货质检'
+                 when USBQ_.zhuangtsx = '4' then
+                  '库内质检'
+                 when USBQ_.zhuangtsx = '5' then
+                  '挑选返修'
+                 when USBQ_.zhuangtsx = '6' then
+                  '工废'
+                 when USBQ_.zhuangtsx = '7' then
+                  '随废'
+                 when USBQ_.zhuangtsx = '8' then
+                  '料废'
+                 when USBQ_.zhuangtsx = '9' then
+                  '移库备货'
+                 when USBQ_.zhuangtsx = '10' then
+                  '返修'
+                 when USBQ_.zhuangtsx = '11' then
+                  '仓库'
+               end as ZHUANGTSX,USBQ_.LINGJSL,USBQ_.USXH,USBQ_.USGS,USBQ_.USRL,UABQ_.CANGKBH,UABQ_.ZICKBH,USBQ_.ELH,USBQ_.RUKRQ,T.QIYSJ from (select *  from ${dbSchemal3}XQJS_TC tc where tc.qiysj is not null ) t
+	      INNER JOIN ${dbSchemal3}CK_DAOHTZD DHTZD_ ON t.UTNO = DHTZD_.UTH
+	      INNER JOIN 
+	      (select t3.*  from ${dbSchemal3}ckx_gongys gys,
+	      (select sum(US.Lingjsl) AS LINGJSL,US.BLH,US.USERCENTER,US.LINGJBH,US.Zhuangtsx,US.Usxh,US.gongysdm,US.uth,US.usrl,case when US.usrl>0 then round(sum(US.Lingjsl)/US.usrl,2) else 0 end as usgs,US.Elh,US.Cangkbh,US.Zickbh,US.Rukrq from ${dbSchemal3}CK_USBQ us  where us.blh is not null and US.lingjsl>0 group by US.BLH,US.USERCENTER,US.LINGJBH,US.Zhuangtsx,US.Usxh,US.Elh,US.Cangkbh,US.Zickbh,US.rukrq,US.usrl,US.gongysdm,US.uth) t3 
+	      where gys.usercenter = t3.usercenter and gys.gcbh = t3.gongysdm  and gys.gonghlx='97X') USBQ_ 
+	      ON DHTZD_.USERCENTER = USBQ_.USERCENTER AND DHTZD_.UTH = USBQ_.Uth 
+	      and (USBQ_.Zhuangtsx='1' or USBQ_.Zhuangtsx='2')
+	      and sysdate-t.qiysj>100
+	      inner join ${dbSchemal3}CK_UABQ uabq_ 
+	      on usbq_.usercenter=usbq_.usercenter and usbq_.blh = uabq_.blh
+
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usbq_.usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[usbq_.usercenter = #lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="zhuangtsx"><![CDATA[usbq_.zhuangtsx = #zhuangtsx#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[uabq_.cangkbh = #cangkbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="zickbh"><![CDATA[uabq_.zickbh = #zickbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="elh"><![CDATA[usbq_.elh = #elh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="startrukrq"><![CDATA[to_char(usbq_.rukrq,'yyyy-MM-dd') >= #startrukrq#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="endrukrq"><![CDATA[to_char(usbq_.rukrq,'yyyy-MM-dd') < #endrukrq#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="startqiysj"><![CDATA[to_char(t.qiysj,'yyyy-MM-dd') >= #startqiysj#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="endqiysj"><![CDATA[to_char(t.qiysj,'yyyy-MM-dd') < #endqiysj#]]></isNotEmpty>
+		   </dynamic>
+	</select>
+	
+	<select id="queryallzhuangtsx" resultClass="com.athena.util.cache.CacheValue">
+		select key,value from 
+						(select distinct ZHUANGTSX as key,
+				                case
+				                  when zhuangtsx = '1' then
+				                   '正常'
+				                  when zhuangtsx = '2' then
+				                   '冻结'
+				                  when zhuangtsx = '3' then
+				                   '收货质检'
+				                  when zhuangtsx = '4' then
+				                   '库内质检'
+				                  when zhuangtsx = '5' then
+				                   '挑选返修'
+				                  when zhuangtsx = '6' then
+				                   '工废'
+				                  when zhuangtsx = '7' then
+				                   '随废'
+				                  when zhuangtsx = '8' then
+				                   '料废'
+				                  when zhuangtsx = '9' then
+				                   '移库备货'
+				                  when zhuangtsx = '10' then
+				                   '返修'
+				                  when zhuangtsx = '11' then
+				                   '仓库'
+				                end as value
+					  from ${dbSchemal3}CK_USBQ t) 
+	  where  value is not null
+	</select>
+	
+	<delete id="delyaohl21591"  parameterClass="com.athena.ckx.entity.baob.Faycg100t">
+		<![CDATA[delete from ${dbSchemal3}CK_YAOHL_21591 
+		where guidsj < to_date(#qiysj#,'yyyy-MM-dd hh24:mi:ss')]]>
+	</delete>
+	
+	<delete id="deluabq21591"  parameterClass="com.athena.ckx.entity.baob.Faycg100t">
+		<![CDATA[delete from ${dbSchemal3}CK_UABQ_21591 
+		where guidsj < to_date(#qiysj#,'yyyy-MM-dd hh24:mi:ss')]]>
+	</delete>
+	
+	<delete id="delusbq21591"  parameterClass="com.athena.ckx.entity.baob.Faycg100t">
+		<![CDATA[delete from ${dbSchemal3}CK_USBQ_21591 
+		where guidsj < to_date(#qiysj#,'yyyy-MM-dd hh24:mi:ss')]]>
+	</delete>
+	
+	<delete id="delfaycg100t"  parameterClass="com.athena.ckx.entity.baob.Faycg100t">
+		<![CDATA[delete from ${dbSchemal3}REP_FAYCG100T 
+		where huizsj < to_date(#qiysj#,'yyyy-MM-dd hh24:mi:ss')]]>
+	</delete>
+	
+	<select id="insertRepfaycg100t" parameterClass="java.lang.String">
+      insert into ${dbSchemal3}REP_FAYCG100T (USERCENTER,LINGJBH,ZHUANGTSX,LINGJSL,USXH,USRL,USGS,CANGKBH,ZICKBH,ELH,RUKRQ,SHIJFYSJ,HUIZSJ)
+      select US.USERCENTER,US.LINGJBH,US.Zhuangtsx,sum(US.LINGJSL) as lingjsl,US.USXH,US.USRL,
+         case when US.usrl>0 then round((sum(US.LINGJSL)/US.Usrl),2) else 0 end  as usgs,US.CANGKBH,US.ZICKBH,US.ELH,US.RUKRQ,YHL.SHIJFYSJ,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss')
+      from ${dbSchemal3}CK_YAOHL_21591 YHL
+      inner join ${dbSchemal3}CK_UABQ_21591 UA
+         on YHL.YAOHLH = UA.YAOHLH
+         and YHL.USERCENTER = UA.USERCENTER
+      inner join ${dbSchemal3}CK_USBQ_21591 US
+         on UA.USERCENTER = US.USERCENTER
+         and UA.UTH = US.UTH
+         and UA.ELH = US.ELH
+      where US.LINGJSL > 0
+            and (US.BAOZZT = '4' or US.BAOZZT = '5')  and us.rukrq is not null  and sysdate-yhl.shijfysj>100
+      group by US.USERCENTER,US.LINGJBH,US.Zhuangtsx,US.USXH,US.USRL,US.CANGKBH,US.ZICKBH,US.ELH,US.RUKRQ,YHL.SHIJFYSJ
+   </select>
+</sqlMap>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="common">
+
+
+
+	<select id="queryTidjkc" resultClass="String">
+		select sum(t.kucsl) from ${dbSchemal1}xqjs_ziykzb t where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				t.usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				t.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="ziyhqrq">
+				t.ziyhqrq = to_date(substr(#ziyhqrq#,1,10),'yyyy-mm-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="cangkbh">
+				cangkdm = #cangkdm#
+			</isNotEmpty>	
+		</dynamic>
+	</select>
+	
+	<select id="queryFirstDay" resultClass="java.lang.String">
+		select 
+			to_char(max(ziyhqrq),'yyyy-MM-dd') as ziyhqrq
+		from 
+			 ${dbSchemal1}xqjs_ziykzb 
+	</select>
+	<delete id="deleteZiykzb" parameterClass="java.util.HashMap">
+		DELETE FROM  ${dbSchemal1}XQJS_ZIYKZB b
+		WHERE 
+		 to_char(ziyhqrq,'YYYY-MM-DD') !=#currentDate# AND 
+		 to_char(ziyhqrq,'YYYY-MM-DD') !=#mondayDate# AND 
+		 to_char(ziyhqrq,'YYYY-MM-DD') !=#lastMondayDate# AND
+		 to_char(ziyhqrq,'YYYY-MM-DD') !=#currentKaissj#
+		<dynamic>
+		    <isNotEmpty prepend="  and " property="yesDate">
+			 	to_char(ziyhqrq,'YYYY-MM-DD') !=#yesDate#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lastKaissj">
+			 	to_char(ziyhqrq,'YYYY-MM-DD') !=#lastKaissj#
+			</isNotEmpty>
+		</dynamic>
+		AND not exists (select 1  from ${dbSchemal1}ckx_ziyhqrl r  where to_char(to_date(r.ziyhqrq, 'YYYY-MM-DD'), 'YYYY-MM-DD') = to_char(b.ziyhqrq, 'YYYY-MM-DD'))
+		
+	</delete>
+</sqlMap>

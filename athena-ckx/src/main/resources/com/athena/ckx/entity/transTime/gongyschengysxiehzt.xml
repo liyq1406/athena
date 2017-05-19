@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="transTime">
+	
+	<select id="queryCkxGongysChengysXiehzt" resultClass="com.athena.ckx.entity.transTime.CkxGongysChengysXiehzt">
+	select gcbh ,xiehztbh , shijpc , jispc , shengxpc,ches,gongzsj	,biaos	,usercenter,to_char(jisrq ,'yyyy-mm-dd HH24:mi:ss') jisrq,editor,to_char(edit_time,'yyyy-mm-dd hh24:mi:ss') edit_time
+	from ${dbSchemal3}ckx_gongys_chengys_xiehzt 
+	where 1=1 
+		<dynamic>
+		 <isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos = #biaos#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbzs">xiehztbh in $xiehztbzs$</isNotEmpty>
+		</dynamic>
+		order by usercenter,gcbh,xiehztbh
+	</select>
+	<!-- 0008693  计算时检测车数必须大于实际频次 -->
+	<select id="checkCkxGongysChengysXiehzt" resultClass="com.athena.ckx.entity.transTime.CkxGongysChengysXiehzt">
+	select gcbh ,xiehztbh ,usercenter
+	from ${dbSchemal3}ckx_gongys_chengys_xiehzt 
+	where 1=1  
+	and usercenter = #usercenter# 
+	and xiehztbh = #xiehztbh#
+		<dynamic>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos">biaos = #biaos#</isNotEmpty>
+		</dynamic>
+		<![CDATA[and ches < shijpc   ]]>
+		order by usercenter,xiehztbh,gcbh
+	</select>
+	
+	<select id="checkShifShengxpc" resultClass="com.athena.ckx.entity.transTime.CkxGongysChengysXiehzt">
+	select gcbh ,xiehztbh , shijpc    ,biaos  ,usercenter
+	from ${dbSchemal3}ckx_gongys_chengys_xiehzt 
+	where 1=1 and biaos='1' and  shijpc is null
+		<dynamic>
+		 <isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			
+		</dynamic>
+		order by usercenter,gcbh,xiehztbh
+	</select>
+	<!-- 查询单个卸货站台的标准频次 -->
+	<select id="getCkxGongysChengysXiehzt" resultClass="com.athena.ckx.entity.transTime.CkxGongysChengysXiehzt" >
+		select gcbh ,xiehztbh , shijpc , jispc , shengxpc,ches,gongzsj	,biaos	,usercenter,to_char(jisrq ,'yyyy-mm-dd hh24:mi:ss') jisrq
+	from ${dbSchemal3}ckx_gongys_chengys_xiehzt 
+	where 1=1 
+	<dynamic>
+	        <isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+		</dynamic>
+	
+	</select>
+	
+	
+	<select id="getFrequency" resultClass="java.util.HashMap" >
+	
+	select m.usercenter,m.xiehzt,cys.gcbh
+		<!--如果频次大于 最大频次  则取最大频次 -->
+		<![CDATA[,case when (m.tij/c.days*cys.bodfdxs/(cys.kacbztj*cys.edzzl)) > cys.songhzdpc  then cys.songhzdpc else]]> 
+		      <!--如果频次小于最小频次 则取最小频次   否则取原频次 -->
+		   <![CDATA[  case when (m.tij/c.days*cys.bodfdxs/(cys.kacbztj*cys.edzzl)) < cys.songhzxpc  then cys.songhzxpc else  ceil(m.tij/c.days*cys.bodfdxs/(cys.kacbztj*cys.edzzl))  end]]> 
+		end  pc
+		,ceil(m.tij/c.days*cys.bodfdxs/(cys.kacbztj*cys.edzzl)) ches
+		,sj.gongzsj days,m.tij
+		from (
+		  <!--临时表2按卸货站台，供应商分组,归集体积   区分用户中心-->
+		  select USERCENTER,chengys,xiehzt,sum(tij) tij,kaissj,jiezsj
+		  from ${dbSchemal3}ckx_temp_maoxqcf where usercenter=#usercenter# group by chengys,xiehzt ,kaissj,jiezsj,USERCENTER,xuqbc
+		) m left join (
+	
+<!-- 		  每个卸货站台工作天数 -->
+		  select xiehzt, count(*) days from (
+<!-- 		    卸货站台分组 指定时间范围 -->
+		    select xiehzt  ,kaissj,jiezsj from ${dbSchemal3}ckx_temp_maoxqcf  group by xiehzt ,kaissj,jiezsj
+		  ) t
+<!-- 		  获取卸货站台日历版次编号 -->
+		  inner join ${dbSchemal3}ckx_calendar_group g
+		  on t.xiehzt=g.appobj
+<!-- 		  从日历版次中获取工作天数 -->
+		  inner join ${dbSchemal3}ckx_calendar_version v
+		  on g.rilbc=v.banc and g.usercenter=v.usercenter
+<!-- 		  指定工作日周期范围  -->
+		<![CDATA[  where v.nianzq>=t.kaissj and v.nianzq<=t.jiezsj and v.shifgzr=1 and g.biaos=1]]> 
+<!-- 		  将工作天数按卸货站台分组统计 -->
+		  group by xiehzt
+		  
+		   
+		
+		) c on m.xiehzt=c.xiehzt
+		left join (
+			select xiehztbh xiehzt,gongzsj  from (
+                 select appobj xiehztbh,ceil(sum(times)) gongzsj  from (  
+      				select g.usercenter, g.appobj,t.kaissj,t.jiezsj ,
+     								<![CDATA[	 case when to_number(TO_DATE(t.jiezsj,'hh24:mi:ss')-TO_DATE(t.kaissj,'hh24:mi:ss'))<0 ]]>
+        			 						then        to_number(TO_DATE(t.jiezsj,'hh24:mi:ss')-TO_DATE(t.kaissj,'hh24:mi:ss')) * 1440+1440  
+             								else to_number(TO_DATE(t.jiezsj,'hh24:mi:ss')-TO_DATE(t.kaissj,'hh24:mi:ss')) * 1440  end 
+              				 				times   
+                	from ${dbSchemal3}ckx_calendar_group g  
+                	inner join ${dbSchemal3}ckx_calendar_team t on g.bianzh=t.bianzh  
+                	where length(g.appobj)=4 and  t.xingqxh = 1 
+             	 ) s 
+                 group by usercenter,appobj
+              ) gongzsj 
+		) sj on m.xiehzt=sj.xiehzt
+		<!--承运商 -->
+		left join ${dbSchemal3}ckx_gongys  cys 
+		on m.usercenter=cys.usercenter and m.chengys=cys.gcbh where  cys.biaos='1'
+	<!-- 过滤掉不符合规范的承运商|供应商 -->
+	<![CDATA[   
+	 and  cys.bodfdxs is not null 
+	 and cys.bodfdxs <> 0
+	 and  cys.kacbztj is not null 
+	 and cys.kacbztj <> 0
+	 and  cys.edzzl is not null 
+	 and cys.edzzl <> 0 ]]>
+	</select> 
+	<select id="checkChengysNull" resultClass="java.util.HashMap">
+
+	select m.usercenter,m.xiehzt,cys.gcbh,cys.bodfdxs,cys.kacbztj,cys.edzzl
+	from (
+		  <!--临时表2按卸货站台，供应商分组,归集体积   区分用户中心-->
+		  select USERCENTER,chengys,xiehzt,sum(tij) tij,kaissj,jiezsj
+		  from ${dbSchemal3}ckx_temp_maoxqcf where usercenter=#usercenter# group by chengys,xiehzt ,kaissj,jiezsj,USERCENTER,xuqbc
+	) m 		
+		<!--承运商 -->
+	left join ${dbSchemal3}ckx_gongys  cys 
+	on m.usercenter=cys.usercenter and m.chengys=cys.gcbh 
+	where  cys.biaos='1'
+	 and  cys.bodfdxs is  null 
+	 or cys.bodfdxs = 0
+	 or  cys.kacbztj is  null 
+	 or cys.kacbztj = 0
+	 or  cys.edzzl is  null 
+	 or cys.edzzl = 0
+	</select>
+	
+	<insert id="insertCkxGongysChengysXiehzt" parameterClass="com.athena.ckx.entity.transTime.CkxGongysChengysXiehzt">
+		insert into ${dbSchemal3}ckx_gongys_chengys_xiehzt(usercenter,xiehztbh,gcbh,shijpc,shengxpc,jispc,ches,biaos,gongzsj,jisrq,creator,create_Time,editor,edit_Time)
+		values(#usercenter#,#xiehztbh#,#gcbh#,#shijpc#,#shengxpc#,#jispc#,#ches#,1,#gongzsj#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss')
+		,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'),#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss')
+		)
+	</insert>
+	
+	
+	<delete id="deleteCkxGongysChengysXiehzt" >delete from ${dbSchemal3}ckx_gongys_chengys_xiehzt </delete>
+	<!-- 物理删除送货频次 -->
+	<delete id="deleteCkxGongysChengysXiehztByxiehztbz" parameterClass="com.athena.ckx.entity.transTime.CkxGongysChengysXiehzt">
+	delete from ${dbSchemal3}ckx_gongys_chengys_xiehzt
+	where 1=1
+	<dynamic>
+		    <isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+		</dynamic>
+	 </delete>
+	
+	<!-- 手动修改  修改字段  生效送货频次，实际频次，标识 -->
+	<update id="updateCkxGongysChengysXiehzt" parameterClass="com.athena.ckx.entity.transTime.CkxGongysChengysXiehzt">
+		update ${dbSchemal3}ckx_gongys_chengys_xiehzt set 
+		shengxpc=#shengxpc#,
+		shijpc=#shijpc#,
+		ches=$ches$,
+		biaos=#biaos#,
+		editor=#editor#,
+		edit_Time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	
+	<!-- 修改送货频次  修改字段  计算频次，车数，卸货站台工作时间 -->
+	<update id="updateFrequency" parameterClass="com.athena.ckx.entity.transTime.CkxGongysChengysXiehzt">
+		update ${dbSchemal3}ckx_gongys_chengys_xiehzt set 
+		jispc=#jispc#,
+<!-- 		shijpc = #shijpc#, -->
+		shengxpc = #shengxpc#,
+		ches=#ches#,
+		gongzsj=#gongzsj#,
+		editor=#editor#,
+		edit_Time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss'),
+		jisrq=to_date(#jisrq#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 临时表1 -->
+	
+	<!-- 从需求计算获取产线毛需求插入临时表1 (借用LoginUser传 创建人信息参数)-->
+	<insert id="insertTempMaoxq" parameterClass="java.util.Map">
+		insert into ${dbSchemal3}ckx_temp_maoxq(xuqbc,kaissj,jiezsj,usercenter,chanx,lingjbh,shul,creator,create_time)
+		select z.xuqbc,z.zhigyzqfrom,z.zhigyzqto,c.usercenter,c.chanx,c.lingjbh, sum( c.xuqsl) ,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss')
+		from ${dbSchemal3}xqjs_maoxq z inner join ${dbSchemal3}xqjs_maoxqmx c on z.xuqbc=c.xuqbc 
+		where  z.shizdyssk=1 and c.zhizlx='97W' 
+		 <![CDATA[ and c.xuqsszq>=z.zhigyzqfrom and  c.xuqsszq<=z.zhigyzqto]]> 
+		and c.usercenter=#usercenter#
+		group by z.xuqbc, z.zhigyzqfrom, z.zhigyzqto, c.usercenter, c.chanx, c.lingjbh
+	</insert>
+	<!-- 从需求计算获取产线毛需求(用于判断是否存在产线毛需求数据)-->
+	<select id="queryTempMaoxqByXqjs" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select z.xuqbc,z.zhigyzqfrom,z.zhigyzqto,c.usercenter,c.chanx,c.lingjbh, sum( c.xuqsl) xuqsl
+		from ${dbSchemal3}xqjs_maoxq z inner join ${dbSchemal3}xqjs_maoxqmx c on z.xuqbc=c.xuqbc 
+		where   z.shizdyssk=1 and c.zhizlx='97W' 
+		 <![CDATA[ and c.xuqsszq>=z.zhigyzqfrom and  c.xuqsszq<=z.zhigyzqto]]> 
+		and c.usercenter=#usercenter#
+		group by z.xuqbc, z.zhigyzqfrom, z.zhigyzqto, c.usercenter, c.chanx, c.lingjbh
+	</select>
+	<!-- 清除临时表1 按用户中心-->
+	<delete id="deleteTempMaoxq" parameterClass="java.util.Map">delete from ${dbSchemal3}ckx_temp_maoxq where usercenter=#usercenter#</delete>
+	
+	<!-- 查询临时表1 
+	<select id="queryTempMaoxq">
+		select xuqbc,kaissj,jiezsj,usercenter,chanx,lingjbh,shul,creator,create_time
+		from ${dbSchemal3}ckx_temp_maoxq
+	</select>
+	-->
+	<!-- 临时表2 -->
+	<insert id="insertTempMaoxqcf" parameterClass="java.util.Map">
+	insert into ${dbSchemal3}ckx_temp_maoxqcf (xuqbc,usercenter,fenpq,lingjbh,gongys,shul,kaissj,jiezsj,tij,chengys,xiehzt,creator,create_time)
+
+	<!--查询-->
+	select xuqbc,f.usercenter,f.fenpqbh,f.lingjbh,g.gongysbh,(shul*g.gongyfe) subnum ,kaissj,jiezsj  
+	<!-- 计算体积: 分配区上的零件数量*供应商份额/UA容量(ua容量*ua中uc个数)*长，宽，高 (体积由立方毫米转为立方米)-->    
+	,CEIL(shul*g.gongyfe/(g.uaucgs*g.ucrl)*b.changd*b.kuand*b.gaod/1000000000)  tij  
+	<!-- 取UC容量或UA容量     (g.uaucgs*g.ucrl)替换(g.ucrl)-->                
+	,W.GCBH,xhzt.xiehztbzh 
+	,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss')
+	 from (
+	   <!--将消耗点的需求汇总到分配区-->
+	  select xuqbc,usercenter,fenpqbh,lingjbh,sum(subnum) shul ,kaissj,jiezsj from (
+	      <!--将产线零件需求拆分到消耗点   当前用户中心下-->
+	      select xuqbc,t.usercenter,chanx,l.fenpqbh,l.xiaohdbh,t.lingjbh,l.xiaohbl,kaissj,jiezsj,(shul*l.xiaohbl) subnum ,shul
+	      from ${dbSchemal3}ckx_temp_maoxq t inner join ${dbSchemal3}ckx_lingjxhd l 
+	      on t.usercenter=l.usercenter and t.lingjbh=l.lingjbh and t.chanx=l.shengcxbh  where t.usercenter=#usercenter#
+	  ) x 
+	  group by xuqbc ,usercenter,fenpqbh,lingjbh ,kaissj,jiezsj 
+	) f
+	<!--拆分到供应商-->
+	left join ${dbSchemal3}ckx_lingjgys g
+	on f.usercenter=g.usercenter and f.lingjbh=g.lingjbh
+	<!--获取报装体积   使用零件供应商表的[UC包装类型]关联包装表  同时用UC的容量计算供应商体积-->
+	left join ${dbSchemal3}ckx_baoz b on g.uabzlx=b.baozlx 
+										<!-- ua包装类型g.UABZLX -->
+	<!--关联物流路径总图，获取承运商，卸货站台-->
+	left join ${dbSchemal3}ckx_wullj w
+	on f.usercenter=w.usercenter and f.fenpqbh=w.fenpqh and f.lingjbh=w.lingjbh and g.gongysbh=w.gongysbh
+	
+	<!--关联卸货站台表，取卸货站台编组-->
+	left join ${dbSchemal3}ckx_xiehzt xhzt
+	on xhzt.xiehztbh=w.xiehztbh and f.usercenter=xhzt.usercenter
+	<!--0007099 计算送货频次按照物流工艺员的数据权限计算-->
+	inner join ${dbSchemal3}ckx_xiehztbz bz on bz.usercenter = xhzt.usercenter and bz.xiehztbzh = substr(xhzt.xiehztbh,0,4) 
+	 <dynamic>
+			<isNotEmpty prepend=" and " property="wulgyyz">bz.wulgyyz=#wulgyyz#</isNotEmpty>
+	</dynamic>
+	where W.GCBH is not null and xhzt.xiehztbzh  is not null and (shul*g.gongyfe/(g.uaucgs*g.ucrl)*b.changd*b.kuand*b.gaod/1000000000) is not null
+	</insert>
+	<!-- 清除临时表2  按用户中心-->
+	<delete id="deleteTempMaoxqcf" parameterClass="java.util.Map">delete from ${dbSchemal3}ckx_temp_maoxqcf where usercenter=#usercenter#</delete>
+	<!-- 查询临时表2 
+	<select id="queryTempMaoxqcf">
+		select xuqbc,usercenter,fenpq,lingjbh,gongys,shul,kaissj,jiezsj,tij,chengys,xiehzt 
+		from ${dbSchemal3}ckx_temp_maoxqcf
+	</select>
+	-->
+	<select id="queryTempMaoxqLjxhdCheck" resultClass="java.util.HashMap">
+	  <!--将产线零件需求拆分到消耗点   当前用户中心下-->
+	      select xuqbc,t.usercenter,chanx,l.fenpqbh,l.xiaohdbh,t.lingjbh,l.xiaohbl,kaissj,jiezsj,(shul*l.xiaohbl) subnum ,shul
+	      from ${dbSchemal3}ckx_temp_maoxq t left join ${dbSchemal3}ckx_lingjxhd l 
+	      on t.usercenter=l.usercenter and t.lingjbh=l.lingjbh and t.chanx=l.shengcxbh  where t.usercenter=#usercenter#
+	</select>
+		  <!--检查是否能得到对应的物流路径-->
+	<select id="queryTempMaoxqcfCheckWullj" resultClass="java.util.HashMap">
+	   <!--查询-->
+	select xuqbc,f.usercenter,f.fenpqbh,f.lingjbh,g.gongysbh,(shul*g.gongyfe) subnum ,kaissj,jiezsj  
+	<!-- 计算体积: 分配区上的零件数量*供应商份额/UC容量*长，宽，高 (体积由立方毫米转为立方米)-->    
+	,(shul*g.gongyfe/(g.uaucgs*g.ucrl)*b.changd*b.kuand*b.gaod/1000000000)  tij  
+	<!-- 取UC容量或UA容量     (  g.UAUCGS*g.ucrl)替换(g.ucrl)-->                
+	,W.GCBH,xhzt.xiehztbzh xiehzt 
+	,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss')
+	 from (
+	   <!--将消耗点的需求汇总到分配区-->
+	  select xuqbc,usercenter,fenpqbh,lingjbh,sum(subnum) shul ,kaissj,jiezsj from (
+	      <!--将产线零件需求拆分到消耗点   当前用户中心下-->
+	      select xuqbc,t.usercenter,chanx,l.fenpqbh,l.xiaohdbh,t.lingjbh,l.xiaohbl,kaissj,jiezsj,(shul*l.xiaohbl) subnum ,shul
+	      from ${dbSchemal3}ckx_temp_maoxq t inner join ${dbSchemal3}ckx_lingjxhd l 
+	      on t.usercenter=l.usercenter and t.lingjbh=l.lingjbh and t.chanx=l.shengcxbh  where t.usercenter=#usercenter#
+	  ) x 
+	  group by xuqbc ,usercenter,fenpqbh,lingjbh ,kaissj,jiezsj 
+	) f
+	<!--拆分到供应商-->
+	left join ${dbSchemal3}ckx_lingjgys g
+	on f.usercenter=g.usercenter and f.lingjbh=g.lingjbh
+	<!--获取报装体积   使用零件供应商表的[UC包装类型]关联包装表  同时用UC的容量计算供应商体积-->
+	left join ${dbSchemal3}ckx_baoz b on g.uabzlx=b.baozlx 
+										<!-- ua包装类型g.UABZLX -->
+	<!--关联物流路径总图，获取承运商，卸货站台-->
+	left join ${dbSchemal3}ckx_wullj w
+	on f.usercenter=w.usercenter and f.fenpqbh=w.fenpqh and f.lingjbh=w.lingjbh and g.gongysbh=w.gongysbh
+	
+	<!--关联卸货站台表，取卸货站台编组-->
+	left join ${dbSchemal3}ckx_xiehzt xhzt
+	on xhzt.xiehztbh=w.xiehztbh and f.usercenter=xhzt.usercenter
+	</select>
+
+	<!-- hj 归集承运商 / 归集卸货站台 -->
+		<select id="listGcbh" resultClass="java.util.HashMap">
+	  select    	  gcbh SHOWNAME
+	        from ${dbSchemal3}ckx_gongys_chengys_xiehzt     
+	          where    biaos='1'
+	  <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter=#usercenter#</isNotEmpty>
+	</dynamic>
+	       group by  gcbh               
+	</select>
+	<!-- hj 归集承运商 / 归集卸货站台 -->
+		<select id="listXiehzt" resultClass="java.util.HashMap">
+	  select       	  xiehztbh SHOWNAME
+	        from ${dbSchemal3}ckx_gongys_chengys_xiehzt     
+	       where    biaos='1'
+	  <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter=#usercenter#</isNotEmpty>
+	</dynamic>
+		  group by     xiehztbh           
+	</select>
+</sqlMap>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+	
+	<!-- 按需更新零件消耗点 -->
+	<update id="anxUpdateLingjxhd">
+		update ${dbSchemal3}ckx_lingjxhd set
+		xianbllkc = xianbllkc + $xianbllkc$,
+		editor = #editor#,
+		edit_time=to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3')
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xiaohdbh">
+				xiaohdbh =#xiaohdbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<!-- com.athena.xqjs.entity.common.Lingjxhd -->
+	<update id="updateLingjxhd">
+		update ${dbSchemal3}ckx_lingjxhd set
+		xianbllkc=#xianbllkc#,
+		editor = #editor#,
+		edit_time=to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3')
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xiaohdbh">
+				xiaohdbh =#xiaohdbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<select id="queryObject" resultClass="com.athena.xqjs.entity.common.Lingjxhd"
+		parameterClass="java.util.Map">
+		select
+		usercenter,
+		lingjbh,
+		xiaohdbh,
+		wulbh,
+		fenpqbh,
+		shengcxbh,
+		peislxbh,
+		qianhcbs,
+		jipbzwz,
+		shengxr,
+		jiesr,
+		guanlybh,
+		xiaohbl,
+		tiqjsxhbl,
+		gongysbh,
+		shunxglbz,
+		zidfhbz,
+		xianbyhlx,
+		yancsxbz,
+		beihdbz,
+		xiaohcbh,
+		xiaohccxbh,
+		yuanxhdbh,
+		anqkcts,
+		anqkcs,
+		xianbllkc,
+		yifyhlzl,
+		jiaofzl,
+		xittzz,
+		pdsbz,
+		biaos,
+		creator,
+		create_time,
+		zhongzzl
+		from
+		${dbSchemal3}ckx_lingjxhd
+		where
+		biaos = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xiaohdbh">
+				xiaohdbh = #xiaohdbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<!-- 根据用户中心和零件编号查询生产线编号 -->
+	<select id="queryShengcxByParam" resultClass="com.athena.xqjs.entity.common.Lingjxhd">
+		select
+		distinct
+		USERCENTER,
+		LINGJBH,
+		SHENGCXBH,
+		FENPQBH,
+		XIAOHDBH
+		from ${dbSchemal3}ckx_lingjxhd xhd
+		where xhd.USERCENTER = #usercenter#
+		and xhd.LINGJBH = #lingjbh#
+		<dynamic >
+		 <isNotEmpty prepend=" and " property="shengcxbh">xhd.SHENGCXBH = #shengcxbh#</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 根据用户中心、零件编号和产线查询消耗点编号 -->
+	<select id="queryXiaohdByParam" resultClass="com.athena.xqjs.entity.common.Lingjxhd">
+		select
+		distinct
+		USERCENTER,
+		LINGJBH,
+		SHENGCXBH,
+		XIAOHDBH
+		from ${dbSchemal3}ckx_lingjxhd xhd
+		where 
+			biaos = '1'
+		<dynamic >
+		      <isNotEmpty prepend=" and " property="usercenter">xhd.USERCENTER = #usercenter#</isNotEmpty>
+		      <isNotEmpty prepend=" and " property="lingjbh">xhd.LINGJBH = #lingjbh#</isNotEmpty>
+		      <isNotEmpty prepend=" and " property="shengcxbh">xhd.SHENGCXBH = #shengcxbh#</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 根据用户中心、零件编号、产线和消耗点查询继承的未交付量（已发要货令总量-交付总量-终止总量） -->
+	<select id="queryWeijfzlByParam" resultClass="com.athena.xqjs.entity.common.Lingjxhd">
+		select
+		distinct
+		USERCENTER,
+		LINGJBH,
+		SHENGCXBH,
+		XIAOHDBH,
+		YIFYHLZL,
+		JIAOFZL,
+		ZHONGZZL,
+		YIFYHLZL-JIAOFZL-ZHONGZZL as JICDWJFL
+		from ${dbSchemal3}ckx_lingjxhd xhd
+		where xhd.USERCENTER =
+		#usercenter# and xhd.LINGJBH = #lingjbh#
+		and xhd.SHENGCXBH = #shengcxbh# and xhd.XIAOHDBH = #xiaohdbh#
+	</select>
+	<!-- 查询所有消耗点 -->
+	<select id="queryAllxhd" resultClass="java.lang.String">
+		select
+		USERCENTER||LINGJBH||XIAOHDBH
+		from ${dbSchemal3}ckx_lingjxhd 
+		where 
+			  1=1
+		  and 
+		      biaos = #biaos#
+	</select>
+</sqlMap>

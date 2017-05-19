@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+	<!-- delete将临时表中存在未来几日剔除休息时间表中不存在的数据在工作时间模板中删掉 -->
+	<select id="queryRomoveByUsercenter" resultClass="com.athena.ckx.entity.xuqjs.Ticxxsj">
+	select y.usercenter,y.chanxck,y.gongzr,min(shunxh) shunxh
+	from (
+		select t.*,p.usercenter pusercenter
+		from ${dbSchemal3}ckx_ticxxsj_temp t ,${dbSchemal3}ckx_ticxxsj p
+		where t.usercenter=p.usercenter(+) and t.chanxck = p.chanxck(+)
+		and t.gongzr = p.gongzr(+) and t.shunxh = p.shunxh(+) and t.riq = p.riq(+)
+		and t.shijdkssj = p.shijdkssj(+) and t.shijdjssj = p.shijdjssj(+)
+		and p.usercenter is null
+		and t.usercenter=#usercenter#
+		order by t.usercenter,t.chanxck,t.gongzr,t.shunxh
+	) y group by y.usercenter,y.chanxck,y.gongzr
+	order by y.usercenter,y.chanxck,y.gongzr
+	</select>
+	<!-- add几日剔除休息时间中存在临时表中不出来的数据添加进工作时间模板中 -->
+	<select id="queryAddByUsercenter" resultClass="com.athena.ckx.entity.xuqjs.Ticxxsj">
+	select y.usercenter,y.chanxck,y.gongzr,min(shunxh) shunxh
+	from (
+		select t.*,p.usercenter pusercenter
+		from ${dbSchemal3}ckx_ticxxsj t ,${dbSchemal3}ckx_ticxxsj_temp p
+		where t.usercenter=p.usercenter(+) and t.chanxck = p.chanxck(+)
+		and t.gongzr = p.gongzr(+) and t.shunxh = p.shunxh(+) and t.riq = p.riq(+)
+		and t.shijdkssj = p.shijdkssj(+) and t.shijdjssj = p.shijdjssj(+)
+		and p.usercenter is null
+		and t.usercenter=#usercenter#
+		order by t.usercenter,t.chanxck,t.gongzr,t.shunxh
+	) y group by y.usercenter,y.chanxck,y.gongzr
+	order by y.usercenter,y.chanxck,y.gongzr
+	</select>
+<!-- 	获取顺序号所对应的消耗时间 -->
+	<select id="getSumSjcd" resultClass="java.lang.String">
+		 select nvl(sum(shijcd),0)  shijcd
+		 from ${dbSchemal3}ckx_ticxxsj t 
+		 where t.usercenter = #usercenter# and t.chanxck=#chanxck# 
+		 <![CDATA[  and t.gongzr = #gongzr# and t.shunxh<$shunxh$ ]]>
+		
+	</select>
+	<!-- 删除多余的工作时间模板数据-->
+	<delete id="removeGongzsjmb" parameterClass="com.athena.ckx.entity.xuqjs.Ticxxsj">
+		delete from ${dbSchemal3}CKX_GONGZSJMB t
+		where 
+		t.usercenter = #usercenter# and t.chanx=#chanxck# and to_char(t.gongzr,'yyyy-MM-dd') = #gongzr#
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="shunxh"><![CDATA[xiaohsj >= $shunxh$]]></isNotEmpty>
+		</dynamic>
+	</delete>	
+	<!-- DDBH拆分工作时间模板 插入   hj 10/11/2012-->
+	<insert id="insertGongzsjmb" parameterClass="java.util.Map">
+		insert into ${dbSchemal3}CKX_GONGZSJMB 
+		( USERCENTER,  CHANX,  GONGZR  , XIAOHSJ, JUEDSK  ) 
+		values 
+		(#USERCENTER#,  #CHANX#,  to_date(#GONGZR#,'yyyy-mm-dd')  , #XIAOHSJ#, to_date(#JUEDSK#,'yyyy-mm-dd hh24:mi;ss'))
+	</insert>
+<!-- DDBH拆分工作时间模板 插入   hj 2/21/2014-->
+<statement id="mergeGongzsjmb" parameterClass="java.util.Map">
+merge into ${dbSchemal3}ckx_gongzsjmb m
+   using(select count(t.juedsk) nm   
+         from ${dbSchemal3}ckx_gongzsjmb t 
+          where t.usercenter=#USERCENTER# and
+           t.chanx = #CHANX# and 
+           t.gongzr=to_date(#GONGZR#,'yyyy-MM-dd') and 
+           t.xiaohsj = #XIAOHSJ# ) s
+   on (s.nm>0)
+   when matched then 
+     update set m.juedsk = to_date(#JUEDSK#,'yyyy-mm-dd hh24:mi')
+     where m.usercenter=#USERCENTER# and
+           m.chanx = #CHANX# and 
+           m.gongzr=to_date(#GONGZR#,'yyyy-MM-dd') and 
+           m.xiaohsj = #XIAOHSJ# 
+     when not matched then 
+       insert  (usercenter,chanx,gongzr,xiaohsj,juedsk)
+       values(#USERCENTER#,  #CHANX#,  to_date(#GONGZR#,'yyyy-mm-dd')  , #XIAOHSJ#, to_date(#JUEDSK#,'yyyy-mm-dd hh24:mi'))
+	</statement>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<delete id="removeTicxxsjTemp">
+		delete from ${dbSchemal3}CKX_TICXXSJ_TEMP
+	</delete>
+	<insert id="addTicxxsjTemp">
+	<![CDATA[
+	INSERT INTO ${dbSchemal3}CKX_TICXXSJ_TEMP (HEBTIMEH,GONGZR,RIQ,SHUNXH,SHIJDKSSJ,SHIJDJSSJ,SHIJCD,CREATOR)
+        select h.hebtimeh,v.riq as gongzr,decode(t.tiaozsj,'1',to_char(to_date(v.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd'),v.riq) as riq, 
+          to_char(t.xuh, '00')  as shunxh , t.kaissj as shijdkssj,  t.jiezsj as shijdjssj , (to_date(t.jiezsj, 'hh24:mi:ss') -
+                to_date(t.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd ,#userID# as creator
+         from ${dbSchemal3}ckx_calendar_hebtime h
+         inner join ${dbSchemal3}ckx_calendar_version v 
+         on v.usercenter = h.usercenter and v.banc = h.banc and v.shifgzr = '1' 
+         and v.riq in (      
+             select riq from (
+                         select distinct riq,banc,usercenter      
+                          from ${dbSchemal3}ckx_calendar_version  where shifgzr = '1'                             
+                          and riq < to_char(sysdate,'yyyy-MM-dd')  order by riq desc 
+                    ) r
+                    where r.banc=v.banc and r.usercenter = v.usercenter
+                    and  rownum<3  
+                   union all
+                  select riq from (
+                         select distinct riq,banc,usercenter     
+                         from ${dbSchemal3}ckx_calendar_version  where shifgzr = '1'    
+                         and riq >= to_char(sysdate,'yyyy-MM-dd') order by riq asc  
+                    ) r   where r.banc=v.banc  and r.usercenter = v.usercenter 
+                     and rownum<19 
+         )
+         inner join ${dbSchemal3}ckx_calendar_team t on t.bianzh = h.bianzh and t.xingqxh = v.xingq
+         where h.weilbzh is null
+          order by hebtimeh,GONGZR,shunxh
+      ]]>
+	</insert>
+	<!-- 计算未来几日剔除休息时间-合并时间    有未来编组号方法   modify by hanwu 20160104 0011972：支持多个未来编组-->
+	<insert id="addTicxxsjTempWeilbzh">
+	INSERT INTO ${dbSchemal3}CKX_TICXXSJ_TEMP (HEBTIMEH,GONGZR,RIQ,SHUNXH,SHIJDKSSJ,SHIJDJSSJ,SHIJCD,CREATOR)
+        select HEBTIMEH,GONGZR,RIQ,SHUNXH,SHIJDKSSJ,SHIJDJSSJ,SHIJCD,CREATOR from (
+	<!-- 前两日~生效时间之间的剔除休息时间 -->
+	<![CDATA[
+             select h.hebtimeh,v.riq as gongzr,decode(t.tiaozsj,'1',to_char(to_date(v.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd'),v.riq) as riq, 
+                to_char(t.xuh, '00')  as shunxh , t.kaissj as shijdkssj,  t.jiezsj as shijdjssj , (to_date(t.jiezsj, 'hh24:mi:ss') -
+                to_date(t.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd    ,'4280' as creator
+         from ${dbSchemal3}ckx_calendar_hebtime h
+         inner join ${dbSchemal3}ckx_calendar_version v 
+         on v.usercenter = h.usercenter and v.banc = h.banc and v.shifgzr = '1' 
+         and v.riq in (      
+              select riq from (
+                         select distinct riq,banc,usercenter       
+                         from ${dbSchemal3}ckx_calendar_version  where shifgzr = '1'                             
+                         
+                          and riq < to_char(sysdate,'yyyy-MM-dd')  order by riq desc 
+                    ) r
+                    where r.banc=v.banc and r.usercenter = v.usercenter
+                    and  rownum<3  
+                   union all
+                  select riq from (
+                           select distinct riq,banc,usercenter       
+                           from ${dbSchemal3}ckx_calendar_version  where shifgzr = '1'    
+                          and riq >= to_char(sysdate,'yyyy-MM-dd') order by riq asc  
+                    ) r   where r.banc=v.banc  and r.usercenter = v.usercenter and r.riq < to_char(h.shengxsj, 'yyyy-MM-dd')  
+                     and rownum<19 
+                   
+         )
+         inner join ${dbSchemal3}ckx_calendar_team t on t.bianzh = h.bianzh and to_char(t.xingqxh,'00') = to_char(v.xingq,'00')
+         
+         where h.weilbzh is not null 
+	 ]]>
+        union  all
+      <!-- 生效时间~生效时间2之间的剔除休息时间 -->
+      <![CDATA[
+      select h.hebtimeh,v.riq as gongzr,decode(t.tiaozsj,'1',to_char(to_date(v.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd'),v.riq) as riq, 
+          to_char(t.xuh, '00')  as shunxh , t.kaissj as shijdkssj,  t.jiezsj as shijdjssj , (to_date(t.jiezsj, 'hh24:mi:ss') -
+                to_date(t.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd   ,'4280' as creator
+         from ${dbSchemal3}ckx_calendar_hebtime h
+         inner join ${dbSchemal3}ckx_calendar_version v 
+         on v.usercenter = h.usercenter and v.banc = h.banc and v.shifgzr = '1' 
+         and v.riq in (  
+                  select riq from (
+                          select distinct riq,banc,usercenter       
+                          from ${dbSchemal3}ckx_calendar_version  where shifgzr = '1'  and riq >= to_char(sysdate,'yyyy-MM-dd')   order by riq asc  
+                    ) r 
+                    where  r.banc=v.banc  and r.usercenter = v.usercenter and r.riq >=to_char(h.shengxsj, 'yyyy-MM-dd') and 
+                    rownum < case when h.weilbzh2 is null
+                           then (select 19-count(riq) 
+                                from ${dbSchemal3}ckx_calendar_version e 
+                                where e.shifgzr = '1' and e.banc = r.banc and e.usercenter = r.usercenter 
+                                and  e.riq >= to_char(sysdate,'yyyy-MM-dd') and e.riq <to_char(h.shengxsj, 'yyyy-MM-dd')) 
+                           else (select count(riq) 
+                                from ${dbSchemal3}ckx_calendar_version e 
+                                where e.shifgzr = '1' and e.banc = r.banc and e.usercenter = r.usercenter 
+                                and  e.riq >= to_char(h.shengxsj,'yyyy-MM-dd') and e.riq <=to_char(h.shengxsj2, 'yyyy-MM-dd'))
+                           end
+         )
+         inner join ${dbSchemal3}ckx_calendar_team t on t.bianzh = h.weilbzh and to_char(t.xingqxh,'00') = to_char(v.xingq,'00')
+         where h.weilbzh is not null 
+      ]]>
+         union  all
+      <!-- 生效时间2~生效时间3之间的剔除休息时间 -->
+      <![CDATA[
+      select h.hebtimeh,v.riq as gongzr,decode(t.tiaozsj,'1',to_char(to_date(v.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd'),v.riq) as riq, 
+          to_char(t.xuh, '00')  as shunxh , t.kaissj as shijdkssj,  t.jiezsj as shijdjssj , (to_date(t.jiezsj, 'hh24:mi:ss') -
+                to_date(t.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd   ,'4280' as creator
+         from ${dbSchemal3}ckx_calendar_hebtime h
+         inner join ${dbSchemal3}ckx_calendar_version v 
+         on v.usercenter = h.usercenter and v.banc = h.banc and v.shifgzr = '1' 
+         and v.riq in (  
+                  select riq from (
+                          select distinct riq,banc,usercenter       
+                          from ${dbSchemal3}ckx_calendar_version  where shifgzr = '1'  and riq >= to_char(sysdate,'yyyy-MM-dd')   order by riq asc  
+                    ) r 
+                    where  r.banc=v.banc  and r.usercenter = v.usercenter and r.riq >=to_char(h.shengxsj2, 'yyyy-MM-dd') and 
+                    rownum < case when h.weilbzh2 is null and h.weilbzh3 is null
+                           then 0
+                             when h.weilbzh2 is not null and h.weilbzh3 is null
+                           then (select 19-count(riq) 
+                                from ${dbSchemal3}ckx_calendar_version e 
+                                where e.shifgzr = '1' and e.banc = r.banc and e.usercenter = r.usercenter 
+                                and  e.riq >= to_char(sysdate,'yyyy-MM-dd') and e.riq <to_char(h.shengxsj2, 'yyyy-MM-dd')) 
+                           else (select count(riq) 
+                                from ${dbSchemal3}ckx_calendar_version e 
+                                where e.shifgzr = '1' and e.banc = r.banc and e.usercenter = r.usercenter 
+                                and  e.riq >= to_char(h.shengxsj2,'yyyy-MM-dd') and e.riq <=to_char(h.shengxsj3, 'yyyy-MM-dd'))
+                           end
+         )
+         inner join ${dbSchemal3}ckx_calendar_team t on t.bianzh = h.weilbzh2 and to_char(t.xingqxh,'00') = to_char(v.xingq,'00')
+         where h.weilbzh is not null 
+         ]]>
+         union  all
+      <!-- 生效时间3~生效时间4之间的剔除休息时间 -->
+      <![CDATA[
+      select h.hebtimeh,v.riq as gongzr,decode(t.tiaozsj,'1',to_char(to_date(v.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd'),v.riq) as riq, 
+          to_char(t.xuh, '00')  as shunxh , t.kaissj as shijdkssj,  t.jiezsj as shijdjssj , (to_date(t.jiezsj, 'hh24:mi:ss') -
+                to_date(t.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd   ,'4280' as creator
+         from ${dbSchemal3}ckx_calendar_hebtime h
+         inner join ${dbSchemal3}ckx_calendar_version v 
+         on v.usercenter = h.usercenter and v.banc = h.banc and v.shifgzr = '1' 
+         and v.riq in (  
+                  select riq from (
+                          select distinct riq,banc,usercenter       
+                          from ${dbSchemal3}ckx_calendar_version  where shifgzr = '1'  and riq >= to_char(sysdate,'yyyy-MM-dd')   order by riq asc  
+                    ) r 
+                    where  r.banc=v.banc  and r.usercenter = v.usercenter and r.riq >=to_char(h.shengxsj3, 'yyyy-MM-dd') and 
+                    rownum < case when h.weilbzh3 is null and h.weilbzh4 is null
+                           then 0
+                             when h.weilbzh3 is not null and h.weilbzh4 is null
+                           then (select 19-count(riq) 
+                                from ${dbSchemal3}ckx_calendar_version e 
+                                where e.shifgzr = '1' and e.banc = r.banc and e.usercenter = r.usercenter 
+                                and  e.riq >= to_char(sysdate,'yyyy-MM-dd') and e.riq <to_char(h.shengxsj3, 'yyyy-MM-dd')) 
+                           else (select count(riq) 
+                                from ${dbSchemal3}ckx_calendar_version e 
+                                where e.shifgzr = '1' and e.banc = r.banc and e.usercenter = r.usercenter 
+                                and  e.riq >= to_char(h.shengxsj3,'yyyy-MM-dd') and e.riq <=to_char(h.shengxsj4, 'yyyy-MM-dd'))
+                           end
+         )
+         inner join ${dbSchemal3}ckx_calendar_team t on t.bianzh = h.weilbzh3 and to_char(t.xingqxh,'00') = to_char(v.xingq,'00')
+         where h.weilbzh is not null 
+         ]]>
+         union  all
+      <!-- 生效时间4~后18日之间的剔除休息时间 -->
+      <![CDATA[
+      select h.hebtimeh,v.riq as gongzr,decode(t.tiaozsj,'1',to_char(to_date(v.riq, 'yyyy-MM-dd') + 1, 'yyyy-MM-dd'),v.riq) as riq, 
+          to_char(t.xuh, '00')  as shunxh , t.kaissj as shijdkssj,  t.jiezsj as shijdjssj , (to_date(t.jiezsj, 'hh24:mi:ss') -
+                to_date(t.kaissj, 'hh24:mi:ss')) * 24 * 60 as shijcd   ,'4280' as creator
+         from ${dbSchemal3}ckx_calendar_hebtime h
+         inner join ${dbSchemal3}ckx_calendar_version v 
+         on v.usercenter = h.usercenter and v.banc = h.banc and v.shifgzr = '1' 
+         and v.riq in (  
+                  select riq from (
+                          select distinct riq,banc,usercenter       
+                          from ${dbSchemal3}ckx_calendar_version  where shifgzr = '1'  and riq >= to_char(sysdate,'yyyy-MM-dd')   order by riq asc  
+                    ) r 
+                    where  r.banc=v.banc  and r.usercenter = v.usercenter and r.riq >=to_char(h.shengxsj4, 'yyyy-MM-dd') and 
+                    rownum < case when h.weilbzh4 is null
+                           then 0
+                           else (select 19-count(riq) 
+                                from ${dbSchemal3}ckx_calendar_version e 
+                                where e.shifgzr = '1' and e.banc = r.banc and e.usercenter = r.usercenter 
+                                and  e.riq >= to_char(sysdate,'yyyy-MM-dd') and e.riq <to_char(h.shengxsj4, 'yyyy-MM-dd')) 
+                           end
+         )
+         inner join ${dbSchemal3}ckx_calendar_team t on t.bianzh = h.weilbzh4 and to_char(t.xingqxh,'00') = to_char(v.xingq,'00')
+         where h.weilbzh is not null 
+          ]]>
+         ) t 
+          order by hebtimeh,GONGZR,shunxh
+
+
+	</insert>
+	<delete id="deleteGongzsjmb">
+		truncate table ${dbSchemal3}ckx_gongzsjmb
+	</delete>
+	<select id="queryHebtimeh" resultClass="java.lang.String">
+	select distinct hebtimeh  as hebtimeh from ${dbSchemal3}ckx_ticxxsj_temp order by hebtimeh
+	</select>
+	<select id="queryHebtimehInfo" resultClass="java.util.HashMap">
+	select hebtimeh,gongzr,shunxh,riq,shijdkssj,shijdjssj,shijcd 
+	from ${dbSchemal3}ckx_ticxxsj_temp t
+	 where t.hebtimeh=#hebtimeh#
+	 ORDER BY HEBTIMEH,GONGZR,SHUNXH
+	</select>
+	
+	<!-- 工作时间模板 插入   hj -->
+	<insert id="addGongzsjmb" parameterClass="java.util.Map">
+		insert into ${dbSchemal3}CKX_GONGZSJMB 
+		( HEBTIMEH,  GONGZR  , XIAOHSJ, JUEDSK ,CREATOR ) 
+		values 
+		(#HEBTIMEH#, to_date(#GONGZR#,'yyyy-mm-dd')  , $XIAOHSJ$, to_date(#JUEDSK#,'yyyy-mm-dd hh24:mi'), #CREATOR#)
+	</insert>
+</sqlMap>

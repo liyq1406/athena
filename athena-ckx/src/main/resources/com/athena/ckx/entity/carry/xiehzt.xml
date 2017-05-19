@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="carry">
+	<select id="queryCkxXiehztxhsj" resultClass="com.athena.ckx.entity.carry.CkxXiehztxhsj">select 
+		usercenter,
+		cangkbh,
+		xiehztbh,
+		mos,
+		beihsj,
+		shengxbs,
+		creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_xiehztxhsj where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">mos = #mos#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengxbs">shengxbs = #shengxbs#</isNotEmpty>
+		</dynamic>
+		order by usercenter,cangkbh,xiehztbh
+	</select>
+	<select id="getCkxXiehztxhsj" resultClass="com.athena.ckx.entity.carry.CkxXiehztxhsj">select 
+		usercenter,
+		cangkbh,
+		xiehztbh,
+		mos,
+		beihsj,
+		shengxbs,
+		creator,create_Time,editor,edit_Time 
+		from ${dbSchemal3}ckx_xiehztxhsj where 1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">mos = #mos#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 插入记录 -->
+	<insert id="insertCkxXiehztxhsj" parameterClass="com.athena.ckx.entity.carry.CkxXiehztxhsj">insert into
+		${dbSchemal3}ckx_xiehztxhsj (usercenter,cangkbh,xiehztbh,mos,beihsj,shengxbs,creator,create_Time,editor,edit_Time)
+		values(
+			#usercenter#,
+			#cangkbh#,
+			#xiehztbh#,
+			#mos#,
+			#beihsj#,1
+			,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	<!-- 修改记录 -->
+	<update id="updateCkxXiehztxhsj" parameterClass="com.athena.ckx.entity.carry.CkxXiehztxhsj">
+		update ${dbSchemal3}ckx_xiehztxhsj set 
+		usercenter=#usercenter#,
+		cangkbh=#cangkbh#,
+		xiehztbh=#xiehztbh#,
+		mos=#mos#,
+		beihsj=#beihsj#,
+		editor=#editor#,
+		shengxbs=#shengxbs#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		 where 1=1
+		
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">mos = #mos#</isNotEmpty>
+		</dynamic>
+		
+	</update>
+	<!-- 逻辑删除 -->
+	<update id="deleteLogicCkxXiehztxhsj" parameterClass="com.athena.ckx.entity.carry.CkxXiehztxhsj">
+		update ${dbSchemal3}ckx_xiehztxhsj set 
+		shengxbs=0,
+		
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		 where
+		1=1
+		
+			<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">cangkbh = #cangkbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="mos">mos = #mos#</isNotEmpty>
+		</dynamic>
+		
+	</update>
+	<!-- 删除记录 -->
+	<delete id="deleteCkxXiehztxhsj" parameterClass="com.athena.ckx.entity.carry.CkxXiehztxhsj">
+		delete from ${dbSchemal3}ckx_xiehztxhsj where 
+		usercenter = #usercenter#
+		and	cangkbh = #cangkbh#
+		and	xiehztbh = #xiehztbh#
+		and	mos = #mos#
+	</delete>
+	
+
+</sqlMap>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+    <!-- 内部 物流工艺员  关联仓库 -->
+	<select id="queryCangkWulz" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		SELECT
+            DISTINCT
+			CANGKBH	 as  KEH
+
+		FROM
+			${dbSchemal3}ckx_cangk
+		WHERE
+			biaos = '1'
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				USERCENTER = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="wulgyyz">
+				WULGYYZ = #wulgyyz#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="keh">
+				CANGKBH = #keh#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY KEH 
+	</select>
+
+    <!-- 内部 物流工艺员  关联分配区 -->
+	<select id="queryFenpqWulz" resultClass="java.util.HashMap"
+		parameterClass="java.util.Map">
+		SELECT
+		    DISTINCT
+			FENPQH  as  KEH
+		FROM
+			${dbSchemal3}ckx_fenpq
+		WHERE
+			biaos = '1'
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				USERCENTER = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="wulgyyz">
+				WULGYYZ = #wulgyyz#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="keh">
+				FENPQH = substr(#keh#,0,5)
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY KEH
+	</select>
+
+
+</sqlMap>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ts_ckx">
+	<!-- 多记录查询 -->
+	<select id="queryChexYunss" resultClass="com.athena.ckx.entity.paicfj.ChexYunss">select 
+		usercenter,
+		zuidsl,		
+		yunssbh,
+		chexbh from ${dbSchemal3}ckx_chex_yunss where 1=1
+		<dynamic >
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yunssbh">yunssbh = #yunssbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="chexbh">chexbh = #chexbh#</isNotEmpty>
+		</dynamic>
+		order by usercenter,yunssbh,chexbh
+	</select>
+	
+	<!-- 插入记录 -->
+	<insert id="insertChexYunss" parameterClass="com.athena.ckx.entity.paicfj.ChexYunss">insert into
+		${dbSchemal3}ckx_chex_yunss (create_time,editor,usercenter,zuidsl,edit_time,creator,yunssbh,chexbh)
+		values(
+			#create_time#,
+			#editor#,
+			#usercenter#,
+			#zuidsl#,
+			#edit_time#,
+			#creator#,
+			#yunssbh#,
+			#chexbh#)
+	</insert>
+	<!-- 修改记录 -->
+	<update id="updateChexYunss" parameterClass="com.athena.ckx.entity.paicfj.ChexYunss">
+		update ${dbSchemal3}ckx_chex_yunss 
+		set 
+		zuidsl = #zuidsl#,
+		editor = #editor#,
+		edit_time = #edit_time#		
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yunssbh">yunssbh = #yunssbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="chexbh">chexbh = #chexbh#</isNotEmpty>
+		</dynamic>
+	</update>
+	<!-- 删除记录 -->
+	<delete id="deleteChexYunss" parameterClass="com.athena.ckx.entity.paicfj.ChexYunss">
+		delete from ${dbSchemal3}ckx_chex_yunss where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="yunssbh">yunssbh = #yunssbh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="chexbh">chexbh = #chexbh#</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

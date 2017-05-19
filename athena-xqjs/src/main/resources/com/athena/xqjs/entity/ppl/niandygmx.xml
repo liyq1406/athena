@@ -1,0 +1,1206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ppl">
+	<!-- 查询年度预告明细的相关信息  添加法文零件名称 10742 xh-->
+	<select id="queryNiandygmx" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ppl.Niandygmx">
+		select
+		nx.id as id,
+		nx.pplbc as pplbc,
+		nx.usercenter as usercenter,
+		nx.lingjbh as lingjbh,
+		l.zhongwmc as lingjmc,
+		l.fawmc    as fawmc,
+		nx.lingjdw as lingjdw,
+		nx.dinghcj as dinghcj,
+		nx.gongysdm as gongysdm,
+		nx.gongysmc as gongysmc,
+		nx.zhizlx as zhizlx,
+		nx.p0xqzq as p0xqzq,
+		nx.p0sl as p0sl ,
+		nx.p1sl as p1sl ,
+		nx.p2sl as p2sl ,
+		nx.p3sl as p3sl ,
+		nx.p4sl as p4sl ,
+		nx.p5sl as p5sl ,
+		nx.p6sl as p6sl ,
+		nx.p7sl as p7sl ,
+		nx.p8sl as p8sl ,
+		nx.p9sl as p9sl ,
+		nx.p10sl as p10sl ,
+		nx.p11sl as p11sl ,
+		n.zhuangt as zhuangt ,
+		to_char(nx.edit_time,'yyyy-MM-dd HH24:mi:ss:ff3') edit_time,
+		nx.editor as editor,
+		nx.creator as creator,
+		nx.create_time as create_time
+		from ${dbSchemal1}xqjs_niandygmx nx,
+		${dbSchemal1}xqjs_niandyg n,
+		${dbSchemal3}ckx_lingj l
+		where nx.pplbc=n.pplbc
+		and nx.pplbc=#pplbc#
+		and nx.usercenter= l.usercenter
+		and nx.lingjbh = l.lingjbh
+		and nx.active='1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[nx.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="maoxqbc"><![CDATA[n.maoxqbc = #maoxqbc#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihydm"><![CDATA[nx.jihydm = #jihydm#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[nx.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqbc"><![CDATA[n.xuqbc = #xuqbc#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqcfsj"><![CDATA[ to_char(n.xuqcfsj,'yyyy-mm-dd') = #xuqcfsj#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx"><![CDATA[nx.zhizlx =#zhizlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm"><![CDATA[nx.gongysdm =#gongysdm#]]></isNotEmpty>
+		</dynamic>
+		ORDER BY PPLBC DESC
+	</select>
+	<!-- 修改某一版次ppl预告的相关信息 -->
+	<update id="updteNiandygmx" parameterClass="com.athena.xqjs.entity.ppl.Niandygmx">
+		update ${dbSchemal1}xqjs_niandygmx
+		<dynamic prepend="set">
+			<isNotEmpty property="p0sl" prepend=",">
+				p0sl= #p0sl#
+			</isNotEmpty>
+			<isEmpty property="p0sl" prepend=",">
+				p0sl= ''
+			</isEmpty>
+			<isNotEmpty property="p1sl" prepend=",">
+				p1sl= #p1sl#
+			</isNotEmpty>
+			<isEmpty property="p1sl" prepend=",">
+				p1sl= ''
+			</isEmpty>
+			<isNotEmpty property="p2sl" prepend=",">
+				p2sl= #p2sl#
+			</isNotEmpty>
+			<isEmpty property="p2sl" prepend=",">
+				p2sl= ''
+			</isEmpty>
+			<isNotEmpty property="p3sl" prepend=",">
+				p3sl = #p3sl#
+			</isNotEmpty>
+			<isEmpty property="p3sl" prepend=",">
+				p3sl = ''
+			</isEmpty>
+			<isNotEmpty property="p4sl" prepend=",">
+				p4sl = #p4sl#
+			</isNotEmpty>
+			<isEmpty property="p4sl" prepend=",">
+				p4sl = ''
+			</isEmpty>
+			<isNotEmpty property="p5sl" prepend=",">
+				p5sl= #p5sl#
+			</isNotEmpty>
+			<isEmpty property="p5sl" prepend=",">
+				p5sl= ''
+			</isEmpty>
+			<isNotEmpty property="p6sl" prepend=",">
+				p6sl= #p6sl#
+			</isNotEmpty>
+			<isEmpty property="p6sl" prepend=",">
+				p6sl= ''
+			</isEmpty>
+			<isNotEmpty property="p7sl" prepend=",">
+				p7sl= #p7sl#
+			</isNotEmpty>
+			<isEmpty property="p7sl" prepend=",">
+				p7sl= ''
+			</isEmpty>
+			<isNotEmpty property="p8sl" prepend=",">
+				p8sl = #p8sl#
+			</isNotEmpty>
+			<isEmpty property="p8sl" prepend=",">
+				p8sl = ''
+			</isEmpty>
+			<isNotEmpty property="p9sl" prepend=",">
+				p9sl = #p9sl#
+			</isNotEmpty>
+			<isEmpty property="p9sl" prepend=",">
+				p9sl =''
+			</isEmpty>
+			<isNotEmpty property="p10sl" prepend=",">
+				p10sl = #p10sl#
+			</isNotEmpty>
+			<isEmpty property="p10sl" prepend=",">
+				p10sl = ''
+			</isEmpty>
+			<isNotEmpty property="p11sl" prepend=",">
+				p11sl = #p11sl#
+			</isNotEmpty>
+			<isEmpty property="p11sl" prepend=",">
+				p11sl = ''
+			</isEmpty>
+			<isNotEmpty property="editor" prepend=",">
+				editor = #neweditor#
+			</isNotEmpty>
+			<isNotEmpty property="edit_time" prepend=",">
+				edit_time=to_timestamp(#edittime#,'yyyy-MM-dd HH24:mi:ss:ff3')
+			</isNotEmpty>
+			<isNotEmpty property="active" prepend=",">
+				active = #active#
+			</isNotEmpty>
+		</dynamic>
+		where 1=1
+		<dynamic>
+		       <isNotEmpty property="usercenter" prepend=" and "><![CDATA[ usercenter = #usercenter# ]]></isNotEmpty>
+		       <isNotEmpty property="pplbc"      prepend=" and "><![CDATA[ pplbc=#pplbc#  ]]></isNotEmpty>
+		       <isNotEmpty property="gongysdm"   prepend=" and "><![CDATA[ gongysdm=#gongysdm#]]></isNotEmpty>
+		       <isNotEmpty property="lingjbh" prepend=" and "><![CDATA[ lingjbh=#lingjbh#  ]]></isNotEmpty>
+		       <isNotEmpty property="editor" prepend=" and "><![CDATA[ editor=#editor#   ]]></isNotEmpty>
+		       <isNotEmpty property="edit_time" prepend=" and "><![CDATA[ to_char(edit_time,'yyyy-MM-dd HH24:mi:ss:ff3')=#edit_time# ]]></isNotEmpty>
+		</dynamic>
+	</update>
+	<!-- 插入一条年度预告明细信息 -->
+	<insert id="insertNiandygmx" parameterClass="com.athena.xqjs.entity.ppl.Niandygmx">
+	<![CDATA[	insert into ${dbSchemal1}xqjs_niandygmx (
+		id,
+		pplbc,
+		usercenter,
+		lingjbh,
+		lingjmc,
+		lingjdw ,
+		jihydm,
+		gongysdm,
+		gongysmc,
+		dinghcj,
+		zhizlx,
+		p0xqzq,
+		p0sl,
+		p1sl,
+		p2sl,
+		p3sl,
+		p4sl,
+		p5sl,
+		p6sl,
+		p7sl,
+		p8sl,
+		p9sl,
+		p10sl,
+		p11sl,
+		creator,
+		create_time,
+		editor,
+		edit_time,
+		active
+		)
+		values(
+		${dbSchemal1}xqjs_niandygmx_seq.nextval,
+		#pplbc#,
+		#usercenter# ,
+		#lingjbh#,
+		#lingjmc#,
+		#lingjdw# ,
+		#jihydm#,
+		#gongysdm#,
+		#gongysmc#,
+		#dinghcj#,
+		#zhizlx#,
+		#p0xqzq#,
+		#p0sl#,
+		#p1sl#,
+		#p2sl#,
+		#p3sl#,
+		#p4sl#,
+		#p5sl#,
+		#p6sl#,
+		#p7sl#,
+		#p8sl#,
+		#p9sl#,
+		#p10sl#,
+		#p11sl#,
+		#creator#,
+		to_timestamp(#create_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+		#editor#,
+		to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+		#active#
+		)
+	]]>
+	</insert>
+
+
+	<!--插入IL年度预告明细信息 -->
+	<insert id="insertIL" parameterClass="java.util.Map">
+		insert into ${dbSchemal1}xqjs_niandygmx nx
+		( id,
+		pplbc,
+		usercenter,
+		lingjbh,
+		lingjmc,
+		baozlx,
+		baozrl,
+		jihydm,
+		gongysdm,
+		gongysmc,
+		dinghcj,
+		zhizlx,
+		lingjdw,
+		p0xqzq,
+		p0sl,
+		p1sl,
+		p2sl,
+		p3sl,
+		p4sl,
+		p5sl,
+		p6sl,
+		p7sl,
+		p8sl,
+		p9sl,
+		p10sl,
+		p11sl,
+		creator,
+		create_time,
+		editor,
+		edit_time,
+		active
+		)
+		select
+		${dbSchemal1}xqjs_niandygmx_seq.nextval,
+		#pplbc#,
+		a.usercenter,
+		a.lingjbh,
+		b.lingjmc,
+		b.baozlx,
+		b.baozrl,
+		b.jihydm,
+		b.gongysdm,
+		b.gongysmc,
+		b.dinghcj,
+		a.zhizlx,
+		a.danw,
+		a.p0zqxh,
+		case when a.danw is not null and a.danw = 'UN' 
+		then 
+			ceil(a.p0*b.gongyfe)
+		else  
+			a.p0*b.gongyfe
+		end  p0, 
+		case when a.danw is not null and a.danw = 'UN' 
+		then 
+			ceil(a.p1*b.gongyfe)
+		else  
+			a.p1*b.gongyfe
+		end  p1, 
+		case when a.danw is not null and a.danw = 'UN' 
+		then 
+			ceil(a.p2*b.gongyfe)
+		else  
+			a.p2*b.gongyfe
+		end  p2, 
+		case when a.danw is not null and a.danw = 'UN' 
+		then 
+			ceil(a.p3*b.gongyfe)
+		else  
+			a.p3*b.gongyfe
+		end  p3, 
+		case when a.danw is not null and a.danw = 'UN' 
+		then 
+			ceil(a.p4*b.gongyfe)
+		else  
+			a.p4*b.gongyfe
+		end  p4, 
+		case when a.danw is not null and a.danw = 'UN' 
+		then 
+			ceil(a.p5*b.gongyfe)
+		else  
+			a.p5*b.gongyfe
+		end  p5, 
+		case when a.danw is not null and a.danw = 'UN' 
+		then 
+			ceil(a.p6*b.gongyfe)
+		else  
+			a.p6*b.gongyfe
+		end  p6, 
+		case when a.danw is not null and a.danw = 'UN' 
+		then 
+			ceil(a.p7*b.gongyfe)
+		else  
+			a.p7*b.gongyfe
+		end  p7, 
+		case when a.danw is not null and a.danw = 'UN' 
+		then 
+			ceil(a.p8*b.gongyfe)
+		else  
+			a.p8*b.gongyfe
+		end  p8, 
+		case when a.danw is not null and a.danw = 'UN' 
+		then 
+			ceil(a.p9*b.gongyfe)
+		else  
+			a.p9*b.gongyfe
+		end  p9, 
+		case when a.danw is not null and a.danw = 'UN' 
+		then 
+			ceil(a.p10*b.gongyfe)
+		else  
+			a.p10*b.gongyfe
+		end  p10, 
+		case when a.danw is not null and a.danw = 'UN' 
+		then 
+			ceil(a.p11*b.gongyfe)
+		else  
+			a.p11*b.gongyfe
+		end  p11, 
+		#creator#,
+		to_timestamp(#create_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+		#editor#,
+		to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+		'1'
+		from
+		(select
+		w.usercenter usercenter,
+		w.lingjbh lingjbh,
+		w.zhizlx zhizlx,
+		w.danw danw,
+		sum(decode(w.xuqsszq,#P0#,w.xuqsl,0)) as p0,
+		sum(decode(w.xuqsszq,#P1#,w.xuqsl,0)) as p1,
+		sum(decode(w.xuqsszq,#P2#,w.xuqsl,0)) as p2,
+		sum(decode(w.xuqsszq,#P3#,w.xuqsl,0)) as p3,
+		sum(decode(w.xuqsszq,#P4#,w.xuqsl,0)) as p4,
+		sum(decode(w.xuqsszq,#P5#,w.xuqsl,0)) as p5,
+		sum(decode(w.xuqsszq,#P6#,w.xuqsl,0)) as p6,
+		sum(decode(w.xuqsszq,#P7#,w.xuqsl,0)) as p7,
+		sum(decode(w.xuqsszq,#P8#,w.xuqsl,0)) as p8,
+		sum(decode(w.xuqsszq,#P9#,w.xuqsl,0)) as p9,
+		sum(decode(w.xuqsszq,#P10#,w.xuqsl,0)) as p10,
+		sum(decode(w.xuqsszq,#P11#,w.xuqsl,0)) as p11,
+		#P0# as p0zqxh
+		from (
+		select
+		m.usercenter usercenter,
+		m.xuqsszq xuqsszq,
+		m.lingjbh lingjbh,
+		m.zhizlx zhizlx,
+		m.danw danw,
+		sum(m.xuqsl) xuqsl
+		from ${dbSchemal1}xqjs_maoxqmx m
+		where
+		active='1'
+		and 
+		m.xuqbc=#xuqbc#
+		group by m.usercenter,
+		m.xuqsszq,
+		m.lingjbh,
+		m.zhizlx,
+		m.danw ) w
+		group by usercenter,
+		lingjbh ,
+		zhizlx,
+		danw ) a,
+		(select
+		xq.usercenter usercenter,
+		xq.lingjbh lingjbh,
+		xq.lingjmc lingjmc,
+		xq.lingjdw lingjdw,
+		xq.baozlx baozlx,
+		xq.baozrl baozrl,
+		xq.jihyz jihydm,
+		xq.gongysdm gongysdm,
+		xq.gongysmc gongysmc,
+		xq.dinghcj dinghcj,
+		xq.zhizlx zhizlx,
+		xq.beihzq beihzq,
+		xq.fayzq fayzq,
+		xq.gongyfe gongyfe
+		from ${dbSchemal1}xqjs_xqmx xq
+		where active='1' ) b
+		where a.usercenter=b.usercenter
+		and a.lingjbh=b.lingjbh
+		and a.danw=b.lingjdw
+		and a.zhizlx=b.zhizlx
+</insert>
+	<!-- 将kd件插入到年度预告明细中 -->
+	<insert id="insertKDNiandygmx" parameterClass="java.util.Map">
+		insert into ${dbSchemal1}xqjs_niandygmx nm
+		(
+		nm.id,
+		nm.pplbc,
+		nm.usercenter,
+		nm.lingjbh,
+		nm.lingjmc,
+		nm.lingjdw,
+		nm.jihydm,
+		nm.gongysdm,
+		nm.gongysmc,
+		nm.dinghcj,
+		nm.zhizlx,
+		nm.p0xqzq,
+		nm.p0sl,
+		nm.p1sl,
+		nm.p2sl,
+		nm.p3sl,
+		nm.p4sl,
+		nm.p5sl,
+		nm.p6sl,
+		nm.p7sl,
+		nm.p8sl,
+		nm.p9sl,
+		nm.p10sl,
+		nm.p11sl,
+		nm.baozlx ,
+		nm.baozrl ,
+		nm.creator,
+		nm.create_time,
+		nm.editor,
+		nm.edit_time,
+		active)
+		select
+		${dbSchemal1}xqjs_niandygmx_seq.nextval,
+		#pplbc#,
+		w.usercenter,
+		w.lingjbh,
+		w.lingjmc,
+		w.danw,
+		w.jihy,
+		w.gongysdm,
+		w.gongysmc,
+		w.dinghcj,
+		w.zhizlx,
+		#P0#,
+		case when danw is not null and danw = 'UN' 
+		then 
+			ceil(w.p0)
+		else  
+			w.p0
+		end  p0, 
+		case when danw is not null and danw = 'UN' 
+		then 
+			ceil(w.p1)
+		else  
+			w.p1
+		end  p1, 
+		case when danw is not null and danw = 'UN' 
+		then 
+			ceil(w.p2)
+		else  
+			w.p2
+		end  p2, 
+		case when danw is not null and danw = 'UN' 
+		then 
+			ceil(w.p3)
+		else  
+			w.p3
+		end  p3, 
+		case when danw is not null and danw = 'UN' 
+		then 
+			ceil(w.p4)
+		else  
+			w.p4
+		end  p4, 
+		case when danw is not null and danw = 'UN' 
+		then 
+			ceil(w.p5)
+		else  
+			w.p5
+		end  p5, 
+		case when danw is not null and danw = 'UN' 
+		then 
+			ceil(w.p6)
+		else  
+			w.p6
+		end  p6, 
+		case when danw is not null and danw = 'UN' 
+		then 
+			ceil(w.p7)
+		else  
+			w.p7
+		end  p7, 
+		case when danw is not null and danw = 'UN' 
+		then 
+			ceil(w.p8)
+		else  
+			w.p8
+		end  p8, 
+		case when danw is not null and danw = 'UN' 
+		then 
+			ceil(w.p9)
+		else  
+			w.p9
+		end  p9, 
+		case when danw is not null and danw = 'UN' 
+		then 
+			ceil(w.p10)
+		else  
+			w.p10
+		end  p10, 
+		case when danw is not null and danw = 'UN' 
+		then 
+			ceil(w.p11)
+		else  
+			w.p11
+		end  p11, 
+		w.baozlx baozlx,
+		w.baozrl baozrl,
+		#creator#,
+		to_timestamp(#create_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+		#editor#,
+		to_timestamp(#edit_time#,'yyyy-MM-dd HH24:mi:ss:ff3'),
+		'1'
+		from (
+		select
+		h.usercenter usercenter,
+		h.lingjbh lingjbh,
+		sum(decode(h.nianzq, #P0#, h.xuqsl, 0)) as p0,
+		sum(decode(h.nianzq, #P1#, h.xuqsl, 0)) as p1,
+		sum(decode(h.nianzq, #P2#, h.xuqsl, 0)) as p2,
+		sum(decode(h.nianzq, #P3#, h.xuqsl, 0)) as p3,
+		sum(decode(h.nianzq, #P4#, h.xuqsl, 0)) as p4,
+		sum(decode(h.nianzq, #P5#, h.xuqsl, 0)) as p5,
+		sum(decode(h.nianzq, #P6#, h.xuqsl, 0)) as p6,
+		sum(decode(h.nianzq, #P7#, h.xuqsl, 0)) as p7,
+		sum(decode(h.nianzq, #P8#, h.xuqsl, 0)) as p8,
+		sum(decode(h.nianzq, #P9#, h.xuqsl, 0)) as p9,
+		sum(decode(h.nianzq, #P10#, h.xuqsl, 0)) as p10,
+		sum(decode(h.nianzq, #P11#, h.xuqsl, 0)) as p11,
+		h.zhizlx zhizlx,
+		h.lingjmc lingjmc,
+		h.danw danw,
+		h.gongysdm gongysdm,
+		h.gongysmc gongysmc,
+		h.dinghcj dinghcj,
+		h.baozlx baozlx,
+		h.baozrl baozrl,
+		h.jihyz jihy
+		from
+		${dbSchemal1}XQJS_PPL_KDXQHZ h
+		group by h.usercenter,
+		h.lingjbh,
+		h.zhizlx,
+		h.lingjmc,
+		h.danw,
+		h.gongysdm,
+		h.gongysmc,
+		h.dinghcj,
+		h.baozlx,
+		h.baozrl,
+		h.jihyz ) w                
+   
+   </insert>
+	<!--比较两个版次的 PPl预告明细信息    添加法文零件名称 10724 xh -xss-v4_008-->
+	<select id="queryBijiaobc" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ppl.ComparePpl">
+		select
+		a.usercenter usercenter ,
+		a.lingjbh lingjbh,
+		a.lingjmc lingjmc,
+		a.fawmc   fawmc,
+		a.gongysdm as gongys, 
+		a.gongysmc as gongysmc,
+		a.chengysmc as chengysmc,
+		a.gcbh as gcbh, 
+		a.zhizlx zhizlx ,
+		a.lingjdw lingjdw,
+		a.p0sl p1sl1,
+		null p1sl2,
+		null p1,
+		a.p1sl p2sl1,
+		null p2sl2,
+		null p2,
+		a.p2sl p3sl1,
+		null p3sl2,
+		null p3,
+		a.p3sl p4sl1,
+		null p4sl2,
+		null p4,
+		a.p4sl p5sl1,
+		null p5sl2,
+		null p5,
+		a.p5sl p6sl1,
+		null p6sl2,
+		null p6,
+		a.p6sl p7sl1,
+		null p7sl2,
+		null p7,
+		a.p7sl p8sl1,
+		null p8sl2,
+		null p8,
+		a.p8sl p9sl1,
+		null p9sl2,
+		null p9,
+		a.p9sl p10sl1,
+		null p10sl2,
+		null p10,
+		a.p10sl p11sl1,
+		null p11sl2,
+		null p11,
+		a.p11sl p12sl1,
+		null p12sl2,
+		null p12
+		from (select nm.usercenter usercenter,
+		nm.lingjbh lingjbh,
+		nm.lingjmc lingjmc,
+		lj.fawmc   fawmc,
+		nm.gongysdm gongysdm,
+		nm.zhizlx zhizlx,
+		nm.lingjdw lingjdw,
+		nm.p0sl p0sl,
+		nm.p1sl p1sl,
+		nm.p2sl p2sl,
+		nm.p3sl p3sl,
+		nm.p4sl p4sl,
+		nm.p5sl p5sl,
+		nm.p6sl p6sl,
+		nm.p7sl p7sl,
+		nm.p8sl p8sl,
+		nm.p9sl p9sl,
+		nm.p10sl p10sl,
+		nm.p11sl p11sl,
+		n.gcbh as gcbh, 
+      	xx.gongsmc  as chengysmc ,
+        x.gongsmc as gongysmc 
+		from ${dbSchemal1}xqjs_niandygmx nm
+		left join (select * from (select t.usercenter,
+							               t.gongysbh,
+							               t.gcbh,
+							               t.lingjbh,
+							               row_number() over(partition by t.usercenter, t.gongysbh order by t.usercenter, t.gongysbh) as row_flag
+							          from ${dbSchemal1}ckx_wullj t ) c
+							 where row_flag = 1
+		)n on (nm.usercenter = n.usercenter and nm.lingjbh = n.lingjbh)
+        left join ${dbSchemal1}ckx_gongys x on (n.usercenter = x.usercenter and n.gongysbh = x.gcbh )
+	    left join ${dbSchemal1}ckx_gongys xx on (n.usercenter = xx.usercenter and n.gcbh = xx.gcbh )
+		left join ${dbSchemal1}ckx_lingj lj on (lj.lingjbh=nm.lingjbh and lj.usercenter=nm.usercenter)  
+        where  nm.pplbc = #pplbc1#) a
+		where not exists (select b.lingjbh lingjbh,
+		b.usercenter usercenter,
+		b.lingjmc lingjmc,
+		b.gongysdm gongysdm,
+		b.zhizlx zhizlx,
+		b.lingjdw lingjdw,
+		b.p1sl p1sl ,
+		b.p2sl p2sl,
+		b.p3sl p3sl,
+		b.p4sl p4sl,
+		b.p5sl p5sl,
+		b.p6sl p6sl,
+		b.p7sl p7sl,
+		b.p8sl p8sl,
+		b.p9sl p9sl,
+		b.p10sl p10sl,
+		b.p11sl p11sl
+		from (select nm.usercenter usercenter,
+		nm.lingjbh lingjbh,
+		nm.lingjmc lingjmc,
+		nm.gongysdm gongysdm,
+		nm.zhizlx zhizlx,
+		nm.lingjdw lingjdw,
+		nm.p0sl p0sl,
+		nm.p1sl p1sl,
+		nm.p2sl p2sl,
+		nm.p3sl p3sl,
+		nm.p4sl p4sl,
+		nm.p5sl p5sl,
+		nm.p6sl p6sl,
+		nm.p7sl p7sl,
+		nm.p8sl p8sl,
+		nm.p9sl p9sl,
+		nm.p10sl p10sl,
+		nm.p11sl p11sl
+		from ${dbSchemal1}xqjs_niandygmx nm
+		where nm.pplbc =#pplbc2#) b
+		where a.lingjbh = b.lingjbh
+		and a.gongysdm = b.gongysdm
+		and a.usercenter = b.usercenter)
+		union
+		select B.usercenter usercenter,
+		B.lingjbh lingjbh,
+		B.lingjmc lingjmc,
+		B.fawmc   fawmc,
+		B.gongysdm as gongys,
+		B.gongysmc as gongysmc,
+		B.chengysmc as chengysmc,
+		B.gcbh as gcbh, 
+		B.zhizlx zhizlx,
+		B.lingjdw lingjdw,
+		B.p0sl p1sl1,
+		C.p0sl p1sl2,
+		case when 
+             	B.p0sl=0 then null
+             when sign(C.p0sl - B.p0sl)=1 then ceil((C.p0sl - B.p0sl) / B.p0sl * 100)
+             when sign(C.p0sl - B.p0sl)=-1 then floor((C.p0sl - B.p0sl) / B.p0sl * 100)
+             else null end  p1,
+		B.p1sl p2sl1,
+		C.p1sl p2sl2,
+		 case when 
+             B.p1sl=0 then null
+             when sign(C.p1sl - B.p1sl)=1 then ceil((C.p1sl - B.p1sl) / B.p1sl * 100)
+             when sign(C.p1sl - B.p1sl)=-1 then floor((C.p1sl - B.p1sl) / B.p1sl * 100)
+             else null end  p2,
+		B.p2sl p3sl1,
+		C.p2sl p3sl2,
+		case when 
+             B.p2sl=0 then null
+             when sign(C.p2sl - B.p2sl)=1 then ceil((C.p2sl - B.p2sl) / B.p2sl * 100)
+             when sign(C.p2sl - B.p2sl)=-1 then floor((C.p2sl - B.p2sl) / B.p2sl * 100)
+             else null end  p3,
+		B.p3sl p4sl1,
+		C.p3sl p4sl2,
+		case when 
+             B.p3sl=0 then null
+             when sign(C.p3sl - B.p3sl)=1 then ceil((C.p3sl - B.p3sl) / B.p3sl * 100)
+             when sign(C.p3sl - B.p3sl)=-1 then floor((C.p3sl - B.p3sl) / B.p3sl * 100)
+             else null end  p4,
+		B.p4sl p5sl1,
+		C.p4sl p5sl2,
+		case when 
+             B.p4sl=0 then null
+             when sign(C.p4sl - B.p4sl)=1 then ceil((C.p4sl - B.p4sl) / B.p4sl * 100)
+             when sign(C.p4sl - B.p4sl)=-1 then floor((C.p4sl - B.p4sl) / B.p4sl * 100)
+             else null end  p5,
+		B.p5sl p6sl1,
+		C.p5sl p6sl2,
+		case when 
+             B.p5sl=0 then null
+             when sign(C.p5sl - B.p5sl)=1 then ceil((C.p5sl - B.p5sl) / B.p5sl * 100)
+             when sign(C.p5sl - B.p5sl)=-1 then floor((C.p5sl - B.p5sl) / B.p5sl * 100)
+             else null end  p6,
+		B.p6sl p7sl1,
+		C.p6sl p7sl2,
+		case when 
+             B.p6sl=0 then null
+             when sign(C.p6sl - B.p6sl)=1 then ceil((C.p6sl - B.p6sl) / B.p6sl * 100)
+             when sign(C.p6sl - B.p6sl)=-1 then floor((C.p6sl - B.p6sl) / B.p6sl * 100)
+             else null end p7,
+		B.p7sl p8sl1,
+		C.p7sl p8sl2,
+		case when 
+             B.p7sl=0 then null
+             when sign(C.p7sl - B.p7sl)=1 then ceil((C.p7sl - B.p7sl) / B.p7sl * 100)
+             when sign(C.p7sl - B.p7sl)=-1 then floor((C.p7sl - B.p7sl) / B.p7sl * 100)
+             else null end p8,
+		B.p8sl p9sl1,
+		C.p8sl p9sl2,
+		case when 
+             B.p8sl=0 then null
+             when sign(C.p8sl - B.p8sl)=1 then ceil((C.p8sl - B.p8sl) / B.p8sl * 100)
+             when sign(C.p8sl - B.p8sl)=-1 then floor((C.p8sl - B.p8sl) / B.p8sl * 100)
+             else null end p9,
+		B.p9sl p10sl1,
+		C.p9sl p10sl2,
+		case when 
+             B.p9sl=0 then null
+             when sign(C.p9sl - B.p9sl)=1 then ceil((C.p9sl - B.p9sl) / B.p9sl * 100)
+             when sign(C.p9sl - B.p9sl)=-1 then floor((C.p9sl - B.p9sl) / B.p9sl * 100)
+             else null end  p10,
+		B.p10sl p11sl1,
+		C.p10sl p11sl2,
+		case when 
+             B.p10sl=0 then null
+             when sign(C.p10sl - B.p10sl)=1 then ceil((C.p10sl - B.p10sl) / B.p10sl * 100)
+             when sign(C.p10sl - B.p10sl)=-1 then floor((C.p10sl - B.p10sl) / B.p10sl * 100)
+             else null end p11,
+		B.p11sl p12sl1,
+		C.p11sl p12sl2,
+		case when 
+             B.p11sl=0 then null
+             when sign(C.p11sl - B.p11sl)=1 then ceil((C.p11sl - B.p11sl) / B.p11sl * 100)
+             when sign(C.p11sl - B.p11sl)=-1 then floor((C.p11sl - B.p11sl) / B.p11sl * 100)
+             else null end  p12
+		from (select nm.usercenter usercenter,
+		nm.lingjbh lingjbh,
+		nm.lingjmc lingjmc,
+		lj.fawmc   fawmc,
+		nm.gongysdm gongysdm, 
+		nm.zhizlx zhizlx,
+		nm.lingjdw lingjdw,
+		nm.p0sl p0sl,
+		nm.p1sl p1sl,
+		nm.p2sl p2sl,
+		nm.p3sl p3sl,
+		nm.p4sl p4sl,
+		nm.p5sl p5sl,
+		nm.p6sl p6sl,
+		nm.p7sl p7sl,
+		nm.p8sl p8sl,
+		nm.p9sl p9sl,
+		nm.p10sl p10sl,
+		nm.p11sl p11sl,
+	    n.gcbh as gcbh, 
+      	xx.gongsmc  as chengysmc,
+        x.gongsmc as gongysmc 
+		from ${dbSchemal1}xqjs_niandygmx nm 
+        left join (select * from (select t.usercenter,
+							               t.gongysbh,
+							               t.gcbh,
+							               t.lingjbh,
+							               row_number() over(partition by t.usercenter, t.gongysbh order by t.usercenter, t.gongysbh) as row_flag
+							          from ${dbSchemal1}ckx_wullj t ) c
+							 where row_flag = 1
+		)n on (nm.usercenter = n.usercenter and nm.lingjbh = n.lingjbh)
+        left join ${dbSchemal1}ckx_gongys x on (n.usercenter = x.usercenter and n.gongysbh = x.gcbh )
+	    left join ${dbSchemal1}ckx_gongys xx on (n.usercenter = xx.usercenter and n.gcbh = xx.gcbh )  
+	    left join ${dbSchemal1}ckx_lingj lj on (lj.lingjbh=nm.lingjbh and lj.usercenter=nm.usercenter)        
+        where  nm.pplbc = #pplbc1#) B,
+		(select nm.usercenter usercenter,
+		nm.lingjbh lingjbh,
+		nm.lingjmc lingjmc,
+		nm.gongysdm gongysdm,
+		nm.zhizlx zhizlx,
+		nm.lingjdw lingjdw,
+		nm.p0sl p0sl,
+		nm.p1sl p1sl,
+		nm.p2sl p2sl,
+		nm.p3sl p3sl,
+		nm.p4sl p4sl,
+		nm.p5sl p5sl,
+		nm.p6sl p6sl,
+		nm.p7sl p7sl,
+		nm.p8sl p8sl,
+		nm.p9sl p9sl,
+		nm.p10sl p10sl,
+		nm.p11sl p11sl
+		from ${dbSchemal1}xqjs_niandygmx nm
+		where nm.pplbc =#pplbc2#) C
+		where B.lingjbh = C.lingjbh
+		and B.usercenter = C.usercenter
+		and B.gongysdm = C.gongysdm
+		union
+		select a.usercenter usercenter,
+		a.lingjbh lingjbh,
+		a.lingjmc lingjmc,
+		a.fawmc  fawmc,
+		a.gongysdm as gongys,
+		a.gongysmc as gongysmc,
+		a.chengysmc as chengysmc,
+		a.gcbh as gcbh, 
+		a.zhizlx zhizlx,
+		a.lingjdw lingjdw,
+		a.p0sl p1sl1,
+		null p1sl2,
+		null p1,
+		a.p1sl p2sl1,
+		null p2sl2,
+		null p2,
+		a.p2sl p3sl1,
+		null p3sl2,
+		null p3,
+		a.p3sl p4sl1,
+		null p4sl2,
+		null p4,
+		a.p4sl p5sl1,
+		null p5sl2,
+		null p5,
+		a.p5sl p6sl1,
+		null p6sl2,
+		null p6,
+		a.p6sl p7sl1,
+		null p7sl2,
+		null p7,
+		a.p7sl p8sl1,
+		null p8sl2,
+		null p8,
+		a.p8sl p9sl1,
+		null p9sl2,
+		null p9,
+		a.p9sl p10sl1,
+		null p10sl2,
+		null p10,
+		a.p10sl p11sl1,
+		null p11sl2,
+		null p11,
+		a.p11sl p12sl1,
+		null p12sl2,
+		null p12
+		from (select nm.usercenter usercenter,
+		nm.lingjbh lingjbh,
+		nm.lingjmc lingjmc,
+		lj.fawmc   fawmc,
+		nm.gongysdm gongysdm,
+		nm.zhizlx zhizlx,
+		nm.lingjdw lingjdw,
+		nm.p0sl p0sl,
+		nm.p1sl p1sl,
+		nm.p2sl p2sl,
+		nm.p3sl p3sl,
+		nm.p4sl p4sl,
+		nm.p5sl p5sl,
+		nm.p6sl p6sl,
+		nm.p7sl p7sl,
+		nm.p8sl p8sl,
+		nm.p9sl p9sl,
+		nm.p10sl p10sl,
+		nm.p11sl p11sl,
+		n.gcbh as gcbh, 
+      	xx.gongsmc  as chengysmc,
+        x.gongsmc as gongysmc  
+		from ${dbSchemal1}xqjs_niandygmx nm 
+        left join (select * from (select t.usercenter,
+							               t.gongysbh,
+							               t.gcbh,
+							               t.lingjbh,
+							               row_number() over(partition by t.usercenter, t.gongysbh order by t.usercenter, t.gongysbh) as row_flag
+							          from ${dbSchemal1}ckx_wullj t ) c
+							 where row_flag = 1
+		)n on (nm.usercenter = n.usercenter and nm.lingjbh = n.lingjbh)
+        left join ${dbSchemal1}ckx_gongys x on (n.usercenter = x.usercenter and n.gongysbh = x.gcbh )
+	    left join ${dbSchemal1}ckx_gongys xx on (n.usercenter = xx.usercenter and n.gcbh = xx.gcbh )     
+	    left join  ckx_lingj lj  on ( lj.lingjbh = nm.lingjbh and lj.usercenter = nm.usercenter )   
+        where  nm.pplbc = #pplbc2# ) a
+		where not exists (select b.lingjbh lingjbh,
+		b.usercenter usercenter,
+		b.lingjmc lingjmc,
+		b.gongysdm gongysdm,
+		b.zhizlx zhizlx,
+		b.lingjdw lingjdw,
+		b.p1sl p1sl,
+		b.p2sl p2sl,
+		b.p3sl p3sl,
+		b.p4sl p4sl,
+		b.p5sl p5sl,
+		b.p6sl p6sl,
+		b.p7sl p7sl,
+		b.p8sl p8sl,
+		b.p9sl p9sl,
+		b.p10sl p10sl,
+		b.p11sl p11sl
+		from (select nm.usercenter usercenter,
+		nm.lingjbh lingjbh,
+		nm.lingjmc lingjmc,
+		nm.gongysdm gongysdm,
+		nm.zhizlx zhizlx,
+		nm.lingjdw lingjdw,
+		nm.p0sl p0sl,
+		nm.p1sl p1sl,
+		nm.p2sl p2sl,
+		nm.p3sl p3sl,
+		nm.p4sl p4sl,
+		nm.p5sl p5sl,
+		nm.p6sl p6sl,
+		nm.p7sl p7sl,
+		nm.p8sl p8sl,
+		nm.p9sl p9sl,
+		nm.p10sl p10sl,
+		nm.p11sl p11sl
+		from ${dbSchemal1}xqjs_niandygmx nm
+		where nm.pplbc =#pplbc1#) b
+		where a.lingjbh = b.lingjbh
+		and a.gongysdm = b.gongysdm
+		and a.usercenter = b.usercenter)
+	</select>
+	<!-- 删除某一版次未生效的年度预告明细信息 -->
+	<update id="deleteNiandygmx" parameterClass="java.util.Map">
+<![CDATA[
+      update  ${dbSchemal1}xqjs_niandygmx 
+               set active='0'
+      where   exists (select pplbc from ${dbSchemal1}xqjs_niandyg  where zhuangt ='0' and 
+      (sysdate-(to_date(create_time,'yyyy-mm-dd hh24:mi:ss'))) >3)
+      ]]>
+	</update>
+
+	<!--查询中心日历在计算年份 有没有数据 没有则插入异常报警表 -->
+	<select id="queCalendar" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		select t.nianzq from ${dbSchemal3}ckx_calendar_center t
+		where t.usercenter = #usercenter#
+		and
+		t.nianzq between #from# and #to#
+
+	</select>
+	<!-- 用零件表里的制造路线替换计算结果表里的制作路线 -->
+	<update id="replacePath">
+	        update ${dbSchemal1}xqjs_niandygmx m
+	              set m.zhizlx = (select distinct zhizlx from ${dbSchemal1}xqjs_maoxqmx l where l.usercenter=m.usercenter and l.lingjbh = m.lingjbh 
+                and l.xuqbc= (select n.maoxqbc from xqjs_niandyg n where n.pplbc=#pplbc# ))		where m.pplbc = #pplbc#
+	</update>
+	
+	
+    <!-- xss 20161017 v4_008 毛需求比较结果查询 -->
+   	<select id="queryCompareQr" parameterClass="com.athena.xqjs.entity.maoxq.CompareQr" resultClass="com.athena.xqjs.entity.maoxq.CompareQr">
+		select   
+		      xuqbc1, 
+		      xuqbc2, 
+		      jiz,  
+		      zhuangt, 
+		      creator, 
+		      create_time
+ 		 from ${dbSchemal3}XQJS_MAOXQBJ_PPL where zhuangt='0'
+ 		       order by create_time desc 
+	</select>
+	
+	
+	<update id="deleteCompareQr" parameterClass="com.athena.xqjs.entity.maoxq.CompareQr"> 
+    update ${dbSchemal3}XQJS_MAOXQBJ_PPL
+    	set zhuangt = '2'
+     where  xuqbc1 = #xuqbc1#
+           and xuqbc2 = #xuqbc2#
+           and jiz = #jiz#
+           and ZHUANGT='0'
+	</update>
+	
+	<update id="deleteCompareQr_Mx" parameterClass="com.athena.xqjs.entity.maoxq.CompareQr"> 
+    update ${dbSchemal3}XQJS_MAOXQBJMX_PPL
+    	set zhuangt = '2'
+     where  xuqbc1 = #xuqbc1#
+           and xuqbc2 = #xuqbc2#
+           and jiz = #jiz#
+           and ZHUANGT='0'
+	</update>
+	
+	
+	<insert id="insertCompareQr" parameterClass="java.util.Map">
+		insert into ${dbSchemal3}XQJS_MAOXQBJ_PPL(  
+		xuqbc1,
+		xuqbc2,
+		jiz,
+		zhuangt,  	
+		creator,
+		create_time)
+		values( 
+		#xuqbc1#,
+		#xuqbc2#,
+		#jiz#,
+		'0', 
+		#creator#,
+		to_Date( (substr(#create_time# ,0 ,19 ) ),'YYYY-MM-DD HH24:mi:ss') 
+		)
+	</insert>
+	 
+	<insert id="insertCompareQrMx" parameterClass="com.athena.xqjs.entity.ppl.ComparePpl">
+		insert into ${dbSchemal3}XQJS_MAOXQBJMX_PPL( 
+		usercenter,
+		xuqbc1,
+		xuqbc2,
+		jiz,
+		zhuangt,
+		lingjbh,
+		lingjmc, 
+		gongysbh,
+		gongysmc,
+		gcbh,
+		chengysmc,
+		danw,
+		zhizlx,
+		p1l,
+		p1r,
+		p1ce,
+		p2l,
+		p2r,
+		p2ce,
+		p3l,
+		p3r,
+		p3ce,
+		p4l,
+		p4r,
+		p4ce,
+		p5l,
+		p5r,
+		p5ce,	
+		p6l,
+		p6r,
+		p6ce,	
+		p7l,
+		p7r,
+		p7ce,	
+		p8l,
+		p8r,
+		p8ce,	
+		p9l,
+		p9r,
+		p9ce,	
+		p10l,
+		p10r,
+		p10ce,	
+		p11l,
+		p11r,
+		p11ce,	
+		p12l,
+		p12r,
+		p12ce,			
+		creator,
+		create_time)
+		values(
+		#usercenter#,
+		#xuqbc1#,
+		#xuqbc2#,
+		#jiz#,
+		'0',
+		#lingjbh# ,
+		#lingjmc# , 
+		#gongys# ,
+		nvl('' ,#gongysmc#) ,
+		nvl('' ,#gcbh#) ,
+		nvl('' ,#chengysmc#) ,
+		#lingjdw# ,
+		#zhizlx#  , 
+	 	#p1sl1#,
+	 	#p1sl2#, 
+	 	nvl('' ,#p1#) ,  
+		#p2sl1#,
+		#p2sl2#,
+		nvl('' ,#p2#) ,   
+		#p3sl1#,
+		#p3sl2#,
+		nvl('' ,#p3#) , 
+		#p4sl1#,
+		#p4sl2#,
+		nvl('' ,#p4#) , 
+		#p5sl1#,
+		#p5sl2#,
+		nvl('' ,#p5#) , 
+		#p6sl1#,
+		#p6sl2#,
+		nvl('' ,#p6#) , 
+		#p7sl1#,
+		#p7sl2#,
+		nvl('' ,#p7#) , 
+		#p8sl1#,
+		#p8sl2#,
+		nvl('' ,#p8#) , 
+		#p9sl1#,
+		#p9sl2#,
+		nvl('' ,#p9#) , 
+		#p10sl1#,
+		#p10sl2#,
+		nvl('' ,#p10#) ,  
+		#p11sl1#,
+		#p11sl2#,
+		nvl('' ,#p11#) ,  
+		#p12sl1#,
+		#p12sl2#,
+		nvl('' ,#p12#) , 
+		#creator#,
+		to_Date( (substr(#create_time# ,0 ,19 ) ),'YYYY-MM-DD HH24:mi:ss') 
+		)
+	</insert>
+	
+   <!-- 查找已经发送的版次数据  -->		        
+   <select id="maoxqSffs" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+           select   
+  					 xuqbc1 as xuqbc1 , 
+  					 xuqbc2 as xuqbc2,
+  					 zhuangt as zhuangt
+   		   from ${dbSchemal3}XQJS_MAOXQBJ_PPL 
+             where  
+             xuqbc1 = #xuqbc1# and jiz = #xuqbc1# and xuqbc2 = #xuqbc2# and ZHUANGT='1'
+   </select>
+	
+	<!-- 查找是否存在相同版次的数据  -->		        
+   <select id="queryXuqbcJizExists" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.maoxq.CompareCyc">
+           select   
+  					 xuqbc1 as xuqbc1 , 
+  					 xuqbc2 as xuqbc2,
+  					 zhuangt as zhuangt
+   		   from ${dbSchemal3}XQJS_MAOXQBJ_PPL 
+             where  
+             xuqbc1 = #xuqbc1# and jiz = #xuqbc1# and xuqbc2 = #xuqbc2# and ZHUANGT='0'
+   </select>
+	
+	<!-- 删除比较数据 -->
+    <delete id="doDeleteXuqbcJizExists" parameterClass="java.util.Map">
+		delete
+		from
+		${dbSchemal3}XQJS_MAOXQBJ_PPL
+		where 
+		 xuqbc1 = #xuqbc1# and jiz = #jiz# and xuqbc2 = #xuqbc2# 
+	</delete>
+	
+	<!-- 删除比较明细数据 -->
+    <delete id="doDeleteXuqbcJizExists_Mx" parameterClass="java.util.Map">
+		delete
+		from
+		${dbSchemal3}XQJS_MAOXQBJMX_PPL
+		where 
+	       xuqbc1 = #xuqbc1# and jiz = #jiz# and xuqbc2 = #xuqbc2# 
+	</delete> 
+	
+</sqlMap>

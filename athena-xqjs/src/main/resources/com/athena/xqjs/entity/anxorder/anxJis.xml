@@ -1,0 +1,1174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 按需计算XML -->
+<sqlMap namespace="anxjis">
+
+	<!-- 插入CLV按需毛需求到按需计算初始中间表,用户中心,零件,消耗点为主键关联零件消耗点,物流路径,零件供应商,零件仓库 -->
+	<insert id="inserAnxjscszjbClv">
+		insert into 
+			${dbSchemal1}xqjs_anxjscszjb
+  			(usercenter,lingjbh,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,xiaohcbh,xiaohccxbh,xianbyhlx,xiaohd,
+             gongysbh,lujbh,lujmc,fahd,zhidgys,jiaofm,beihzq,yunszq,gcbh,xiehztbh,songhpc,mudd,dinghck,mos2,cangkshpc2,
+             cangkshsj2,cangkfhsj2,beihsj2,ibeihsj2,pbeihsj2,xianbck,mos,cangkshpc,cangkshsj,cangkfhsj,beihsj,ibeihsj,
+             pbeihsj,shengcxbh,beihsjc,jianglms2,shengxsj2,jianglms,shengxsj,gysucbzlx,gysucrl,gysuabzlx,gongyhth,
+             gysuaucgs,zuixqdl,gongysfe,ckusbzlx,ckusbzrl,ckuclx,ckucrl,fenpbh,gongyslx,dinghcklx,anqkcsl,zhizlx,
+             shul,chej,xianh,danw,xqly,xiaohsj)
+        select 
+             usercenter,lingjbh,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,xiaohcbh,xiaohccxbh,xianbyhlx,xiaohd,gongysbh,
+             lujbh,lujmc,fahd,zhidgys,jiaofm,beihzq,yunszq,gcbh,xiehztbh,songhpc,mudd,dinghck,mos2,cangkshpc2,cangkshsj2,
+             cangkfhsj2,beihsj2,ibeihsj2,pbeihsj2,xianbck,mos,cangkshpc,cangkshsj,cangkfhsj,beihsj,ibeihsj,pbeihsj,
+             shengcxbh,beihsjc,jianglms2,shengxsj2,jianglms,shengxsj,gysucbzlx,gysucrl,gysuabzlx,gongyhth,gysuaucgs,
+             zuixqdl,gongysfe,ckusbzlx,ckusbzrl,ckuclx,ckucrl,fenpbh,gongyslx,dinghcklx,anqkcsl,zhizlx,xiaohxs,chejh,
+             chanx,danw,xuqly,xiaohsj
+    	from 
+    		 (select 
+    		 		anx.usercenter as usercenter,anx.lingjbh as lingjbh,xhd.anqkcs as anqkcs,xhd.xianbllkc as xianbllkc,
+                    xhd.yifyhlzl as yifyhlzl,xhd.jiaofzl as jiaofzl,xhd.zhongzzl as zhongzzl,xhd.xiaohcbh as xiaohcbh,
+                    xhd.xiaohccxbh as xiaohccxbh,xhd.xianbyhlx as xianbyhlx,anx.xiaohd as xiaohd,ckx.gongysbh as gongysbh,
+                    ckx.lujbh as lujbh,ckx.lujmc as lujmc,ckx.fahd as fahd,ckx.zhidgys as zhidgys,ckx.jiaofm as jiaofm,
+                    ckx.beihzq as beihzq,ckx.yunszq as yunszq,ckx.gcbh as gcbh,ckx.xiehztbh as xiehztbh,ckx.songhpc as songhpc,
+                    ckx.mudd as mudd,ckx.dinghck as dinghck,ckx.mos2 as mos2,ckx.cangkshpc2 as cangkshpc2,ckx.cangkshsj2 as cangkshsj2,
+                    ckx.cangkfhsj2 as cangkfhsj2,ckx.beihsj2 as beihsj2,ckx.ibeihsj2 as ibeihsj2,ckx.pbeihsj2 as pbeihsj2,
+                    ckx.xianbck as xianbck,ckx.waibms as mos,ckx.cangkshpc as cangkshpc,ckx.cangkshsj as cangkshsj,
+                    ckx.cangkfhsj as cangkfhsj,ckx.beihsj as beihsj,ckx.ibeihsj as ibeihsj,ckx.pbeihsj as pbeihsj,
+                    NVL(ckx.fenzxh,ckx.shengcxbh) as shengcxbh,ckx.beihsjc as beihsjc,ckx.jianglms2 as jianglms2,ckx.shengxsj2 as shengxsj2,
+                    ckx.wjianglms as jianglms,ckx.wshengxsj as shengxsj,gys.ucbzlx as gysucbzlx,gys.ucrl as gysucrl,
+                    gys.uabzlx as gysuabzlx,gys.gongyhth as gongyhth,gys.uaucgs as gysuaucgs,gys.zuixqdl as zuixqdl,
+                    gys.gongyfe as gongysfe,ck.usbzlx as ckusbzlx,ck.usbzrl as ckusbzrl,ck.uclx as ckuclx,ck.ucrl as ckucrl,
+                    ckx.fenpqh as fenpbh,ckx.gongyslx,ckx.dinghcklx,ck.anqkcsl,anx.zhizlx,anx.xiaohxs,anx.chejh,
+                    anx.chanx,anx.danw,anx.xuqly,anx.xhsj as xiaohsj
+            from 
+            	(select 
+            		usercenter,lingjbh,xiaohd,zhizlx,xiaohxs,chejh,chanx,danw,xuqly,xhsj
+                from 
+                	${dbSchemal1}xqjs_anxmaoxq where xuqly = '1' ) anx
+                left join 
+                	${dbSchemal3}ckx_lingjxhd xhd
+                on 
+                	anx.usercenter = xhd.usercenter and anx.lingjbh = xhd.lingjbh and anx.xiaohd = xhd.xiaohdbh
+                    and xhd.biaos = '1'
+                left join 
+               	    ${dbSchemal3}ckx_wullj ckx
+                on 
+                	ckx.usercenter = xhd.usercenter and ckx.fenpqh = xhd.fenpqbh and ckx.lingjbh = xhd.lingjbh
+                left join 
+                	${dbSchemal3}ckx_lingjgys gys
+                on 
+                	gys.usercenter = ckx.usercenter and gys.lingjbh = ckx.lingjbh and gys.gongysbh = ckx.gongysbh
+                    and (ckx.waibms = 'CD' or ckx.waibms = 'C1')
+                left join 
+               	    ${dbSchemal3}ckx_lingjck ck
+                on 
+               		ck.usercenter = ckx.usercenter and ck.lingjbh = ckx.lingjbh and ck.cangkbh = substr(ckx.xianbck, 0, 3)
+                    and (ckx.mos2 = 'MD' or ckx.mos2 = 'M1' or ckx.waibms = 'C1'))
+       where mos in ('CD', 'C1') or mos2 in ('MD', 'M1')
+	</insert>
+	
+	<!-- 插入SPPV按需毛需求到按需计算初始中间表,用户中心,零件,消耗点为主键关联零件消耗点,物流路径,零件供应商,零件仓库 -->
+	<insert id="inserAnxjscszjbSppv">
+		insert into 
+			${dbSchemal1}xqjs_anxjscszjb
+  			(usercenter,lingjbh,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,xiaohcbh,xiaohccxbh,xianbyhlx,xiaohd,
+             gongysbh,lujbh,lujmc,fahd,zhidgys,jiaofm,beihzq,yunszq,gcbh,xiehztbh,songhpc,mudd,dinghck,mos2,cangkshpc2,
+             cangkshsj2,cangkfhsj2,beihsj2,ibeihsj2,pbeihsj2,xianbck,mos,cangkshpc,cangkshsj,cangkfhsj,beihsj,ibeihsj,
+             pbeihsj,shengcxbh,beihsjc,jianglms2,shengxsj2,jianglms,shengxsj,gysucbzlx,gysucrl,gysuabzlx,gongyhth,
+             gysuaucgs,zuixqdl,gongysfe,ckusbzlx,ckusbzrl,ckuclx,ckucrl,fenpbh,gongyslx,dinghcklx,anqkcsl)
+    		 select 
+    		 		anx.usercenter as usercenter,anx.lingjbh as lingjbh,xhd.anqkcs as anqkcs,xhd.xianbllkc as xianbllkc,
+                    xhd.yifyhlzl as yifyhlzl,xhd.jiaofzl as jiaofzl,xhd.zhongzzl as zhongzzl,xhd.xiaohcbh as xiaohcbh,
+                    xhd.xiaohccxbh as xiaohccxbh,xhd.xianbyhlx as xianbyhlx,anx.xiaohd as xiaohd,ckx.gongysbh as gongysbh,
+                    ckx.lujbh as lujbh,ckx.lujmc as lujmc,ckx.fahd as fahd,ckx.zhidgys as zhidgys,ckx.jiaofm as jiaofm,
+                    ckx.beihzq as beihzq,ckx.yunszq as yunszq,ckx.gcbh as gcbh,ckx.xiehztbh as xiehztbh,ckx.songhpc as songhpc,
+                    ckx.mudd as mudd,ckx.dinghck as dinghck,ckx.mos2 as mos2,ckx.cangkshpc2 as cangkshpc2,ckx.cangkshsj2 as cangkshsj2,
+                    ckx.cangkfhsj2 as cangkfhsj2,ckx.beihsj2 as beihsj2,ckx.ibeihsj2 as ibeihsj2,ckx.pbeihsj2 as pbeihsj2,
+                    ckx.xianbck as xianbck,ckx.waibms as mos,ckx.cangkshpc as cangkshpc,ckx.cangkshsj as cangkshsj,
+                    ckx.cangkfhsj as cangkfhsj,ckx.beihsj as beihsj,ckx.ibeihsj as ibeihsj,ckx.pbeihsj as pbeihsj,
+                    NVL(ckx.fenzxh,ckx.shengcxbh) as shengcxbh,ckx.beihsjc as beihsjc,ckx.jianglms2 as jianglms2,ckx.shengxsj2 as shengxsj2,
+                    ckx.wjianglms as jianglms,ckx.wshengxsj as shengxsj,gys.ucbzlx as gysucbzlx,gys.ucrl as gysucrl,
+                    gys.uabzlx as gysuabzlx,gys.gongyhth as gongyhth,gys.uaucgs as gysuaucgs,gys.zuixqdl as zuixqdl,
+                    gys.gongyfe as gongysfe,ck.usbzlx as ckusbzlx,ck.usbzrl as ckusbzrl,ck.uclx as ckuclx,ck.ucrl as ckucrl,
+                    ckx.fenpqh as fenpbh,ckx.gongyslx,ckx.dinghcklx,ck.anqkcsl
+            from 
+            	(select 
+            		usercenter,lingjbh,xiaohd,zhizlx,xiaohxs,chejh,chanx,danw,xuqly,xiaohsj
+                from 
+                	${dbSchemal1}xqjs_anxmaoxqzjb) anx
+                left join 
+                	${dbSchemal3}ckx_lingjxhd xhd
+                on 
+                	anx.usercenter = xhd.usercenter and anx.lingjbh = xhd.lingjbh and anx.xiaohd = xhd.xiaohdbh
+                    and xhd.biaos = '1'
+                left join 
+               	    ${dbSchemal3}ckx_wullj ckx
+                on 
+                	ckx.usercenter = xhd.usercenter and ckx.fenpqh = xhd.fenpqbh and ckx.lingjbh = xhd.lingjbh
+                left join 
+                	${dbSchemal3}ckx_lingjgys gys
+                on 
+                	gys.usercenter = ckx.usercenter and gys.lingjbh = ckx.lingjbh and gys.gongysbh = ckx.gongysbh
+                    and (ckx.waibms = 'CD' or ckx.waibms = 'C1')
+                left join 
+               	    ${dbSchemal3}ckx_lingjck ck
+                on 
+               		ck.usercenter = ckx.usercenter and ck.lingjbh = ckx.lingjbh and ck.cangkbh = substr(ckx.xianbck, 0, 3)
+                    and (ckx.mos2 = 'MD' or ckx.mos2 = 'M1' or ckx.waibms = 'C1')
+	</insert>
+
+	<!-- 清空按需计算中间表 -->
+	<delete id="deleteAnxjscszjb">
+		delete   
+			${dbSchemal1}xqjs_anxjscszjb 
+			where 1 = 1
+			<dynamic>
+				<isNotNull prepend=" and " property="usercenter">
+					usercenter = #usercenter# 
+				</isNotNull>
+			</dynamic>
+	</delete>
+	
+	<!-- 清空计算中的订单数据    modify hzg 2015.7.9  dingdzt由A改为2 , 2015.7.14还原成A  -->
+	<delete id="deleteDingdJsz">
+		delete   
+			${dbSchemal1}xqjs_dingd where dingdzt = 'A'
+			<dynamic>
+				<isNotNull prepend=" and " property="creator">
+					creator = #creator# 
+				</isNotNull>
+				<isNotNull prepend=" and " property="active">
+					active = #active# 
+				</isNotNull>
+				<isNotNull prepend=" and " property="usercenter">
+					usercenter = #usercenter# 
+			</isNotNull>
+				<isNotNull prepend=" and " property="dingdlx">
+						dingdlx in ($dingdlx$) 
+				</isNotNull>
+			</dynamic>
+	</delete>
+	
+	<!-- 清空计算中的订单明细数据     modify hzg 2015.7.9  dingdzt由A改为2  , 2015.7.14还原成A -->
+	<delete id="deleteDingdMxJsz">
+		delete   
+			${dbSchemal1}xqjs_dingdmx where
+			 dingdh in 
+			(select dingdh from ${dbSchemal1}xqjs_dingd 
+				where 
+			dingdzt = 'A' 
+			<dynamic>
+			<isNotNull prepend=" and " property="creator">
+					creator = #creator# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+					usercenter = #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="dingdlx">
+					dingdlx in ($dingdlx$) 
+			</isNotNull>)
+			</dynamic>
+	</delete>
+	
+	<!-- 清空计算中的订单零件数据    modify hzg 2015.7.9  dingdzt由A改为2  , 2015.7.14还原成A-->
+	<delete id="deleteDingdLjJsz">
+		delete  
+			${dbSchemal1}xqjs_dingdlj 
+		where 
+			dingdh in 
+			(select dingdh from ${dbSchemal1}xqjs_dingd 
+				where 
+			dingdzt = 'A' 
+			<dynamic>
+			<isNotNull prepend=" and " property="creator">
+					creator = #creator# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+					usercenter = #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="dingdlx">
+					dingdlx in ($dingdlx$) 
+			</isNotNull>)
+			</dynamic>
+	</delete>
+	
+	<!-- 更新订单状态   modify hzg 2015.7.9  dingdzt由A改为2  , 2015.7.14还原成A 0013089 -->
+	<update id="updateDingdJsz">
+		update 
+			${dbSchemal1}xqjs_dingd 
+		set 
+			dingdzt = #state#,active = '1',dingdsxczr = #creator#,dingdsxsj = create_time
+		where 
+			dingdzt = 'A'
+			<dynamic>
+			<isNotNull prepend=" and " property="dingdjssj">
+				dingdjssj = to_date(#dingdjssj#,'yyyy-MM-dd hh24:mi:ss') 
+			</isNotNull>
+			<isNotNull prepend=" and " property="creator">
+				creator = #creator# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+				usercenter = #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="dingdlx">
+					dingdlx in ($dingdlx$) 
+			</isNotNull>
+			<isNotNull prepend=" and " property="chullx">
+					chullx = #chullx# 
+			</isNotNull>
+			
+			</dynamic>
+	</update>
+	
+	<!-- 更新订单状态  PP 和 NP 20170329-->
+	<update id="updateDingdJsz_PP">
+		update 
+			${dbSchemal1}xqjs_dingd 
+		set 
+			dingdzt = #state#,active = '1',dingdsxczr = #creator#,dingdsxsj = create_time
+		where 
+			dingdzt = 'A' and chullx in ('PP','NP')
+			<dynamic>
+			<isNotNull prepend=" and " property="dingdjssj">
+				dingdjssj = to_date(#dingdjssj#,'yyyy-MM-dd hh24:mi:ss') 
+			</isNotNull>
+			<isNotNull prepend=" and " property="creator">
+				creator = #creator# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+				usercenter = #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="dingdlx">
+					dingdlx in ($dingdlx$) 
+			</isNotNull> 
+			
+			</dynamic>
+	</update>
+	
+	<!-- 更新订单状态 -->
+	<update id="updateDingdJszCsh">
+		update 
+			${dbSchemal1}xqjs_dingd
+		set 
+			dingdzt = #state#,active = '1'
+		where 
+			dingdzt = 'A'
+			<dynamic>
+			<isNotNull prepend=" and " property="dingdjssj">
+				dingdjssj = to_date(#dingdjssj#,'yyyy-MM-dd hh24:mi:ss') 
+			</isNotNull>
+			<isNotNull prepend=" and " property="creator">
+				creator = #creator# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+				usercenter = #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="dingdlx">
+					dingdlx in ($dingdlx$) 
+			</isNotNull>
+			</dynamic>
+	</update>
+	
+	<!-- 更新订单明细状态 -->
+	<update id="updateDingdMxJsz">
+		update 
+			${dbSchemal1}xqjs_dingdmx
+		set 
+			zhuangt = #state#,active = '1'
+		where 
+			1 = 1
+			<dynamic>
+			<isNotNull prepend=" and " property="dingdjssj">
+				zuihwhsj = to_date(#dingdjssj#,'yyyy-MM-dd hh24:mi:ss') 
+			</isNotNull>
+			<isNotNull prepend=" and " property="creator">
+				creator = #creator# 
+			</isNotNull>
+			</dynamic>
+	</update>
+	
+	<!-- 清空按需毛需求中间表 -->
+	<delete id="deleteAnxmaoxqzjb">
+		delete   
+			${dbSchemal1}xqjs_anxmaoxqzjb 
+			where 1 = 1
+			<dynamic>
+			<isNotNull prepend=" and " property="usercenter">
+				usercenter = #usercenter# 
+			</isNotNull>
+			</dynamic>
+	</delete>
+
+	<!-- 按用户中心,零件,消耗点查询按需中间表 -->
+	<select id="queryAnxmaoxqzjb" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+			select 
+				anx.usercenter,anx.lingjbh,xiaohd,fenpqbh as fenpbh,xiaohcbh,xiaohccxbh,anqkcs,xianbllkc,yifyhlzl,jiaofzl,zhongzzl,
+				xittzz as xhdxittzz
+			from 
+				(select  
+					distinct usercenter,lingjbh,xiaohd  
+	      	    from 
+	             	${dbSchemal1}xqjs_anxmaoxqzjb) anx
+	        inner join 
+                  ${dbSchemal3}ckx_lingjxhd xhd
+            on 
+               anx.usercenter = xhd.usercenter and anx.lingjbh = xhd.lingjbh and anx.xiaohd = xhd.xiaohdbh
+               and xhd.biaos = '1'
+	</select>
+	
+	<!-- 查询C1CDM1MD模式的用户中心,零件编号,消耗点 -->
+	<select id="queryMosXhd" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+		select 
+			distinct a.lingjbh,a.usercenter,b.xiaohdbh as xiaohd,a.fenpqh as fenpbh
+		from 
+			${dbSchemal3}ckx_wullj a,${dbSchemal3}ckx_lingjxhd b 
+		where 
+			(a.waibms in ('C1','CD') or a.mos2 in('M1','MD')) and a.usercenter = b.usercenter 
+			and a.lingjbh = b.lingjbh and a.fenpqh = b.fenpqbh and b.biaos = 1
+			<dynamic>
+				<isNotNull property="usercenter" prepend=" and ">a.usercenter = #usercenter#</isNotNull>
+			</dynamic>
+	</select>
+	
+	<!-- 查询系统参数定义时间间隔 -->
+	<select id="queryShijjg" resultClass="java.math.BigDecimal">
+		select
+			qujzxz
+		from 
+			${dbSchemal3}ckx_xitcsdy
+		where 
+			zidlx = #zidlx# and zidbm = #zidbm#
+	</select>
+	
+	<!-- 查询毛需求汇总开始时间 -->
+	<select id="queryMaoxqTime" resultClass="java.util.HashMap">
+		select 
+			to_char(min(xhsj),'yyyy-mm-dd HH24:mi') as starttime,to_char(max(xhsj),'yyyy-mm-dd HH24:mi') as endtime
+		from 
+			${dbSchemal1}xqjs_anxmaoxq 
+		where 
+			lingjbh = #lingjbh# and xiaohd = #xiaohd# and usercenter = #usercenter# and xuqly ='3'
+	</select>
+	
+	<!-- 汇总SPPV按需毛需求到按需毛需求中间表 -->
+	<insert id="insertAnxmaoxqzjbSppv">
+		insert into 
+			${dbSchemal1}xqjs_anxmaoxqzjb
+			(usercenter,ofh,zhongzlxh,hanzbs,emon,shunxh,lingjbh,danw,xiaohd,xhsj,xiaohxs,xuqly,chejh,chanx,zhizlx,
+			caifsj)
+		select  
+		    usercenter,ofh,zhongzlxh,hanzbs,emon,shunxh,lingjbh,danw,xiaohd,xhsj,xiaohxs,xuqly,chejh,chanx,zhizlx,caifsj      
+		from 
+			${dbSchemal1}xqjs_anxmaoxq 
+		where 
+			usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohd = #xiaohd# 
+			and xhsj <![CDATA[>=]]> to_date(#xiaohsj#,'yyyy-mm-dd hh24:mi') 
+			and xhsj <![CDATA[<]]> to_date(#xiaohsj2#,'yyyy-mm-dd hh24:mi')
+			and xuqly = '3'
+	</insert>
+	
+	<!-- 汇总CLV按需毛需求到按需毛需求中间表 -->
+	<insert id="insertAnxmaoxqzjbClv">
+		insert into 
+			${dbSchemal1}xqjs_anxmaoxqzjb
+			(usercenter,ofh,zhongzlxh,hanzbs,emon,shunxh,lingjbh,danw,xiaohd,xhsj,xiaohxs,xuqly,chejh,chanx,zhizlx,
+			caifsj)
+		select  
+		    usercenter,ofh,zhongzlxh,hanzbs,emon,shunxh,lingjbh,danw,xiaohd,xhsj,xiaohxs,xuqly,chejh,
+		    chanx,zhizlx,caifsj      
+		from 
+			${dbSchemal1}xqjs_anxmaoxq 
+		where 
+			xuqly = '1'
+			<dynamic>
+				<isNotNull property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotNull>
+			</dynamic>
+	</insert>
+	
+	<!-- 查询零件消耗点 -->
+	<select id="queryLingjXhd" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+		select
+			usercenter,lingjbh,xiaohdbh as xiaohd,wulbh,fenpqbh as fenpbh,XIAOHCBH,XIAOHCCXBH,ANQKCS,XIANBLLKC,YIFYHLZL,JIAOFZL,
+			ZHONGZZL,XITTZZ as xhdxittzz
+		from
+			${dbSchemal3}ckx_lingjxhd
+		where
+			biaos = 1 and lingjbh = #lingjbh# and xiaohdbh = #xiaohdbh# and usercenter = #usercenter#
+	</select>
+	
+	<!-- 查询物流路径,零件仓库相关信息 -->
+	<select id="queryWullj" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+		select 
+			a.usercenter,a.lingjbh,fahd,lujbh,lujmc,zhidgys,jiaofm,beihzq,yunszq,gcbh,a.xiehztbh,songhpc,mudd,
+			dinghck,mos2,cangkshpc2,cangkshsj2,cangkfhsj2,beihsj2,xianbck,mos,beihsj,beihsjc,gongysfe,
+			dinghcklx,gongyslx,shengcxbh,a.gongysbh,usbzlx as ckusbzlx,usbzrl as ckusbzrl,uclx as ckuclx,b.ucrl as ckucrl,
+			zickbh,b.anqkcsl,xittzz as ckxittzz,ucbzlx as gysucbzlx,c.ucrl as gysucrl,uabzlx as gysuabzlx,
+			uaucgs as gysuaucgs,c.zuixqdl,gongyhth,jianglms,jianglms2,dingdbdzl as ckyifyhlzl,
+			dingdzzzl as ckzhongzzl,yijfzl as ckjiaofzl,d.zhongwmc,d.jihy,d.lingjsx,d.danw,a.shengxsj,a.shengxsj2 
+		from 
+			(select * from (select 
+				w.usercenter,w.lingjbh,fahd,lujbh,lujmc,zhidgys,jiaofm,beihzq,yunszq,gcbh,xiehztbh,songhpc,mudd,dinghck,
+				mos2,cangkshpc2,cangkshsj2,cangkfhsj2,beihsj2,xianbck,waibms as mos,beihsj,beihsjc,
+				w.gongyfe as gongysfe,dinghcklx,gongyslx,NVL(fenzxh,shengcxbh) as shengcxbh,w.gongysbh,wulgyyz as jianglms,wulgyyz1 as jianglms2,w.shengxsj,w.shengxsj2 
+			from 
+				${dbSchemal3}ckx_wullj w,${dbSchemal3}ckx_lingjgys g
+			where 
+				w.usercenter = #usercenter# and w.fenpqh = #fenpbh# and w.lingjbh = #lingjbh# 
+				and (waibms in('C1','CD') or mos2 in ('M1','MD'))
+				and w.usercenter=g.usercenter and w.lingjbh=g.lingjbh and w.gongysbh=g.gongysbh 
+				order by g.ucbzlx )
+				where rownum <![CDATA[<]]> 2) a  
+			inner join 
+				${dbSchemal3}ckx_lingj d
+      		on
+           		a.usercenter = d.usercenter and a.lingjbh = d.lingjbh 
+			left join 
+				${dbSchemal3}ckx_lingjck b 
+			on 
+				(a.mos2 in('M1','MD') or a.mos = 'C1') and a.usercenter = b.usercenter and a.lingjbh = b.lingjbh 
+				and a.xianbck = b.cangkbh 
+			left join
+				 ${dbSchemal3}ckx_lingjgys c
+			on
+				 a.mos in('C1','CD') and a.usercenter = c.usercenter and a.lingjbh = c.lingjbh
+				 and a.gongysbh = c.gongysbh and c.biaos = '1'
+	</select>
+	
+	<!-- 单单查询物流路径 -->
+	<select id="queryWulljOnly"  resultClass="com.athena.xqjs.entity.common.Wullj">
+		select 
+				usercenter,lingjbh,fenpqh,fahd,lujbh,lujmc,zhidgys,jiaofm,beihzq,yunszq,gcbh,xiehztbh,songhpc,mudd,dinghck,
+				mos2,cangkshpc2,cangkshsj2,cangkfhsj2,beihsj2,xianbck,waibms as mos,beihsj,beihsjc,
+				gongyfe as gongysfe,dinghcklx,gongyslx,NVL(fenzxh,shengcxbh) as shengcxbh,gongysbh,jianglms,jianglms2,shengxsj,shengxsj2 
+			from 
+				${dbSchemal3}ckx_wullj 
+			where 
+				1 = 1
+			<dynamic>
+				<isNotNull property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotNull>
+				<isNotNull property="fenpqh" prepend=" and ">fenpqh = #fenpqh#</isNotNull>
+				<isNotNull property="lingjbh" prepend=" and ">lingjbh = #lingjbh#</isNotNull>
+				<isNotNull property="gongysbh" prepend=" and ">gongysbh = #gongysdm#</isNotNull>
+			</dynamic>
+	</select>
+	
+	<!-- 插入按需计算中间表 -->
+	<insert id="insertAnxjscszjb">
+		insert into 
+			${dbSchemal1}xqjs_anxjscszjb
+			(usercenter,lingjbh,fahd,mudd,xiaohd,zhizlx,gongysbh,lujbh,lujmc,zhidgys,jiaofm,beihzq,yunszq,gcbh,xiehztbh,
+			songhpc,dinghck,mos2,cangkshsj2,cangkfhsj2,beihsj2,xianbck,mos,beihsj,beihsjc,anqkcs,xianbllkc,yifyhlzl,
+			jiaofzl,zhongzzl,ckusbzlx,ckusbzrl,ckuclx,ckucrl,shengxsj2,shengxsj,gongyhth,xianbyhlx,xiaohcbh,
+			xiaohccxbh,fenpbh,gongysfe,zuixqdl,gongyslx,dinghcklx,anqkcsl,shengcxbh,zhongwmc,jihy,lingjsx,xhdxittzz,ckxittzz,
+			gysucbzlx,gysucrl,gysuabzlx,gysuaucgs,jianglms,jianglms2,ckjiaofzl,ckzhongzzl,ckyifyhlzl,danw) 
+		values
+			(#usercenter#,#lingjbh#,#fahd#,#mudd#,#xiaohd#,#zhizlx#,#gongysbh#,#lujbh#,#lujmc#,#zhidgys#,#jiaofm#,
+			#beihzq#,#yunszq#,#gcbh#,#xiehztbh#,#songhpc#,#dinghck#,#mos2#,#cangkshsj2#,#cangkfhsj2#,#beihsj2#,
+			#xianbck#,#mos#,#beihsj#,#beihsjc#,#anqkcs#,#xianbllkc#,#yifyhlzl#,#jiaofzl#,#zhongzzl#,#ckusbzlx#,
+			#ckusbzrl#,#ckuclx#,#ckucrl#,#shengxsj2#,#shengxsj#,#gongyhth#,#xianbyhlx#,#xiaohcbh#,
+			#xiaohccxbh#,#fenpbh#,#gongysfe#,#zuixqdl#,#gongyslx#,#dinghcklx#,#anqkcsl#,#shengcxbh#,#zhongwmc#,
+			#jihy#,#lingjsx#,#xhdxittzz#,#ckxittzz#,#gysucbzlx#,#gysucrl#,#gysuabzlx#,#gysuaucgs#,
+			#jianglms#,#jianglms2#,#ckjiaofzl#,#ckzhongzzl#,#ckyifyhlzl#,#danw#)
+	</insert>
+	
+	<!-- 查询CDMD模式按需计算中间表 -->
+	<select id="queryAnxjscszjbCDMD" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+		select 
+			usercenter,lingjbh,fahd,mudd,xiaohd,zhizlx,gongysbh,lujbh,lujmc,zhidgys,jiaofm,beihzq,yunszq,gcbh,xiehztbh,zhongwmc,
+			songhpc,dinghck,mos2,cangkshsj2,cangkfhsj2,beihsj2,xianbck,mos,beihsj,beihsjc,anqkcs,xianbllkc,yifyhlzl,xhdxittzz,
+			jiaofzl,zhongzzl,ckusbzlx,ckusbzrl,ckuclx,ckucrl,shengxsj2,jianglms2,shengxsj,gongyhth,xianbyhlx,xiaohcbh,danw,
+			xiaohccxbh,fenpbh,gongysfe,zuixqdl,gongyslx,dinghcklx,anqkcsl,shengcxbh,gysucbzlx,gysucrl,gysuabzlx,gysuaucgs,jihy
+		from 
+			${dbSchemal1}xqjs_anxjscszjb 
+		where 
+			(mos = 'CD' or mos2 = 'MD')
+		<dynamic>
+			<isNotNull property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 查询C1M1模式按需计算中间表 -->
+	<select id="queryAnxjscszjbC1M1" resultClass="com.athena.xqjs.entity.anxorder.Anxjscszjb">
+		select 
+	        usercenter,lingjbh,max(xiaohd) as xiaohd,max(fahd) as fahd,max(mudd) as mudd,max(zhizlx) as zhizlx,
+	        max(lujbh) as lujbh,max(lujmc) as lujmc,max(zhidgys) as zhidgys,max(jiaofm) as jiaofm,max(zhongwmc) as zhongwmc,
+	        max(beihzq) as beihzq,max(yunszq) as yunszq,max(gcbh) as gcbh,max(xiehztbh) as xiehztbh,
+	        max(songhpc) as songhpc,max(dinghck) as dinghck,max(mos2) as mos2,max(cangkshpc2) as cangkshpc2,
+	        max(cangkshsj2) as cangkshsj2,max(cangkfhsj2) as cangkfhsj2,max(beihsj2) as beihsj2,xianbck,
+	        max(mos) as mos,max(beihsjc) as beihsjc,max(anqkcs) as anqkcs,max(xianbllkc) as xianbllkc,
+	        max(yifyhlzl) as yifyhlzl,max(jiaofzl) as jiaofzl,max(zhongzzl) as zhongzzl,max(chej) as chej,
+	        max(xianh) as xianh,max(danw) as danw,max(xqly) as xqly,max(ckusbzlx) as ckusbzlx,
+	        max(ckusbzrl) as ckusbzrl,max(ckuclx) as ckuclx,max(ckucrl) as ckucrl,max(gysucbzlx) as gysucbzlx,
+	        max(gysucrl) as gysucrl,max(gysuabzlx) as gysuabzlx,max(gysuaucgs) as gysuaucgs,max(shengxsj2) as shengxsj2,
+	        max(jianglms2) as jianglms2,max(beihsj) as beihsj,max(jianglms) as jianglms,max(shengxsj) as shengxsj,
+	        max(gongyhth) as gongyhth,max(xianbyhlx) as xianbyhlx,max(xiaohcbh) as xiaohcbh,max(jihy) as jihy,
+	        max(xiaohccxbh) as xiaohccxbh,max(fenpbh) as fenpbh,max(zuixqdl) as zuixqdl,max(gongyslx) as gongyslx,
+	        max(dinghcklx) as dinghcklx,max(anqkcsl) as anqkcsl,max(shengcxbh) as shengcxbh,max(ckxittzz) as ckxittzz,
+            max(ckjiaofzl) as ckjiaofzl ,max(ckzhongzzl) as ckzhongzzl,max(ckyifyhlzl) as ckyifyhlzl,max(gongysbh) as gongysbh
+      from 
+           ${dbSchemal1}xqjs_anxjscszjb
+      where
+           (mos = 'C1' or mos2 = 'M1')
+           <dynamic>
+           	<isNotNull property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotNull>
+           </dynamic>
+      group by usercenter,lingjbh,xianbck
+	</select>
+	
+	<!-- 查询前一个工作日的下班时间 -->
+	<select id="queryLastGzr" resultClass="com.athena.xqjs.entity.anxorder.Ticxxsj">
+		select 
+			usercenter,chanxck,gongzr,shunxh,riq,shijdkssj,shijdjssj,shijcd
+ 		from 
+ 			${dbSchemal3}ckx_ticxxsj 
+ 		where gongzr = (
+			select gongzr from
+      			(select gongzr from ${dbSchemal3}ckx_ticxxsj where
+        			gongzr <![CDATA[ < ]]> #jisrq# and usercenter = #usercenter# and chanxck = #shengcxbh# 
+      			group by gongzr order by gongzr desc
+      			)
+      		where rownum <![CDATA[ < ]]> 2)
+      and usercenter = #usercenter# and chanxck = #shengcxbh# 
+      order by shunxh desc
+	</select>
+	
+	<!-- 查询最近NUM个工作日 -->
+	<select id="queryTicxxsjGzrNum" resultClass="com.athena.xqjs.entity.anxorder.Ticxxsj">
+		select 
+			gongzr
+		from
+			(select
+				gongzr  
+			from
+				${dbSchemal3}ckx_ticxxsj   
+			where
+				gongzr <![CDATA[ > ]]> #gongzr# and 
+				usercenter <![CDATA[ = ]]> #usercenter# and
+				chanxck <![CDATA[ = ]]> #shengcxbh# 
+			group by gongzr order by gongzr
+			) where <![CDATA[rownum <= ]]> $num$
+	</select>
+	
+	<!-- 查询最近NUM个工作日 -->
+	<select id="queryTicxxsjGzrNumCsh" resultClass="com.athena.xqjs.entity.anxorder.Ticxxsj">
+		select 
+			gongzr
+		from
+			(select
+				gongzr  
+			from
+				${dbSchemal3}ckx_ticxxsj   
+			where
+				gongzr <![CDATA[ >= ]]> #gongzr# and 
+				usercenter <![CDATA[ = ]]> #usercenter# and
+				chanxck <![CDATA[ = ]]> #shengcxbh# 
+			group by gongzr order by gongzr
+			) where <![CDATA[rownum <= ]]> $num$
+	</select>
+
+	<!-- 查询最近NUM个工作日0010539 -->
+	<select id="queryTicxxsjGzrSppvNum" resultClass="com.athena.xqjs.entity.anxorder.Ticxxsj">
+		select  usercenter,chanxck,gongzr,shunxh,riq,shijdkssj,shijdjssj,shijcd    from ${dbSchemal3}ckx_ticxxsj 
+		 where gongzr = (
+		 select  gongzr   from
+		      (select   gongzr   from  ${dbSchemal3}ckx_ticxxsj   
+		      where
+		        gongzr <![CDATA[ >= ]]> #gongzr# and 
+		        usercenter <![CDATA[ = ]]>  #usercenter# and
+		        chanxck  <![CDATA[ = ]]>  #shengcxbh# 
+		      group by gongzr order by gongzr
+		      ) where  <![CDATA[rownum <= ]]> 1 )
+		      and usercenter <![CDATA[ = ]]> #usercenter# and chanxck <![CDATA[ = ]]> #shengcxbh# 
+		      order by shunxh
+	</select>
+
+	<!-- 更加用户中心,零件,消耗点查询毛需求中间表明细 -->
+	<select id="queryAnxmaoxqzjbMx" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxqzjb">
+		select 
+			usercenter,zhongzlxh,lingjbh,danw,xiaohd,to_char(xhsj,'yyyy-mm-dd HH24:mi:ss') as xhsj,xiaohxs,xuqly,chejh,chanx,zhizlx,emon 
+		from 
+			${dbSchemal1}xqjs_anxmaoxqzjb
+		where 
+			lingjbh = #lingjbh# and usercenter = #usercenter# and xiaohd = #xiaohd# 
+			<dynamic>
+				<isNotNull prepend="  and " property="fengbqrq">
+					 xhsj <![CDATA[>=]]> to_date(#fengbqrq#,'yyyy-mm-dd HH24:mi:ss')
+				</isNotNull>
+			</dynamic>
+		order by 
+			xhsj
+	</select>
+	
+	<!-- 更加用户中心,零件,线边仓库查询毛需求中间表明细 -->
+	<select id="queryAnxmaoxqzjbMxByXianbk" resultClass="com.athena.xqjs.entity.anxorder.AnxMaoxqzjb">
+		select 
+			sum(a.xiaohxs) as xiaohxs,to_char(a.xhsj,'yyyy-mm-dd HH24:mi:ss') as xhsj,b.xianbck,max(a.danw) as danw,max(chejh) as chejh 
+		from 
+			${dbSchemal1}xqjs_anxmaoxqzjb a,${dbSchemal1}xqjs_anxjscszjb b 
+		where 
+			a.usercenter = b.usercenter and a.lingjbh = b.lingjbh and a.xiaohd = b.xiaohd 
+			and a.lingjbh = #lingjbh#
+			and xianbck = #xianbck#
+			<dynamic>
+				<isNotNull prepend="  and " property="fengbqrq">
+					 xhsj <![CDATA[>=]]> to_date(#fengbqrq#,'yyyy-mm-dd HH24:mi:ss')
+				</isNotNull>
+			</dynamic>
+		group by 
+			a.xhsj,b.xianbck 
+		order by 
+			xhsj
+	</select>
+	
+	<!-- 查询小火车运输时刻 -->
+	<select id="queryXiaohcyssk" resultClass="com.athena.xqjs.entity.common.Xiaohcyssk">
+		select
+			to_char(kaisbhsj,'yyyy-MM-dd HH24:mi:ss') as kaisbhsj,to_char(chufsxsj,'yyyy-MM-dd HH24:mi:ss') as chufsxsj,
+			tangc
+		from
+			(select
+				kaisbhsj,chufsxsj,tangc
+			from
+				${dbSchemal3}ckx_xiaohcyssk
+			where
+				1 = 1
+			<dynamic>
+				<isNotEmpty prepend="  and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="riq">
+					riq = #riq#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="xiaohcbh">
+					xiaohcbh = #xiaohcbh#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="shengcxbh">
+					shengcxbh = #shengcxbh#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="kaisbhsj">
+					<![CDATA[ kaisbhsj <= to_date(#kaisbhsj#,'yyyy-mm-dd HH24:MI') ]]>
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="chufsxsj">
+					<![CDATA[ chufsxsj <= to_date(#chufsxsj#,'yyyy-mm-dd HH24:MI') ]]>
+				</isNotEmpty>
+			</dynamic>
+			order by chufsxsj desc)
+		where
+			rownum <![CDATA[<]]> 3
+	</select>
+	
+	<!-- 查询小火车运输时刻，向后 -->
+	<select id="queryXiaohcysskH" resultClass="com.athena.xqjs.entity.common.Xiaohcyssk">
+		select
+			to_char(kaisbhsj,'yyyy-MM-dd HH24:mi:ss') as kaisbhsj,to_char(chufsxsj,'yyyy-MM-dd HH24:mi:ss') as chufsxsj,
+			tangc
+		from
+			(select
+				kaisbhsj,chufsxsj,tangc
+			from
+				${dbSchemal3}ckx_xiaohcyssk
+			where
+				1 = 1
+			<dynamic>
+				<isNotEmpty prepend="  and " property="usercenter">
+					usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="riq">
+					riq = #riq#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="xiaohcbh">
+					xiaohcbh = #xiaohcbh#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="shengcxbh">
+					shengcxbh = #shengcxbh#
+				</isNotEmpty>
+				<isNotEmpty prepend="  and " property="kaisbhsj">
+					<![CDATA[ kaisbhsj >= to_date(#kaisbhsj#,'yyyy-mm-dd HH24:MI') ]]>
+				</isNotEmpty>
+			</dynamic>
+			order by kaisbhsj asc)
+		where
+			rownum <![CDATA[<]]> 3
+	</select>
+	
+	<!-- 查卸货站台编组 mantis:0011557 by hzg 2015.8.25 -->
+	<select id="queryXiehztbhOfCangk" resultClass="java.lang.String">
+		<![CDATA[
+			select ck.xiehztbz from ckx_cangk ck where ck.usercenter = #usercenter#  and ck.cangkbh=#xianbck# 
+		]]>
+	</select>
+	
+	
+	<!-- 查询运输时刻 -->
+	<select id="queryYunsskObject" resultClass="com.athena.xqjs.entity.common.Yunssk">
+		select
+			usercenter,xiehztbh,gcbh,facsj,daohsj,xuh
+		from
+			(select 
+				usercenter,xiehztbh,gcbh,facsj,daohsj,xuh
+			from 
+				${dbSchemal3}ckx_yunssk
+			where 
+				1 = 1
+				<dynamic>
+					<isNotEmpty prepend=" and " property="usercenter">
+						usercenter = #usercenter# 
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="xiehztbh">
+						xiehztbh = #xiehztbh# 
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="gcbh">
+						gcbh = #gcbh# 
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="daohsj">
+						daohsj <![CDATA[ < ]]> to_date(#daohsj#,'yyyy-MM-dd HH24:mi')
+					</isNotEmpty>
+				</dynamic>		
+				order by daohsj desc)
+		where 
+			rownum <![CDATA[<]]> 2
+	</select>
+	
+	<!-- 查询资源快照 -->
+	<select id="queryZiykzb" resultClass="com.athena.xqjs.entity.ilorder.Ziykzb">
+		select	
+			usercenter,lingjbh,cangkdm,kucsl,ziyhqrq,xttzz,dingdlj,jiaoflj,jstzsz,dingdzzlj,anqkc
+		from 
+			${dbSchemal1}xqjs_ziykzb
+		where 
+			1=1 
+		<dynamic>
+			<isNotEmpty prepend=" and " property="ziyhqrq">
+				ziyhqrq = to_date(#ziyhqrq#,'yyyy-mm-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkdm">
+				cangkdm = #cangkdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+				gongysdm = #gongysdm#
+			</isNotEmpty>
+		</dynamic>
+		order by ziyhqrq desc
+	</select>
+	
+	<!-- 汇总零件数量 -->
+	<select id="queryZiykzbLjSl" resultClass="java.math.BigDecimal">
+		select	
+			sum(kucsl)
+		from 
+			${dbSchemal1}xqjs_ziykzb
+		where 
+			1=1 
+		<dynamic>
+			<isNotNull prepend=" and " property="ziyhqrq">
+				ziyhqrq = to_date(#ziyhqrq#,'yyyy-mm-dd')
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh">
+				lingjbh in ($lingjbh$)
+			</isNotNull>
+			<isNotNull prepend=" and " property="cangkdm">
+				cangkdm = #cangkdm#
+			</isNotNull>
+			<isNotNull prepend=" and " property="gongysdm">
+				gongysdm = #gongysdm#
+			</isNotNull>
+		</dynamic>
+		order by ziyhqrq desc
+	</select>
+	
+	<!-- 查询后若干天后的日历信息 -->
+	<select id="queryTicxxsjNum" resultClass="com.athena.xqjs.entity.anxorder.Ticxxsj">
+		select 
+			usercenter,chanxck,gongzr,shunxh,riq,shijdkssj,shijdjssj,shijcd
+		from
+			(select
+				usercenter,chanxck,gongzr,shunxh,riq,shijdkssj,shijdjssj,shijcd
+			from
+				${dbSchemal3}ckx_ticxxsj   
+			where
+				1 = 1  
+			<isNotNull prepend=" and " property="gongzr">
+				gongzr <![CDATA[ > ]]> #gongzr# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">
+				usercenter <![CDATA[ = ]]> #usercenter# 
+			</isNotNull>
+			<isNotNull prepend=" and " property="shengcxbh">
+				chanxck <![CDATA[ = ]]> #shengcxbh# 
+			</isNotNull>
+			order by gongzr,shunxh
+			) where <![CDATA[rownum <= ]]> $num$
+	</select>
+	
+	<!-- 获取零件的供应商集合 -->
+	<select id="queryLingjGysList" resultClass="com.athena.xqjs.entity.common.LingjGongys">
+		select
+			a.usercenter,gongysbh,lingjbh,gongyhth,gongyfe,youxq,a.fayd,shengxsj,shixsj,zuixqdl,cankfz,zhijcjbl,shifyzpch,
+      		ucbzlx,ucrl,uabzlx,uaucgs,gaib,neic,shifczlsbz,b.gongsmc,b.leix
+   		from 
+     		${dbSchemal3}ckx_lingjgys a ,${dbSchemal3}ckx_gongys b
+    	where 
+         	a.usercenter = b.usercenter and a.gongysbh = b.gcbh 
+         	and a.biaos = '1' and b.gonghlx = '97W' and b.biaos = '1'
+         <dynamic>
+			<isNotNull property="usercenter" prepend=" and ">a.usercenter = #usercenter#</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 获取零件供应商信息 -->
+	<select id="queryLingjGys" resultClass="com.athena.xqjs.entity.common.LingjGongys">
+		select
+			usercenter,gongysbh,lingjbh,gongyhth,gongyfe,youxq,fayd,shengxsj,shixsj,zuixqdl,cankfz,zhijcjbl,shifyzpch,
+			ucbzlx,ucrl,uabzlx,uaucgs,gaib,neic,shifczlsbz
+		from 
+			${dbSchemal3}ckx_lingjgys 
+		where 
+			lingjbh = #lingjbh# and usercenter = #usercenter# and gongysbh = #gongysdm# and biaos = '1'
+	</select>
+	
+	<!-- 查询订单零件信息 -->
+	<select id="queryDingdlj" resultClass="com.athena.xqjs.entity.ilorder.Dingdlj">
+		select 
+			id
+		from 
+			${dbSchemal1}xqjs_dingdlj
+		where 
+			rownum <![CDATA[ < ]]> 2
+		<dynamic>
+			<isNotNull property="dingdh" prepend=" and ">dingdh = #dingdh#</isNotNull>
+			<isNotNull property="lingjbh" prepend=" and ">lingjbh = #lingjbh#</isNotNull>
+			<isNotNull property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotNull>
+			<isNotNull property="gongysdm" prepend=" and ">gongysdm = #gongysdm#</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 查询消耗量 -->
+	<select id="queryXiaohl" resultClass="java.math.BigDecimal">
+		select  
+		  sum(xiaohxs) as shul    
+		from ${dbSchemal1}xqjs_anxmaoxq
+		where 
+			usercenter = #usercenter# 
+		and lingjbh = #lingjbh# 
+		and xiaohd = #xiaohd#
+		and xhsj <![CDATA[>=]]> to_date(#xiaohsj#,'yyyy-mm-dd hh24:mi')
+		and xhsj <![CDATA[< ]]> to_date(#xiaohsj2#,'yyyy-mm-dd hh24:mi')
+		<dynamic>
+			<isNotNull prepend=" and " property="xuqly">xuqly = #xuqly#</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 查询EMON消耗量 -->
+	<select id="queryEmonXiaohl" resultClass="java.math.BigDecimal">
+		select  
+		  sum(xiaohxs) as shul    
+		from ${dbSchemal1}xqjs_anxmaoxq
+		where 
+			usercenter = #usercenter# 
+		and lingjbh = #lingjbh# 
+		and xiaohd = #xiaohd#
+		and xhsj <![CDATA[>=]]> to_date(#xiaohsj#,'yyyy-mm-dd hh24:mi')
+		and emon <![CDATA[< ]]> to_date(#xiaohsjsppv#,'yyyy-mm-dd hh24:mi')
+		<dynamic>
+			<isNotNull prepend=" and " property="xuqly">xuqly = #xuqly#</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 汇总线边待消耗 -->
+	<select id="queryXhlByXianbk" resultClass="java.math.BigDecimal">
+		select 
+			sum(a.xiaohxs) as xiaohxs
+		from 
+			${dbSchemal1}xqjs_anxmaoxqzjb a,${dbSchemal1}xqjs_anxjscszjb b 
+		where 
+			a.usercenter = b.usercenter and a.lingjbh = b.lingjbh and a.xiaohd = b.xiaohd 
+			and a.lingjbh = #lingjbh# and a.xuqly = #xuqly#
+			and xhsj <![CDATA[>=]]> to_date(#xiaohsj#,'yyyy-mm-dd hh24:mi')
+      		and xhsj <![CDATA[< ]]>  to_date(#xiaohsj2#,'yyyy-mm-dd hh24:mi')
+			and xianbck = #xianbck#
+	</select>
+	
+	<!-- 汇总线边待消耗 -->
+	<select id="queryEmonXhlByXianbk" resultClass="java.math.BigDecimal">
+		select 
+			sum(a.xiaohxs) as xiaohxs
+		from 
+			${dbSchemal1}xqjs_anxmaoxq a,${dbSchemal1}xqjs_anxjscszjb b 
+		where 
+			a.usercenter = b.usercenter and a.lingjbh = b.lingjbh and a.xiaohd = b.xiaohd 
+			and a.lingjbh = #lingjbh# and a.xuqly = #xuqly#
+			and xhsj <![CDATA[>=]]> to_date(#xiaohsj#,'yyyy-mm-dd hh24:mi')
+			and emon <![CDATA[< ]]> to_date(#xiaohsjsppv#,'yyyy-mm-dd hh24:mi')
+			and xianbck = #xianbck#
+	</select>
+	
+	<!-- 查询异常消耗和到货量(即出库量) -->
+	<select id="queryYcxhDh" resultClass="com.athena.xqjs.entity.anxorder.Kucjscsb">
+		select 
+			sum(yicxhl) as yicxhl,
+			sum(daohl) as daohl
+		from 
+			${dbSchemal1}xqjs_kucjscsb 
+		where 
+			1 = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="lingjbh">lingjbh = #lingjbh#</isNotNull>
+			<isNotNull prepend=" and " property="xiaohd">xiaohd = #xiaohd#</isNotNull>
+			<isNotNull prepend=" and " property="xiaohsj">jilrq <![CDATA[>=]]> to_date(#xiaohsj#,'yyyy-mm-dd hh24:mi')</isNotNull>
+			<isNotNull prepend=" and " property="xiaohsj2">jilrq <![CDATA[< ]]> to_date(#xiaohsj2#,'yyyy-mm-dd hh24:mi')</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 查询所有CDMD模式的零件消耗点 -->
+	<select id="queryXbkcXhd" resultClass="com.athena.xqjs.entity.common.Lingjxhd">
+		select 
+			max(a.usercenter) as usercenter,a.lingjbh,a.xiaohdbh,nvl(max(a.fenzxh), max(a.shengcxbh)) as shengcxbh,max(a.xianbllkc) as xianbllkc
+		from 
+			${dbSchemal3}ckx_lingjxhd a,${dbSchemal3}ckx_wullj b 
+		where 
+			a.biaos = '1' and a.usercenter = b.usercenter and a.fenpqbh = b.fenpqh and (b.Waibms = 'CD'
+    		or b.mos2 = 'MD') and a.lingjbh = b.lingjbh 
+    		<dynamic>
+    			<isNotNull property="usercenter" prepend=" and ">a.usercenter = #usercenter#</isNotNull>
+    		</dynamic>
+		group by a.lingjbh,a.xiaohdbh,a.usercenter
+	</select>
+	
+	<!-- 汇总订单明细数量 -->
+	<select id="queryDingdmxSl" parameterClass="com.athena.xqjs.entity.ilorder.Dingdlj" resultClass="java.math.BigDecimal">
+		select 
+			sum(shul) as shul
+		from 
+			${dbSchemal1}xqjs_dingdmx 
+		where 
+			1 = 1
+		<dynamic>
+			<isNotNull property="dingdh" prepend=" and ">dingdh = #dingdh#</isNotNull>
+			<isNotNull property="lingjbh" prepend=" and ">lingjbh = #lingjbh#</isNotNull>
+			<isNotNull property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotNull>
+			<isNotNull property="gongysdm" prepend=" and ">gongysdm = #gongysdm#</isNotNull>
+		</dynamic>
+	</select>
+	
+	<!-- 查询供应商名称 -->
+	<select id="queryGysmc" resultClass="com.athena.xqjs.entity.common.Gongys">
+		select gongsmc,leix from ${dbSchemal3}ckx_gongys where usercenter = #usercenter# and gcbh = #gongysdm# and biaos = '1'
+	</select>
+	
+	<!-- 更新订单计算时间 -->
+	<update id="updateDingdjssj">
+		update 
+			${dbSchemal1}xqjs_dingd 
+		set 
+			dingdjssj = to_date(#dingdjssj#,'yyyy-MM-dd hh24:mi:ss'),
+			editor = #creator#,edit_time = current_timestamp
+		where 
+			dingdh = #dingdh#
+			<dynamic>
+				<isNotNull prepend=" and " property="usercenter">
+					usercenter = #usercenter# 
+				</isNotNull>
+			</dynamic>
+	</update>
+	
+	<!-- 向前推工作时间模板 -->
+	<select id="queryGongzsjmbQ" resultClass="java.lang.String">
+		select to_char(juedsk,'yyyy-MM-dd hh24:mi')
+       from (select rownum rn, juedsk
+               from (select a.usercenter,
+                            a.chanxck,
+                            b.gongzr,
+                            b.xiaohsj,
+                            b.juedsk
+                       from ${dbSchemal3}CKX_CALENDAR_HEBTIME_INFO a, ${dbSchemal3}CKX_GONGZSJMB b
+                      where a.hebtimeh = b.hebtimeh
+                        and a.usercenter = #usercenter#
+                        and a.chanxck = #shengcxbh#
+                        and b.juedsk <![CDATA[<=]]>
+                            (select max(juedsk)
+                               from (select a.usercenter,
+                                            a.chanxck ,
+                                            b.gongzr,
+                                            b.xiaohsj,
+                                            b.juedsk
+                                       from ${dbSchemal3}CKX_CALENDAR_HEBTIME_INFO a,
+                                            ${dbSchemal3}CKX_GONGZSJMB         b
+                                      where a.hebtimeh = b.hebtimeh
+                                        and a.usercenter = #usercenter#
+                                        and a.chanxck = #shengcxbh#
+                                        and b.juedsk <![CDATA[<=]]>
+                                            to_date(#juedsk#,
+                                                    'yyyy-mm-dd hh24:mi:ss')))
+                      order by juedsk desc))
+      where rn = $shijNum$ + 1
+	</select>
+	
+	
+	<!-- 向后推工作时间模板 -->
+	<select id="queryGongzsjmbH" resultClass="java.lang.String">
+		select to_char(juedsk,'yyyy-MM-dd hh24:mi')
+       from (select rownum rn, juedsk
+               from (select a.usercenter,
+                            a.chanxck,
+                            b.gongzr,
+                            b.xiaohsj,
+                            b.juedsk
+                       from ${dbSchemal3}CKX_CALENDAR_HEBTIME_INFO a, ${dbSchemal3}CKX_GONGZSJMB b
+                      where a.hebtimeh = b.hebtimeh
+                        and a.usercenter = #usercenter#
+                        and a.chanxck = #shengcxbh#
+                        and b.juedsk <![CDATA[>=]]>
+                            (select min(juedsk)
+                               from (select a.usercenter,
+                                            a.chanxck ,
+                                            b.gongzr,
+                                            b.xiaohsj,
+                                            b.juedsk
+                                       from ${dbSchemal3}CKX_CALENDAR_HEBTIME_INFO a,
+                                            ${dbSchemal3}CKX_GONGZSJMB         b
+                                      where a.hebtimeh = b.hebtimeh
+                                        and a.usercenter = #usercenter#
+                                        and a.chanxck = #shengcxbh#
+                                        and b.juedsk <![CDATA[>=]]>
+                                            to_date(#juedsk#,
+                                                    'yyyy-mm-dd hh24:mi:ss')))
+                      order by juedsk asc))
+      where rn = $shijNum$ + 1
+	</select>
+	
+	
+	<!-- 保存订单,先判断是否存在,不存在则插入 -->
+	<insert id="insertDingd">
+		merge into ${dbSchemal1}xqjs_dingd
+		using (select count(*) co from ${dbSchemal1}xqjs_dingd where  1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdh">
+				dingdh = #dingdh#
+			</isNotEmpty>
+		</dynamic>)b
+          on(b.co<![CDATA[<>]]>0)
+		when not matched then 
+	  insert 
+	  	(gongysdm,chullx,dingdfssj,dingdzt,ziyhqrq,dingdsxczr,dingdh,beiz,shifzfsyhl,dingdnr,dingdjssj,shiffsgys,dingdlx,
+		dingdsxsj,fahzq,gongyslx,jislx,maoxqbc,heth,shifyjsyhl,usercenter,creator,create_time ,editor ,edit_time ,active,
+		jiszq)
+	  values
+	  	(#gongysdm#,#chullx#,#dingdfssj#,#dingdzt#,to_timestamp(#ziyhqrq#,'yyyy-mm-dd HH24:MI:SS:FF3'),#dingdsxczr#,
+		#dingdh#,#beiz#,#shifzfsyhl#,#dingdnr#,to_timestamp(#dingdjssj#,'yyyy-mm-dd HH24:MI:SS:FF3'),#shiffsgys#,
+		#dingdlx#,to_date(#dingdsxsj#,'yyyy-mm-dd HH24:MI:SS'),#fahzq#,#gongyslx#,#jislx#,#maoxqbc#,#heth#,#shifyjsyhl# ,
+		#usercenter#,#creator# ,to_timestamp(#create_time#,'yyyy-mm-dd HH24:MI:SS:FF3'),#creator# ,
+		to_timestamp(#create_time#,'yyyy-mm-dd HH24:MI:SS:FF3'),#active# ,#jiszq#)
+	</insert>
+	
+	<!-- 保存订单零件,先判断是否存在,不存在则插入 -->
+	<insert id="insertDingdlj">
+		merge into ${dbSchemal1}xqjs_dingdlj
+		using (select count(*) co from ${dbSchemal1}xqjs_dingdlj where 1 = 1
+		<dynamic>
+      <isNotNull property="dingdh" prepend=" and ">dingdh = #dingdh#</isNotNull>
+      <isNotNull property="lingjbh" prepend=" and ">lingjbh = #lingjbh#</isNotNull>
+      <isNotNull property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotNull>
+      <isNotNull property="gongysdm" prepend=" and ">gongysdm = #gongysdm#</isNotNull>
+	  </dynamic>)b
+	   on(b.co<![CDATA[<>]]>0)
+		when  not matched then 
+	  insert (
+    	ziyhqrq,uabzlx,tiaozjsz,dingdzzsj,jidyhsl,beihzq,usercenter,lujdm,xittzz,anqkc,gongysfe,jihyz,uabzuclx,p0fyzqxh,LINGJBH,
+    	dingdh,uabzucrl,jiaoflj,p1sl,shifyldxh,gongyslx,p4sl,p0sl,dingdnr,shifyldjf,fahd,xiehzt,daixh,danw,id,p3sl,p5sl,p6sl,
+    	p7sl,p8sl,p9sl,p1rq,p2rq,p3rq,p4rq,p5rq,p6rq,p7rq,p8rq,p9rq,shifylkc,p2sl,shifylaqkc,dingdlj,fayzq,cangkdm,dinghcj,
+    	uabzucsl,yijfl,gongysdm,yugsfqz,kuc,zhongzlj,creator,create_time,zuixqdl,lingjsx,jiaofm,zhidgys,gonghms,active,guanjljjb,
+    	heth,usbaozlx,usbaozrl,dingdljddlj)
+     values(
+   		to_date(substr(#ziyhqrq#,1,10),'yyyy-mm-dd'),#uabzlx#,#tiaozjsz# ,to_date(substr(#dingdzzsj#,1,19),'yyyy-mm-dd HH24:mi:ss'),
+    	#jidyhsl#,#beihzq#,#usercenter#,#lujdm#,#xittzz#,#anqkc#,#gongysfe#,#jihyz#,#uabzuclx#,#p0fyzqxh#,#lingjbh#,#dingdh#,
+    	#uabzucrl#,#jiaoflj#,#p1sl#,#shifyldxh#,#gongyslx#,#p4sl#,#p0sl#,#dingdnr#,#shifyldjf#,#fahd#,#xiehzt#,#daixh#,#danw#,
+    	${dbSchemal1}DINGDLJ_SEQ.nextval,#p3sl#,#p5sl#,#p6sl#,#p7sl#,#p8sl#,#p9sl#,to_date(substr(#p1rq#,1,10),'yyyy-mm-dd'),
+        to_date(substr(#p2rq#,1,10),'yyyy-mm-dd'),to_date(substr(#p3rq#,1,10),'yyyy-mm-dd'),to_date(substr(#p4rq#,1,10),'yyyy-mm-dd'),
+    	to_date(substr(#p5rq#,1,10),'yyyy-mm-dd'),to_date(substr(#p6rq#,1,10),'yyyy-mm-dd'),to_date(substr(#p7rq#,1,10),'yyyy-mm-dd'),
+    	to_date(substr(#p8rq#,1,10),'yyyy-mm-dd'),to_date(substr(#p9rq#,1,10),'yyyy-mm-dd'),#shifylkc#,#p2sl#,#shifylaqkc#,
+		#dingdlj#,#fayzq#,#cangkdm#,#dinghcj#,#uabzucsl#,#yijfl#,#gongysdm#,#yugsfqz#,#kuc#,#zhongzlj#,#creator#,
+		To_Timestamp(#create_time#, 'yyyy-mm-dd HH24:mi:ss:ff3'),#zuixqdl#,#lingjsx#,#jiaofm#,#zhidgys#,#gonghms#,#active#,
+		#guanjljjb#,#heth#,#usbaozlx#,#usbaozrl#,#dingdljddlj#)
+	</insert>
+	
+	<!-- 更新订单零件的P0 -->
+	<update id="updateDingdljP0">
+		update 
+			${dbSchemal1}xqjs_dingdlj 
+		set 
+			p0sl = (select sum(shul) as shul from ${dbSchemal1}xqjs_dingdmx where 1 = 1
+		<dynamic>
+			<isNotNull property="dingdh" prepend=" and ">dingdh = #dingdh#</isNotNull>
+			<isNotNull property="lingjbh" prepend=" and ">lingjbh = #lingjbh#</isNotNull>
+			<isNotNull property="usercenter" prepend=" and ">usercenter = #usercenter#</isNotNull>
+			<isNotNull property="gongysdm" prepend=" and ">gongysdm = #gongysdm#</isNotNull>
+		</dynamic>),active = 1
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">
+				ID = #id#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysdm">
+			<![CDATA[gongysdm = #gongysdm#]]>
+			
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdh">
+				dingdh = #dingdh#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	
+	<!-- 查询零件供应商累计量 hzg 2015.6.30 add -->
+	<select id="queryBiaodslOfCKLingjgys" resultClass="java.math.BigDecimal">
+		select  
+		  a.biaodsl  
+		from ${dbSchemal1}ck_lingjgys a,${dbSchemal3}ckx_gongys b
+    	where 
+         	a.usercenter = b.usercenter and a.gongysdm = b.gcbh 
+         	and b.gonghlx = '97W' and b.biaos = '1'
+			and a.usercenter = #usercenter# 
+			and a.lingjbh = #lingjbh# 
+			and a.gongysdm = #gongysbh#
+	</select>
+	
+	
+	<!-- 取当天最近一次的按需订单自动下发状态 mantis:11506 hzg 2015.7.9 add ;最近一次设置为准 mantis:0011640 by hzg -->
+	<select id="queryAnxHandState" resultClass="java.lang.String" parameterClass="java.lang.String">
+		select zhuangt
+  from (select *
+          from ${dbSchemal1}ckx_anxhandset a
+         where usercenter = #usercenter#  
+         order by create_time desc) aa
+ where   rownum = 1 
+
+	</select>
+	<!-- ck_lingjck表中的零件累计数量 hzg 2015.7.13 add -->
+	<!-- ck_lingjck 加上97W的判断 zbb 2016.2.4 add -->
+	<select id="queryLingjljOfCKLingjgys" resultClass="java.math.BigDecimal">
+		select  
+		  sum(biaodsl) ckLingjlj
+		from ${dbSchemal1}ck_lingjgys a,${dbSchemal3}ckx_gongys b
+		where 
+         	a.usercenter = b.usercenter and a.gongysdm = b.gcbh 
+         	and b.gonghlx = '97W' and b.biaos = '1'
+			and a.usercenter = #usercenter# 
+			and a.lingjbh = #lingjbh# 
+	</select>
+	
+</sqlMap>

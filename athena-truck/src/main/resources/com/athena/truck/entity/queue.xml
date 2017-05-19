@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="queue">
+	<!-- 查询车辆排队信息 --> 
+	 <select id="queryQueuexx"  parameterClass="java.util.Map" resultClass="com.athena.truck.entity.Chelpd">
+	<![CDATA[
+	SELECT         p.usercenter,
+	               p.yundh,
+	               p.kach,
+	               p.chengysbh,
+	               g.gongsmc chengysmc,
+	               p.quybh,
+	               p.daztbh,
+	               p.paidzt,
+	               p.paidxh,
+	               p.chewbh,
+	               p.xiehxh,
+	               p.paidsx,
+	               p.creator,
+	               p.create_time,
+	               p.editor,
+	               p.edit_time,
+	                case when p.paidxh<=0 then to_date('1970-01-01','yyyy-mm-dd')  
+                     when p.paidxh >0 then  p.create_time  end beiz
+			  FROM ${dbSchemal0}kc_chelpd p , ${dbSchemal0}ckx_gongys g
+			 WHERE  p.usercenter=g.usercenter(+) and p.chengysbh=g.gcbh(+)  ]]>
+		<dynamic>
+		  <isNotEmpty prepend=" and " property="usercenter"><![CDATA[p.usercenter = #usercenter#]]></isNotEmpty>
+	      <isNotEmpty prepend=" and " property="quybh"><![CDATA[p.quybh = #quybh#]]></isNotEmpty>
+	      <isNotEmpty prepend=" and " property="daztbh"><![CDATA[p.daztbh = #daztbh#]]></isNotEmpty>
+	      <isNotEmpty prepend=" and " property="paidzt"><![CDATA[p.paidzt = #paidzt#]]></isNotEmpty>
+	      <isNotEmpty prepend=" and " property="chewbh"><![CDATA[p.chewbh = #chewbh#]]></isNotEmpty>
+	      <isNotEmpty prepend=" and " property="paidsx"><![CDATA[p.paidsx = #paidsx#]]></isNotEmpty>
+	      <isNotEmpty prepend=" and " property="chengysbh"><![CDATA[p.chengysbh = #chengysbh#]]></isNotEmpty>
+	      <isNotEmpty prepend=" and " property="zdchew"><![CDATA[p.zdchew is null ]]></isNotEmpty>
+	   </dynamic>
+	   order by beiz, paidxh
+	   
+	</select>
+	<!--查询大站台排队序号最大值 -->
+	<select id="queryQueuemax" resultClass="java.util.HashMap">
+   select  usercenter||daztbh KEY,
+		   max(d.paidxh) VALUE
+   from  ${dbSchemal0}kc_chelpd_history d  where  to_char(d.create_time,'yyyy-mm-dd')=to_char(sysdate,'yyyy-mm-dd')
+     and d.operate='i'
+     group by  d.usercenter,d.daztbh 
+	</select>
+	<!-- 查询大站台卸货序号最大值 -->
+	<select id="queryXiehxhmax" resultClass="java.util.HashMap">
+	 select  usercenter||daztbh KEY,
+		 max(to_number(substr(d.xiehxh,10,3))) VALUE
+   from  ${dbSchemal0}kc_chelpd_history d  where  to_char(d.create_time,'yyyy-mm-dd')=to_char(sysdate,'yyyy-mm-dd')
+   and substr(xiehxh,0,8)=to_char(sysdate,'yyyyMMdd') 
+     group by  d.usercenter,d.daztbh 
+	</select>
+	
+	<!--查询大站台排队序号最小值  -->
+	<select id="queryQueuemin" resultClass="java.lang.Integer" parameterClass="com.athena.truck.entity.Chelpd">
+	 select  min(d.paidxh) xuh
+   from  ${dbSchemal0}kc_chelpd_history d  where  usercenter=#usercenter#  and quybh=#quybh# and daztbh=#daztbh#
+	</select>
+	
+	
+	<!-- 查询急件运单信息 -->
+	<select id="queryJijyd" resultClass="com.athena.truck.entity.Yund">
+           select   y.usercenter,
+			        y.yundh,
+			        y.kach,
+			        y.quybh,
+			        y.daztbh,
+			        n.chengysdm,
+			        y.tiqpdbs,
+			        y.jijbs,
+			        y.edit_time editTime
+          from  ( select distinct usercenter,yundh,zuiwsj,chengysdm from 
+                  (select  rank() over(partition by y.usercenter,y.kach order by x.zuiwsj,x.chengysdm,y.yundh) rk,
+                  y.usercenter,y.yundh,x.zuiwsj,x.chengysdm   from ${dbSchemal0}kc_yundmx x,${dbSchemal0}kc_yund y  where y.usercenter =x.usercenter 
+                  and y.yundh = x.yundh and y.zhuangt = '1' and y.jijbs ='1'  ) m where m.rk=1 ) n,
+                ${dbSchemal0}kc_yund y
+          where  n.usercenter = y.usercenter and y.yundh = n.yundh order by y.shengbsj
+</select>
+	<!-- 查询申报状态中的需要排队的运单信息 -->
+	<select id="queryQueue" resultClass="com.athena.truck.entity.Yund">
+	<![CDATA[   select y.usercenter,
+                       y.yundh,
+                       y.kach,
+                       y.quybh,
+                       y.daztbh,
+                       y.paidtqqsx,
+                       y.paidtqqxx,
+                       y.jijbs,
+                       y.editTime,
+                       n.zuiwsj,
+                       n.chengysdm,
+                       y.tiqpdbs,
+                       trunc(( n.zuiwsj - sysdate)*24*60) min
+                  from  (
+                  select distinct usercenter,yundh,zuiwsj,chengysdm from 
+                  (select  rank() over(partition by y.usercenter,y.kach order by m.zuiwsj,m.chengysdm,y.yundh) rk,
+                  y.usercenter,y.yundh,m.zuiwsj,m.chengysdm   from ${dbSchemal0}kc_yundmx m , ${dbSchemal0}kc_yund y where y.usercenter =m.usercenter 
+                  and y.yundh = m.yundh and y.zhuangt = '1' and y.jijbs !='1' ) m where m.rk=1 ) n,
+                 
+                  (select y.usercenter,y.yundh, y.kach, y.quybh, y.daztbh, y.tiqpdbs, y.jijbs, y.edit_time editTime,y.shengbsj, d.paidtqqsx, d.paidtqqxx
+                          from ${dbSchemal0}kc_yund y, ${dbSchemal0}ckx_dazt d
+                         where y.usercenter = d.usercenter and y.daztbh = d.daztbh and y.zhuangt = '1' and y.jijbs !='1') y
+                 where n.usercenter = y.usercenter  and n.yundh = y.yundh
+                   and (round((n.zuiwsj - sysdate)*24*60,2)<= y.paidtqqxx or y.tiqpdbs='1' or  y.tiqpdbs='2' ) order by y.shengbsj ]]>
+	</select>
+   <!-- 查询混装的卡车及单号信息 -->
+   <select id="queryHunzyd" resultClass="com.athena.truck.entity.Yund">
+      select y.usercenter usercenter,
+             y.yundh yundh
+      from  ${dbSchemal0}kc_chelpd p,
+           (select usercenter, yundh, kach
+              from ${dbSchemal0}kc_yund y
+             where y.flag = 2
+               and y.zhuangt = 1) y
+     where p.kach = y.kach
+       and y.usercenter = p.usercenter
+    </select>
+   <!-- 车辆排队插入 -->
+    <insert id="insertChelpd" parameterClass="com.athena.truck.entity.Chelpd">
+    insert into 
+		${dbSchemal0}kc_chelpd (usercenter,yundh,kach,chewbh,chengysbh,quybh,daztbh,paidzt,paidxh,xiehxh,
+		paidsx,yuanpdsx,zdchew,creator,create_time,editor,edit_time)
+		values(
+			#usercenter#,
+			#yundh#,
+			#kach#,
+			#chewbh#,
+			#chengysbh#,
+			#quybh#,
+			#daztbh#,
+			#paidzt#,
+			#paidxh#,
+			'',
+			#paidsx#,
+			#paidsx#,
+			'',
+			#creator#,
+			sysdate,
+			#editor#,
+			sysdate)
+     </insert>
+ <!-- 修改车辆排队信息 -->
+ <update id="updateChelpd" parameterClass="com.athena.truck.entity.Chelpd" >
+			update ${dbSchemal0}kc_chelpd
+				set editor = #neweditor#,				
+				edit_time =sysdate
+				<dynamic>
+					<isNotEmpty prepend="," property="chewbh">chewbh=#chewbh#</isNotEmpty>
+					<isNotEmpty prepend="," property="paidzt">paidzt=#paidzt#</isNotEmpty>
+					<isNotEmpty prepend="," property="paidxh">paidxh=#paidxh#</isNotEmpty>
+					<isNotEmpty prepend="," property="paidsx">paidsx=#paidsx#</isNotEmpty>
+					<isNotEmpty prepend="," property="yuanpdsx">yuanpdsx=#yuanpdsx#</isNotEmpty>
+					<isNotEmpty prepend="," property="zdchew">zdchew=#zdchew#</isNotEmpty>
+					<isNotEmpty prepend="," property="xiehxh">xiehxh=to_char(sysdate ,'yyyymmdd')||to_char(sysdate,'d')||#xiehxh#</isNotEmpty>
+				</dynamic>
+				where yundh=#yundh# and usercenter=#usercenter# 
+				<dynamic >
+				   <isNotEmpty prepend="and" property="kach"> kach=#kach# </isNotEmpty>
+				   <isNotEmpty prepend="and" property="editor"> editor=#editor# </isNotEmpty>
+				   <isNotEmpty prepend="and" property="edit_time"> edit_time=to_date(#edit_time#,'yyyy-mm-dd hh24:mi:ss') </isNotEmpty>
+				</dynamic>
+ </update>
+ <!-- 插入车辆排队历史表数据 --> 
+  <insert id="insertChelpd_history" parameterClass="com.athena.truck.entity.Chelpd">
+    insert into 
+		${dbSchemal0}kc_chelpd_history (id,usercenter,yundh,kach,chewbh,chengysbh,quybh,daztbh,paidzt,paidxh,xiehxh
+		paidsx,yuanpdsx,zdchew,creator,create_time,editor,edit_time)
+		values(
+		    id,
+			#usercenter#,
+			#yundh#,
+			#kach#,
+			#chewbh#,
+			#chengysbh#,
+			#quybh#,
+			#daztbh#,
+			#paidzt#,
+			#paidxh#,
+			#xiehxh#,
+			#paidsx#,
+			#yuanpdsx#,
+			#zdchew#,
+			#creator#,
+			sysdate,
+			#editor#,
+			sysdate)
+     </insert>  
+     <!-- 查询承运商车位关系 -->
+     <select id="queryChengyscw" resultClass="java.util.HashMap">
+     select usercenter||daztbh||chengysbh KEY,biaos VALUE from ${dbSchemal0}ckx_chew_chengys where biaos=1
+     </select>
+     <!-- 查询空闲车位信息 -->
+     <select id="queryKongxcw" resultClass="com.athena.truck.entity.Chew" >
+     select c.usercenter,c.chewbh,c.daztbh,c.chewsx,c.chewmc,cc.chengysbh from   ${dbSchemal0}ckx_chew c left join ${dbSchemal0}ckx_chew_chengys cc  on cc.usercenter=c.usercenter 
+     and cc.chewbh=c.chewbh   and cc.daztbh=c.daztbh   where c.chewzt=0 and c.chewsx !=4 and c.biaos=1  order by c.chewsx,c.chewxh
+     </select>
+     <!-- 查询急件车位信息 -->
+      <select id="queryJijcw" resultClass="com.athena.truck.entity.Chew">
+    select usercenter,chewbh,daztbh,chewsx,chewmc from ${dbSchemal0}ckx_chew c where  c.chewsx=4 and c.biaos=1 order by edit_time
+     </select>
+     <!-- 查询指定车位的信息 -->
+     <select id="queryZhidcw" resultClass="com.athena.truck.entity.Chelpd">
+     select  usercenter,yundh,kach,daztbh,zdchew
+  		from (select rank() over(partition by usercenter,daztbh, zdchew order by edit_time asc) rk,
+        	usercenter,yundh,kach,daztbh,zdchew,edit_time
+          		from ( select  p.usercenter,p.yundh,p.kach,p.daztbh,p.zdchew,p.edit_time from 
+           			${dbSchemal0}kc_chelpd p where p.paidzt='0' and p.zdchew is not null )  a )
+        where  rk=1
+     </select>
+     <!-- 修改车位状态 -->
+     <update id="updateChewzt" parameterClass="com.athena.truck.entity.Chew" >
+			update ${dbSchemal0}ckx_chew
+			set editor = #editor#,				
+			edit_time =sysdate,
+			chewzt=#chewzt#
+			where usercenter=#usercenter#
+			and chewbh=#chewbh#
+			and  daztbh=#daztbh#
+			<dynamic>
+				<isNotEmpty property="zhuangt" prepend="and"  > chewzt=#zhuangt# </isNotEmpty>
+			</dynamic>
+			
+     </update>
+     <!-- 修改运单的状态 -->
+      <update id="updateYundzt" parameterClass="com.athena.truck.entity.Yund" >
+			update ${dbSchemal0}kc_yund y
+			set editor = #editor#,				
+			edit_time =sysdate,
+			zhuangt=#zhuangt#,
+		    zhuangtmc=(select  zidmc from  ${dbSchemal0}ckx_xitcsdy l where l.zidlx='LCDY' and l.zidbm=#zhuangt# )
+			<dynamic>
+				<isEqual property="zhuangt" prepend="," compareValue="3" >rucsj=sysdate , zhunrsj=sysdate </isEqual>
+			</dynamic>
+			where usercenter=#usercenter#
+			and yundh=#yundh#
+     </update>  
+     <!-- 查询流程定义表中的标准时间 -->
+     <select id="queryBzsj" resultClass="java.util.HashMap">
+      select usercenter||quybh||daztbh||liucbh KEY,biaozsj VALUE from  ${dbSchemal0}ckx_liucdy where biaos=1
+     </select>
+     <!-- 查询车位信息 -->
+   	<select id="queryChewxx" parameterClass="com.athena.truck.entity.Chew" resultClass="com.athena.truck.entity.Chew">
+		select  cw.usercenter,cw.chewbh,cw.chewmc,cw.chewxh,cw.daztbh,cw.chewsx,cw.chewzt,cw.biaos,cw.creator,cw.create_time,cw.editor,cw.edit_time
+		from ${dbSchemal3}ckx_chew cw  INNER JOIN ${dbSchemal3}CKX_DAZT Z ON CW.USERCENTER = Z.USERCENTER AND CW.DAZTBH=Z.DAZTBH
+		where cw.usercenter = #usercenter# and  Z.quybh = #quybh# and cw.daztbh = #daztbh# and cw.biaos='1' and cw.chewsx !='4'
+		order by usercenter,chewbh
+	</select>
+</sqlMap>

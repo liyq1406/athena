@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 订单计算依赖关系  qizhongtao 2012-4-16 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryDingdjsyl" resultClass="com.athena.ckx.entity.xuqjs.Dingdjsyl">
+			select  gongysbh,waibghms,yilgx,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_dingdjsyl
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[gongysbh=#gongysbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="waibghms"><![CDATA[waibghms=#waibghms#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="yilgx"><![CDATA[yilgx=#yilgx#]]></isNotEmpty>
+			</dynamic>
+			order by gongysbh,waibghms
+		</select>
+		
+		<!--单数据查询	 -->
+		<select id="getDingdjsyl" resultClass="com.athena.ckx.entity.xuqjs.Dingdjsyl">
+			select  gongysbh,waibghms,yilgx
+			from ${dbSchemal3}ckx_dingdjsyl
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[gongysbh=#gongysbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="waibghms"><![CDATA[waibghms=#waibghms#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="yilgx"><![CDATA[yilgx=#yilgx#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertDingdjsyl" parameterClass="com.athena.ckx.entity.xuqjs.Dingdjsyl" >
+			insert into ${dbSchemal3}ckx_dingdjsyl(gongysbh,waibghms,yilgx,creator,create_time,editor,edit_time)
+			values(<![CDATA[#gongysbh#,#waibghms#,#yilgx#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="updateDingdjsyl" parameterClass="com.athena.ckx.entity.xuqjs.Dingdjsyl">
+			update ${dbSchemal3}ckx_dingdjsyl
+			set gongysbh = #gongysbh#,
+				waibghms = #waibghms#,
+				yilgx = #yilgx#,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where  gongysbh = #gongysbh# and waibghms = #waibghms# and yilgx = #yilgx#
+		</update>
+		
+		<!-- 删除数据 -->
+		<delete id="deleteDingdjsyl" parameterClass="com.athena.ckx.entity.xuqjs.Dingdjsyl">
+			delete  from  ${dbSchemal3}ckx_dingdjsyl
+			<dynamic prepend="where">
+				<isNotEmpty property="gongysbh" prepend=" and ">
+					<![CDATA[gongysbh = #gongysbh#]]>
+				</isNotEmpty>
+				<isNotEmpty property="waibghms" prepend=" and ">
+					<![CDATA[waibghms = #waibghms#]]>
+				</isNotEmpty>
+				<isNotEmpty property="yilgx" prepend=" and ">
+					<![CDATA[yilgx = #yilgx#]]>
+				</isNotEmpty>
+			</dynamic>
+		</delete>
+	
+</sqlMap>

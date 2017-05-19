@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	小火车上线指导
+	@author zbb
+	@date 2016-1-11
+ -->
+<sqlMap namespace="ts_ckx_sxzd">
+	
+	<!-- 查询ck_guodsz，获取上线和下线物理点 -->
+	<select id="queryGuodsz" resultClass="com.athena.ckx.entity.xuqjs.Guodsz">
+		select 
+			usercenter, 
+			shangxd, 
+			xiaxd, 
+			leix, 
+			chejcx
+		from 
+			${dbSchemal3}ck_guodsz
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		usercenter = #usercenter#
+	    	</isNotEmpty>
+	    	<isNotEmpty property="shengcxbh" prepend="and">
+	    		chejcx = #shengcxbh#
+	    	</isNotEmpty>	    	
+	    </dynamic>
+	</select>
+	
+	<!-- 查询ck_zhengcgd，获取上线物理点 对应的zhengcxh-->
+	<select id="querySxZhengcgdByWuld" resultClass="com.athena.ckx.entity.xuqjs.Zhengcgd">
+		select 
+			usercenter, 
+			dingdh, 
+			zongzlsh, 
+			hanzsxd, 
+			shengcx, 
+			guodsj, 
+			wuld, 
+			chulzt, 
+			flag, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3, 
+			beiz4, 
+			beiz5, 
+			beiz6, 
+			beiz7, 
+			beiz, 
+			zhengcxh
+		from 
+			(select 
+				usercenter, 
+				dingdh, 
+				zongzlsh, 
+				hanzsxd, 
+				shengcx, 
+				guodsj, 
+				wuld, 
+				chulzt, 
+				flag, 
+				creator, 
+				create_time, 
+				editor, 
+				edit_time, 
+				beiz1, 
+				beiz2, 
+				beiz3, 
+				beiz4, 
+				beiz5, 
+				beiz6, 
+				beiz7, 
+				beiz, 
+				zhengcxh 
+			 from 
+			 ${dbSchemal3}CK_ZHENGCGD
+		     where 1=1
+		     <dynamic>
+				<isNotEmpty property="usercenter" prepend="and">
+		    		usercenter = #usercenter#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="shengcxbh" prepend="and">
+		    		shengcx = #shengcxbh#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="swuld" prepend="and">
+		    		wuld = #swuld#
+		    	</isNotEmpty>	    	
+	    	</dynamic>
+			ORDER BY GUODSJ desc) t1
+			where rownum <![CDATA[<=]]> 1
+	</select>
+	
+	<!-- 查询ck_zhengcgd，获取下线物理点 对应的zhengcxh-->
+	<select id="queryXxZhengcgdByWuld" resultClass="com.athena.ckx.entity.xuqjs.Zhengcgd">
+		select 
+			usercenter, 
+			dingdh, 
+			zongzlsh, 
+			hanzsxd, 
+			shengcx, 
+			guodsj, 
+			wuld, 
+			chulzt, 
+			flag, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3, 
+			beiz4, 
+			beiz5, 
+			beiz6, 
+			beiz7, 
+			beiz, 
+			zhengcxh 
+		from
+		(	select 
+				usercenter, 
+				dingdh, 
+				zongzlsh, 
+				hanzsxd, 
+				shengcx, 
+				guodsj, 
+				wuld, 
+				chulzt, 
+				flag, 
+				creator, 
+				create_time, 
+				editor, 
+				edit_time, 
+				beiz1, 
+				beiz2, 
+				beiz3, 
+				beiz4, 
+				beiz5, 
+				beiz6, 
+				beiz7, 
+				beiz, 
+				zhengcxh 
+			from ${dbSchemal3}CK_ZHENGCGD
+	 		where ZONGZLSH = 
+	 		(
+		    	select ZONGZLSH
+		    	from 
+		    	(select * 
+		    	 from ${dbSchemal3}CK_ZHENGCGD 
+		    	 where 1=1
+		   	 	 <dynamic>
+					<isNotEmpty property="usercenter" prepend="and">
+			    		usercenter = #usercenter#
+			    	</isNotEmpty>
+			    	<isNotEmpty property="shengcxbh" prepend="and">
+			    		shengcx = #shengcxbh#
+			    	</isNotEmpty>
+			    	<isNotEmpty property="xwuld" prepend="and">
+			    		wuld = #xwuld#
+			    	</isNotEmpty>	    	
+		    	 </dynamic>
+		         ORDER BY GUODSJ desc) t1
+		         where rownum <![CDATA[<=]]> 1
+		     )
+		     <dynamic>					
+		    	<isNotEmpty property="swuld" prepend="and">
+		    		wuld = #swuld#
+		    	</isNotEmpty>	    	
+		   </dynamic>
+		) t2 where rownum <![CDATA[<=]]> 1 
+	</select>
+	
+	
+	<!-- 查询ck_xiaohcmb，获取应备货小火车日期和趟次-->
+	<select id="queryYbhXiaohcmb" resultClass="com.athena.ckx.entity.xuqjs.XiaohcmbCk">
+		select 
+			usercenter, 
+			chanx, 
+			liush, 
+			xiaohcbh, 
+			tangc, 
+			qislsh, 
+			jieslsh, 
+			emonsxlsh, 
+			smonsxlsh, 
+			emonbhlsh, 
+			smonbhlsh, 
+			to_char(beihsj,'yyyy-MM-dd Hh24:Mi:ss') beihsj, 
+			flag, 
+			zhuangt, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3, 
+			beiz4, 
+			beiz5, 
+			beiz6, 
+			beiz7, 
+			emonzclsh, 
+			smonzclsh, 
+			dangqzcxh, 
+			to_char(shangxsj,'yyyy-MM-dd Hh24:Mi:ss') shangxsj, 
+			xiaohcrq
+		from
+		(
+			select 
+				usercenter, 
+				chanx, 
+				liush, 
+				xiaohcbh, 
+				tangc, 
+				qislsh, 
+				jieslsh, 
+				emonsxlsh, 
+				smonsxlsh, 
+				emonbhlsh, 
+				smonbhlsh, 
+				beihsj, 
+				flag, 
+				zhuangt, 
+				creator, 
+				create_time, 
+				editor, 
+				edit_time, 
+				beiz1, 
+				beiz2, 
+				beiz3, 
+				beiz4, 
+				beiz5, 
+				beiz6, 
+				beiz7, 
+				emonzclsh, 
+				smonzclsh, 
+				dangqzcxh, 
+				shangxsj, 
+				xiaohcrq
+			from
+			${dbSchemal3}ck_xiaohcmb
+			where 1=1
+			 <dynamic>
+				<isNotEmpty property="usercenter" prepend="and">
+		    		usercenter = #usercenter#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="shengcxbh" prepend="and">
+		    		chanx = #shengcxbh#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="xiaohcbh" prepend="and">
+		    		xiaohcbh = #xiaohcbh#
+		    	</isNotEmpty>
+	    	 </dynamic>
+	    	 and beihsj is not null 
+	    	 order by beihsj desc) t1
+	    where rownum <![CDATA[<=]]>1
+	</select>
+	
+	<!-- 查询ck_xiaohcmb，获取待发货小火车日期和趟次-->
+	<select id="queryXiaohcmbByEmonAndSmon" resultClass="com.athena.ckx.entity.xuqjs.XiaohcmbCk">
+		select 
+			usercenter, 
+			chanx, 
+			liush, 
+			xiaohcbh, 
+			tangc, 
+			qislsh, 
+			jieslsh, 
+			emonsxlsh, 
+			smonsxlsh, 
+			emonbhlsh, 
+			smonbhlsh, 
+			to_char(beihsj,'yyyy-MM-dd Hh24:Mi:ss') beihsj, 
+			flag, 
+			zhuangt, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3, 
+			beiz4, 
+			beiz5, 
+			beiz6, 
+			beiz7, 
+			emonzclsh, 
+			smonzclsh, 
+			dangqzcxh, 
+			to_char(shangxsj,'yyyy-MM-dd Hh24:Mi:ss') shangxsj, 
+			xiaohcrq
+		from
+		(
+			select 
+				usercenter, 
+				chanx, 
+				liush, 
+				xiaohcbh, 
+				tangc, 
+				qislsh, 
+				jieslsh, 
+				emonsxlsh, 
+				smonsxlsh, 
+				emonbhlsh, 
+				smonbhlsh, 
+				beihsj, 
+				flag, 
+				zhuangt, 
+				creator, 
+				create_time, 
+				editor, 
+				edit_time, 
+				beiz1, 
+				beiz2, 
+				beiz3, 
+				beiz4, 
+				beiz5, 
+				beiz6, 
+				beiz7, 
+				emonzclsh, 
+				smonzclsh, 
+				dangqzcxh, 
+				shangxsj, 
+				xiaohcrq
+			from
+			${dbSchemal3}ck_xiaohcmb
+			where 1=1
+			 <dynamic>
+				<isNotEmpty property="usercenter" prepend="and">
+		    		usercenter = #usercenter#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="shengcxbh" prepend="and">
+		    		chanx = #shengcxbh#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="xiaohcbh" prepend="and">
+		    		xiaohcbh = #xiaohcbh#
+		    	</isNotEmpty>	
+		    	<isNotEmpty property="emonsxlsh" prepend="and">
+		    		emonsxlsh <![CDATA[>]]> #emonsxlsh#
+		    	</isNotEmpty>	  
+		    	<isNotEmpty property="smonsxlsh" prepend="and">
+		    		smonsxlsh <![CDATA[>]]> #smonsxlsh#
+		    	</isNotEmpty>	    	
+	    	 </dynamic>
+	    	 and shangxsj is null 
+	    	 order by emonsxlsh) t1
+	    where rownum <![CDATA[<=]]>1
+	</select>
+	
+	<!-- 查询ck_xiaohcmb，查询上一趟次-->
+	<select id="queryXiaohcmbSytc" resultClass="com.athena.ckx.entity.xuqjs.XiaohcmbCk">
+		select 
+			usercenter, 
+			chanx, 
+			liush, 
+			xiaohcbh, 
+			tangc, 
+			qislsh, 
+			jieslsh, 
+			emonsxlsh, 
+			smonsxlsh, 
+			emonbhlsh, 
+			smonbhlsh, 
+			to_char(beihsj,'yyyy-MM-dd Hh24:Mi:ss') beihsj, 
+			flag, 
+			zhuangt, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3, 
+			beiz4, 
+			beiz5, 
+			beiz6, 
+			beiz7, 
+			emonzclsh, 
+			smonzclsh, 
+			dangqzcxh, 
+			to_char(shangxsj,'yyyy-MM-dd Hh24:Mi:ss') shangxsj, 
+			xiaohcrq
+		from
+		(
+			select 
+				usercenter, 
+				chanx, 
+				liush, 
+				xiaohcbh, 
+				tangc, 
+				qislsh, 
+				jieslsh, 
+				emonsxlsh, 
+				smonsxlsh, 
+				emonbhlsh, 
+				smonbhlsh, 
+				beihsj, 
+				flag, 
+				zhuangt, 
+				creator, 
+				create_time, 
+				editor, 
+				edit_time, 
+				beiz1, 
+				beiz2, 
+				beiz3, 
+				beiz4, 
+				beiz5, 
+				beiz6, 
+				beiz7, 
+				emonzclsh, 
+				smonzclsh, 
+				dangqzcxh, 
+				shangxsj, 
+				xiaohcrq
+			from
+			${dbSchemal3}ck_xiaohcmb
+			where 1=1
+			 <dynamic>
+				<isNotEmpty property="usercenter" prepend="and">
+		    		usercenter = #usercenter#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="shengcxbh" prepend="and">
+		    		chanx = #shengcxbh#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="xiaohcbh" prepend="and">
+		    		xiaohcbh = #xiaohcbh#
+		    	</isNotEmpty>	
+		    	<isNotEmpty property="emonsxlsh" prepend="and">
+		    		(emonsxlsh <![CDATA[<=]]> #emonsxlsh# 
+		    		or  
+		    		smonsxlsh <![CDATA[<=]]> #smonsxlsh#)
+		    	</isNotEmpty>	    	
+	    	 </dynamic>
+	    	 and shangxsj is not null 
+	    	 order by emonsxlsh desc) t1
+	    where rownum <![CDATA[<=]]>1
+	</select>
+	
+	<!-- 更新ck_xiaohcmb推荐上线时间-->
+	<update id="updateXiaohcmbTjsxsj">
+		update
+			${dbSchemal3}ck_xiaohcmb
+		set beiz3=#beiz3#,		
+			editor=#editor#,
+			edit_time=sysdate
+			where 1=1 
+			<dynamic>
+				<isNotEmpty property="usercenter" prepend="and">
+		    		usercenter = #usercenter#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="chanx" prepend="and">
+		    		chanx = #chanx#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="liush" prepend="and">
+		    		liush = #liush#
+		    	</isNotEmpty>	
+		    	<isNotEmpty property="xiaohcbh" prepend="and">
+		    		xiaohcbh = #xiaohcbh#
+		    	</isNotEmpty>	  
+		    	<isNotEmpty property="tangc" prepend="and">
+		    		tangc = #tangc#
+		    	</isNotEmpty>	    	
+	    	 </dynamic>
+	</update>
+	<!-- 更新ck_xiaohcmb实际上线时间-->
+	<update id="updateXiaohcmbSjsxsj" >
+		update
+			${dbSchemal3}ck_xiaohcmb
+			set shangxsj=sysdate,
+			editor=#editor#,
+			edit_time=sysdate
+			where 1=1 
+			<dynamic>
+				<isNotEmpty property="usercenter" prepend="and">
+		    		usercenter = #usercenter#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="chanx" prepend="and">
+		    		chanx = #chanx#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="liush" prepend="and">
+		    		liush = #liush#
+		    	</isNotEmpty>	
+		    	<isNotEmpty property="xiaohcbh" prepend="and">
+		    		xiaohcbh = #xiaohcbh#
+		    	</isNotEmpty>	  
+		    	<isNotEmpty property="tangc" prepend="and">
+		    		tangc = #tangc#
+		    	</isNotEmpty>	    	
+	    	 </dynamic>
+	</update>
+	
+	<!-- 查询ck_xiaohcmb，获取已备货的小火车模板列表-->
+	<select id="queryXiaohcmbList" resultClass="com.athena.ckx.entity.xuqjs.XiaohcmbCk">
+		(select 
+			usercenter, 
+			chanx, 
+			liush, 
+			xiaohcbh, 
+			tangc, 
+			qislsh, 
+			jieslsh, 
+			emonsxlsh, 
+			smonsxlsh, 
+			emonbhlsh, 
+			smonbhlsh, 
+			to_char(beihsj,'yyyy-MM-dd Hh24:Mi:ss') beihsj, 
+			flag, 
+			zhuangt, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3, 
+			beiz4, 
+			beiz5, 
+			beiz6, 
+			beiz7, 
+			emonzclsh, 
+			smonzclsh, 
+			dangqzcxh, 
+			to_char(shangxsj,'yyyy-MM-dd Hh24:Mi:ss') shangxsj, 
+			xiaohcrq
+		from
+		(
+			select 
+				usercenter, 
+				chanx, 
+				liush, 
+				xiaohcbh, 
+				tangc, 
+				qislsh, 
+				jieslsh, 
+				emonsxlsh, 
+				smonsxlsh, 
+				emonbhlsh, 
+				smonbhlsh, 
+				beihsj, 
+				flag, 
+				zhuangt, 
+				creator, 
+				create_time, 
+				editor, 
+				edit_time, 
+				beiz1, 
+				beiz2, 
+				beiz3, 
+				beiz4, 
+				beiz5, 
+				beiz6, 
+				beiz7, 
+				emonzclsh, 
+				smonzclsh, 
+				dangqzcxh, 
+				shangxsj, 
+				xiaohcrq
+			from
+			${dbSchemal3}ck_xiaohcmb
+			where 1=1
+			 <dynamic>
+				<isNotEmpty property="usercenter" prepend="and">
+		    		usercenter = #usercenter#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="shengcxbh" prepend="and">
+		    		chanx = #shengcxbh#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="xiaohcbh" prepend="and">
+		    		xiaohcbh = #xiaohcbh#
+		    	</isNotEmpty>	
+	    	 </dynamic>
+	    	 and beihsj is null 
+	    	 order by emonsxlsh desc) t1
+	    where rownum <![CDATA[<=]]>10)
+	    union all
+	    (select 
+			usercenter, 
+			chanx, 
+			liush, 
+			xiaohcbh, 
+			tangc, 
+			qislsh, 
+			jieslsh, 
+			emonsxlsh, 
+			smonsxlsh, 
+			emonbhlsh, 
+			smonbhlsh, 
+			to_char(beihsj,'yyyy-MM-dd Hh24:Mi:ss') beihsj, 
+			flag, 
+			zhuangt, 
+			creator, 
+			create_time, 
+			editor, 
+			edit_time, 
+			beiz1, 
+			beiz2, 
+			beiz3, 
+			beiz4, 
+			beiz5, 
+			beiz6, 
+			beiz7, 
+			emonzclsh, 
+			smonzclsh, 
+			dangqzcxh, 
+			to_char(shangxsj,'yyyy-MM-dd Hh24:Mi:ss') shangxsj, 
+			xiaohcrq
+		from
+		(
+			select 
+				usercenter, 
+				chanx, 
+				liush, 
+				xiaohcbh, 
+				tangc, 
+				qislsh, 
+				jieslsh, 
+				emonsxlsh, 
+				smonsxlsh, 
+				emonbhlsh, 
+				smonbhlsh, 
+				beihsj, 
+				flag, 
+				zhuangt, 
+				creator, 
+				create_time, 
+				editor, 
+				edit_time, 
+				beiz1, 
+				beiz2, 
+				beiz3, 
+				beiz4, 
+				beiz5, 
+				beiz6, 
+				beiz7, 
+				emonzclsh, 
+				smonzclsh, 
+				dangqzcxh, 
+				shangxsj, 
+				xiaohcrq
+			from
+			${dbSchemal3}ck_xiaohcmb
+			where 1=1
+			 <dynamic>
+				<isNotEmpty property="usercenter" prepend="and">
+		    		usercenter = #usercenter#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="shengcxbh" prepend="and">
+		    		chanx = #shengcxbh#
+		    	</isNotEmpty>
+		    	<isNotEmpty property="xiaohcbh" prepend="and">
+		    		xiaohcbh = #xiaohcbh#
+		    	</isNotEmpty>
+	    	 </dynamic>
+	    	 and beihsj is not null 
+	    	 order by emonsxlsh desc) t1
+	    where rownum <![CDATA[<=]]>10)
+	    order by emonsxlsh desc
+	</select>
+	
+</sqlMap>

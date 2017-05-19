@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="zhuangcfyTest">
+	
+	<!--装车单查询  hzg 2012-2-5  where zhuangcdh=#zhuangcdh# -->   
+	<select id="queryZhuangcfy" parameterClass="java.util.Map" resultClass="com.athena.fj.entity.Zhuangcfy">
+		<![CDATA[
+			select  zhuangcdh,usercenter,peizdh,yunssbm,jihcx,chep,gongysbm from ${dbSchemal2}FJ_ZHUANGCFY 
+		]]> 
+	</select>
+	
+	
+	<!--装车明细查询  hzg 2012-2-5 -->   
+	<select id="queryZhuangcmy" parameterClass="java.util.Map" resultClass="com.athena.fj.entity.Zhuangcmy">
+		<![CDATA[
+			select  uakh,uskh,zhuangcdh,lingjmc,lingjbh,lingjsl,baozdm,xiehd,beihlh,cangkbh,kehbm,yaohlbh from ${dbSchemal2}FJ_ZHUANGCMY where uakh in($uch$)
+		]]> 
+	</select>
+	
+	
+	
+</sqlMap>

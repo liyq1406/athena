@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+
+    <properties resource="com/athena/authority/config/sqlmap.properties" />
+
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="10"
+		maxTransactions="5" useStatementNamespaces="true" />
+		<!-- 
+		<sqlMap resource="com/athena/authority/entity/CkxUsercenter.xml" /> -->
+		<sqlMap resource="com/athena/authority/entity/Post.xml" />
+		<sqlMap resource="com/athena/authority/entity/User.xml" />
+		<sqlMap resource="com/athena/authority/entity/Log.xml" />
+		<sqlMap resource="com/athena/authority/entity/PostGroup.xml" />
+		<sqlMap resource="com/athena/authority/entity/MenuDirectory.xml" />
+		<sqlMap resource="com/athena/authority/entity/MenuResource.xml" />
+		<sqlMap resource="com/athena/authority/entity/PageButton.xml" />
+		<sqlMap resource="com/athena/authority/entity/PostDataItem.xml" />
+		<sqlMap resource="com/athena/authority/entity/DataType.xml" />
+		<sqlMap resource="com/athena/authority/entity/DataTable.xml" />
+		<sqlMap resource="com/athena/authority/entity/DataGroupItem.xml" />
+		<sqlMap resource="com/athena/authority/entity/DataGroup.xml" />
+		<sqlMap resource="com/athena/authority/entity/CkDataType.xml" />
+		<sqlMap resource="com/athena/authority/entity/Dic.xml" />
+		<sqlMap resource="com/athena/authority/entity/SysRPostAuth.xml" />
+</sqlMapConfig>

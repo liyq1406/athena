@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- ibatis数据库操作配置文件 -->
+<sqlMap namespace="baseDao">
+	<!-- *****************BY WANGCHONG   date :2012-02-09***************************** -->
+
+	
+	
+	<!-- 要车计划总表 BY 用户中心 -->
+	<select id="selectYaoCJHH" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT MAX(JH.YAOCJHH) DJBH FROM ${dbSchemal2}FJ_YAOCJH JH WHERE JH.USERCENTER = #UC#
+	]]> 
+	</select>
+	
+	<!-- 配载计划总表 BY 用户中心 -->
+	<select id="selectPeiZaiCJHH" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT MAX(JH.PEIZDH) DJBH FROM ${dbSchemal2}FJ_PEIZJH JH WHERE JH.USERCENTER =  #UC#
+	]]> 
+	</select>
+	
+	
+	<!-- 装车发运表 BY 用户中心 -->
+	<select id="selectZhuangCCJHH" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+		SELECT MAX(JH.ZHUANGCDH) DJBH FROM ${dbSchemal2}FJ_ZHUANGCFY JH WHERE JH.USERCENTER = #UC#
+	]]> 
+	</select>
+	
+</sqlMap>
+

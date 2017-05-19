@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="transTime">
+
+<select id="queryCkxYunsskTemp" resultClass="com.athena.ckx.entity.transTime.CkxYunssk">
+	select usercenter,xiehztbh ,gcbh ,  to_char(daohsj,'yyyy-MM-dd hh24:mi:ss') daohsj ,to_char(facsj,'yyyy-MM-dd hh24:mi:ss') facsj , xuh 
+	from ${dbSchemal3}ckx_yunssk_temp
+	where 1=1 
+		<dynamic>
+		    <isNotEmpty prepend=" and " property="usercenter">usercenter = #usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiehztbh">xiehztbh = #xiehztbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gcbh">gcbh = #gcbh#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="creator">xiehztbh in $creator$</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongzr"> substr(xuh, 1, 8) = #gongzr#</isNotEmpty>
+		</dynamic>
+		order by usercenter,xiehztbh,gcbh, xuh 
+	</select>
+
+</sqlMap>

@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="hlorder">
+
+	<select id="queryYugzjbTmp" resultClass="com.athena.xqjs.entity.hlorder.YugzjbTmp">
+		select
+		ID ,
+		UABZUCSL,
+		YAOHJSRQ,
+		GONGYSDM,
+		lingjbh,
+		DINGDH,
+		USERCENTER,
+		UABZUCRL,
+		UABZUCLX,
+		GONGYSLX,
+		UABZLX,
+		YAOHQSRQ,
+		CANGKDM,
+		SHUL,
+		DANW,
+		GONGHLX,
+		DINGHCJ,
+		LINGJSX
+		from
+		${dbSchemal1}xqjs_yugzjb_tmp
+		where
+		1=1
+	</select>
+
+	<select id="queryYugzjbTmpList" resultClass="com.athena.xqjs.entity.hlorder.YugzjbTmp">
+		select
+		yug.dingdh as dingdh ,
+		yug.usercenter as usercenter ,
+		yug.gongysdm as gongysdm ,
+		yug.lingjbh as lingjbh ,
+		yug.yaohqsrq as yaohqsrq ,
+		yug.yaohjsrq as yaohjsrq ,
+		sum(yug.shul) as shul,
+		min(yug.cangkdm) as cangkdm,
+		min(yug.gonghlx) as gonghlx
+		from
+		${dbSchemal1}xqjs_yugzjb_tmp yug
+		group by
+		yug.dingdh,
+		yug.usercenter,
+		yug.gongysdm,
+		yug.lingjbh,
+		yug.yaohqsrq,
+		yug.yaohjsrq
+		order by
+		yug.yaohqsrq
+	</select>
+
+	<insert id="insertYugzjbTmp" parameterClass="com.athena.xqjs.entity.hlorder.YugzjbTmp">
+		insert into
+		${dbSchemal1}xqjs_yugzjb_tmp
+		(
+		UABZUCSL,
+		YAOHJSRQ,
+		GONGYSDM,
+		ID,
+		lingjbh,
+		USERCENTER,
+		UABZUCRL,
+		UABZUCLX,
+		GONGYSLX,
+		UABZLX,
+		YAOHQSRQ,
+		CANGKDM,
+		SHUL,
+		DANW,
+		P0FYZQXH,
+		ZQXH,
+		GONGHLX,
+		DINGHCJ,
+		LINGJSX
+		)
+		values
+		(
+		#uabzucsl#,
+		#yaohjsrq#,
+		#gongysdm#,
+		#id#,
+		#lingjbh#,
+		#usercenter#,
+		#uabzucrl#,
+		#uabzuclx#,
+		#gongyslx#,
+		#uabzlx#,
+		#yaohqsrq#,
+		#cangkdm#,
+		#shul#,
+		#danw#,
+		#p0fyzqxh#,
+		#zqxh#,
+		#gonghlx#,
+		#dinghcj#,
+		#lingjsx#
+		)
+	</insert>
+
+	<update id="updateYugzjbTmp" parameterClass="com.athena.xqjs.entity.hlorder.YugzjbTmp">
+		update
+		${dbSchemal1}xqjs_yugzjb_tmp
+		set
+		UABZUCSL=#uabzucsl#,
+		YAOHJSRQ=#yaohjsrq#,
+		GONGYSDM=#gongysdm#,
+		ID=#id#,
+		lingjbh=#lingjbh#,
+		DINGDH=#dingdh#,
+		USERCENTER=#usercenter#,
+		UABZUCRL=#uabzucrl#,
+		UABZUCLX=#uabzuclx#,
+		GONGYSLX=#gongyslx#,
+		UABZLX=#uabzlx#,
+		YAOHQSRQ=#yaohqsrq#,
+		CANGKDM=#cangkdm#,
+		SHUL=#shul#,
+		DANW=#danw#,
+		GONGHLX=#gonghlx#
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<delete id="deleteYugzjbTmp" parameterClass="java.util.Map">
+		delete from ${dbSchemal1}xqjs_yugzjb_tmp where USERCENTER=#usercenter#
+</delete>
+   <select id="queryAllYugzjbTmpPP" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.ilorder.Dingdlj">
+   select
+         t.USERCENTER,
+         t.GONGYSDM,
+         t.GONGYSLX,
+         t.LINGJBH,
+         t.GONGHLX,
+         sum(decode(to_char(add_months( to_date(#nianzq#,'yyyymm'),0),'yyyymm'),t.zqxh,t.shul,0))
+		as p0sl,
+    sum(decode(to_char(add_months( to_date(#nianzq#,'yyyymm'),1),'yyyymm'),t.zqxh,t.shul,0))
+    as p1sl,
+    sum(decode(to_char(add_months( to_date(#nianzq#,'yyyymm'),2),'yyyymm'),t.zqxh,t.shul,0))
+    as p2sl,
+    sum(decode(to_char(add_months( to_date(#nianzq#,'yyyymm'),3),'yyyymm'),t.zqxh,t.shul,0))
+    as p3sl,
+         t.DANW,
+         t.UABZLX,
+         t.UABZUCLX,
+         t.UABZUCSL,
+         t.UABZUCRL,
+         t.P0FYZQXH,
+         t.DINGHCJ,
+		 t.LINGJSX
+          from ${dbSchemal1}XQJS_YUGZJB_TMP t
+          where 1=1
+          <dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">LINGJBH = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="gongysdm">GONGYSDM = #gongysdm#
+			</isNotEmpty>
+		</dynamic>
+          group by
+          t.USERCENTER,
+         t.GONGYSDM,
+         t.GONGYSLX,
+         t.LINGJBH,
+         t.GONGHLX,
+          t.DANW,
+         t.UABZLX,
+         t.UABZUCLX,
+         t.UABZUCSL,
+         t.UABZUCRL,
+         t.P0FYZQXH,
+         t.DINGHCJ,
+		 t.LINGJSX
+   			
+   </select>
+        <select id="queryAllYugzjbTmpPSNew" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.ilorder.Dingdlj">
+   select
+         t.USERCENTER,
+         t.GONGYSDM,
+         t.GONGYSLX,
+         t.LINGJBH,
+         t.GONGHLX,
+         t.DANW,
+         t.UABZLX,
+         t.UABZUCLX,
+         t.UABZUCSL,
+         t.UABZUCRL,
+         t.P0FYZQXH,
+         t.DINGHCJ,
+		 t.LINGJSX
+          from ${dbSchemal1}XQJS_YUGZJB_TMP t
+          where 1=1
+          group by
+          t.USERCENTER,
+         t.GONGYSDM,
+         t.GONGYSLX,
+         t.LINGJBH,
+         t.GONGHLX,
+          t.DANW,
+         t.UABZLX,
+         t.UABZUCLX,
+         t.UABZUCSL,
+         t.UABZUCRL,
+         t.P0FYZQXH,
+         t.DINGHCJ,
+		 t.LINGJSX
+   			
+   </select>
+   
+   
+      <select id="queryAllYugzjbTmpPS" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.ilorder.Dingdlj">
+   select
+         t.USERCENTER,
+         t.GONGYSDM,
+         t.GONGYSLX,
+         t.LINGJBH,
+         t.GONGHLX,
+         sum(decode(#nianzx#,t.zqxh,t.shul,0))
+		as p0sl,
+    sum(decode(#nianzx1#,t.zqxh,t.shul,0))
+    as p1sl,
+    sum(decode(#nianzx2#,t.zqxh,t.shul,0))
+    as p2sl,
+    sum(decode(#nianzx3#,t.zqxh,t.shul,0))
+    as p3sl,
+         t.DANW,
+         t.UABZLX,
+         t.UABZUCLX,
+         t.UABZUCSL,
+         t.UABZUCRL,
+         t.P0FYZQXH,
+         t.DINGHCJ,
+		 t.LINGJSX
+          from ${dbSchemal1}XQJS_YUGZJB_TMP t
+          where 1=1
+          <dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">LINGJBH = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="gongysdm">GONGYSDM = #gongysdm#
+			</isNotEmpty>
+		</dynamic>
+          group by
+          t.USERCENTER,
+         t.GONGYSDM,
+         t.GONGYSLX,
+         t.LINGJBH,
+         t.GONGHLX,
+          t.DANW,
+         t.UABZLX,
+         t.UABZUCLX,
+         t.UABZUCSL,
+         t.UABZUCRL,
+         t.P0FYZQXH,
+         t.DINGHCJ,
+		 t.LINGJSX
+   			
+   </select>
+   <select id="queryAllYugzjbTmpJ" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.ilorder.Dingdlj">
+   select
+         t.USERCENTER,
+         t.GONGYSDM,
+         t.GONGYSLX,
+         t.LINGJBH,
+         t.GONGHLX,
+         sum(decode(to_date(substr(#j0rq#,1,10),'yyyy-mm-dd'),t.yaohqsrq, t.shul,0))
+		as P0SL,
+    sum(decode(to_date(substr(#j1rq#,1,10),'yyyy-mm-dd'),t.yaohqsrq, t.shul,0))
+		as P1SL,
+    sum(decode(to_date(substr(#j2rq#,1,10),'yyyy-mm-dd'),t.yaohqsrq, t.shul,0))
+		as P2SL,
+    sum(decode(to_date(substr(#j3rq#,1,10),'yyyy-mm-dd'),t.yaohqsrq, t.shul,0))
+		as P3SL,
+    sum(decode(to_date(substr(#j4rq#,1,10),'yyyy-mm-dd'),t.yaohqsrq, t.shul,0))
+		as P4SL,
+    sum(decode(to_date(substr(#j5rq#,1,10),'yyyy-mm-dd'),t.yaohqsrq, t.shul,0))
+		as P5SL,
+    sum(decode(to_date(substr(#j6rq#,1,10),'yyyy-mm-dd'),t.yaohqsrq, t.shul,0))
+		as P6SL,
+    sum(decode(to_date(substr(#j7rq#,1,10),'yyyy-mm-dd'),t.yaohqsrq, t.shul,0))
+		as P7SL,
+    sum(decode(to_date(substr(#j8rq#,1,10),'yyyy-mm-dd'),t.yaohqsrq, t.shul,0))
+		as P8SL,
+    sum(decode(to_date(substr(#j9rq#,1,10),'yyyy-mm-dd'),t.yaohqsrq, t.shul,0))
+		as P9SL,
+		#j1rq# as P1RQ,
+		#j2rq# as P2RQ,
+		#j3rq# as P3RQ,
+		#j4rq# as P4RQ,
+		#j5rq# as P5RQ,
+		#j6rq# as P6RQ,
+		#j7rq# as P7RQ,
+		#j8rq# as P8RQ,
+		#j9rq# as P9RQ,
+         t.DANW,
+         t.UABZLX,
+         t.UABZUCLX,
+         t.UABZUCSL,
+         t.UABZUCRL,
+         
+         t.DINGHCJ,
+		 t.LINGJSX
+          from ${dbSchemal1}XQJS_YUGZJB_TMP t
+          where 1=1
+          <dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">LINGJBH = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="gongysdm">GONGYSDM = #gongysdm#
+			</isNotEmpty>
+		</dynamic>
+          group by
+          t.USERCENTER,
+         t.GONGYSDM,
+         t.GONGYSLX,
+         t.LINGJBH,
+         t.GONGHLX,
+          t.DANW,
+         t.UABZLX,
+         t.UABZUCLX,
+         t.UABZUCSL,
+         t.UABZUCRL,
+         
+         t.DINGHCJ,
+		 t.LINGJSX
+   </select>
+     	<!-- wuyichao 添加 -->
+    <select id="queryAllYugzjbTmpJNew"  resultClass="com.athena.xqjs.entity.ilorder.Dingdlj">
+   select
+         t.USERCENTER,
+         t.GONGYSDM,
+         t.GONGYSLX,
+         t.LINGJBH,
+         t.GONGHLX,
+         t.DANW,
+         t.UABZLX,
+         t.UABZUCLX,
+         t.UABZUCSL,
+         t.UABZUCRL,
+         
+         t.DINGHCJ,
+		 t.LINGJSX
+          from ${dbSchemal1}XQJS_YUGZJB_TMP t
+          group by
+          t.USERCENTER,
+         t.GONGYSDM,
+         t.GONGYSLX,
+         t.LINGJBH,
+         t.GONGHLX,
+          t.DANW,
+         t.UABZLX,
+         t.UABZUCLX,
+         t.UABZUCSL,
+         t.UABZUCRL,
+         
+         t.DINGHCJ,
+		 t.LINGJSX
+   </select>
+   	<!-- wuyichao 添加 -->
+   <select id="queryAllRQ" parameterClass="java.util.Map" resultClass="String">
+        select t.yaohqsrq from ${dbSchemal1}XQJS_YUGZJB_TMP t
+          where 1=1
+          <dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">USERCENTER = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">LINGJBH = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="cangkdm">CANGKDM = #cangkdm#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="gongysdm">GONGYSDM = #gongysdm#
+			</isNotEmpty>
+		</dynamic>
+		order by t.yaohqsrq
+         
+   </select>
+</sqlMap>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- 消耗点-容器区  wangyu 2012-12-10 -->
+	
+	<select id="queryRongqcxhd" parameterClass="com.athena.ckx.entity.cangk.Rongqcxhd" resultClass="com.athena.ckx.entity.cangk.Rongqcxhd">
+		select gongyxhd,rongqcbh,chessl,pianysj,liush,gongybs,biaos, shengcxbh,biaos as ycbiaos ,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_gongyxhd
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="gongyxhd"><![CDATA[gongyxhd = #gongyxhd#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="rongqcbh"><![CDATA[rongqcbh = #rongqcbh#]]></isNotEmpty>
+	    		<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+	    		<isNotEmpty prepend=" and " property="rongqcbhYN"><![CDATA[rongqcbh is null]]></isNotEmpty>
+			</dynamic>
+			order by gongyxhd
+	</select>
+	
+<!-- 	<select id="queryRongqcxhdwpz" parameterClass="com.athena.ckx.entity.cangk.Rongqcxhd" resultClass="com.athena.ckx.entity.cangk.Rongqcxhd"> -->
+<!-- 		select gongyxhd,rongqcbh,chessl,pianysj,liush,gongybs,biaos, shengcxbh,biaos as ycbiaos ,creator,create_time,editor,edit_time -->
+<!-- 		from ${dbSchemal3}ckx_gongyxhd -->
+<!-- 		where rongqcbh is null -->
+<!-- 	</select> -->
+	
+	<select id="queryXhd" parameterClass="com.athena.ckx.entity.cangk.Rongqcxhd" resultClass="com.athena.ckx.entity.cangk.Rongqcxhd">
+		select gongyxhd,rongqcbh, shengcxbh
+		from ${dbSchemal3}ckx_gongyxhd
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="gongyxhd"><![CDATA[gongyxhd like '$gongyxhd$%']]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<select id="getRongqcxhd" parameterClass="com.athena.ckx.entity.cangk.Rongqcxhd" resultClass="com.athena.ckx.entity.cangk.Rongqcxhd">
+		select gongyxhd,rongqcbh,chessl,pianysj,liush,gongybs,biaos
+		from ${dbSchemal3}ckx_gongyxhd
+		where 1=1
+			<dynamic> 
+			<isNotEmpty prepend=" and " property="gongyxhd"><![CDATA[gongyxhd = #gongyxhd#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="rongqcbh"><![CDATA[rongqcbh = #rongqcbh#]]></isNotEmpty>
+	    		<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<insert id="insertRongqcxhd" parameterClass="com.athena.ckx.entity.cangk.Rongqcxhd">
+		insert into ${dbSchemal3}ckx_gongyxhd(gongyxhd,rongqcbh,chessl,pianysj,liush,gongybs,biaos,zuh,shengcxbh,creator,create_time,editor,edit_time)
+		values(<![CDATA[#gongyxhd# ,#rongqcbh#, #chessl# , #pianysj# , #liush# ,#gongybs#, #biaos# ,#zuh#,#shengcxbh#, #creator# ,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')  ]]> )
+	</insert>
+	
+	<update id="updateRongqcxhd" parameterClass="com.athena.ckx.entity.cangk.Rongqcxhd">
+		update ${dbSchemal3}ckx_gongyxhd
+		set rongqcbh = #rongqcbh#,
+	    	editor = #editor#,
+	    	edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+        where  <![CDATA[gongyxhd = #gongyxhd#]]> 
+	</update>
+</sqlMap>

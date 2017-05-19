@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="yuemn">
+
+	<!-- 月模拟排产查询  hzg 2012-2-13  -->
+	<select id="queryYuemn" parameterClass="java.util.Map"  resultClass="com.athena.pc.entity.Yuemn">
+		<![CDATA[
+		select a.usercenter,a.appobj,a.riq, (a.riq||  ' ' ||a.kaissj) kaissj,p.HOUR,p.GONGZBH from ${dbSchemal2}PC_YUEDMNJHMX p inner join (
+		select g.usercenter, g.appobj, v.riq, t.kaissj,t.jiezsj from
+		(
+		select * from ${dbSchemal3}ckx_pc_calendar_group where usercenter=#USERCENTER# and appobj in ($oppobj$)
+		) g 
+		inner join (select * from ${dbSchemal3}ckx_pc_calendar_version where 
+		]]>	
+		<dynamic>
+			<isNotEmpty property="start">
+			  <![CDATA[riq >= #start# and riq <= #end#]]>	
+			</isNotEmpty>
+			<isEmpty property="start">
+			  <![CDATA[riq >= #kaissj# and riq <= #jiessj#]]>	
+			</isEmpty>
+		</dynamic>		
+		<![CDATA[
+		
+		
+		) v 
+		on g.rilbc=v.banc and g.usercenter=v.usercenter
+		inner join (select * from ${dbSchemal3}ckx_pc_calendar_team where xuh='01') t 
+		on g.bianzh=t.bianzh and v.xingq=t.xingqxh
+		) a on p.usercenter=a.usercenter and p.chanxh=a.appobj and p.shij=to_date(a.riq,'yyyy-MM-dd')   where p.hour is not null   
+		order by  a.usercenter,a.riq,a.appobj
+		]]>	
+	</select>
+	
+<!-- 产线查询  hzg 2012-2-13  -->
+	<select id="queryShengcx" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	  <![CDATA[
+	  select z.shengcxbh,z.chanxzbh from 
+		(select * from ${dbSchemal3}ckx_chanxzjhy x where x.usercenter=#USERCENTER# and x.jihybh=#jihybh#)x inner join 
+		(select * from ${dbSchemal3}ckx_chanxz y where y.usercenter=#USERCENTER#) y on x.chanxzbh=y.chanxzbh inner join
+		(select * from ${dbSchemal3}ckx_shengcx z where z.usercenter=#USERCENTER# and z.biaos = '1')z on x.chanxzbh=z.chanxzbh 
+		group by z.shengcxbh,z.chanxzbh order by shengcxbh
+		]]>	
+	</select>
+	
+<!-- 某条产线详细信息查询  hzg 2012-2-23  -->	
+	<select id="queryChanxDetail" parameterClass="java.util.Map"  resultClass="java.util.HashMap">
+		<![CDATA[
+		  select  a.*, p.HOUR from ${dbSchemal2}PC_YUEDMNJHMX p inner join (
+			select g.usercenter, g.appobj, v.riq, v.riq||' '||t.kaissj as kaissj,t.jiezsj,t.xuh,t.tiaozsj from
+			(
+			select * from ${dbSchemal3}ckx_pc_calendar_group where usercenter=#usercenter# and appobj =#chanx# 
+			) g 
+			inner join 
+			(select * from ${dbSchemal3}ckx_pc_calendar_version where riq =#riq#) v 
+			  on g.rilbc=v.banc and g.usercenter=v.usercenter
+			inner join 
+			(select * from ${dbSchemal3}ckx_pc_calendar_team ) t 
+			  on g.bianzh=t.bianzh and v.xingq=t.xingqxh
+		) a on p.usercenter=a.usercenter and p.chanxh=a.appobj and p.shij=to_date(a.riq,'yyyy-MM-dd') order by  a.usercenter,a.riq 
+		]]>	
+	</select>
+
+<!-- 根据当前日期查询所在的工业周期  hzg 2012-2-14  -->
+	<select id="queryGongyzq" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		  select * from (   select gongyzq,kaissj,jiessj,rownum cn from ${dbSchemal3}ckx_calendar_gongyzq 
+		where jiessj>=#riq# order by gongyzq  ) tt where tt.cn<12
+		]]>
+	</select>
+
+<!-- 根据当前日期查询所在的工业周期  gswang 2014-6-4  -->
+	<select id="queryGongyzqstart" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select gongyzq,kaissj,jiessj from ${dbSchemal3}ckx_calendar_gongyzq 
+		where kaissj>=#start# and jiessj<=#end#  order by gongyzq
+		]]>
+	</select>
+
+<!-- 工业周期时间范围查询  hzg 2012-2-14  -->
+	<select id="queryGyzqfw" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		<![CDATA[
+		select gongyzq,kaissj,jiessj from ${dbSchemal3}ckx_calendar_gongyzq 
+		where gongyzq=#gongyzq# ]]>
+	</select>
+	
+	<!-- 查询当前工业周期的下一个工业周期  hzg 2012-2-17  -->
+	<select id="queryNextGyzq" parameterClass="java.lang.String" resultClass="java.lang.String">
+		<![CDATA[
+		select min(gongyzq) from ${dbSchemal3}ckx_calendar_gongyzq 
+		where gongyzq>#gongyzq#]]>
+	</select>
+
+	<!-- 查询当前工业周期的上一个工业周期  hzg 2012-2-17  -->
+	<select id="queryUpGyzq" parameterClass="java.lang.String" resultClass="java.lang.String">
+		<![CDATA[
+		select max(gongyzq) from ${dbSchemal3}ckx_calendar_gongyzq 
+		where gongyzq<#gongyzq# ]]>
+	</select>
+	
+	<!-- 查询排产参数设置-产线组子表  hzg 2012-2-17  -->
+	<select id="queryPaiccs" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		 select c.usercenter,c.chanxzbh,c.banb,c.gundzq,c.tiqq,c.fengbq,c.zengcts,c.dagdw from ${dbSchemal3}ckx_chanxz_paiccs c
+ 			where usercenter=#USERCENTER# and chanxzbh=#chanxzbh# and banb=(
+ 			select min(c.banb)as banb from ${dbSchemal3}ckx_chanxz_paiccs c where  banb>to_date(#kaissj#,'yyyy-MM-dd') AND c.usercenter=#USERCENTER# and c.chanxzbh=#chanxzbh#)
+ 		]]>
+	</select>
+	
+	<!-- 修改月模拟计划表中的确认状态为已确认'Y'  hzg 2012-2-18  -->
+	<update id="updateYuedmnjhb" parameterClass="java.util.Map" >
+		<![CDATA[update ${dbSchemal2}PC_YUEDMNJHB SET shifqr='Y' where yuemnjhh in ($yuemnjhh$)]]>
+	</update>
+	
+	<!-- 查询月模拟计划表当前工业周期模拟是否已经确认  hzg 2012-2-17  -->
+	<select id="queryShifqr" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select shifqr from ${dbSchemal2}PC_YUEDMNJHB where yuemnjhh in ($yuemnjhh$) order by shifqr
+ 		]]>
+	</select>
+	
+	<!-- 查询错误消息表pc_message，只取排产产线的出错的一条消息，获得异常消息  hzg 2012-2-23  -->
+	<select id="queryErrorMessage" parameterClass="java.util.Map" resultClass="java.lang.String">
+		<![CDATA[
+		select xiaox from ( select xiaox from ${dbSchemal2}pc_message 
+		where usercenter=#USERCENTER# and leix=9   and biaos='Y' 
+		and shij between to_date(#kaissj#,'yyyy-MM-dd') and to_date(#jiessj#,'yyyy-MM-dd') 
+		and chanxh in ($shengcx$)  order by create_time desc,chanxh ) a where rownum <2 
+ 		]]>
+	</select>
+	
+	<!-- 查询错误消息表pc_message某条产线的所有错误消息，  hzg 2012-2-24  -->
+	<select id="queryAllErrorMessage" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select xiaox from ${dbSchemal2}pc_message 
+		where usercenter=#usercenter#  
+		and shij = to_date(#riq#,'yyyy-MM-dd') 
+		and chanxh=#chanx#  and biaos=#biaos# order by create_time desc
+ 		]]>
+	</select>
+	
+	<!-- 查询错误消息表pc_message某条产线的所有错误消息，  hzg 2012-2-24  -->
+	<select id="queryMessage" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+		select xiaox from ${dbSchemal2}pc_message 
+		where usercenter=#USERCENTER#  
+		and shij between to_date(#kaissj#,'yyyy-MM-dd') and to_date(#jiessj#,'yyyy-MM-dd') and biaos=#biaos# ]]>
+		<dynamic>
+			<isNotEmpty prepend=" and " property="chanxh"><![CDATA[chanxh=#chanxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanxhall"><![CDATA[chanxh in ($chanxhall$)]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[ order by SHIJ ]]>
+ 		
+	</select>
+	
+	<!-- 月模拟计划日产线零件查询  hzg 2012-2-23  -->	
+	<select id="queryChanxLj" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+	<![CDATA[
+	select * from (
+		select m.gongzbh,m.yuemnjhh,m.chanxh,to_char(m.shij,'yyyy-MM-dd')as shij,n.lingjbh,n.lingjsl from 
+		(select gongzbh,yuemnjhh,chanxh,shij from ${dbSchemal2}pc_yuedmnjhmx) m
+		left join 
+		(select lingjbh,lingjsl,gongzbh from ${dbSchemal2}pc_monrgdljclb) n 
+		on m.gongzbh=n.gongzbh  
+	)s where gongzbh=#gongzbh#
+	]]>
+	</select>
+	
+		<!-- 查询产线组工作日历  -->	
+	<select id="queryChanxzrl" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	 select a.riq,a.xingq,to_number(to_char(to_date(a.riq,'yyyy-mm-dd'),'dd')) daynum,rownum  from (
+	 	select  rl.riq as riq,rl.xingq
+	 	from ${dbSchemal3}ckx_pc_calendar_version rl inner join ${dbSchemal3}ckx_pc_calendar_group rp on rl.banc= rp.rilbc  and rl.usercenter = rp.usercenter
+		where 1 = 1   and rp.appobj in ($chanxhall$)   and rp.usercenter = #USERCENTER#
+		and rl.riq>=#kaissj# and rl.riq<=#jiessj#
+	group by rl.riq,rl.xingq order by rl.riq,rl.xingq) a 
+	]]>
+	</select>
+	
+	<!-- 查询生产线下需要导出的零件,按产线号分组  -->	
+	<select id="queryChanxLingjOut" parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+	<![CDATA[
+	select outlj.usercenter,outlj.chanxh,outlj.lingjbh,lj.zhongwmc,lj.zongcldm 
+	 ]]>
+		<dynamic>
+			<isNotEmpty prepend=" " property="sqlNameOut"><![CDATA[$sqlNameOut$]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[from (
+		select ymn.usercenter, ymn.chanxh,ymn.lingjbh ]]>
+		<dynamic>
+			<isNotEmpty prepend=" " property="sqlName"><![CDATA[$sqlName$]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[from (
+		select mx.chanxh,mx.usercenter,to_char(mx.shij,'yyyy-mm-dd') as shij,gd.lingjbh,gd.lingjsl from ${dbSchemal2}pc_yuedmnjhmx mx inner join ${dbSchemal2}pc_monrgdljclb gd on mx.gongzbh = gd.gongzbh 
+		where mx.shij>=to_date(#kaissj#,'yyyy-mm-dd') and mx.shij<=to_date(#jiessj#,'yyyy-mm-dd') and mx.chanxh in ($chanxhall$) and mx.usercenter = #USERCENTER#) ymn inner join ${dbSchemal3}ckx_lingj lj 
+		on  ymn.usercenter = lj.usercenter and ymn.lingjbh = lj.lingjbh 
+		group by ymn.usercenter,ymn.chanxh,ymn.lingjbh order by ymn.chanxh,ymn.lingjbh
+		) outlj inner join ${dbSchemal3}ckx_lingj lj
+		    on outlj.usercenter = lj.usercenter  and outlj.lingjbh = lj.lingjbh order by  outlj.chanxh
+	]]>
+	</select>
+	
+		<!-- 查询生产线下需要导出的零件，不按产线号分组  -->	
+	<select id="queryLingjOut" parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+	<![CDATA[
+	select outlj.usercenter,outlj.chanxh,outlj.lingjbh,lj.zhongwmc,lj.zongcldm 
+		 ]]>
+		<dynamic>
+			<isNotEmpty prepend=" " property="sqlNameOut"><![CDATA[$sqlNameOut$]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[from (
+		select ymn.usercenter,#chanxzbh# chanxh,ymn.lingjbh ]]>
+		<dynamic>
+			<isNotEmpty prepend=" " property="sqlName"><![CDATA[$sqlName$]]></isNotEmpty>
+		</dynamic>
+		<![CDATA[from (
+		select  mx.usercenter,mx.chanxh,to_char(mx.shij,'yyyy-mm-dd') as shij,gd.lingjbh,gd.lingjsl from ${dbSchemal2}pc_yuedmnjhmx mx inner join ${dbSchemal2}pc_monrgdljclb gd on mx.gongzbh = gd.gongzbh 
+		where mx.shij>=to_date(#kaissj#,'yyyy-mm-dd') and mx.shij<=to_date(#jiessj#,'yyyy-mm-dd') and mx.chanxh in ($chanxhall$) and mx.usercenter = #USERCENTER#) ymn 
+		group by ymn.usercenter,ymn.lingjbh order by ymn.lingjbh 
+		) outlj inner join ${dbSchemal3}ckx_lingj lj
+		    on outlj.usercenter = lj.usercenter  and outlj.lingjbh = lj.lingjbh
+	]]>
+	</select>
+	
+	<!-- 查询生产线每天的工时  -->	
+	<select id="queryLingjGongs" parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+		<![CDATA[
+			select a.usercenter,
+		       a.appobj CHANXH,
+		       a.riq,
+		       p.HOUR,
+		       p.GONGZBH
+		  from ${dbSchemal2}PC_YUEDMNJHMX p
+		 inner join (select g.usercenter, g.appobj, v.riq
+		               from (select *
+		                       from ${dbSchemal3}ckx_pc_calendar_group
+		                      where usercenter = #USERCENTER#
+		                        and appobj in ($chanxhall$)) g
+		              inner join (select *
+		                           from ${dbSchemal3}ckx_pc_calendar_version
+		                          where riq >= #kaissj#
+		                            and riq <= #jiessj#) v
+		                 on g.rilbc = v.banc
+		                and g.usercenter = v.usercenter
+		             ) a
+		    on p.usercenter = a.usercenter
+		   and p.chanxh = a.appobj
+		   and p.shij = to_date(a.riq, 'yyyy-MM-dd')
+		 where p.hour is not null
+		 order by a.usercenter,  a.appobj,a.riq
+		]]>
+	</select>
+	
+	
+	<!-- 查询包装消耗  -->	
+	<select id="queryBaozxh" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	<![CDATA[
+	 SELECT * FROM ${dbSchemal2}PC_BAOZXHB B WHERE B.USERCENTER = #USERCENTER# AND B.CHANXH IN ($chanxhall$) AND B.YUEMNJHH LIKE '%$gongyzq$'
+	]]>
+	</select>
+</sqlMap>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CKX">
+
+
+	<resultMap class="com.athena.xqjs.entity.common.Lingj" id="Lingj">
+		<result column="KAISRQ" property="kaisrq" />
+		<result column="DINGHCJ" property="dinghcj" />
+		<result column="ZHONGWMC" property="zhongwmc" />
+		<result column="ZONGCLDM" property="zongcldm" />
+		<result column="LINGJZL" property="lingjzl" />
+		<result column="LINGJLX" property="lingjlx" />
+		<result column="GONGYBM" property="gongybm" />
+		<result column="DIYCQYSJ" property="diycqysj" />
+		<result column="ZHIZLX" property="zhizlx" />
+		<result column="DANW" property="danw" />
+		<result column="ANQM" property="anqm" />
+		<result column="BIAOS" property="biaos" />
+		<result column="FAWMC" property="fawmc" />
+		<result column="JIESRQ" property="jiesrq" />
+		<result column="GUANJLJJB" property="guanjljjb" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="ZHUANGCXS" property="zhuangcxs" />
+		<result column="LINGJBH" property="lingjbh" />
+		<result column="JIHY" property="jihy" />
+	</resultMap>
+
+
+	<select id="queryRxbl" resultClass="com.athena.xqjs.entity.common.Lingj">
+		SELECT 
+			GUANJLJJB 
+		FROM 
+			${dbSchemal3}CKX_LINGJ
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<select id="queryLingj" resultClass="com.athena.xqjs.entity.common.Lingj">
+		select
+		kaisrq,
+		dinghcj,
+		zhongwmc,
+		zongcldm,
+		lingjzl,
+		lingjlx,
+		lingjsx,
+		gongybm,
+		to_char(diycqysj,'yyyy-MM-dd') as diycqysj,
+		zhizlx,
+		danw,
+		anqm,
+		biaos,
+		fawmc,
+		jiesrq,
+		guanjljjb,
+		usercenter,
+		zhuangcxs,
+		lingjbh,
+		jihy,
+		anjmlxhd
+		from
+			${dbSchemal3}ckx_lingj
+		where
+			1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">
+				biaos = #biaos#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<insert id="insertLingj" parameterClass="com.athena.xqjs.entity.common.Lingj">insert into
+		${dbSchemal3}ckx_lingj
+		(kaisrq,dinghcj,zhongwmc,zongcldm,lingjzl,lingjlx,gongybm,diycqysj,zhizlx,danw,anqm,biaos,fawmc,jiesrq,guanjljjb,usercenter,zhuangcxs,lingjbh,jihy)
+		values(
+		#kaisrq#,
+		#dinghcj#,
+		#zhongwmc#,
+		#zongcldm#,
+		#lingjzl#,
+		#lingjlx#,
+		#gongybm#,
+		#diycqysj#,
+		#zhizlx#,
+		#danw#,
+		#anqm#,
+		#biaos#,
+		#fawmc#,
+		#jiesrq#,
+		#guanjljjb#,
+		#usercenter#,
+		#zhuangcxs#,
+		#lingjbh#,
+		#jihy#)
+	</insert>
+
+	<update id="updateLingj" parameterClass="com.athena.xqjs.entity.common.Lingj">
+
+		update 
+			${dbSchemal3}ckx_lingj 
+		set
+			kaisrq=to_date(substr(#kaisrq#,1,10),'yyyy-mm-dd'),
+			dinghcj=#dinghcj#,
+			zhongwmc=#zhongwmc#,
+			zongcldm=#zongcldm#,
+			lingjzl=#lingjzl#,
+			lingjlx=#lingjlx#,
+			gongybm=#gongybm#,
+			diycqysj=to_date(substr(#diycqysj#,1,10),'yyyy-mm-dd'),
+			zhizlx=#zhizlx#,
+			danw=#danw#,
+			anqm=#anqm#,
+			biaos=#biaos#,
+			fawmc=#fawmc#,
+			jiesrq=to_date(substr(#jiesrq#,1,10),'yyyy-mm-dd'),
+			guanjljjb=#guanjljjb#,
+			usercenter=#usercenter#,
+			zhuangcxs=#zhuangcxs#,
+			lingjbh=#lingjbh#,
+			jihy=#jihy# 
+		where
+			1=1
+
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<delete id="deleteLingj" parameterClass="com.athena.xqjs.entity.common.Lingj">
+		delete 
+		from 
+			${dbSchemal3}ckx_lingj 
+		where 
+			1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+</sqlMap>

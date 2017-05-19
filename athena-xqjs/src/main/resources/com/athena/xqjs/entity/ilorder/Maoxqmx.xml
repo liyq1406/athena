@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ilorder">
+
+	<resultMap class="com.athena.xqjs.entity.ilorder.Maoxqmx" id="Maoxqmx">
+		<result column="SHIYCJ" property="shiycj" />
+		<result column="XUQSL" property="xuqsl" />
+		<result column="XUQRQ" property="xuqrq" />
+		<result column="XUQSSZQ" property="xuqsszq" />
+		<result column="ZHIZLX" property="zhizlx" />
+		<result column="DANW" property="danw" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="XUQZ" property="xuqz" />
+		<result column="LINGJBH" property="lingjbh" />
+		<result column="CHANX" property="chanx" />
+		<result column="XUQBC" property="xuqbc" />
+	</resultMap>
+
+	<select id="queryMaoxqmxObject" resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx"
+		parameterClass="java.util.Map">
+	<!-- 
+	select 
+	        temp.usercenter as usercenter, 
+	        temp.lingjbh as lingjbh,
+	        temp.danw as danw,
+	        temp.xuqsl as xuqsl,
+	        temp.shiycj as shiycj,
+	        temp.chanx as chanx ,
+	        temp.xuqz as xuqz ,
+	        temp.xuqrq as xuqrq ,
+	        temp.zhizlx as zhizlx ,
+	        temp.xuqsszq as xuqsszq ,
+	        temp.xuqksrq as xuqksrq ,
+	        temp.xuqjsrq as xuqjsrq ,
+	        decode(w.dinghck,null,w.xianbck,w.dinghck) as cangk,
+	        decode(w.dinghck,null,0,1) as cangklx
+		from 
+		(select 
+		        mx.usercenter as usercenter, 
+		        mx.lingjbh as lingjbh,
+		        mx.danw as danw,
+		        mx.xuqsl*x.xiaohbl as xuqsl,
+		        mx.shiycj as shiycj,
+		        mx.chanx as chanx ,
+		        mx.xuqz as xuqz ,
+		        mx.xuqrq as xuqrq ,
+		        mx.zhizlx as zhizlx ,
+		        mx.xuqsszq as xuqsszq ,
+		        mx.xuqksrq as xuqksrq ,
+		        mx.xuqjsrq as xuqjsrq,
+		        x.fenpqbh as fenpqbh
+		      from 
+		        (select 
+		            t.usercenter as usercenter, 
+		            t.lingjbh as lingjbh,
+		            t.danw as danw,
+		            t.xuqsl as xuqsl,
+		            t.shiycj as shiycj,
+		            t.chanx as chanx ,
+		            t.xuqz as xuqz ,
+		            t.xuqrq as xuqrq ,
+		            t.zhizlx as zhizlx ,
+		            t.xuqsszq as xuqsszq ,
+		            t.xuqksrq as xuqksrq ,
+		            t.xuqjsrq as xuqjsrq
+		          from 
+		            ${dbSchemal1}xqjs_maoxqmx  t
+		          where 
+		          1=1 
+		          <dynamic>
+					<isNotEmpty prepend=" and " property="usercenter">
+						t.usercenter = #usercenter#
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="xuqbc">
+						t.xuqbc = #xuqbc#
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="zhizlx">
+						t.zhizlx = #zhizlx#
+					</isNotEmpty>
+				  </dynamic>
+		        ) mx  
+		        left join 
+		        	${dbSchemal3}ckx_lingjxhd x 
+		        on 
+		        mx.usercenter = x.usercenter 
+		        and 
+		        mx.lingjbh = x.lingjbh )temp 
+		        left join 
+		        	${dbSchemal3}ckx_wullj w
+		        on 
+		        w.usercenter = temp.usercenter 
+		        and 
+		        w.fenpqh = temp.fenpqbh 
+		        and 
+		        w.lingjbh = temp.lingjbh
+	 -->
+			select t.usercenter as usercenter,
+			t.lingjbh as lingjbh,
+			t.danw as danw,
+			t.xuqsl * x.xiaohbl as xuqsl,
+			t.shiycj as shiycj,
+			t.chanx as chanx,
+			t.xuqz as xuqz,
+			t.xuqrq as xuqrq,
+			t.zhizlx as zhizlx,
+			t.xuqsszq as xuqsszq,
+			t.xuqksrq as xuqksrq,
+			t.xuqjsrq as xuqjsrq,
+			decode(w.dinghck, null, w.xianbck, w.dinghck) as cangk, 
+			decode(w.dinghck, null, 0, 1) as cangklx
+			from ${dbSchemal1}xqjs_maoxqmx t
+			left join ${dbSchemal3}ckx_lingjxhd x on t.usercenter = x.usercenter
+			and t.lingjbh = x.lingjbh
+			left join ${dbSchemal3}ckx_wullj w on w.usercenter = x.usercenter
+			and w.fenpqh = x.fenpqbh
+			and w.lingjbh = x.lingjbh
+			where 1 = 1
+			<dynamic >
+			<isNotEmpty prepend = " and " property = "usercenter" >
+			t.usercenter = #usercenter#
+			</isNotEmpty >
+			<isNotEmpty prepend = " and " property = "xuqbc" >
+			t.xuqbc = #xuqbc#
+			</isNotEmpty >
+			<isNotEmpty prepend = " and " property = "zhizlx" >
+			t.zhizlx =#zhizlx#
+			</isNotEmpty >
+			</dynamic>
+	</select>
+
+	<!--通过输入的条件查询相应版次毛需求零件的相关信息 -->
+	<select id="selectMaoxqmx" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ilorder.Maoxqmx">
+		select
+		mx.xuqbc xuqbc,
+		mx.shiycj shijcj,
+		mx.xuqsl xuqsl,
+		mx.xuqrq xuqrq,
+		mx.danw danw,
+		mx.usercenter usercenter,
+		mx.xuqz xuqz,
+		mx.lingjbh lingjbh,
+		mx.chanx chanx,
+		l.kaisrq kaisrq,
+		l.jiesrq jiesrq,
+		m.xuqly xuqly,
+		m.xuqcfsj xuqcfsj
+		from
+		${dbSchemal1}xqjs_maoxqmx mx,
+		${dbSchemal1}xqjs_maoxq m,
+		${dbSchemal3}ckx_lingj l
+		where m.xuqbc=mx.xuqbc
+		and mx.usercenter=l.usercenter
+		and l.lingjbh=mx.lingjbh
+		and mx.active='1'
+		and m.xuqbc=#xuqbc#
+		$zhizlx$
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[mx.usercenter= #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihy"><![CDATA[l.jihy = #jihy#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[l.lingjbh= #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqly"><![CDATA[m.xuqly = #xuqly#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqcfsj"><![CDATA[m.xuqcfsj = #xuqcfsj#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- kd件查询某一版次的所有周 的信息 -->
+	<select id="selectKdxqhzc" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ppl.Kdxqhzc">
+		select
+		mx.usercenter usercenter,
+		mx.lingjbh lingjbh,
+		sum(mx.xuqsl) xuqsl,
+		mx.danw danw,
+		mx.zhizlx zhizlx,
+		mx.xuqsszq nianzq,
+		mx.xuqz sx
+		from
+		${dbSchemal1}xqjs_maoxqmx mx
+		where mx.xuqbc=#xuqbc#
+		$zhizlx$
+		group by
+		usercenter,
+		mx.lingjbh,
+		mx.danw,
+		mx.zhizlx,
+		mx.xuqsszq,
+		mx.xuqz
+        </select>
+	<!-- kd件查询某一版次的所有周插入kd毛需求汇总参考系表中 -->
+	<insert id="insertKdxqhzc" parameterClass="com.athena.xqjs.entity.ppl.Kdxqhzc">
+		insert into
+		${dbSchemal1}xqjs_kdxqhzc
+		(id,
+		usercenter,
+		lingjbh,
+		zhizlx,
+		danw,
+		sx,
+		xuqsl,
+		nianzq,
+		active)
+		values
+		(${dbSchemal1}xqjs_kdxqhzc_seq.nextval,#usercenter#,#lingjbh#,#zhizlx#,#danw#,#sx#,#xuqsl#,#nianzq#,'1')
+	</insert>
+	<!-- 修改kdxqhzc表中的sx  97x-->
+	<update id="updateKdxqhzckd" parameterClass="java.util.Map">
+	update ${dbSchemal1}xqjs_kdxqhzc
+	    set sx=substr(sx,5)+(select max(nianzx) from ${dbSchemal3}CKX_CALENDAR_VERSION
+	    where
+    nianzq=#P11# and  banc='NA01KD01' and usercenter='UW' )
+    where nianzq>#P11# and zhizlx='97X'
+	</update>
+	
+	<!-- 修改kdxqhzc表中的sx  97x-->
+	<update id="updateKdxqhzcax" parameterClass="java.util.Map">
+	update ${dbSchemal1}xqjs_kdxqhzc
+	    set sx=substr(sx,5)+(select max(nianzx) from ${dbSchemal3}CKX_CALENDAR_VERSION
+	    where
+	    nianzq=#P11# and  banc='NA01AX01' and usercenter='UW' )
+	    where nianzq>#P11# and zhizlx='97D'
+	</update>
+	<!-- 将kd毛需求汇总表中的数据平移到kd毛需求汇总表中 -->
+	<insert id="insertkdxqhz" parameterClass="java.util.Map">
+		insert into
+		${dbSchemal1}XQJS_PPL_KDXQHZ
+		(id,
+		usercenter,
+		lingjbh,
+		lingjmc,
+		zhizlx,
+		zhizlxx,
+		sx,
+		xuqsl,
+		danw,
+		dinghcj,
+		gongysdm,
+		gongysmc,
+		baozrl,
+		baozlx,
+		jihyz
+		)
+		select
+		${dbSchemal1}XQJS_PPL_KDXQHZ_seq.nextval,
+		xq.usercenter usercenter,
+		xq.lingjbh lingjbh,
+		xq.lingjmc lingjmc,
+		xq.zhizlx zhizlx,
+		xq.zhizlxx zhizlxx,
+		TO_CHAR(mx.XUQRQ-CEIL(XQ.FAYZQ / 7)*7,'yyyy-mm-dd')  sx,
+		mx.xuqsl*xq.gongyfe xuqsl,
+		mx.danw danw,
+		xq.dinghcj dinghcj,
+		xq.gongysdm gongysdm,
+		xq.gongysmc gongysmc,
+		xq.baozrl baozrl,
+		xq.baozlx
+		baozlx,
+		xq.jihyz jihyz
+		FROM ${dbSchemal1}xqjs_maoxqmx mx,
+		${dbSchemal1}xqjs_xqmx xq
+		where
+		mx.usercenter=xq.usercenter
+		and
+		mx.lingjbh=xq.lingjbh
+		and mx.zhizlx=xq.zhizlx
+		and mx.danw=danw
+		and mx.xuqbc = #xuqbc#
+	</insert>
+	<!--kdxqhz表中的每个周序对应的nianzq 97x-->
+	<update id="updateNianzqKD" parameterClass="java.util.Map">
+		update
+		${dbSchemal1}XQJS_PPL_KDXQHZ kd
+		set kd.nianzq=
+		(
+		select distinct(cc.nianzq) from
+		${dbSchemal3}CKX_CALENDAR_VERSION cc
+		where kd.sx=cc.RIQ
+		and   kd.zhizlxx='97X'
+		and   cc.usercenter='UW'
+		and   cc.banc='NA01KD01'
+		and 
+	               <![CDATA[ cc.nianzq >= #P0# ]]>
+		and 
+					<![CDATA[ cc.nianzq <= #P11# ]]>
+		)
+		where kd.zhizlxx='97X' 
+	</update>
+		<!--kdxqhz表中的每个周序对应的nianzq -->
+	<update id="updateNianzqAX" parameterClass="java.util.Map">
+		update
+		${dbSchemal1}XQJS_PPL_KDXQHZ kd
+		set kd.nianzq=
+		(
+		select distinct(cc.nianzq) from
+		${dbSchemal3}CKX_CALENDAR_VERSION cc
+		where kd.sx=cc.RIQ
+		and   cc.usercenter='UW'
+		and   cc.banc='NA01AX01'
+		and 
+	               <![CDATA[ cc.nianzq >= #P0# ]]>
+		and 
+					<![CDATA[ cc.nianzq <= #P11# ]]>
+		)
+		where kd.zhizlxx='97D'
+	</update>
+	<!--删除中间表kdxqhz的信息 -->
+	<delete id="deleteKdxqhz">
+		delete from ${dbSchemal1}XQJS_PPL_KDXQHZ
+	</delete>
+	<!--删除中间表kdxqhzc -->
+	<delete id="deleteKdxqhzc">
+		delete from ${dbSchemal1}xqjs_kdxqhzc 
+	</delete>
+
+	<select id="queryMaoxqmxObjectAll" resultMap="Maoxqmx"
+		parameterClass="java.util.Map">
+		select
+		xuqbc,
+		usercenter,
+		shiycj,
+		chanx,
+		xuqz,
+		xuqrq,
+		lingjbh,
+		xuqsl,
+		danw,
+		zhizlx,
+		xuqsszq
+		from
+		${dbSchemal1}xqjs_maoxqmx
+		where
+		1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="xuqz">
+				<![CDATA[ xuqz > #xuqz# ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xuqbc">
+				xuqbc = #xuqbc#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xuqrq">
+				<![CDATA[ xuqrq > #xuqrq# ]]>
+			</isNotEmpty>
+		</dynamic>
+		order by
+		xuqrq
+	</select>
+
+
+	<resultMap class="com.athena.xqjs.entity.ilorder.Maoxqmx" id="maoxqMxsl">
+		<result column="XUQBC" property="xuqbc" />
+		<result column="USERCENTER" property="usercenter" />
+		<result column="XUQZ" property="xuqz" />
+		<result column="XUQRQ" property="xuqrq" />
+		<result column="LINGJBH" property="lingjbh" />
+		<result column="XUQSL" property="xuqsl" />
+		<result column="XUQSSZQ" property="xuqsszq" />
+	</resultMap>
+
+	<!-- 取毛需求明细需求数量 lizhi -->
+	<select id="queryMaoxqMxsl" resultMap="maoxqMxsl">
+		select
+		mx.XUQBC,
+		mx.USERCENTER,
+		mx.XUQZ,
+		mx.XUQRQ,
+		mx.LINGJBH,
+		mx.XUQSL,
+		mx.XUQSSZQ
+		from
+		${dbSchemal1}XQJS_MAOXQMX mx
+		where mx.XUQBC = #xuqbc# and mx.LINGJBH =
+		#lingjbh#
+		<dynamic>
+			<isNotEmpty prepend=" and " property="xuqz">
+				mx.XUQZ = #xuqz#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqrq">
+				mx.XUQRQ =
+				to_date(#xuqrq#,'yyyy-mm-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xuqsszq">
+				mx.XUQSSZQ =
+				#xuqsszq#
+			</isNotEmpty>
+		</dynamic>
+		order by
+		mx.LINGJBH
+	</select>
+	
+	
+	<resultMap class="com.athena.xqjs.entity.ilorder.Maoxqmx" id="maoxqriq">
+		
+		<result column="XUQRQ" property="xuqrq" />
+
+	</resultMap>
+	
+	<select id="queryXuqrq" resultMap="maoxqriq">
+		select distinct t.xuqrq
+  from ${dbSchemal1}XQJS_MAOXQMX t
+ where t.xuqbc = #xuqbc#
+ and t.zhizlx = #zhizlx#
+ and t.xuqrq >= to_date(#ziyhqrq#,'yyyy-mm-dd')
+ and  t.usercenter = #usercenter#
+ order by t.xuqrq
+	</select>
+	<select id="queryXuqcx" resultClass="String">
+		select distinct t.chanx
+  from ${dbSchemal1}XQJS_MAOXQMX t
+ where t.xuqbc = #xuqbc#
+ and  t.usercenter = #usercenter#
+	</select>
+	
+<!-- xss 20161010 v4_015 -->	
+<select id="getWulljLingj" resultClass="com.athena.xqjs.entity.common.Wullj">	 
+	 select a.* from ${dbSchemal1}ckx_wullj a
+	     where a.usercenter = #usercenter# and a.zhizlx = #zhizlx# and a.waibms='VJ'
+	         AND NOT EXISTS (SELECT 1
+	               FROM ${dbSchemal1}xqjs_maoxqmx m
+	               WHERE m.xuqbc = #xuqbc#
+	               and a.zhizlx = m.zhizlx
+	               and a.lingjbh = m.lingjbh
+	               and a.usercenter = m.usercenter)
+</select>    
+	
+	
+</sqlMap>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sys">
+	<!--查询用户明细的信息-->
+	<select id="queryPrintuserinfo" resultClass="com.athena.print.entity.sys.Printuserinfo">
+		select usercenter,usercode,userscode,sname,usertype,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_print_userinfo 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="userscode">userscode=#userscode#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter=#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercode">usercode=#usercode#</isNotEmpty>
+		</dynamic>
+		order by usercode
+	</select>
+	
+	<!--根据用户编号 查询出 对应的 用户组编号-->
+	<select id="queryPrintuserinfolist" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.Printuserinfo">
+		select usercenter,usercode,userscode,sname,usertype
+		from ${dbSchemal3}ckx_print_userinfo 
+		where userscode=#userscode#
+	</select>
+	
+	<!--根据用户编号 查询出 用户明细 实体-->
+	<select id="getPrintuserinfo" resultClass="com.athena.print.entity.sys.Printuserinfo">
+		select usercenter,usercode,userscode,sname,usertype
+		from ${dbSchemal3}ckx_print_userinfo 
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">usercenter=#usercenter#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercode">usercode=#usercode#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!--插入一条数据-->
+	<insert id="insertPrintuserinfo" parameterClass="com.athena.print.entity.sys.Printuserinfo">
+		insert into ${dbSchemal3}ckx_print_userinfo 
+		(usercenter,usercode,userscode,sname,usertype,creator,create_time)
+		values(#usercenter#,#usercode#,#userscode#,#sname#,#usertype#,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<!--更新一条数据-->
+	<update id="updatePrintuserinfo" parameterClass="com.athena.print.entity.sys.Printuserinfo">
+		update ${dbSchemal3}ckx_print_userinfo  set 
+		usercode=#usercode#,
+		userscode=#userscode#,
+		sname=#sname#,
+		usertype=#usertype#,
+		editor=#editor#,
+		edit_time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercode">usercode = #usercode#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 物理删除用户明细 -->
+	<delete id="deletePrintuserinfo" parameterClass="com.athena.print.entity.sys.Printuserinfo">
+		delete from ${dbSchemal3}ckx_print_userinfo  where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercode">usercode = #usercode#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

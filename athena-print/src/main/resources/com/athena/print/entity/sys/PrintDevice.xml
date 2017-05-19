@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sys">
+
+	<!--查询打印机表  -->
+	<select id="queryPrintDevice" resultClass="com.athena.print.entity.sys.PrintDevice">
+	select usercenter,spcode,spcodes,sname,sdesc,sip,sport,nlevel,replacespcode
+	from ${dbSchemal3}ckx_print_device  
+	where 1=1 
+	<dynamic>
+			<isNotEmpty prepend="  and " property="spcode">spcode =#spcode#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="spcodes">spcodes=#spcodes#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter=#usercenter#
+			</isNotEmpty>
+	</dynamic>	
+	</select>
+	
+	<!--根据用户中心查询打印机表  -->
+	<select id="queryPD" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevice">
+	select usercenter,spcode,spcodes,sname,sdesc,sip,sport,nlevel,replacespcode
+	from ${dbSchemal3}ckx_print_device  
+	where usercenter=#usercenter# 
+	</select>
+	
+	<!--根据打印机编号来得到打印实体 -->
+	<select id="getPrintDevice"  resultClass="com.athena.print.entity.sys.PrintDevice">
+	select usercenter,spcode,spcodes,sname,sdesc,sip,sport,nlevel,replacespcode
+	from ${dbSchemal3}ckx_print_device   
+	where 1=1
+	<dynamic>
+			<isNotEmpty prepend="  and " property="spcode">spcode =#spcode#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter=#usercenter#
+			</isNotEmpty>
+	</dynamic>	
+	</select>
+	
+	<!--根据打印机组编号来得到打印机组集合 -->
+	<select id="queryPrintDevicelist" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevice">
+	select usercenter,spcode,spcodes,sname,sdesc,sip,sport,nlevel,replacespcode
+	from ${dbSchemal3}ckx_print_device   
+	where spcodes=#spcodes# 
+	</select>
+	
+	<!--根据打印机编号来得到打印对象-->
+	<select id="queryPrintDevice1" parameterClass="java.lang.String" resultClass="com.athena.print.entity.sys.PrintDevice">
+	select usercenter,spcode,spcodes,sname,sdesc,sip,sport,nlevel,replacespcode
+	from ${dbSchemal3}ckx_print_device   
+	where spcode=#spcode# 
+	</select>
+	
+	<!--插入一条数据-->
+	<insert id="insertPrintDevice" parameterClass="com.athena.print.entity.sys.PrintDevice">insert into
+		${dbSchemal3}ckx_print_device  (usercenter,spcode,spcodes,sname,sdesc,sip,sport,replacespcode,nlevel,creator,create_time)
+		values(#usercenter#,#spcode#,#spcodes#,#sname#,#sdesc#,#sip#,#sport#,#replacespcode#,#nlevel#,#creator#,to_date(#create_time#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	
+	<!--更新一条数据-->
+	<update id="updatePrintDevice" parameterClass="com.athena.print.entity.sys.PrintDevice">
+		update ${dbSchemal3}ckx_print_device  set 
+		spcode=#spcode#,
+		spcodes=#spcodes#,
+		sname=#sname#,
+		sdesc=#sdesc#,
+		sip=#sip#,
+		sport=#sport#,
+		replacespcode=#replacespcode#,
+		nlevel=#nlevel#,
+		editor=#editor#,
+		edit_time=to_date(#edit_time#,'yyyy-MM-dd HH24:mi:ss')
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="spcode">spcode = #spcode#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--根据打印机IP 来更新打印机状态-->
+	<update id="updatePrintDevice1" parameterClass="com.athena.print.entity.sys.PrintDevice">
+		update ${dbSchemal3}ckx_print_device  set 
+		status=2
+		where sip=#sip#
+	</update>
+	 
+	<!--删除一条数据-->
+	<delete id="deletePrintDevice" parameterClass="com.athena.print.entity.sys.PrintDevice">
+		delete from ${dbSchemal3}ckx_print_device 
+		where 1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="spcode">spcode = #spcode#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+</sqlMap>

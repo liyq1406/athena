@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.CkDataType" id="CkDataType">
+		<result column="ID" property="id" />
+		<result column="DATA_PARAM_NAME" property="dataParamName" />
+		<result column="DATA_SQL_PARAM" property="dataSQLParam" />
+		<result column="CUNC_TABLE_NAME" property="cuncTableName" />
+		<result column="MENDER" property="mender" />
+		<result column="MODIFY_TIME" property="modifyTime" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="BIAOS" property="biaos" />
+		<result column="DIC_CODE" property="dicCode" />
+	</resultMap>
+	
+	<select id="queryCkDataType" resultMap="CkDataType">select 
+		ID,
+		DATA_PARAM_NAME,
+		DATA_SQL_PARAM,
+		CUNC_TABLE_NAME,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		DIC_CODE
+		from ${dbSchemal0}SYS_CK_DATA_TYPE where 1=1 and BIAOS = 1
+	</select>
+	
+	<select id="getCkDataType" resultMap="CkDataType">select 
+		ID,
+		DATA_PARAM_NAME,
+		DATA_SQL_PARAM,
+		CUNC_TABLE_NAME,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		DIC_CODE
+		from ${dbSchemal0}SYS_CK_DATA_TYPE where ID=#id#
+	</select>
+
+	<select id="getCkDataTypeDicCode" resultMap="CkDataType">select 
+		ID,
+		DATA_PARAM_NAME,
+		DATA_SQL_PARAM,
+		CUNC_TABLE_NAME,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		BIAOS,
+		DIC_CODE
+		from ${dbSchemal0}SYS_CK_DATA_TYPE where DIC_CODE=#dicCode#
+	</select>	
+
+	<insert id="insertCkDataType" parameterClass="com.athena.authority.entity.CkDataType">
+		insert into
+		${dbSchemal0}SYS_CK_DATA_TYPE (ID,DATA_PARAM_NAME,DATA_SQL_PARAM,CUNC_TABLE_NAME,
+		CREATOR,CREATE_TIME,BIAOS,DIC_CODE)
+		values(
+			#id#,
+			#dataParamName#,
+			#dataSQLParam#,
+			#cuncTableName#,
+			#creator#,
+			to_date(#createTime#,'YYYY-MM-DD HH24:MI:SS'),
+			#biaos#,
+			#dicCode#)
+	</insert>
+	
+	<update id="updateCkDataType" parameterClass="com.athena.authority.entity.CkDataType">
+		update ${dbSchemal0}SYS_CK_DATA_TYPE set 
+		ID = #id#,
+		DATA_PARAM_NAME = #dataParamName#,
+		DATA_SQL_PARAM = #dataSQLParam#,
+		CUNC_TABLE_NAME = #cuncTableName#,
+		MENDER = #mender#,
+		MODIFY_TIME	= to_date(#modifyTime#,'YYYY-MM-DD HH24:MI:SS'),
+		DIC_CODE = #dicCode# where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<delete id="deleteCkDataType" parameterClass="com.athena.authority.entity.DataType">
+		delete from ${dbSchemal0}SYS_CK_DATA_TYPE where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="id">ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	<select id="getDataSQLParamInfo" resultClass="java.util.HashMap" remapResults="true">$getDataSQLParamInfo$</select>
+</sqlMap>

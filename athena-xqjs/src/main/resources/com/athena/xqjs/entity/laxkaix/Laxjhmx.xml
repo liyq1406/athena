@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="laxjhmx">
+
+	<resultMap class="com.athena.xqjs.entity.laxkaix.Laxjhmx" id="Laxjhmx">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="LAXJHNO" property="laxjhNo" />
+		<result column="ID" property="id" />
+		<result column="TCNO" property="tcNo" />
+		<result column="QIYSJ" property="qiysj" />
+		<result column="MUDD" property="mudd" />
+		<result column="WULD" property="wuld" />
+		<result column="LAXZDSJ" property="laxzdsj" />
+		<result column="ZHUANGT" property="zhuangt" />
+		<result column="BEIZ" property="beiz" />
+		<result column="SHENGXZT" property="shengxzt" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="EDITOR" property="editor" />
+		<result column="EDIT_TIME" property="editTime" />
+		<result column="KYLJDM" property="kyljdm"/>
+	</resultMap>
+	<insert id="insertLaxjhmx" parameterClass="com.athena.xqjs.entity.laxkaix.Laxjhmx">
+		INSERT INTO ${dbSchemal1}XQJS_LAXJHMX(
+		USERCENTER,
+		LAXJHNO,
+		ID,
+		TCNO,
+		QIYSJ,
+		LAXZDSJ,
+		WULD,
+		ZHUANGT,
+		BEIZ,
+		CREATOR,
+		CREATE_TIME,
+		KYLJDM
+		) VALUES(
+		#usercenter#,
+		#laxjhNo#,
+		#id#,
+		#tcNo#,
+		to_date(#qiysj#,'yyyy-MM-dd HH24:mi:ss'),
+		to_date(#laxzdsj#,'yyyy-MM-dd HH24:mi:ss'),
+		#wuld#,
+		#zhuangt#,
+		#beiz#,
+		#creator#,
+		to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),
+		#kyljdm#
+		)
+  </insert>
+	<update id="updateLaxjhmx" parameterClass="com.athena.xqjs.entity.laxkaix.Laxjhmx">
+		UPDATE ${dbSchemal1}XQJS_LAXJHMX
+		SET SHENGXZT = #shengxzt#,
+		EDITOR=#editor#,
+		EDIT_TIME=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		WHERE USERCENTER = #usercenter# AND LAXJHNO = #laxjhNo# AND ID = #id# AND
+		TCNO = #tcNo#
+  </update>
+
+  <select id="queryLaxjhmxInfo"  parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.laxkaix.LaxjhmxBean">
+	  	SELECT mx_.USERCENTER,mx_.LAXJHNO,mx_.ID,mx_.TCNO,
+	  	to_char(LAXZDSJ,'yyyy-MM-dd') as LAXZDSJ,mx_.WULD,to_char(mx_.QIYSJ,'yyyy-MM-dd') as QIYSJ,
+	  	tc_.DINGHCJ FROM ${dbSchemal1}XQJS_LAXJHMX mx_ INNER JOIN ${dbSchemal1}XQJS_TC tc_
+	  	ON mx_.TCNO=tc_.TCNO AND mx_.ID=tc_.ID
+	  	WHERE 1=1 
+  	<dynamic>
+  		<isNotEmpty prepend="AND" property="laxjhNo"> mx_.LAXJHNO = #laxjhNo#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="usercenter"> mx_.USERCENTER = #usercenter#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="tcNo"> mx_.TCNO = #tcNo#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="dinghcj"> tc_.DINGHCJ = #dinghcj#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="qiysj"> mx_.QIYSJ = to_date(#qiysj#,'yyyy-MM-dd HH24:mi:ss')</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="wuld"> mx_.WULD = #wuld#</isNotEmpty>
+  	</dynamic>
+  </select>
+
+<select id="queryLaxjhmxDownload"  parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	  	SELECT mx_.USERCENTER,mx_.LAXJHNO,mx_.ID,mx_.TCNO,
+	  	to_char(LAXZDSJ,'yyyy-MM-dd') as LAXZDSJ,mx_.WULD,to_char(mx_.QIYSJ,'yyyy-MM-dd') as QIYSJ,
+	  	tc_.DINGHCJ FROM ${dbSchemal1}XQJS_LAXJHMX mx_ INNER JOIN ${dbSchemal1}XQJS_TC tc_
+	  	ON mx_.TCNO=tc_.TCNO AND mx_.ID=tc_.ID
+	  	WHERE 1=1 
+  	<dynamic>
+  		<isNotEmpty prepend="AND" property="laxjhNo"> mx_.LAXJHNO = #laxjhNo#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="usercenter"> mx_.USERCENTER = #usercenter#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="tcNo"> mx_.TCNO = #tcNo#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="dinghcj"> tc_.DINGHCJ = #dinghcj#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="qiysj"> mx_.QIYSJ = to_date(#qiysj#,'yyyy-MM-dd HH24:mi:ss')</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="wuld"> mx_.WULD = #wuld#</isNotEmpty>
+  	</dynamic>
+  		ORDER BY LAXZDSJ,QIYSJ,mx_.TCNO ASC
+  </select>
+  <select id="queryLaxjhmx"  parameterClass="com.athena.xqjs.entity.laxkaix.Laxjhmx" resultClass="java.util.HashMap" remapResults="true">
+	  	SELECT mx_.USERCENTER,mx_.LAXJHNO,mx_.ID,mx_.TCNO,
+	  	to_char(LAXZDSJ,'yyyy-MM-dd') as LAXZDSJ,WULD,
+	  	tc_.DINGHCJ,KYLJDM,KDYS_SHEET_ID FROM ${dbSchemal1}XQJS_LAXJHMX mx_ INNER JOIN ${dbSchemal1}XQJS_TC tc_
+  	ON mx_.TCNO=tc_.TCNO AND mx_.ID=tc_.ID
+  	WHERE 1=1 
+  	<dynamic>
+  		<isNotEmpty prepend="AND" property="laxjhNo"> mx_.LAXJHNO = #laxjhNo#</isNotEmpty>
+  		<isNotEmpty prepend="AND" property="usercenter"> mx_.USERCENTER = #usercenter#</isNotEmpty>
+  	</dynamic>
+  </select>
+  <delete id="deleteLaxjhmx">
+  	DELETE FROM ${dbSchemal1}XQJS_LAXJHMX 
+  	WHERE 1=1 
+  	AND USERCENTER = #usercenter# AND LAXJHNO = #laxjhNo# AND ID = #id# AND TCNO = #tcNo#
+
+  </delete>
+	<delete id="deleteLaxjhmxOther" parameterClass="java.util.HashMap">
+		DELETE FROM ${dbSchemal1}XQJS_LAXJHMX
+		WHERE 1=1
+		AND LAXJHNO != #laxjhNo# AND TCNO = #tcNo# AND TCNO IN (SELECT TCNO FROM ${dbSchemal1}XQJS_LAXJHMX mx_ INNER JOIN ${dbSchemal1}XQJS_LAXJH laxjh_ ON mx_.LAXJHNO = laxjh_.LAXJHH AND mx_.USERCENTER = laxjh_.USERCENTER  WHERE  laxjh_.SHENGXZT = '0')
+  </delete>
+	<update id="deleteLaxjhmxbyUc" parameterClass="java.util.HashMap">
+		UPDATE ${dbSchemal1}XQJS_LAXJHMX
+		SET SHENGXZT = #shengxzt#,
+		EDITOR=#editor#,
+		EDIT_TIME=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		WHERE USERCENTER = #usercenter# AND LAXJHNO = #laxjhNo#
+  </update>
+  
+   <select id="validateLaxjhmxTcNo" parameterClass="java.util.HashMap"
+		resultClass="int">
+		SELECT COUNT(*) FROM ${dbSchemal1}XQJS_LAXJHMX WHERE TCNO = #tcNo# AND LAXJHNO = #laxjhh#
+		AND ID=#id# AND USERCENTER = #usercenter#
+   </select>
+
+</sqlMap>

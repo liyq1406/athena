@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 登录事务提醒 -->
+<sqlMap namespace="denglswtx">
+	<!-- 根据计算模块查询最近一次计算产生的异常报警数量 -->
+	<select id="queryYicbj" resultClass="java.lang.String">
+		select 
+			count(*) 
+		from 
+			${dbSchemal1}xqjs_yicbj 
+		where 
+			to_char(create_time,'yyyy-MM-dd') = #jissj# and jismk = #jismk# and usercenter = #usercenter#
+	</select>
+	
+	<!-- 根据计算模块查询最近一次计算产生的异常报警数量 -->
+	<select id="queryCkxShiwtxXls" resultClass="com.athena.xqjs.entity.denglswtx.Denglswtx">
+		select 
+			a.usercenter,b.zidmc as tixlx,guanjz1,guanjz2,yonghz,tixnr,decode(zhuangt,0,'待解决',1,'已解决') as zhuangt,baojsj,jiejsj,chulsj
+		from 
+			(select 
+				usercenter,tixlx,guanjz1,guanjz2,yonghz,tixnr,zhuangt,baojsj,jiejsj,to_char(chulsj,'yyyy-mm-dd') chulsj
+			from 
+				${dbSchemal3}ckx_shiwtx 
+			where usercenter = #usercenter#
+			<dynamic>
+				<isNotNull prepend=" and " property="jihyz">(yonghz = #jihyz# or yonghz = 'alljhy' or yonghz = 'all')</isNotNull>
+				<isNotNull prepend=" and " property="wulgyyz">(yonghz = #wulgyyz# or yonghz = 'allwlgyy' or yonghz = 'all')</isNotNull>
+				<isNotNull prepend=" and " property="zhuangt">zhuangt = #zhuangt#</isNotNull>
+				<isNotNull prepend=" and " property="tixlx">tixlx = #tixlx#</isNotNull>
+				<isNotNull prepend=" and " property="guanjz1">guanjz1 = #guanjz1#</isNotNull>
+				<isNotNull prepend=" and " property="guanjz2">guanjz2 = #guanjz2#</isNotNull>
+			</dynamic>
+			order by baojsj desc
+			) a
+		left join ${dbSchemal3}ckx_xitcsdy b
+		on a.tixlx = b.zidbm and b.zidlx = 'SWTXLX'
+	</select>
+	
+	<!-- 根据计算模块查询最近一次计算产生的异常报警数量 -->
+	<select id="queryCkxShiwtx" resultClass="com.athena.xqjs.entity.denglswtx.Denglswtx">
+		select 
+			id,usercenter,tixlx,guanjz1,guanjz2,yonghz,tixnr,zhuangt,baojsj,jiejsj,to_char(chulsj,'yyyy-mm-dd') chulsj
+		from 
+			${dbSchemal3}ckx_shiwtx 
+		where 1 = 1
+		<dynamic>
+			<isNotNull prepend=" and " property="jihyz">(yonghz = #jihyz# or yonghz = 'alljhy' or yonghz = 'all')</isNotNull>
+			<isNotNull prepend=" and " property="wulgyyz">(yonghz = #wulgyyz# or yonghz = 'allwlgyy' or yonghz = 'all')</isNotNull>
+			<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+			<isNotNull prepend=" and " property="zhuangt">zhuangt = #zhuangt#</isNotNull>
+			<isNotNull prepend=" and " property="tixlx">tixlx = #tixlx#</isNotNull>
+			<isNotNull prepend=" and " property="guanjz1">guanjz1 = #guanjz1#</isNotNull>
+			<isNotNull prepend=" and " property="guanjz2">guanjz2 = #guanjz2#</isNotNull>
+		</dynamic>
+		order by baojsj desc
+	</select>
+	
+	<!--查询事物提醒上次执行时间 -->
+	<select id="queryLastZxTime" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+	 select  to_char(edit_time,'yyyy-MM-dd HH24:mi:ss') from ${dbSchemal1}ckx_xitcsdy where zidlx='SWTX' and zidbm='SCZXSJ'
+	</select>
+	
+	<!-- 将上次执行时间修改为本次执行时间） -->
+	<update id="update_currtime" >
+		update ${dbSchemal1}ckx_xitcsdy set edit_time=to_date(#currtime#,'YYYY-MM-DD HH24:MI:SS') where zidlx='SWTX' and zidbm='SCZXSJ'
+	</update>
+	
+	<!-- 查询新建状态零件 -->
+	<select id="queryNewLingj"  parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.common.Lingj">
+		select 
+			usercenter,lingjbh,jihy
+		from 
+			${dbSchemal3}ckx_lingj 
+		where 
+			to_char(create_time,'yyyy-MM-dd hh24:mi:ss') &gt;=#lasttime# 
+			and to_char(create_time,'yyyy-MM-dd hh24:mi:ss') &lt;= #currtime#
+			and biaos = '2'
+	</select>
+	
+	<!-- 查询新建状态供应商 -->
+	<select id="queryNewGys"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.common.Gongys">
+		select 
+			usercenter,gcbh
+		from 
+			${dbSchemal3}ckx_gongys
+		where 
+			to_char(create_time,'yyyy-MM-dd hh24:mi:ss') &gt;=#lasttime# 
+			and to_char(create_time,'yyyy-MM-dd hh24:mi:ss') &lt;= #currtime#
+	</select>
+	
+	<!-- 查询新建零件供应商-->
+	<select id="queryNewLjGys" resultClass="com.athena.xqjs.entity.common.LingjGongys">
+		select 
+			usercenter,gongysbh,lingjbh
+		from 
+			${dbSchemal3}ckx_lingjgys
+		where 
+			to_char(create_time,'yyyy-MM-dd hh24:mi:ss') &gt;=#lasttime# 
+			and to_char(create_time,'yyyy-MM-dd hh24:mi:ss') &lt;= #currtime#
+	</select>
+	
+	<!-- 查询新建消耗点信息-->
+	<select id="queryNewXhd" resultClass="com.athena.xqjs.entity.common.CkxGongyxhd">
+		select 
+			gongyxhd
+		from 
+			${dbSchemal3}ckx_gongyxhd
+		where 
+			to_char(create_time,'yyyy-MM-dd hh24:mi:ss') &gt;=#lasttime# 
+			and to_char(create_time,'yyyy-MM-dd hh24:mi:ss') &lt;= #currtime# and biaos = '2'
+	</select>
+	
+	
+	<!-- 查询生效/失效提前报警范围-->
+	<select id="queryXiaohdBjsj" resultClass="java.util.HashMap">
+		select 
+			usercenter,zidmc
+		from 
+			${dbSchemal3}ckx_xitcsdy where  zidlx ='XHDBJSJ'
+			
+	</select>
+	
+	
+	<!-- 查询新建消耗点信息，生效零件消耗点 2015.5.21 update -->
+	<select id="queryNewLjXhd" resultClass="com.athena.xqjs.entity.common.Lingjxhd">
+	<![CDATA[  
+select usercenter,lingjbh,xiaohdbh,fenpqbh,min(pdsshengxsj) pdsshengxsj from (		
+		 select 
+	      	b.usercenter,b.lingjbh,b.xiaohdbh,b.fenpqbh,to_char(a.pdsshengxsj,'yyyy-mm-dd') pdsshengxsj
+	    from 
+	      ${dbSchemal3}ckx_lingjxhd_in a,${dbSchemal3}ckx_lingjxhd b
+	    where a.usercenter=b.usercenter 
+			   and a.lingjbh=b.lingjbh 
+			   and a.xiaohdbh=b.xiaohdbh 
+	    	and  trunc(sysdate) between a.pdsshengxsj-$zidmc$ and a.pdsshengxsj
+	    	and b.biaos in('0','2')	 and b.usercenter=#usercenter#
+  ) aa  group by usercenter,lingjbh,xiaohdbh,fenpqbh 
+  	order by  usercenter,lingjbh,xiaohdbh
+  ]]>
+	</select>
+	
+	
+	<!-- 查询失效零件消耗点 2015.5.21  add -->
+	<select id="queryNewLjXhdOfShix" resultClass="com.athena.xqjs.entity.common.Lingjxhd">	
+		<![CDATA[  
+		select 
+	      	b.usercenter,b.lingjbh,b.xiaohdbh,b.fenpqbh,to_char(min(a.pdsshixsj),'yyyy-mm-dd') pdsshixsj
+	    from 
+	      ${dbSchemal3}ckx_lingjxhd_in a,${dbSchemal3}ckx_lingjxhd b
+	    where      a.usercenter=b.usercenter 
+			   and a.lingjbh=b.lingjbh 
+			   and a.xiaohdbh=b.xiaohdbh 
+	    	   and trunc(sysdate) between a.pdsshixsj-$zidmc$  and a.pdsshixsj
+	    	and b.biaos='1'	and b.usercenter=#usercenter#
+	    group by  b.usercenter,b.lingjbh,b.xiaohdbh,b.fenpqbh
+	    	]]>
+	</select>
+	
+	
+	<!-- 查询零件消耗点是否存在未处理的报警 2015.5.21  add -->
+	<select id="queryLjXhdNum" resultClass="java.lang.String">	
+		<![CDATA[  
+		select 
+	      	ID
+	    from 
+	      ${dbSchemal3}ckx_shiwtx a 
+		      where a.usercenter=#usercenter# 
+		      and a.guanjz1=#lingjbh# 
+		      and a.guanjz2=#xiaohdbh#
+		      and a.zhuangt='0'
+	    	]]>
+	</select>
+	
+	<!-- 更新零件消耗点 2015.5.21  add -->
+	<update id="update_shiwtxOfLingjxhd" parameterClass="java.util.Map">
+		update 
+			${dbSchemal3}ckx_shiwtx 
+		set 
+			baojsj = current_timestamp,chulsj=to_date(#chulsj#,'yyyy-mm-dd')
+		where 
+			id = #shiwtxID#
+	</update>
+	
+	
+	
+	<!-- 查询消耗点对应的物流工艺员组-->
+	<select id="queryWulgyyz" resultClass="com.athena.xqjs.entity.common.Wullj">
+		select 
+			wulgyyz
+		from 
+			${dbSchemal3}ckx_fenpq
+		where 
+			fenpqh = #fenpqh#
+			<dynamic>
+			<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+			</dynamic>
+			and rownum <![CDATA[ < ]]> 2
+	</select>
+	
+	<!-- 保存登录事务提醒 -->
+	<insert id="insertDenglswtx">
+		insert into
+			${dbSchemal3}ckx_shiwtx(id,usercenter,tixlx,guanjz1,guanjz2,yonghz,tixnr,zhuangt,baojsj,chulsj)
+		values(#id#,#usercenter#,#tixlx#,#guanjz1#,#guanjz2#,#yonghz#,#tixnr#,#zhuangt#,
+		to_timestamp(#baojsj#,'yyyy-mm-dd HH24:MI:SS:FF3'),to_date(#chulsj#,'yyyy-mm-dd'))
+	</insert>
+	
+	<!-- 解决参考系登录事物提醒 -->
+	<update id="jiejCkxShiwtx">
+		update 
+			${dbSchemal3}ckx_shiwtx 
+		set 
+			zhuangt = '1',jiejsj = current_timestamp 
+		where 
+			id = #id#
+	</update>
+</sqlMap>

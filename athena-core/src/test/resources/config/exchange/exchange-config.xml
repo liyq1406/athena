@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exchange-configs>
+	<!-- 
+		exchange-config-group[@reader]:组默认的数据输入格式
+		exchange-config-group[@writer]:组默认的数据输出格式
+	 -->
+	 <!-- 文本格式输入，数据库格式输出 -->
+	<exchange-config-group reader="txt" writer="db">
+		<!-- 
+		文本格式输入组配置说明
+			exchange-config[@timer]:定时调度时间表达式
+			reader[@filePath]:文件路径
+			reader[@split]:文本分隔符
+			
+			writer[@class]:数据输出类，可以继承本组的DataWriter，实现自定义的条件判定，扩展方法如下：
+				1.输出前：boolean before();
+				2.输出后：void after();
+				3.行记录解析前：boolean beforeRecord(int rowIndex,String line);
+				4.行记录解析后：void afterRecord(int rowIndex,Record record);
+				record.get('f004')
+				
+			writer[@table]：数据库表名
+			writer[@updateFields]:更新字段，使用，号分隔。
+			
+			field[@writerColumn]:输出列名称
+			field[@start]:起始位置
+			field[@length]:长度
+			field[@type]:数据类型
+			field[@format]:数据格式
+			field[@isUpdate]:是否更新，默认值true
+		 -->
+		<exchange-config id="txt_bn361" caption="日历" timer="0 * * * * *">
+			<reader 
+				filePath="E:\\ifile\\BESOINS-EFI\\bn361-日历.txt"
+				split="">
+			</reader>
+			<writer class="com.athena.component.exchange.db.DbDataWriter"
+					table="PD_DATA" 
+					idKeys="f001,f002,f009"
+					datasourceId="1"
+			>
+				<!-- 没有配置数据库时使用通用数据库 -->
+			</writer>
+			<field writerColumn="f001" isUpdate="false" start="0" length="6"/>
+			<field writerColumn="f002" isUpdate="false" start="6" length="11" type="date" format="yyyyMMdd"/>
+			<field writerColumn="f003" start="17" length="4"/>
+			<field writerColumn="f004" start="21" length="4"/>
+			<field writerColumn="f005" start="25" length="9"/>
+			<field writerColumn="f006" start="34" length="5" type="number" format="number(2,1)"/>
+			<field writerColumn="f007" start="39" length="11" type="date" format="yyyyMMdd"/>
+			<field writerColumn="f008" start="50" length="5"/>
+			<field writerColumn="f009" isUpdate="false" start="55" length="5"/>
+		</exchange-config>
+	</exchange-config-group>
+	
+	<!-- 数据库格式输入，数据库格式输出 -->
+	<exchange-config-group reader="db"  writer="db"  timer="0 * * * * *">
+		<!-- 
+		数据库输入组配置说明
+			reader[@sql]:sql查询语句
+			reader[@split]:文本分隔符
+			
+			writer[@class]:数据输出类，接口方法：
+				1.输出前：boolean before(DataParserConfig dataParserConfig);
+				2.输出后：void after(DataParserConfig dataParserConfig);
+				3.行记录解析前：boolean beforeRecord(DataParserConfig dataParserConfig,int rowIndex,String line);
+				4.行记录解析后：void afterRecord(DataParserConfig dataParserConfig,int rowIndex,Record record);
+			writer[@table]：数据库表名
+			writer[@idKeys]:更新字段，使用，号分隔。
+			
+			field[@readerColumn]:输入列名称
+			field[@writerColumn]:输出列名称
+			field[@length]:长度
+			field[@type]:数据类型
+			field[@format]:数据格式
+		 -->
+		<exchange-config id="db_bn361" caption="日历">
+			<reader sql="select * from PD_DATA"
+				datasourceId="1"
+			></reader>
+			<writer datasourceId="1" table="PD_DATA" 
+					idKeys="f001,f002,f009">
+			</writer>
+			<field readerColumn="F001" writerColumn="f001"  caption="用户中心"/>
+			<field readerColumn="F002" writerColumn="f002" length="11" type="date" format="yyyyMMdd"/>
+			<field readerColumn="F003" writerColumn="f003" length="4"/>
+			<field readerColumn="F004" writerColumn="f004" length="4"/>
+			<field readerColumn="F005" writerColumn="f005" length="9"/>
+			<field readerColumn="F006" writerColumn="f006" length="5" type="number" format="number(2,1)"/>
+			<field readerColumn="F007" writerColumn="f007" length="11" type="date" format="yyyyMMdd"/>
+			<field readerColumn="F008" writerColumn="f008" length="5"/>
+			<field readerColumn="F009" writerColumn="f009" length="5"/>
+		</exchange-config>
+	</exchange-config-group>
+</exchange-configs>

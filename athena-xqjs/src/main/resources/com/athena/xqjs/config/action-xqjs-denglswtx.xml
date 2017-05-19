@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="denglswtx" extend="toft-default" namespace="/denglswtx">
+		<!-- 初始化资源录入初始化页面 -->
+		<action name="initWelcome" class="denglswtxAction" method="initWelcome">
+			<result name="welcome">/welcome.jsp</result>
+		</action>
+		
+		<!-- 查询参考系登录事务提醒 -->
+		<action name="queryCkxShiwtx" class="denglswtxAction" method="queryCkxShiwtx">
+		</action>
+		
+		<!-- 查询参考系登录事务提醒 -->
+		<action name="jiejCkxShiwtx" class="denglswtxAction" method="jiejCkxShiwtx">
+		</action>
+	</package>
+</toft>

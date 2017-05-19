@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<properties resource="com/athena/xqjs/config/sqlmap.properties" />
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="10"
+		maxTransactions="5" useStatementNamespaces="true" /> 
+		<sqlMap resource="com/athena/xqjs/entity/common/Jisclcssz.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/common/XqjsWtcDy.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/common/Wulz.xml" />
+        <!-- test -->
+        <sqlMap resource="com/athena/xqjs/entity/sqlmap-diaobsq-test.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/sqlmap-kanbyhl-test.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/sqlmap-ppl-test.xml" />
+        <sqlMap resource="com/athena/xqjs/entity/sqlmap-anmaoxq-test.xml" />
+        <!-- test -->
+        
+           <!-- 王朋 -->
+        <sqlMap resource="com/athena/xqjs/entity/quhys/quhysfy.xml" />
+        
+		<!-- 聂士元start-->
+		<sqlMap resource="com/athena/xqjs/entity/common/xqjsLingjck.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/common/Gongyzx.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/kdorder/impAqkc.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/diaobl/diaobl.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/common/Nianxb.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/maoxq/Maoxq.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/kanbyhl/kanbjs.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/kanbyhl/kanbxhgm.xml" />
+		<!-- 聂士元end-->
+
+
+
+		<!-- 王凌 -->
+		<sqlMap resource="com/athena/xqjs/entity/zygzbj/zygzbj.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/anxorder/anxJis.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/anxorder/anxChushJis.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/shouhdcl/shouhdcl.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/denglswtx/denglswtx.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/report/report.xml"/>
+		<!-- end-->
+
+		<!-- 夏晖start-->
+		<sqlMap resource="com/athena/xqjs/entity/ilorder/Maoxq.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/ilorder/Maoxqmx.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/ppl/niandyg.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/ppl/niandygmx.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/ycbj/yicbj.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/common/ckxSelect.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/yaohl/yaohl.xml"/>
+    	<!--end-->
+
+	<!-- 陈俊start -->
+	<sqlMap resource="com/athena/xqjs/entity/kdorder/Kdbdml.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/kdorder/Kdmxqhz.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/kdorder/Kdmxqhzc.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Maoxqhzpfpxh.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Maoxqhzsfpxh.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Maoxqhzjfpxh.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/kdorder/KdbdmulResult.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/kdorder/aixdd.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/kdorder/Kdmaoxq.xml"/>
+	<sqlMap resource="com/athena/xqjs/entity/common/Jdygzq.xml"/>
+	<sqlMap resource="com/athena/xqjs/entity/common/wzklsz.xml"/>
+	<sqlMap resource="com/athena/xqjs/entity/kdorder/Kdrddmx.xml"/>
+	
+	
+	
+	
+	
+	<!--李明start -->
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Maoxqhzp.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Maoxqhzpc.xml" />
+
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Maoxqhzs.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Maoxqhzsc.xml" />
+
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Maoxqhzj.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Maoxqhzjc.xml" />
+
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Dingdlj.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Dingd.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Dingdmx.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/ziykzb.xml" />
+
+	<sqlMap resource="com/athena/xqjs/entity/ilorder/Yugzjb.xml" />
+
+	<sqlMap resource="com/athena/xqjs/entity/common/CalendarVersion.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/common/CalendarGroup.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/common/CalendarCenter.xml" />
+
+	<sqlMap resource="com/athena/xqjs/entity/common/Lingj.xml" />
+
+	<sqlMap resource="com/athena/xqjs/entity/common/Jiaofrl.xml" />
+
+	<sqlMap resource="com/athena/xqjs/entity/common/Gongyzq.xml" />
+
+	<sqlMap resource="com/athena/xqjs/entity/common/Wullj.xml" />
+
+	<sqlMap resource="com/athena/xqjs/entity/common/LingjGongys.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/common/Zuiddhsl.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/common/Rouxbl.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/common/Gongys.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/common/Xiaohcyssk.xml" />
+
+	<sqlMap resource="com/athena/xqjs/entity/anxorder/AnxMaoxq.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/anxorder/Kucjscsb.xml" />
+	<sqlMap resource="com/athena/xqjs/entity/anxorder/Anxjscszjb.xml" />
+
+
+	<!-- 李明end -->
+
+
+
+
+		<!-- 李智start -->
+		<sqlMap resource="com/athena/xqjs/entity/ilorder/Yaohl.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/ilorder/IlOrder.xml"/>
+		
+		<sqlMap resource="com/athena/xqjs/entity/common/Lingjxhd.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/common/Gongyxhd.xml"/>
+		
+		<sqlMap resource="com/athena/xqjs/entity/anxorder/Chushzyb.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/anxorder/Anxcshbxzjb.xml"/>
+		
+		<sqlMap resource="com/athena/xqjs/entity/common/Tidj.xml" />
+		<sqlMap resource="com/athena/xqjs/entity/common/GonghmsMaoxq.xml" />
+		
+		
+		<!-- end -->
+		
+		<!-- 穆伟Start -->
+		<sqlMap resource="com/athena/xqjs/entity/laxkaix/Laxjh.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/laxkaix/LinsKeytc.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/laxkaix/LinsKeytclj.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/laxkaix/LinsTclj.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/laxkaix/TC.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/laxkaix/LinsXuq.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/laxkaix/Laxjhmx.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/laxkaix/Kaixjh.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/laxkaix/Kaixjhmx.xml"/>
+		<sqlMap resource="com/athena/xqjs/entity/laxkaix/Weimzlj.xml"/>
+		
+		<!-- 穆伟End -->
+
+		 <!-- 拉箱开箱 test -->
+        <sqlMap resource="com/athena/xqjs/entity/sqlmap-laxkaix-test.xml" />
+        
+        <!-- 穆伟Start -->
+        <sqlMap resource="com/athena/xqjs/entity/lingjcx/Lingjcx.xml"/>
+        <!-- 穆伟End -->
+        <!-- 穆伟Start -->
+        <sqlMap resource="com/athena/xqjs/entity/kdys/kdys.xml"/>
+        <!-- 穆伟End -->
+        
+        
+        <!-- wuyichao 2013/3/26 begin-->
+         <sqlMap resource="com/athena/xqjs/entity/report/kucfx.xml"/>
+        <!-- wuyichao 2013/3/26 end-->
+        
+        
+        
+          <!-- hj 2013/7/1 begin-->
+         <sqlMap resource="com/athena/xqjs/entity/maoxq/QAnxMaoxq.xml"/>
+        <!-- hj 2013/7/1 end-->
+        
+        
+         <!-- wuyichao 2013/11/28 begin-->
+         <sqlMap resource="com/athena/xqjs/entity/emergency/emergency.xml"/>
+         <!-- wuyichao 2013/11/28 end-->
+        
+          <!-- zghe 2015/07/07 begin-->
+        <sqlMap resource="com/athena/xqjs/entity/anxorder/anxHandset.xml"/>
+         <!-- zghe 2015/07/07 end-->
+         
+        <!-- hanwu 2015/11/24 begin-->
+        <sqlMap resource="com/athena/xqjs/entity/fenzxpc/fenzxpc.xml"/>
+        <!-- hanwu 2015/11/24 end-->
+        
+        <!--begin add by zbb 2015-11-16 -->
+        <sqlMap resource="com/athena/xqjs/entity/anxorder/xinaxJis.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/anxorder/Kuczh.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/anxorder/xianbkc.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/anxorder/gongysxhc.xml"/>
+        <!-- end add by zbb 2025-11-16 -->   
+        
+
+         <!--begin add by zbb 2015-12-10 -->
+        <sqlMap resource="com/athena/xqjs/entity/anxorder/xinaxChushJis.xml"/>        
+        <!-- end add by zbb 2025-12-10 -->      
+
+        <!-- liuquan 2015.12.5 begin -->
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/Clddxx.xml"/>
+        <!-- liuquan 2015.12.5 end -->
+   	 <!-- hml 2015.12.11 begin-->
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/Clddxx2.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/Clddxx2Tmp.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/Clddxx2TmpNup.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/ClddxxZyhtmp.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/ClddxxZyqtmp.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/Dax.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/Daxpcsl.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/DdbhMaoxqmx.xml"/>
+       <sqlMap resource="com/athena/xqjs/entity/hlorder/Shengcx.xml"/>
+        <!-- hml 2015.12.11 end-->
+        
+        
+        <!-- 武永刚hml 2015.12.15 begin-->
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/DingdljTmp.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/DingdmxTmp.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/MaoxqhzjcTmp.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/MaoxqhzjfpxhTmp.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/MaoxqhzjTmp.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/VjKuczh.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/VjMaoxq.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/Vjxianbkc.xml"/>
+       <sqlMap resource="com/athena/xqjs/entity/hlorder/YugzjbTmp.xml"/>
+        <!-- 武永刚hml 2015.12.15 end-->
+        
+        
+        
+        <!-- 武永刚hml 2015.12.22 begin-->
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/MjDingdmxTmp.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/Mjjis.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/MjMaoxqhzjcTmp.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/MjMaoxqhzjTmp.xml"/>
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/MjYugzjbTmp.xml"/>
+       
+        <!-- 武永刚hml 2015.12.22 end-->
+        
+        <!-- 武永刚hml 2016.1.5 begin-->
+        <sqlMap resource="com/athena/xqjs/entity/hlorder/DdbhMaoxqsxxh.xml"/>
+       
+        <!-- 武永刚hml 2016.1.5 end-->
+        
+        <!-- csy 20161114 按需临时订单 -->
+        <sqlMap resource="com/athena/xqjs/entity/ilorder/AXlsOrder.xml"/>
+
+
+	<!-- xss 2016-1-11 0012338-->
+	<sqlMap resource="com/athena/xqjs/entity/dfpvdiaobl/diaobl.xml" />
+	
+	<!-- hanwu 2016-03-26 0012649-->
+	<sqlMap resource="com/athena/xqjs/entity/maoxq/JLMaoxq.xml" />
+</sqlMapConfig>

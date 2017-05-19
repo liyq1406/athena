@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<select id="queryCkx_shengcx" parameterClass="com.athena.ckx.entity.paicfj.Ckx_shengcx" resultClass="com.athena.ckx.entity.paicfj.Ckx_shengcx">
+	select usercenter,shengcxbh,chanxzbh,shengcjp,weilscjp,
+	to_char(qiehsj,'yyyy-MM-dd') as qiehsj,cpshengcjp,biaos
+<!-- 	,tessjxq1,tessjxs1,tessjxq2,tessjxs2,tessjxq3,tessjxs3 -->
+	from ${dbSchemal3}ckx_shengcx
+	where 1=1 and flag='1'
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chanxzbh"><![CDATA[chanxzbh = #chanxzbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,shengcxbh,chanxzbh
+	</select>
+	
+	<insert id="insertCkx_shengcx" parameterClass="com.athena.ckx.entity.paicfj.Ckx_shengcx">
+	insert into ${dbSchemal3}ckx_shengcx
+	(usercenter,shengcxbh,chanxzbh,shengcjp,weilscjp,cpshengcjp,biaos,creator,create_time,editor,edit_time,flag)
+	values(<![CDATA[
+	 #usercenter# , #shengcxbh# , #chanxzbh# , #shengcjp# , #weilscjp# ,#cpshengcjp#,
+	 '1' , #creator# , #create_time# , #editor# , #edit_time#,'1'
+	   ]]>   )
+	</insert>
+	<update id="updateCkx_shengcx" parameterClass="com.athena.ckx.entity.paicfj.Ckx_shengcx">
+	update ${dbSchemal3}ckx_shengcx 
+	set 
+	 
+    		   <![CDATA[chanxzbh = #chanxzbh#]]> ,    	
+    		   <![CDATA[shengcjp = #shengcjp#]]> ,
+    		   <![CDATA[weilscjp = #weilscjp#]]>,
+    		   <![CDATA[cpshengcjp = #cpshengcjp#]]>,
+    		   <![CDATA[qiehsj = to_date(#qiehsj#,'yyyy-MM-dd')]]> ,
+    		   <![CDATA[biaos = #biaos#]]> ,
+    	
+<!--     	<isNotEmpty property="tessjxq1" prepend=","> -->
+<!--     		   <![CDATA[tessjxq1 = #tessjxq1#]]>  -->
+<!--     	</isNotEmpty> -->
+<!--     	<isNotEmpty property="tessjxs1" prepend=","> -->
+<!--     		   <![CDATA[tessjxs1 = #tessjxs1#]]>  -->
+<!--     	</isNotEmpty> -->
+<!--     	<isNotEmpty property="tessjxq2" prepend=","> -->
+<!--     		   <![CDATA[tessjxq2 = #tessjxq2#]]>  -->
+<!--     	</isNotEmpty> -->
+<!--     	<isNotEmpty property="tessjxs2" prepend=","> -->
+<!--     		   <![CDATA[tessjxs2 = #tessjxs2#]]>  -->
+<!--     	</isNotEmpty> -->
+<!--     	<isNotEmpty property="tessjxq3" prepend=","> -->
+<!--     		   <![CDATA[tessjxq3 = #tessjxq3#]]>  -->
+<!--     	</isNotEmpty> -->
+<!--     	<isNotEmpty property="tessjxs3" prepend=","> -->
+<!--     		   <![CDATA[tessjxs3 = #tessjxs3#]]>  -->
+<!--     	</isNotEmpty> -->
+    	
+    		   <![CDATA[editor = #editor#]]> ,
+    		   <![CDATA[edit_time = #edit_time#]]> 
+    	
+       where  <![CDATA[usercenter = #usercenter# and  shengcxbh = #shengcxbh#]]> 
+	</update>
+	<update id="deleteCkx_shengcx" parameterClass="com.athena.ckx.entity.paicfj.Ckx_shengcx">
+	update ${dbSchemal3}ckx_shengcx
+	set <![CDATA[biaos = '0',editor=#editor#,edit_time = #edit_time#]]>
+	
+	where <![CDATA[usercenter = #usercenter# and  shengcxbh = #shengcxbh#]]>
+	</update>
+</sqlMap>

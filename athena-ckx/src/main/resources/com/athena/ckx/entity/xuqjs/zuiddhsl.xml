@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 最大订货数量  qizhongtao 2012-4-07 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryCkxZuiddhsl" resultClass="com.athena.ckx.entity.xuqjs.CkxZuiddhsl">
+			select  usercenter,lingjbh,gongysbh,nianzq,zuiddhsl,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_zuiddhsl
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[gongysbh=#gongysbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="nianzq"><![CDATA[nianzq=#nianzq#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,lingjbh,nianzq
+		</select>
+		
+		<!--分页查询	 -->
+		<select id="getCkxZuiddhsl" resultClass="com.athena.ckx.entity.xuqjs.CkxZuiddhsl">
+			select  usercenter,lingjbh,gongysbh,nianzq,zuiddhsl
+			from ${dbSchemal3}ckx_zuiddhsl
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh=#lingjbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="gongysbh"><![CDATA[gongysbh=#gongysbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="nianzq"><![CDATA[nianzq=#nianzq#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertCkxZuiddhsl" parameterClass="com.athena.ckx.entity.xuqjs.CkxZuiddhsl" >
+			insert into ${dbSchemal3}ckx_zuiddhsl(usercenter,lingjbh,gongysbh,nianzq,zuiddhsl,creator,create_time,editor,edit_time)
+			values(<![CDATA[#usercenter#,#lingjbh#,#gongysbh#,#nianzq#,#zuiddhsl#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="updateCkxZuiddhsl" parameterClass="com.athena.ckx.entity.xuqjs.CkxZuiddhsl">
+			update ${dbSchemal3}ckx_zuiddhsl
+			set zuiddhsl = #zuiddhsl#,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[usercenter = #usercenter# and lingjbh = #lingjbh# and gongysbh = #gongysbh# and nianzq = #nianzq#]]>
+		</update>
+		
+		<!-- 删除数据 -->
+		<delete id="deleteCkxZuiddhsl" parameterClass="com.athena.ckx.entity.xuqjs.CkxZuiddhsl">
+			delete from ${dbSchemal3}ckx_zuiddhsl where
+			<dynamic prepend=" ">
+				<isNotEmpty property="usercenter" prepend=" and ">
+					<![CDATA[usercenter = #usercenter#]]>
+				</isNotEmpty>
+				<isNotEmpty property="lingjbh" prepend=" and ">
+					<![CDATA[lingjbh = #lingjbh#]]>
+				</isNotEmpty>
+				<isNotEmpty property="gongysbh" prepend=" and ">
+					<![CDATA[gongysbh = #gongysbh#]]>
+				</isNotEmpty>
+				<isNotEmpty property="nianzq" prepend=" and ">
+					<![CDATA[nianzq = #nianzq#]]>
+				</isNotEmpty>
+			</dynamic>
+		</delete>
+	
+</sqlMap>

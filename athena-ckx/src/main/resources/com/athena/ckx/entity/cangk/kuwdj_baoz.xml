@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 
+	库位等级与包装
+	@author denggq
+	@date 2012-1-17
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<select id="queryKuwdjBaoz" parameterClass="com.athena.ckx.entity.cangk.KuwdjBaoz" resultClass="com.athena.ckx.entity.cangk.KuwdjBaoz">
+		select usercenter,cangkbh,kuwdjbh,baozlx,baozgs ,creator,create_time,editor,edit_time
+		from ${dbSchemal3}ckx_kuwdj_baoz 
+		where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kuwdjbh" prepend="and">
+	    		<![CDATA[kuwdjbh = #kuwdjbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="baozlx" prepend="and">
+	    		<![CDATA[baozlx = #baozlx#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,cangkbh,kuwdjbh,baozlx
+	</select>
+	
+	<!-- 记录查询 -->
+	<select id="queryKw" parameterClass="com.athena.ckx.entity.cangk.Kuw" resultClass="com.athena.ckx.entity.cangk.Kuw">
+	   select usercenter,cangkbh,zickbh,kuwbh,kuwdjbh,kuwzt 
+	   from ${dbSchemal3}ckx_kuw
+	   where 1=1
+	  	<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kuwdjbh" prepend="and">
+	    		<![CDATA[kuwdjbh = #kuwdjbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	     order by usercenter,cangkbh
+	</select>
+	
+	
+	<select id="getKuwdjBaoz" resultClass="com.athena.ckx.entity.cangk.KuwdjBaoz">
+		select usercenter,cangkbh,kuwdjbh,baozlx,baozgs 
+		from ${dbSchemal3}ckx_kuwdj_baoz 
+		<dynamic prepend="where">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kuwdjbh" prepend="and">
+	    		<![CDATA[kuwdjbh = #kuwdjbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="baozlx" prepend="and">
+	    		<![CDATA[baozlx = #baozlx#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<insert id="insertKuwdjBaoz" parameterClass="com.athena.ckx.entity.cangk.KuwdjBaoz">
+		insert into ${dbSchemal3}ckx_kuwdj_baoz(usercenter,cangkbh,kuwdjbh,baozlx,baozgs,creator,create_time,editor,edit_time)
+		values(#usercenter#,#cangkbh#,#kuwdjbh#,#baozlx#,#baozgs#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<update id="updateKuwdjBaoz" parameterClass="com.athena.ckx.entity.cangk.KuwdjBaoz">
+		update ${dbSchemal3}ckx_kuwdj_baoz 
+		set baozgs = #baozgs#,
+			editor = #editor#,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+		where <![CDATA[usercenter = #usercenter# and cangkbh = #cangkbh# and kuwdjbh = #kuwdjbh# and baozlx = #baozlx#]]> 
+	</update>
+	
+	<delete id="deleteKuwdjBaoz" parameterClass="com.athena.ckx.entity.cangk.KuwdjBaoz">
+		delete from ${dbSchemal3}ckx_kuwdj_baoz where
+		<dynamic prepend="  ">
+			<isNotEmpty property="usercenter"  prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="kuwdjbh" prepend="and">
+	    		<![CDATA[kuwdjbh = #kuwdjbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="baozlx" prepend="and">
+	    		<![CDATA[baozlx = #baozlx#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+</sqlMap>

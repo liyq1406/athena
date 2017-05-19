@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+	子仓库
+	@author denggq
+	@date 2012-1-10
+ -->
+<sqlMap namespace="ts_ckx">
+	
+	<!-- 多记录查询 -->
+	<select id="queryZick" parameterClass="com.athena.ckx.entity.cangk.Zick" resultClass="com.athena.ckx.entity.cangk.Zick">
+	  	select usercenter,cangkbh,zickbh,baohd*100 as baohd,shifelgl,guanlyzbh,zhantbh,biaos,creator,create_time,editor,edit_time
+	  	from ${dbSchemal3}ckx_zick 
+	  	where 1=1
+	  	<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="zickbh" prepend="and">
+	    		<![CDATA[zickbh = #zickbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	    order by usercenter,cangkbh,zickbh
+	</select>
+	
+	
+	<!-- 获取数量 -->
+	<select id="getCountZick" resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_zick  where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="cangkbh" prepend="and">
+	    		<![CDATA[cangkbh = #cangkbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="zickbh" prepend="and">
+	    		<![CDATA[zickbh = #zickbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="biaos" prepend="and">
+	    		<![CDATA[biaos = #biaos#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<!-- 一个站台编号只能对应一个大仓库 -->
+	<select id="getCountCangkbh" resultClass="java.lang.String">
+		select distinct cangkbh from ${dbSchemal3}ckx_zick  where 1=1
+		<dynamic>
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="zhantbh" prepend="and">
+	    		<![CDATA[zhantbh = #zhantbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</select>
+	
+	<!-- 导出的连接查询 -->
+	<select id="queryDczick"  parameterClass="java.lang.String" resultClass="com.athena.ckx.entity.cangk.Zick">
+	select * from ${dbSchemal3}ckx_zick t
+<!-- 	inner join ${dbSchemal3}ckx_zick t2 on t1.usercenter=t2.usercenter and t1.cangkbh = t2.cangkbh  -->
+	where t.cangkbh in ($cangkbhs$)
+	</select>
+	
+	<!-- 插入记录 -->
+	<insert id="insertZick" parameterClass="com.athena.ckx.entity.cangk.Zick">
+		insert into ${dbSchemal3}ckx_zick(usercenter,cangkbh,zickbh,baohd,shifelgl,guanlyzbh,zhantbh,biaos,creator,create_time,editor,edit_time)
+		values(#usercenter#,#cangkbh#,#zickbh#,#baohd#/100,#shifelgl#,#guanlyzbh#,#zhantbh#,'1',#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'))
+	</insert>
+	
+	<!-- 修改记录 -->
+	<update id="updateZick" parameterClass="com.athena.ckx.entity.cangk.Zick">
+		update ${dbSchemal3}ckx_zick
+		set baohd = #baohd#/100,
+			shifelgl = #shifelgl# ,
+			guanlyzbh = #guanlyzbh# ,
+			zhantbh = #zhantbh#,
+			biaos = #biaos# ,
+			editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter">
+				<![CDATA[usercenter = #usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">
+				<![CDATA[cangkbh = #cangkbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zickbh">
+				<![CDATA[zickbh = #zickbh#]]>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 回写发货站台仓库编号 -->
+	<update id="updateCangkbhOfFahzt" parameterClass="com.athena.ckx.entity.cangk.Fahzt">
+		update ${dbSchemal3}ckx_fahzt 
+		set cangkbh = #cangkbh# ,
+			editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+		where usercenter = #usercenter# and fahztbh = #fahztbh#
+	</update>
+	<!-- 清空发货站台仓库编号 -->
+	<update id="updateCangkbhOfFayztNULL" parameterClass="com.athena.ckx.entity.cangk.Cangk">
+		update ${dbSchemal3}ckx_fahzt set cangkbh=''  where fahztbh in (
+				select fahztbh from ${dbSchemal3}ckx_fahzt t where t.cangkbh=#cangkbh# and 
+				t.fahztbh not in (select z.zhantbh from ${dbSchemal3}ckx_zick z  where z.cangkbh=#cangkbh#)
+		)
+	</update>
+	<!-- 回写卸货站台仓库编号 -->
+	<update id="updateCangkbhOfXiehzt" parameterClass="com.athena.ckx.entity.cangk.Xiehzt">
+		update ${dbSchemal3}ckx_xiehzt 
+		set cangkbh = #cangkbh# ,
+			editor = #editor# ,
+			edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+		where usercenter = #usercenter# and xiehztbh = #xiehztbh#
+	</update>
+	<!-- 清空卸货站台仓库编号 -->
+	<update id="updateCangkbhOfXiehztNULL" parameterClass="com.athena.ckx.entity.cangk.Cangk">
+		update ${dbSchemal3}ckx_xiehzt set cangkbh=''  where xiehztbh in (
+				select xiehztbh from ${dbSchemal3}ckx_xiehzt t where t.cangkbh=#cangkbh# and 
+				t.xiehztbh not in (select z.zhantbh from ${dbSchemal3}ckx_zick z  where z.cangkbh=#cangkbh#)
+		)
+	</update>
+	<!-- 删除记录 -->
+	<delete id="deleteZick" parameterClass="com.athena.ckx.entity.cangk.Zick">
+		update ${dbSchemal3}ckx_zick
+		set <![CDATA[biaos = '0' , editor = #editor# , edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		<dynamic>
+			<isNotEmpty prepend="where" property="usercenter">
+				<![CDATA[usercenter=#usercenter#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh">
+				<![CDATA[cangkbh = #cangkbh#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="zickbh">
+				<![CDATA[zickbh = #zickbh#]]>
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<!--  -->
+	<select id="getXiehztbh" parameterClass="com.athena.ckx.entity.cangk.Zick" resultClass="java.lang.String">
+		select distinct zhantbh from ${dbSchemal3}ckx_zick where usercenter = #usercenter# and cangkbh = #cangkbh# and zickbh = #zickbh#
+	</select>
+</sqlMap>

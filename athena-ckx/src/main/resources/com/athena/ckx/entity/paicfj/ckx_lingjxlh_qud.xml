@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+<select id="queryCkx_lingjxlh_qud" resultClass="com.athena.ckx.entity.paicfj.Ckx_lingjxlh_qud">
+   select qid,usercenter , lingjbh , xulhqz , xulhks , xulhjs , to_char(qisrq,'yyyy-MM-dd') as qisrq , to_char(jiesrq,'yyyy-MM-dd') as jiesrq , zhidr , to_char(zhidsj,'yyyy-MM-dd') as zhidsj  ,biaos
+   from ${dbSchemal3}ckx_lingjxlh_qud
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,lingjbh
+</select>
+<insert id="insertCkx_lingjxlh_qud" parameterClass="com.athena.ckx.entity.paicfj.Ckx_lingjxlh_qud">
+insert into ${dbSchemal3}ckx_lingjxlh_qud
+(qid,usercenter , lingjbh , xulhqz , xulhks , xulhjs , qisrq , jiesrq , zhidr , zhidsj ,biaos, creator , create_time , editor , edit_time)
+values(#qid#,#usercenter# , #lingjbh# , #xulhqz# , #xulhks# , #xulhjs# , to_date(#qisrq#,'yyyy-MM-dd') , to_date(#jiesrq#,'yyyy-MM-dd') , #zhidr# , to_date(#zhidsj#,'yyyy-MM-dd') ,'1', #creator# , #create_time# , #editor# , #edit_time#)
+</insert>
+
+
+<update id="updateCkx_lingjxlh_qud" parameterClass="com.athena.ckx.entity.paicfj.Ckx_lingjxlh_qud">
+update ${dbSchemal3}ckx_lingjxlh_qud
+set 
+    		   <![CDATA[xulhqz = #xulhqz#]]> ,    	
+    		   <![CDATA[xulhks = #xulhks#]]> ,    	
+    		   <![CDATA[xulhjs = #xulhjs#]]> ,    	
+    		   <![CDATA[qisrq = to_date(#qisrq#,'yyyy-MM-dd')]]> ,    	
+    		   <![CDATA[jiesrq = to_date(#jiesrq#,'yyyy-MM-dd')]]> ,    	
+    		   <![CDATA[zhidr = #zhidr#]]> ,    	
+    		   <![CDATA[zhidsj = to_date(#zhidsj#,'yyyy-MM-dd')]]> ,    	
+    		   <![CDATA[biaos = #biaos#]]> ,    	
+    		   <![CDATA[editor = #editor#]]> ,    	
+    		   <![CDATA[edit_time = #edit_time#]]>     	
+       where  <![CDATA[ qid = #qid# ]]> 
+</update>
+
+<update id="deleteCkx_lingjxlh_qud" parameterClass="com.athena.ckx.entity.paicfj.Ckx_lingjxlh_qud">
+update ${dbSchemal3}ckx_lingjxlh_qud
+set biaos='0' 
+<dynamic >       	
+    	<isNotEmpty property="editor" prepend=",">
+    		   <![CDATA[editor = #editor#]]> 
+    	</isNotEmpty>
+    	<isNotEmpty property="edit_time" prepend=",">
+    		   <![CDATA[edit_time = #edit_time#]]> 
+    	</isNotEmpty>
+    </dynamic> 
+       where  <![CDATA[ qid = #qid# ]]>
+</update>
+<select id="checkXuLHQuD" parameterClass="com.athena.ckx.entity.paicfj.Ckx_lingjxlh_qud" resultClass="java.lang.Integer">
+ select count(usercenter) 
+ from  ${dbSchemal3}ckx_lingjxlh_qud 
+ <![CDATA[where xulhqz=#xulhqz# and biaos='1' and qid <>#qid# and
+ ((xulhks between #xulhks# and #xulhjs#) or (xulhjs between #xulhks# and #xulhjs#) or (#xulhjs# between xulhks and xulhjs) or (#xulhjs# between xulhks and xulhjs)) ]]>
+</select>
+
+</sqlMap>

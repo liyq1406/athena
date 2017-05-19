@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 收货待处理ibaits配置文件 -->
+<sqlMap namespace="report">
+	<select id="queryIlKucfx"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.report.Kucfx"  remapResults="true">
+	     
+	    select 
+		    usercenter as usercenter, 
+		    lingjbh as lingjbh,
+		    cangkdm as cangkdm,
+		    shiycj as shiycj,
+		    kucsl as kucsl,
+		    cmj as cmj,
+		    tians as tians,
+		    jihy as jihy,
+		    workts as workts,
+		    xuqsl as xuqsl,
+		    creator as creator,
+		    create_time  as createtime
+	    from ${dbSchemal1}rep_kucfx_il 
+	    where 
+	         1=1
+		 <dynamic>
+				<isNotEmpty prepend=" and " property="usercenter">
+				           usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+				           lingjbh = #lingjbh#
+				</isNotEmpty>
+		</dynamic>
+	</select> 
+	
+	
+	<select id="queryKdKucfx"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.report.Kucfx"  remapResults="true">
+	        
+	    select 
+		    usercenter as usercenter, 
+		    lingjbh as lingjbh,
+		    cangkdm as cangkdm,
+		    shiycj as shiycj,
+		    kucsl as kucsl,
+		    ysgsl as ysgsl,
+		    zhongxqsl as zhongxqsl,
+		    cmj as cmj,
+		    tians as tians,
+		    jihy as jihy,
+		    workts as workts,
+		    xuqsl as xuqsl,
+		    creator as creator,
+		    create_time  as createtime
+	    from ${dbSchemal1}rep_kucfx_kd
+	    where 
+	         1=1
+		 <dynamic>
+				<isNotEmpty prepend=" and " property="usercenter">
+				           usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+				           lingjbh = #lingjbh#
+				</isNotEmpty>
+		</dynamic>
+	</select> 
+	
+	
+	<select id="queryBjKucfx"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.report.Kucfx"  remapResults="true">
+	    select 
+		    usercenter as usercenter, 
+		    lingjbh as lingjbh,
+		    cangkdm as cangkdm,
+		    shiycj as shiycj,
+		    kucsl as kucsl,
+		    ysgsl as ysgsl,
+		    zhongxqsl as zhongxqsl,
+		    cmj as cmj,
+		    tians as tians,
+		    jihy as jihy,
+		    workts as workts,
+		    xuqsl as xuqsl,
+		    creator as creator,
+		    create_time  as createtime
+	    from ${dbSchemal1}rep_kucfx_bj
+	    where 
+	        <![CDATA[  tians <= 15 ]]>
+		 <dynamic>
+				<isNotEmpty prepend=" and " property="usercenter">
+				           usercenter = #usercenter#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="lingjbh">
+				           lingjbh = #lingjbh#
+				</isNotEmpty>
+		</dynamic>
+	</select> 
+	
+	
+	
+	<!-- 聚合非CLV毛需求 -->
+	<select id="aggregationIL"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.report.Kucfx"  remapResults="true">
+		select 
+		   usercenter as usercenter,
+			lingjbh as lingjbh,
+			sum(xuqsl) as xuqsl
+		  from ${dbSchemal1}xqjs_maoxqmx
+		 where zhizlx = '97W'
+		  and  ACTIVE  = '1'
+		  <dynamic>
+					<isNotEmpty prepend=" and " property="xuqbc">
+					           xuqbc in ($xuqbc$)
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="xuqsszq">
+					           xuqsszq = #xuqsszq#
+					</isNotEmpty>
+				</dynamic>
+		 group by usercenter, lingjbh
+	
+	</select> 
+	
+	<!-- 聚合CLV毛需求 -->
+	<select id="aggregationILCLV"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.report.Kucfx"  remapResults="true">
+		select 
+			usercenter as usercenter,
+			lingjbh as lingjbh,
+			sum(xuqsl) as xuqsl,
+			count(XUQRQ) as workts
+			from 
+			(
+				select usercenter ,lingjbh ,sum(xuqsl) as xuqsl, XUQRQ 
+				from ${dbSchemal1}xqjs_maoxqmx
+				where 
+				ACTIVE  = '1'
+				and ZHIZLX = '97W'
+				 <dynamic>
+					<isNotEmpty prepend=" and " property="xuqbc">
+					           xuqbc = #xuqbc#
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="xuqsszq">
+					           xuqsszq = #xuqsszq#
+					</isNotEmpty>
+				</dynamic>
+				group by usercenter , lingjbh , xuqrq
+			)
+			group by usercenter , lingjbh	
+	</select> 
+	
+	
+	
+	<!-- 聚合Kd毛需求 -->
+	<select id="aggregationKD"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.report.Kucfx"  remapResults="true">
+		select 
+		   usercenter as usercenter,
+			lingjbh as lingjbh,
+			sum(xuqsl) as xuqsl,
+			zhizlx as zhizlx,
+			xuqsszq as nianzq
+		  from ${dbSchemal1}xqjs_maoxqmx
+		 where 
+		   ACTIVE  = '1'
+		  <dynamic>
+		  			<isNotEmpty prepend=" and " property="zhizlx">
+					           zhizlx in ($zhizlx$)
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="xuqbc">
+					           xuqbc in ($xuqbc$)
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="xuqsszq">
+					           xuqsszq = #xuqsszq#
+					</isNotEmpty>
+				</dynamic>
+		 group by usercenter, lingjbh ,zhizlx,xuqsszq
+	
+	</select> 
+	
+	<!-- 查询零件信息 -->
+	<select id="queryLingj"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.report.Kucfx"  remapResults="true">
+			select 
+			 usercenter as usercenter ,
+			 lingjbh as lingjbh, 
+			 jihy as jihy,
+			 dinghcj as shiycj
+			from ${dbSchemal3}ckx_lingj 
+			where
+			  biaos != '0' 
+	</select> 
+	
+	
+	<!-- 查找国产件的工作天数 -->
+	<select id="queryRiqIL"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.report.Kucfx"  remapResults="true">
+			select 
+			jh.usercenter as usercenter,
+			jh.appobj as cangkdm,
+			riq.tians as zworkts,
+			riq.gzr as workts
+			from
+			(select usercenter , appobj ,rilbc from ${dbSchemal3}ckx_calendar_group) jh,
+			(select count(riq) as tians , banc ,sum(case when  shifgzr = '1' then 1 else 0 end) as gzr  from ${dbSchemal3}ckx_calendar_version where  biaos = '1' and nianzq = #nianzq#  group by banc) riq  
+			where jh.rilbc = riq.banc(+)
+	</select> 
+	  
+	
+	<!-- 查找KD件的工作天数 -->
+	<select id="queryRiqKD"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.report.Kucfx"  remapResults="true">
+			select decode(banc,'NA01AX01','97D','NA01KD01','97X') as zhizlx, 
+			count(riq) as zworkts,
+			sum(case when  shifgzr = '1' then 1 else 0 end) as workts,
+			nianzq as nianzq    
+			from ${dbSchemal3}ckx_calendar_version
+			where biaos = '1' and banc in ('NA01KD01','NA01AX01') 
+			      <dynamic>
+					<isNotEmpty prepend=" and " property="nianzq">
+					           nianzq = #nianzq#
+					</isNotEmpty>
+				</dynamic>
+			  group by usercenter,banc,nianzq
+	</select> 
+	
+	<!-- 查看当天资源快照 -->
+	<select id="queryKuc"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.report.Kucfx"  remapResults="true">
+			select usercenter as usercenter,
+			 cangkdm as cangkdm,
+			  kucsl as kucsl ,
+			   lingjbh as lingjbh
+			  from ${dbSchemal1}xqjs_ziykzb
+			 where to_char(ziyhqrq,'yyyy-mm-dd') = #jsrq#
+	</select> 
+	
+	<!-- 查看当天资源快照  add by lc 2016-08-26 -->
+	<select id="queryKucBj"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.report.Kucfx"  remapResults="true">
+	     select t.usercenter as usercenter,
+			    t.cangkdm as cangkdm,
+			    t.kucsl as kucsl,
+			    t.lingjbh as lingjbh
+		   from ${dbSchemal1}xqjs_ziykzb t inner join ${dbSchemal3}ckx_wullj b
+             on t.usercenter=b.usercenter and t.lingjbh=b.lingjbh and t.cangkdm=b.dinghck
+		  where to_char(ziyhqrq,'yyyy-mm-dd') = #jsrq#
+			and b.zhizlx in ('97X', '97D')
+            and b.dinghck is not null
+	</select>
+	
+	<!-- 查看当天资源快照 -->
+	<select id="queryKucKD"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.report.Kucfx"  remapResults="true">
+		  SELECT UABQ_.USERCENTER as usercenter,
+             UABQ_.LINGJBH as lingjbh,
+             SUM(DECODE(TC_.ZUISWLD, '107', UABQ_.LINGJSL)) AS zhongxqsl,
+             SUM(DECODE(TC_.ZUISWLD, 'YSG', UABQ_.LINGJSL)) AS ysgsl
+              FROM ${dbSchemal1}XQJS_TC TC_,
+              ${dbSchemal2}CK_DAOHTZD DHTZD_,
+          (SELECT LINGJBH, USERCENTER, LINGJSL, UTH FROM ${dbSchemal2}CK_UABQ where LINGJSL > 0 and BAOZZT in ('1','2','3') ) UABQ_
+       WHERE DHTZD_.UTH = UABQ_.Uth
+      AND DHTZD_.USERCENTER = UABQ_.USERCENTER
+         AND TC_.UTNO = DHTZD_.UTH
+           GROUP BY UABQ_.USERCENTER, UABQ_.LINGJBH
+	</select> 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<insert id="insertKucfxIL"  parameterClass="com.athena.xqjs.entity.report.Kucfx">
+	       insert into ${dbSchemal1}REP_KUCFX_IL
+	            (
+	            	USERCENTER,
+	            	LINGJBH,
+	            	CANGKDM,
+	            	SHIYCJ,
+	            	KUCSL,
+	            	CMJ,
+	            	TIANS,
+	            	JIHY,
+	            	CREATOR,
+	            	CREATE_TIME,
+	            	xuqsl,
+	            	workts
+	       
+	            	
+	            )
+	            values
+	            (
+	            	#usercenter#,
+	            	#lingjbh#,
+	            	#cangkdm#,
+	            	#shiycj#,
+	            	#kucsl#,
+	            	#cmj#,
+	            	#tians#,
+	            	#jihy#,
+	            	#creator#,
+	            	#createtime#,
+	            	#xuqsl#,
+	            	#workts#
+	            ) 
+	</insert>
+	
+	<insert id="insertKucfxKD"  parameterClass="com.athena.xqjs.entity.report.Kucfx">
+	       insert into ${dbSchemal1}REP_KUCFX_KD
+	            (
+	            	USERCENTER,
+	            	LINGJBH,
+	            	CANGKDM,
+	            	SHIYCJ,
+	            	KUCSL,
+	            	YSGSL,
+	            	ZHONGXQSL,
+	            	CMJ,
+	            	TIANS,
+	            	JIHY,
+	            	CREATOR,
+	            	CREATE_TIME,
+	            	xuqsl,
+	            	workts
+	       
+	            	
+	            )
+	            values
+	            (
+	            	#usercenter#,
+	            	#lingjbh#,
+	            	#cangkdm#,
+	            	#shiycj#,
+	            	#kucsl#,
+	            	#ysgsl#,
+	            	#zhongxqsl#,
+	            	#cmj#,
+	            	#tians#,
+	            	#jihy#,
+	            	#creator#,
+	            	#createtime#,
+	            	#xuqsl#,
+	            	#workts#
+	            ) 
+	</insert>
+	
+	
+		
+	<insert id="insertKucfxBJ"  parameterClass="com.athena.xqjs.entity.report.Kucfx">
+	       insert into ${dbSchemal1}REP_KUCFX_BJ
+	            (
+	            	USERCENTER,
+	            	LINGJBH,
+	            	CANGKDM,
+	            	SHIYCJ,
+	            	KUCSL,
+	            	YSGSL,
+	            	ZHONGXQSL,
+	            	CMJ,
+	            	TIANS,
+	            	JIHY,
+	            	CREATOR,
+	            	CREATE_TIME,
+	            	xuqsl,
+	            	workts,
+	      		    xuqsl_after,
+	            	workts_after
+	            	
+	            )
+	            values
+	            (
+	            	#usercenter#,
+	            	#lingjbh#,
+	            	#cangkdm#,
+	            	#shiycj#,
+	            	#kucsl#,
+	            	#ysgsl#,
+	            	#zhongxqsl#,
+	            	#cmj#,
+	            	#tians#,
+	            	#jihy#,
+	            	#creator#,
+	            	#createtime#,
+	            	#xuqsl#,
+	            	#workts#,
+	            	#xuqslAfter#,
+	            	#worktsAfter#
+	            ) 
+	</insert>
+	<delete id="deleteKucfxIL">
+		truncate table  
+			${dbSchemal1}REP_KUCFX_IL
+	</delete>
+	
+	<delete id="deleteKucfxKD">
+		truncate table  
+			${dbSchemal1}REP_KUCFX_KD
+	</delete>
+	
+	<delete id="deleteKucfxBJ">
+		truncate table  
+			${dbSchemal1}REP_KUCFX_BJ
+	</delete>
+</sqlMap>

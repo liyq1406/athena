@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="workCalendarPC">
+	<!-- 多记录查询 -->
+	<select id="queryCkxCalendarTeam" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarTeam">select 
+		kaissj,
+		bianzh,
+		xingqxh,
+		tiaozsj,
+		ban,
+		jiezsj,
+		biaos,
+		xuh
+		,creator,create_Time,editor,edit_Time
+		from ${dbSchemal3}ckx_pc_calendar_team where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="bianzh">bianzh = #bianzh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xingqxh">xingqxh = #xingqxh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xuh">xuh = #xuh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="kaissj">kaissj = #kaissj#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jiezsj">jiezsj = #jiezsj#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="ban">ban = #ban#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos = #biaos#
+			</isNotEmpty>
+		
+		</dynamic>
+		order by bianzh,xingqxh,xuh 
+	</select>
+	
+	<select id="getCountTeam" resultClass="java.lang.String">
+		select count(bianzh) from ${dbSchemal3}ckx_pc_calendar_team where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="bianzh">bianzh = #bianzh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xingqxh">xingqxh = #xingqxh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xuh">xuh = #xuh#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="ban">ban = #ban#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos = #biaos#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 获取最大编组号中的序号 -->
+	<select id="getMaxTeamCode" resultClass="java.lang.String">
+		select max(substr(bianzh,3,2))
+      	from ${dbSchemal3}ckx_pc_calendar_team where substr(bianzh,2,1)=#month#
+	</select>
+	
+	<!-- 获取编组号集合 -->
+	<select id="getSelectTeamCode" resultClass="java.lang.String">
+		select bianzh
+		 from ${dbSchemal3}ckx_pc_calendar_team   where 1=1 
+		 
+		 <dynamic>
+			<isNotEmpty prepend="  and " property="bianzh">bianzh = #bianzh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xingqxh">xingqxh = #xingqxh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xuh">xuh = #xuh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="kaissj">kaissj = #kaissj#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jiezsj">jiezsj = #jiezsj#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="ban">ban = #ban#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">biaos = #biaos#
+			</isNotEmpty>
+		
+		</dynamic>
+		 
+		 group by bianzh
+	</select>
+	
+	<!-- 获取同组同天的最大序号 -->
+	<select id="getMaxXuh" resultClass="java.lang.String" >
+		select max(xuh) from ${dbSchemal3}ckx_pc_calendar_team where bianzh=#bianzh# and xingqxh=#xingqxh#
+	</select>
+	
+	<!-- 单记录查询 -->
+	<select id="getCkxCalendarTeam" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarTeam">select 
+		kaissj,
+		bianzh,
+		xingqxh,
+		tiaozsj,
+		ban,
+		biaos,
+		jiezsj,
+		xuh 
+		,creator,create_Time,editor,edit_Time
+		from ${dbSchemal3}ckx_pc_calendar_team where bianzh = #bianzh# and xingqxh = #xingqxh# and xuh = #xuh#
+	</select>
+	
+	<!-- 获取同组同天的最大序号 -->
+	<select id="getMaxXuhCode" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarTeam">
+		select 
+		kaissj,
+		bianzh,
+		xingqxh,
+		tiaozsj,
+		ban,
+		biaos,
+		jiezsj,
+		xuh
+		,creator,create_Time,editor,edit_Time
+		 from ${dbSchemal3}ckx_pc_calendar_team 
+		where bianzh=#bianzh#  and xingqxh=#xingqxh#  and xuh=(select max(xuh) from ${dbSchemal3}ckx_pc_calendar_team  where bianzh = #bianzh# and xingqxh=#xingqxh#)
+	</select>
+	
+	
+	<!-- 获取当前序号的后一条 -->
+	<select id="getTeamAfter" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarTeam">
+		select 
+		kaissj,
+		bianzh,
+		xingqxh,
+		tiaozsj,
+		ban,
+		biaos,
+		jiezsj,
+		xuh
+		,creator,create_Time,editor,edit_Time
+		 from ${dbSchemal3}ckx_pc_calendar_team 
+		where 
+		bianzh=#bianzh#  and xingqxh=#xingqxh#  
+	 	and xuh=
+	 	(select min(xuh) from ${dbSchemal3}ckx_pc_calendar_team where bianzh=#bianzh# and xingqxh=#xingqxh#  <![CDATA[and xuh>#xuh#]]> )
+	</select>
+	
+	
+	<!-- 获取当前序号的前一条 -->
+	<select id="getTeamBefore" resultClass="com.athena.ckx.entity.workCalendar.CkxCalendarTeam">
+			select 
+		kaissj,
+		bianzh,
+		xingqxh,
+		tiaozsj,
+		ban,
+		biaos,
+		jiezsj,
+		xuh 
+		,creator,create_Time,editor,edit_Time
+		from ${dbSchemal3}ckx_pc_calendar_team 
+		where 
+		bianzh=#bianzh#  and xingqxh=#xingqxh#  
+	 	and xuh=
+	 	(select max(xuh) from ${dbSchemal3}ckx_pc_calendar_team where bianzh=#bianzh# and xingqxh=#xingqxh# <![CDATA[and xuh<#xuh#]]>  )
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 插入记录 -->
+	<insert id="insertCkxCalendarTeam" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarTeam">insert into
+		${dbSchemal3}ckx_pc_calendar_team (kaissj,bianzh,xingqxh,tiaozsj,ban,jiezsj,xuh,biaos,creator,create_Time,editor,edit_Time)
+		values(
+			#kaissj#,
+			#bianzh#,
+			#xingqxh#,
+			#tiaozsj#,
+			#ban#,
+			#jiezsj#,
+			#xuh#,1
+			,#creator#,to_date(#createTime#,'yyyy-MM-dd HH24:mi:ss'),#editor#,to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss'))
+	</insert>
+	<!-- 修改记录 -->
+	<update id="updateCkxCalendarTeam" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarTeam">
+		update ${dbSchemal3}ckx_pc_calendar_team set 
+		kaissj=#kaissj#,
+		bianzh=#bianzh#,
+		xingqxh=#xingqxh#,
+		tiaozsj=#tiaozsj#,
+		ban=#ban#,
+		jiezsj=#jiezsj#,
+		xuh=#xuh#,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss')
+		where bianzh = #bianzh# and xingqxh = #xingqxh# and xuh = #xuh#
+	</update>
+	
+	
+	<!-- 逻辑删除 -->
+	<update id="deleteCkxCalendarTeamLogic" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarTeam">
+		update ${dbSchemal3}ckx_pc_calendar_team set 
+		biaos=0 ,
+		editor=#editor#,
+		edit_Time=to_date(#editTime#,'yyyy-MM-dd HH24:mi:ss') where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="bianzh">bianzh = #bianzh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xingqxh">xingqxh = #xingqxh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xuh">xuh = #xuh#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 删除记录 -->
+	<delete id="deleteCkxCalendarTeam" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarTeam">
+		delete from ${dbSchemal3}ckx_pc_calendar_team
+		where bianzh = #bianzh# and xingqxh = #xingqxh# and xuh = #xuh#
+	</delete>
+	
+	<!-- 批量删除工作时间编组冗余记录 -->
+	<delete id="deleteCkxCalendarTeamByDate" parameterClass="com.athena.ckx.entity.workCalendar.CkxCalendarTeam">
+		delete from ${dbSchemal3}ckx_pc_calendar_team t where 
+		<![CDATA[round(to_number(sysdate - t.create_time)) > 15]]>
+   		and t.bianzh not in (select g.bianzh from ${dbSchemal3}ckx_pc_calendar_group g )
+   		and t.bianzh not in (select g.weilbzh from ${dbSchemal3}ckx_pc_calendar_group g where g.weilbzh is not null)
+	</delete>
+</sqlMap>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="hlorder">
+  <resultMap id="Shengcx" class="com.athena.xqjs.entity.hlorder.Shengcx">
+    <result column="SHENGCXBH" jdbcType="VARCHAR" property="shengcxbh" />
+    <result column="USERCENTER" jdbcType="VARCHAR" property="usercenter" />
+    <result column="CHANXZBH" jdbcType="VARCHAR" property="chanxzbh" />
+    <result column="TESSJXQ1" jdbcType="DECIMAL" property="tessjxq1" />
+    <result column="TESSJXS1" jdbcType="DECIMAL" property="tessjxs1" />
+    <result column="TESSJXQ2" jdbcType="DECIMAL" property="tessjxq2" />
+    <result column="TESSJXS2" jdbcType="DECIMAL" property="tessjxs2" />
+    <result column="TESSJXQ3" jdbcType="DECIMAL" property="tessjxq3" />
+    <result column="TESSJXS3" jdbcType="DECIMAL" property="tessjxs3" />
+    <result column="SHENGCJP" jdbcType="DECIMAL" property="shengcjp" />
+    <result column="WEILSCJP" jdbcType="DECIMAL" property="weilscjp" />
+    <result column="QIEHSJ" jdbcType="TIMESTAMP" property="qiehsj" />
+    <result column="CHULTS" jdbcType="DECIMAL" property="chults" />
+    <result column="BIAOS" jdbcType="CHAR" property="biaos" />
+    <result column="CREATOR" jdbcType="VARCHAR" property="creator" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="EDITOR" jdbcType="VARCHAR" property="editor" />
+    <result column="EDIT_TIME" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="CPSHENGCJP" jdbcType="DECIMAL" property="cpshengcjp" />
+    <result column="FLAG" jdbcType="CHAR" property="flag" />
+    <result column="ANQKCTSMRZ" jdbcType="DECIMAL" property="anqkctsmrz" />
+  </resultMap>
+  <!-- 获取总装的车位数 -->
+  <select id="queryfindZzchews" parameterClass="java.util.Map" resultClass="java.math.BigDecimal" >
+  	select  chews from ${dbSchemal5}CKX_SHENGCX
+  	where 
+  	USERCENTER=#usercenter# and shengcxbh=#usercenter#||5||#scxh#
+  </select>
+  
+  <!-- 获取涂装的车位数 -->
+  <select id="queryfindTzchews" parameterClass="java.util.Map" resultClass="java.math.BigDecimal" >
+  	select  chews from ${dbSchemal5}CKX_SHENGCX
+  	where 
+  	USERCENTER=#usercenter# and shengcxbh=#usercenter#||3||#scxh#
+  </select>
+  
+  <!-- 获取焊装的车位数 -->
+  <select id="queryfindHzchews" parameterClass="java.util.Map" resultClass="java.math.BigDecimal" >
+  	select  chews from ${dbSchemal5}CKX_SHENGCX
+  	where 
+  	USERCENTER=#usercenter# and shengcxbh=#usercenter#||2||#scxh#
+  </select>
+   
+  
+</sqlMap>

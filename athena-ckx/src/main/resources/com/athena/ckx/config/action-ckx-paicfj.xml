@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<toft>	
+
+    <package name="paicfj" namespace="/paicfj"  extend="toft-default" >
+    	    <!-- 产线组 (包含产线，计划员，排产参数)-->
+    	<action name="ckx_chanxz" class="ckx_chanxzAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_chanxz.jsp</result>
+    	</action>
+    	<action name="queryCkx_chanxz" class="ckx_chanxzAction" method="query"/>
+    	<action name="queryPCJHY" class="ckx_chanxzAction" method="queryPCJHY"/>
+    	<action name="listCkx_chanxz" class="ckx_chanxzAction" method="list"/>
+    	<action name="queryCkx_chanxz_paiccs" class="ckx_chanxzAction" method="query_chanxz_paiccs"/>
+   		<action name="saveCkx_chanxz" class="ckx_chanxzAction" method="save"/>
+   			
+      
+        <!-- 生产线-->                   
+    	<action name="ckx_shengcx" class="ckx_shengcxAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_shengcx.jsp</result>
+    	</action>
+    	<action name="queryCkx_shengcx" class="ckx_shengcxAction" method="query"/>
+    	<action name="listCkx_shengcx" class="ckx_shengcxAction" method="list"/>
+   		<action name="saveCkx_shengcx" class="ckx_shengcxAction" method="save"/>
+   		<action name="removeCkx_shengcx" class="ckx_shengcxAction" method="remove"/>	
+    	 <!-- 产线组计划员-->                   
+    	<action name="ckx_chanxz_jhy" class="ckx_chanxz_jhyAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_chanxz_jhy.jsp</result>
+    	</action>
+    	<action name="queryCkx_chanxz_jhy" class="ckx_chanxz_jhyAction" method="query"/>
+   		<action name="saveCkx_chanxz_jhy" class="ckx_chanxz_jhyAction" method="save"/>
+   		
+   		 <!-- 客户表-->                   
+    	<action name="ckx_kehb" class="ckx_kehbAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_kehb.jsp</result>
+    	</action>
+    	<action name="queryCkx_kehb" class="ckx_kehbAction" method="query"/>
+    	<action name="listCkx_kehb" class="ckx_kehbAction" method="list"/>
+   		<action name="saveCkx_kehb" class="ckx_kehbAction" method="save"/>
+   		<action name="removeCkx_kehb" class="ckx_kehbAction" method="remove"/>
+   		
+		 <!-- 产线-零件-->                   
+    	<action name="ckx_shengcx_lingj" class="ckx_shengcx_lingjAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_shengcx_lingj.jsp</result>
+    	</action>
+    	<action name="queryCkx_shengcx_lingj" class="ckx_shengcx_lingjAction" method="query"/>
+   		<action name="saveCkx_shengcx_lingj" class="ckx_shengcx_lingjAction" method="save"/>
+   		<action name="downloadMob_shengcx" class="ckx_shengcx_lingjAction" method="downloadMob"/>
+   		<action name="shengcx_lingj_upload" class="ckx_shengcx_lingjAction" method="upload">
+   		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_shengcx_lingj.jsp</result>
+   		</action>
+   		
+   		 <!-- 用户承运商关系-->                   
+    	<action name="ckx_yongh_chengys" class="ckx_yongh_chengysAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_yongh_chengys.jsp</result>
+    	</action>
+    	<action name="queryCkx_yongh_chengys" class="ckx_yongh_chengysAction" method="query"/>
+   		<action name="saveCkx_yongh_chengys" class="ckx_yongh_chengysAction" method="save"/>
+   		 <!-- 零件客户关系-->                   
+    	<action name="ckx_lingjkh" class="ckx_lingjkhAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_lingjkh.jsp</result>
+    	</action>
+    	<action name="queryCkx_lingjkh" class="ckx_lingjkhAction" method="query"/>
+   		<action name="saveCkx_lingjkh" class="ckx_lingjkhAction" method="save"/>
+   		<action name="removeCkx_lingjkh" class="ckx_lingjkhAction" method="remove"/>
+   		<action name="downloadMob" class="ckx_lingjkhAction" method="downloadMob"/>
+   		<action name="lingjkh_upload" class="ckx_lingjkhAction" method="upload">
+   		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_lingjkh.jsp</result>
+   		</action>
+   		 <!-- 成品库参考系-->                   
+    	<action name="ckx_chengpk" class="ckx_chengpkAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_chengpk.jsp</result>
+    	</action>
+    	<action name="queryCkx_chengpk" class="ckx_chengpkAction" method="query"/>
+   		<action  name="saveCkx_chengpk" class="ckx_chengpkAction" method="save"/>
+   		 <!-- 零件序列号区段-->                   
+    	<action name="ckx_lingjxlh_qud" class="ckx_lingjxlh_qudAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_lingjxlh_qud.jsp</result>
+    	</action>
+    	<action name="queryCkx_lingjxlh_qud" class="ckx_lingjxlh_qudAction" method="query"/>
+   		<action  name="saveCkx_lingjxlh_qud" class="ckx_lingjxlh_qudAction" method="save"/>
+   		<!-- 运输商-->                   
+    	<action name="ckx_gongys" class="ckx_gongysAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_gongys.jsp</result>
+    	</action>
+    	<action name="queryCkx_gongys" class="ckx_gongysAction" method="query"/>
+   		<action  name="saveCkx_gongys" class="ckx_gongysAction" method="save"/>
+   		<action  name="removeCkx_gongys" class="ckx_gongysAction" method="remove"/>
+   		<action  name="listCkx_gongys" class="ckx_gongysAction" method="list"/>
+   		<!-- 客户成品库关系-->                   
+    	<action name="ckx_keh_chengpk" class="ckx_keh_chengpkAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_keh_chengpk.jsp</result>
+    	</action>
+    	<action name="queryCkx_keh_chengpk" class="ckx_keh_chengpkAction" method="query"/>
+   		<action  name="savesCkx_keh_chengpk" class="ckx_keh_chengpkAction" method="saves"/>
+   		<action  name="saveCkx_keh_chengpk" class="ckx_keh_chengpkAction" method="save"/>
+   		<action  name="removeCkx_keh_chengpk" class="ckx_keh_chengpkAction" method="remove"/>
+   		<!-- 车型表-->                   
+    	<action name="ckx_chex" class="ckx_chexAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_chex.jsp</result>
+    	</action>
+    	<action name="queryCkx_chex" class="ckx_chexAction" method="query"/>
+   		<action  name="saveCkx_chex" class="ckx_chexAction" method="save"/>
+   		<action  name="listCkx_chex" class="ckx_chexAction" method="list"/>
+   		<!-- 配载包装定义-->                   
+    	<action name="ckx_peizbz" class="ckx_peizbzAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_peizbz.jsp</result>
+    	</action>
+    	<action name="queryCkx_peizbz" class="ckx_peizbzAction" method="query"/>
+    	<action name="queryCkx_peizbzbh" class="ckx_peizbzAction" method="query_bh"/>
+   		<action  name="saveCkx_peizbz" class="ckx_peizbzAction" method="save"/>
+   		<action  name="removeCkx_peizbz" class="ckx_peizbzAction" method="remove"/>
+   		<action  name="listCkx_peizbz" class="ckx_peizbzAction" method="list"/>
+   		<action  name="getCkx_peizbz" class="ckx_peizbzAction" method="get"/>
+   			<!-- 配载策略-->                   
+    	<action name="ckx_peizcl" class="ckx_peizclAction" method="execute">
+    		<result name="select">/WEB-INF/pages/ckx/paicfj/ckx_peizcl.jsp</result>
+    	</action>
+    	<action name="queryCkx_peizcl" class="ckx_peizclAction" method="query"/>
+    	<action name="queryCkx_peizclzb" class="ckx_peizclAction" method="query_zb"/>
+   		<action  name="saveCkx_peizcl" class="ckx_peizclAction" method="save"/>
+   		<action  name="removeCkx_peizcl" class="ckx_peizclAction" method="remove"/>
+   		<action  name="list_zb" class="ckx_peizclAction" method="list_zb"/>
+<!--    		<action  name="getCkx_peizbz" class="ckx_peizbzAction" method="get"/> -->
+
+<!-- 车型运输商关系 -->
+		<action name="chexYunss" 
+			class="chexYunssAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/paicfj/chexYunss.jsp</result>
+		</action>		
+		<action name="queryChexYunss" class="chexYunssAction" method="query"/>		
+		<action name="saveChexYunss" class="chexYunssAction" method="save"/>
+<!-- 运输路线 -->
+		<action name="yunslx" 
+			class="yunslxAction" method="execute">
+			<result name="select">/WEB-INF/pages/ckx/paicfj/yunslx.jsp</result>
+		</action>
+		<action name="queryYunslx" class="yunslxAction" method="query"/>
+		<action name="saveYunslx" class="yunslxAction" method="save"/>
+		<action name="removeYunslx" class="yunslxAction" method="remove"/>
+		<!-- 运输路线交付时刻 -->		
+		<action name="queryYunslxJiaof" class="yunslxAction" method="query_jiaofsk"/>
+		
+    </package>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</toft>

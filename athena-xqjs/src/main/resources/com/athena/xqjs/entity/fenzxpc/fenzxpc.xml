@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 数据库操作配置文件 -->
+<sqlMap namespace="fenzxpc">
+
+	<!--插入报警信息 -->
+	<insert id="insertWarnMessage" parameterClass="com.athena.xqjs.entity.fenzxpc.WarnMessage">
+		insert into ${dbSchemal5}xqjs_message(usercenter,daxxh,fenzxh,paicrq,xiaox,creator,create_time)
+		values(<![CDATA[#usercenter#,#daxxh#,#fenzxh#,to_date(#paicrq#,'yyyy-MM-dd'),#xiaox#,#creator#,to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3')]]> )
+    </insert>
+    
+    <!--查询参与排产的大线 -->
+    <select id="getPaicdx" resultClass="com.athena.xqjs.entity.fenzxpc.Dax">
+		select distinct usercenter,daxxh from ${dbSchemal5}in_zhuxpcjh 
+		where <![CDATA[yujjhzsj <= to_date('2050-01-01','yyyy-MM-dd')]]>
+		order by usercenter,daxxh
+	</select>
+	
+	<!--查询大线详细信息 -->
+	<select id="getDaxInfo" parameterClass="com.athena.xqjs.entity.fenzxpc.Dax" resultClass="com.athena.xqjs.entity.fenzxpc.Dax">
+		select d.usercenter,d.daxxh,d.paicfbq,d.chaifts,d.beiz,d.biaos,s.shengcjp,s.chews
+	    from ${dbSchemal5}ckx_dax d
+	    inner join ${dbSchemal5}ckx_shengcx s on d.usercenter = s.usercenter and d.daxxh = s.shengcxbh
+		where d.usercenter = #usercenter# and d.daxxh = #daxxh# and d.biaos = '1'
+	</select>
+	
+	<!--获取上一次排产日期范围 -->
+    <select id="getLastPcDateScope" parameterClass="com.athena.xqjs.entity.fenzxpc.Dax" 
+  	  	resultClass="com.athena.xqjs.entity.fenzxpc.Paicls">
+        select distinct to_char(paicjssj,'yyyy-MM-dd') paicjssj from ${dbSchemal5}xqjs_paicls 
+        where paicjssj = (select max(paicjssj) from ${dbSchemal5}xqjs_paicls where usercenter = #usercenter# and daxxh = #daxxh#)
+	</select>
+	
+	<!--获取上一次排产流水 -->
+    <select id="getLastPcls" parameterClass="com.athena.xqjs.entity.fenzxpc.Fenzx" 
+  	  	resultClass="com.athena.xqjs.entity.fenzxpc.Paicls">
+        select zuihjscl from ${dbSchemal5}xqjs_paicls 
+        where paicjssj = (select max(paicjssj) from ${dbSchemal5}xqjs_paicls where usercenter = #usercenter# and daxxh = #daxxh#  and fenzxh = #fenzxh#)
+        and fenzxh = #fenzxh#
+	</select>	
+	
+	<!--查询有排产计划的日期  -->
+    <select id="getZhuxjhDays" parameterClass="com.athena.xqjs.entity.fenzxpc.Dax"  
+    	resultClass="java.lang.String">
+		select distinct to_char(yujjhzsj,'yyyy-MM-dd') yujjhzsj from ${dbSchemal5}in_zhuxpcjh
+		where usercenter = #usercenter# and daxxh = #daxxh# and yujjhzsj is not null
+		<![CDATA[and yujjhzsj <= to_date('2050-01-01','yyyy-MM-dd')]]>
+		order by yujjhzsj
+	</select>
+	
+	<!--查询主线排产计划  -->
+    <select id="getZhuxjh" parameterClass="java.util.HashMap"  
+    	resultClass="com.athena.xqjs.entity.fenzxpc.Zhuxpcjh">
+		select daxzsx_lixq,to_char(yujjhzsj,'yyyy-MM-dd') yujjhzsj,lixlx,zongch,dingdh,usercenter,daxxh,zhankrq,lixd,tiqcw,hanzcx,xuqly from ${dbSchemal5}in_zhuxpcjh
+		where usercenter = #usercenter# and daxxh = #daxxh# and
+		zongch is not null and
+		<![CDATA[yujjhzsj >= to_date(#selectBeginDate#,'yyyy-MM-dd') and yujjhzsj<= to_date(#selectEndDate#,'yyyy-MM-dd')]]>
+		<![CDATA[and yujjhzsj <= to_date('2050-01-01','yyyy-MM-dd')]]>
+		and zongch!='ZONGCH'
+		order by yujjhzsj,daxzsx_lixq
+	</select>
+	
+	<!--查询某大线下的所有分装线  -->
+    <select id="getFenzx" parameterClass="com.athena.xqjs.entity.fenzxpc.Dax"  
+    	resultClass="com.athena.xqjs.entity.fenzxpc.Fenzx">
+		select f.usercenter,f.fenzxh,f.daxxh,f.xiaohdbh,f.fenzxddxxlzcs,f.fenzxxs,f.beijwxpxfs,f.biaos,s.shengcjp,s.chews,x.chessl
+	    from ${dbSchemal5}ckx_fenzx f
+	    inner join ${dbSchemal5}ckx_shengcx s on f.usercenter = s.usercenter and f.fenzxh = s.shengcxbh
+	    left join ${dbSchemal5}ckx_gongyxhd x on f.xiaohdbh = x.gongyxhd
+	    where f.usercenter = #usercenter# and f.daxxh = #daxxh# and f.biaos = '1'
+	</select>
+	
+	<!--查询排产日期范围内的离线点  -->
+    <select id="getLixd" parameterClass="com.athena.xqjs.entity.fenzxpc.Dax"  
+    	resultClass="com.athena.xqjs.entity.fenzxpc.Lixd">
+    	select l.usercenter,l.xianh,l.lixd,l.leix,l.duiyxhd,x.chessl from
+    	(
+    	select l1.usercenter,l1.xianh,l1.lixd,l1.leix,l1.duiyxhd from ${dbSchemal5}ckx_dax d 
+    	inner join ${dbSchemal5}ckx_lixd l1 on d.usercenter = l1.usercenter and d.daxxh = l1.xianh and l1.biaos = '1' 
+    	where d.usercenter = #usercenter# and d.daxxh = #daxxh# and d.biaos = '1'
+		union all
+		select l2.usercenter,l2.xianh,l2.lixd,l2.leix,l2.duiyxhd from ${dbSchemal5}ckx_fenzx f 
+		inner join ${dbSchemal5}ckx_lixd l2 on f.usercenter = l2.usercenter and f.fenzxh = l2.xianh and l2.biaos = '1' 
+		where f.usercenter = #usercenter# and f.daxxh = #daxxh# and f.biaos = '1'
+		)l
+		left join ${dbSchemal5}ckx_gongyxhd x on l.duiyxhd = x.gongyxhd
+	</select>
+	
+	<!--查询未完成的备件外销计划  -->
+   <select id="getBeijwxjh" parameterClass="java.util.HashMap"  
+    	resultClass="com.athena.xqjs.entity.fenzxpc.Beijwxjh">
+    	select b.liush,to_char(b.yujjhzsj,'yyyy-MM-dd') yujjhzsj,b.shul,b.wancsl,b.zongch,b.usercenter,b.fenzxh,b.zhankrq,b.beijwx,b.filler,b.xuqly,s.lingjlx,f.beijwxpxfs from ${dbSchemal5}in_beijwxjh b
+        left join ${dbSchemal5}ckx_shengcx_lingj s on b.usercenter = s.usercenter and b.zongch = s.lingjbh and b.fenzxh = s.shengcxbh
+        inner join ${dbSchemal5}ckx_fenzx f on b.usercenter = f.usercenter and b.fenzxh = f.fenzxh and biaos = '1'
+        <![CDATA[
+        where  b.wancsl < b.shul and b.usercenter = #usercenter# and yujjhzsj <= to_date(#selectEndDate#,'yyyy-MM-dd') and  b.fenzxh in 
+	    (select fenzxh from ${dbSchemal5}ckx_fenzx where usercenter = #usercenter#  and daxxh = #daxxh# and biaos = '1')
+	    order by b.yujjhzsj,b.shul,b.beijwx,b.liush
+	    ]]>
+	</select>
+	
+	<!--查询PDS拆分信息  -->
+    <select id="getPDScfxx" parameterClass="java.util.HashMap"  
+    	resultClass="com.athena.xqjs.entity.fenzxpc.Zongccfjg">
+    	select zc.usercenter,zc.zongch,zc.lingj,zc.xiaohd,zc.danw,zc.xis,zc.kaiszkrq,zc.jieszkrq,f.fenzxh,s.lingjlx from 
+		<![CDATA[
+		(select distinct usercenter,daxxh,zongch from ${dbSchemal5}in_zhuxpcjh 
+		where usercenter = #usercenter# and 
+		daxxh = #daxxh# and yujjhzsj >= to_date(#selectBeginDate#,'yyyy-MM-dd') and 
+		yujjhzsj<= to_date(#selectEndDate#,'yyyy-MM-dd')) zx
+		]]>
+		inner join ${dbSchemal5}in_zongccfjg zc on zx.usercenter = zc.usercenter and substr(zx.daxxh,1,3) = zc.chej and zx.zongch = zc.zongch
+		inner join ${dbSchemal5}ckx_fenzx f on zc.usercenter = f.usercenter and f.daxxh = zx.daxxh and  zc.xiaohd = f.xiaohdbh and f.biaos = '1'
+		inner join ${dbSchemal5}ckx_shengcx_lingj s on zc.usercenter = s.usercenter and zc.lingj = s.lingjbh and f.fenzxh = s.shengcxbh 
+		order by zc.usercenter,zc.zongch,zc.kaiszkrq,zc.jieszkrq,zc.xiaohd,s.lingjlx,zc.lingj
+	</select>
+	
+	<!--查询产线零件信息  -->
+    <select id="getChanxlj" parameterClass="com.athena.xqjs.entity.fenzxpc.Dax"  
+    	resultClass="com.athena.xqjs.entity.fenzxpc.Zongccfjg">
+    	select s.usercenter,s.shengcxbh as fenzxh,s.lingjbh as lingj,s.lingjlx from ${dbSchemal5}ckx_fenzx f
+		inner join ${dbSchemal5}ckx_shengcx_lingj s on f.usercenter = s.usercenter and f.fenzxh = s.shengcxbh
+		where f.daxxh = #daxxh# and f.usercenter = #usercenter#
+	</select>
+	
+	<!--获取大线以及相应分装线的排产数量  -->
+	<select id="getPaicsl" parameterClass="java.util.HashMap"  
+    	resultClass="com.athena.xqjs.entity.fenzxpc.Paicsl">
+    	select d.usercenter,d.daxxh as xianh,to_char(d.riq,'yyyy-MM-dd') riq,d.jihsxl,d.jihxxl from ${dbSchemal5}in_daxpcsl d where d.usercenter = #usercenter# and d.daxxh = #daxxh#
+	    and <![CDATA[d.riq >= to_date(#selectBeginDate#,'yyyy-MM-dd') and d.riq <= to_date(#selectEndDate#,'yyyy-MM-dd')]]>
+	    union all
+	    select f.usercenter,f.fenzxh as xianh,to_char(f.riq,'yyyy-MM-dd') riq,f.jihsxl,f.jihxxl from ${dbSchemal5}ckx_fenzxpcsl f where f.usercenter = #usercenter# and f.daxxh = #daxxh#
+	    and <![CDATA[f.riq >= to_date(#selectBeginDate#,'yyyy-MM-dd') and f.riq <= to_date(#selectEndDate#,'yyyy-MM-dd')]]>
+    </select>
+	
+	<!--查询大线分装线的工作时间  -->
+  	<select id="getWorkingDays" parameterClass="java.util.Map" resultClass="com.athena.xqjs.entity.fenzxpc.CalcDay">
+	     select rp.appobj as xianh, rl.riq as riq,rl.shifgzr as shifgzr,nvl(shij/60,0) as gongs
+	     from ${dbSchemal5}ckx_calendar_version rl 
+	     inner join ${dbSchemal5}ckx_calendar_group rp on rl.banc= rp.rilbc  and rl.usercenter = rp.usercenter
+	     left join (
+		      select usercenter,chanxck,gongzr,sum(shijcd) shij from ckx_ticxxsj 
+		      group by usercenter,chanxck,gongzr order by gongzr)t
+		      on t.usercenter = rp.usercenter and t.chanxck = rp.appobj and t.gongzr = rl.riq
+	  <![CDATA[
+	    where 1 = 1   and rp.appobj in ($shengcx$) and rp.usercenter = #usercenter# 
+	    and to_date(rl.riq,'yyyy-MM-dd') >=  to_date(#selectBeginDate#,'yyyy-MM-dd') 
+        and to_date(rl.riq,'yyyy-MM-dd') <= to_date(#selectEndDate#,'yyyy-MM-dd') 
+	    order by rp.appobj ,rl.riq,rl.shifgzr,rp.beiz
+	  ]]>
+ 	</select>
+	
+	<!--查询有排产计划的日期  -->
+	<select id="getFenzxpcjhDay" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	 	select  to_char(a.yujsxrq,'yyyy-MM-dd') as riq,a.fenzxh from ${dbSchemal5}ckx_fenzx f
+		inner join (
+		      select distinct yujsxrq,fenzxh,usercenter from ${dbSchemal5}xqjs_fenzxpcjh
+		) a
+		on f.usercenter = a.usercenter and f.fenzxh = a.fenzxh 
+		<![CDATA[
+		where f.usercenter = #usercenter# and f.daxxh = #daxxh# 
+		and a.yujsxrq>=to_date(#selectBeginDate#,'yyyy-MM-dd') and a.yujsxrq<=to_date(#selectEndDate#,'yyyy-MM-dd')
+		]]>
+	</select>
+	
+	<!--查询分装线最新的排产流水  -->
+	<select id="getFenzxPaicls" parameterClass="com.athena.xqjs.entity.fenzxpc.Dax" 
+		resultClass="com.athena.xqjs.entity.fenzxpc.Paicls">
+	 	select b.usercenter,b.daxxh,b.fenzxh,to_char(b.paickssj,'yyyy-MM-dd') paickssj,to_char(b.paicjssj,'yyyy-MM-dd') paicjssj,b.zuihjscl,b.fenzxzsxh,b.chakpyl from(
+		select a.*,row_number() over(partition by a.usercenter,a.daxxh,a.fenzxh order by rownum) cn from
+		(select usercenter,daxxh,fenzxh,paickssj,paicjssj,zuihjscl,fenzxzsxh,chakpyl  from ${dbSchemal5}xqjs_paicls 
+		where usercenter = #usercenter# and daxxh = #daxxh# order by paickssj desc)a 
+		)b where b.cn = 1
+	</select>
+	
+	<!--查询主线计划的rownum（判断2个订单是否连续）  -->
+	<select id="getRowNum" parameterClass="java.lang.String" 
+		resultClass="java.util.HashMap">
+	 	select b.* from(select a.*, rownum from (select dingdh from ${dbSchemal5}in_zhuxpcjh order by daxzsx_lixq)a )b
+ 		where b.dingdh in ($dingdh$)
+	</select>
+	
+	<!--查询未处理的报废总成  -->
+	<select id="getScrapZong" parameterClass="java.lang.String"  resultClass="com.athena.xqjs.entity.fenzxpc.Guodsbxx">
+		select g.usercenter,g.dingdh,g.hanzsxd,g.zongzlsh,g.zongch,g.shengcx,g.guodsj,g.wuld,g.baofzt,z.zhankrq from ${dbSchemal5}ddbh_sppvxx g
+		left join ${dbSchemal5}in_zhuxpcjh z on g.usercenter = z.usercenter and g.zongch = z.zongch and g.dingdh = z.dingdh
+		where g.shenblx = 'F' and g.baofzt = '0' and g.shengcx in ($shengcx$)
+		order by g.guodsj,g.zongzlsh
+	</select>
+	
+	<!--插入分装线排产计划 -->
+	<insert id="insertFenzxpcjh" parameterClass="com.athena.xqjs.entity.fenzxpc.Fenzxpcjh">
+		insert into ${dbSchemal5}xqjs_fenzxpcjh(fenzxzsx_lixq,fenzxzsx_lixh,yujsxrq,yujxxrq,fenzsx,fenzch,dingdh,usercenter,fenzxh,hanzcx,lingjlx,lingjyt,lixd,xuqly,zhankrq,creator,create_time)
+		values(<![CDATA[#fenzxzsx_lixq#,#fenzxzsx_lixh#,to_date(#yujsxrq#,'yyyy-MM-dd'),to_date(#yujxxrq#,'yyyy-MM-dd'),#fenzsx#,#fenzch#,#dingdh#,#usercenter#,#fenzxh#,#hanzcx#,#lingjlx#,#lingjyt#,#lixd#,#xuqly#,#zhankrq#,#creator#,to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3')]]> )
+    </insert>
+	
+	<!--插入排产流水 -->
+	<insert id="insertPaicls" parameterClass="com.athena.xqjs.entity.fenzxpc.Paicls">
+		insert into ${dbSchemal5}xqjs_paicls(usercenter,daxxh,fenzxh,zuihjscl,fenzxzsxh,paickssj,paicjssj,chakpyl,creator,create_time)
+		values(<![CDATA[#usercenter#,#daxxh#,#fenzxh#,#zuihjscl#,#fenzxzsxh#,to_date(#paickssj#,'yyyy-MM-dd'),to_date(#paicjssj#,'yyyy-MM-dd'),#chakpyl#,#creator#,to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3')]]> )
+    </insert>
+    
+    <!--更新备件外销计划的完成数量-->
+    <update id="updateBeijwxjh" parameterClass="com.athena.xqjs.entity.fenzxpc.Beijwxjh">
+		update ${dbSchemal5}in_beijwxjh
+		set  wancsl = #wancsl#
+		where usercenter = #usercenter# and zongch = #zongch# and yujjhzsj = to_date(#yujjhzsj#,'yyyy-MM-dd') and fenzxh = #fenzxh# and zhankrq = #zhankrq# and beijwx = #beijwx#
+	</update>	
+	
+	 <!--更新已处理报废的过点申报信息-->
+    <update id="updateGuodsbxx" parameterClass="com.athena.xqjs.entity.fenzxpc.Guodsbxx">
+		update ${dbSchemal5}ddbh_sppvxx
+		set  baofzt = #baofzt#
+		where usercenter = #usercenter# and zongzlsh = #zongzlsh# and hanzsxd = #hanzsxd# and shengcx = #shengcx# and guodsj = #guodsj# and baofzt = '0'
+	</update>	
+	    
+    <!--获取一个月的分装线的排产数量  -->
+    <select id="getAllPaicsl" parameterClass="java.util.HashMap"  
+    	resultClass="com.athena.xqjs.entity.fenzxpc.Paicsl">
+	    select f.usercenter,f.fenzxh as xianh,to_char(f.riq,'yyyy-MM-dd') riq,f.jihsxl,f.jihxxl from ${dbSchemal5}ckx_fenzxpcsl f where f.usercenter = #usercenter# and f.fenzxh = #fenzxh#
+	    and <![CDATA[f.riq >= to_date(#selectBeginDate#,'yyyy-MM-dd') and f.riq <= to_date(#selectEndDate#,'yyyy-MM-dd')]]>
+    </select>
+	
+	<!--查询一个月分装线的工作时间  -->
+	<select id="getAllWorkingDays" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+	 	select rl.riq
+	 	from ${dbSchemal5}ckx_calendar_version rl inner join ${dbSchemal5}ckx_calendar_group rp on rl.banc= rp.rilbc  and rl.usercenter = rp.usercenter
+	<![CDATA[
+		where 1 = 1   and rp.appobj = #fenzxh# and rp.usercenter = #usercenter# 
+		and rl.riq>=#selectBeginDate# and rl.riq<=#selectEndDate# and rl.shifgzr = '1'
+		order by rl.riq
+	]]>
+	</select>
+	
+	<!--插入主线排产计划（大线排空） -->
+	<insert id="insertZhuxpcjh" parameterClass="com.athena.xqjs.entity.fenzxpc.Zhuxpcjh">
+		insert into ${dbSchemal5}in_zhuxpcjh(
+			daxzsx_lixq, 
+			daxzsx_lixh, 
+			yujjhzsj, 
+			daxsx, 
+			lixlx, 
+			zongch, 
+			dingdh, 
+			usercenter, 
+			daxxh, 
+			zhankrq, 
+			lixd, 
+			tiqcw, 
+			hanzcx, 
+			xuqly, 
+			creator, 
+			create_time)
+		values(<![CDATA[
+			#daxzsx_lixq#, 
+			#daxzsx_lixh#, 
+			to_date(#yujjhzsj#,'yyyy-MM-dd'),
+			#daxsx#, 
+			#lixlx#, 
+			#zongch#, 
+			#dingdh#, 
+			#usercenter#, 
+			#daxxh#, 
+			#zhankrq#, 
+			#lixd#, 
+			#tiqcw#, 
+			#hanzcx#, 
+			#xuqly#, 
+			#creator#, 
+			to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+			]]> )
+    </insert>
+    
+    
+    <!--查询一个月大线的工作时间  -->
+	<select id="getDaxWorkingDays" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+	 	select rl.riq
+	 	from ${dbSchemal5}ckx_calendar_version rl inner join ${dbSchemal5}ckx_calendar_group rp on rl.banc= rp.rilbc  and rl.usercenter = rp.usercenter
+	<![CDATA[
+		where 1 = 1   and rp.appobj = #daxxh# and rp.usercenter = #usercenter# and rl.shifgzr = '1'
+		and rl.riq>= #jiskssj# and rl.riq<= #jisjssj#
+		order by rl.riq
+	]]>
+	</select>
+	
+	<!--根据订单号查询分装线排产计划是否存在  -->
+	<select id="findFenzxpcjhByDingdh" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+	 	select dingdh from ${dbSchemal5}xqjs_fenzxpcjh where fenzxh = #fenzxh# and dingdh in ($dingdh$)
+	</select>
+	
+	<!--查询某日的分装线排产数量  -->
+	<select id="getFenzxpcjhCount" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+	 	select count(1)  from ${dbSchemal5}xqjs_fenzxpcjh where usercenter = #usercenter# and fenzxh = #fenzxh# and yujxxrq = to_date(#yujxxrq#,'yyyy-MM-dd')
+	 		<dynamic> 
+				<isNotEmpty prepend=" and " property="lingjlx"><![CDATA[lingjlx = #lingjlx#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="defaultZongch"><![CDATA[fenzch != #defaultZongch#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="indivisibleZongch"><![CDATA[fenzch != #indivisibleZongch#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!--查询某日的分装线排产计划  -->
+	<select id="queryFenzxpcjhByDate" parameterClass="java.util.HashMap" resultClass="com.athena.xqjs.entity.fenzxpc.Fenzxpcjh">
+	 	select * from ${dbSchemal5}xqjs_fenzxpcjh where usercenter = #usercenter# and fenzxh = #fenzxh# and yujxxrq = to_date(#yujxxrq#,'yyyy-MM-dd')
+	</select>
+	
+	<!--根据分装线号、订单号查询分装线排产计划是否存在  -->
+	<select id="findFenzxpcjhByKey" parameterClass="java.lang.String" resultClass="com.athena.xqjs.entity.fenzxpc.Fenzxpcjh">
+	 	select usercenter,fenzxh,dingdh from ${dbSchemal5}xqjs_fenzxpcjh where usercenter||fenzxh||dingdh in ($key$)
+	</select>
+	
+	<!--根据分装线号、订单号查询分装线排产计划是否存在  -->
+	<select id="queryFenzxpcjhBydingdh" parameterClass="com.athena.xqjs.entity.fenzxpc.Fenzxpcjh" resultClass="com.athena.xqjs.entity.fenzxpc.Fenzxpcjh">
+	 	select dingdh from ${dbSchemal5}xqjs_fenzxpcjh where usercenter = #usercenter# and fenzxh = #fenzxh# and dingdh=#dingdh# and CREATOR=#creator#
+	</select>
+	
+		<!--查询空的分装线排产计划是否已经在排产之前生存过 -->
+	<select id="queryZhuxpcjhBylixq" parameterClass="com.athena.xqjs.entity.fenzxpc.Fenzxpcjh" resultClass="com.athena.xqjs.entity.fenzxpc.Fenzxpcjh">
+	 	select ZONGCH from ${dbSchemal5}in_zhuxpcjh where daxzsx_lixq=#daxzsx_liq# and ZONGCH='ZONGCH'
+	</select>
+	
+			<!--根据预计上线日期、订单号查询分装线排产计划排产之前前一日的排空量  -->
+	<select id="queryBeforeZhuxpcjhpaikl" parameterClass="com.athena.xqjs.entity.fenzxpc.Fenzxpcjh" resultClass="com.athena.xqjs.entity.fenzxpc.Fenzxpcjh">
+	 	select dingdh from ${dbSchemal5}xqjs_fenzxpcjh where yujsxrq >=  to_date(#yujsxrq#,'yyyy-MM-dd') and FENZCH='ZONGCH'  and fenzxh = #fenzxh#
+	</select>
+	
+</sqlMap>

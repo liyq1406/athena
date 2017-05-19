@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<!-- xryuan -->
+	<!-- 零件US/冻结KD件-->
+	<select id="querylingjus" parameterClass="java.util.Map" resultClass="com.athena.ckx.entity.baob.Lingjus">
+					select distinct a.USERCENTER,a.LINGJBH,case when a.ZHUANGTSX='1' then '正常' when a.ZHUANGTSX='2' then '冻结' end as ZHUANGTSX,
+					a.LINGJSL,a.USXH,a.USRL,a.CANGKBH,a.ZICKBH,(select ZIDMC from ${dbSchemal3}CKX_XITCSDY C1 where zidlx='CKLX' and C1.ZIDBM=a.CANGKLX) as CANGKLX,
+					a.USH,a.ELH,a.RUKRQ 
+					FROM ${dbSchemal3}CK_USBQ a ,${dbSchemal3}CKX_GONGYS b 
+					where 
+					a.usercenter=b.usercenter and a.gongysdm=b.gcbh
+					and (a.zhuangtsx='2' or a.zhuangtsx='1') and a.lingjsl>0 and (a.BAOZZT='4' or a.BAOZZT='5')
+			<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="elh"><![CDATA[a.elh = #elh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhuangtsx"><![CDATA[a.zhuangtsx = #zhuangtsx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[a.cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx"><![CDATA[b.gonghlx = #zhizlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startrukrq"><![CDATA[to_char(a.rukrq,'yyyy-MM-dd') >= #startrukrq#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="endrukrq"><![CDATA[to_char(a.rukrq,'yyyy-MM-dd') < #endrukrq#]]></isNotEmpty>
+		</dynamic>
+		order by a.usercenter,a.elh,a.lingjbh
+	</select>
+	
+	<select id="queryzhuangtsx" resultClass="com.athena.util.cache.CacheValue">
+		select distinct ZHUANGTSX as key,
+		case when zhuangtsx='1' then '正常' when zhuangtsx='2' then '冻结' end as value
+		from ${dbSchemal3}CK_USBQ
+		where (zhuangtsx='1' or zhuangtsx='2')
+	</select>
+    
+    <select id="queryexplingjus" parameterClass="java.util.Map" resultClass="java.util.HashMap" remapResults="true">
+					select distinct a.USERCENTER,a.LINGJBH,case when a.ZHUANGTSX='1' then '正常' when a.ZHUANGTSX='2' then '冻结' end as ZHUANGTSX,
+					a.LINGJSL,a.USXH,a.USRL,a.CANGKBH,a.ZICKBH,(select ZIDMC from ${dbSchemal3}CKX_XITCSDY C1 where zidlx='CKLX' and C1.ZIDBM=a.CANGKLX) as CANGKLX,
+					a.USH,a.ELH,a.RUKRQ 
+					FROM ${dbSchemal3}CK_USBQ a ,${dbSchemal3}CKX_GONGYS b 
+					where 
+					a.usercenter=b.usercenter and a.gongysdm=b.gcbh
+					and (a.zhuangtsx='2' or a.zhuangtsx='1') and a.lingjsl>0 and (a.BAOZZT='4' or a.BAOZZT='5')
+			<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[a.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[a.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="elh"><![CDATA[a.elh = #elh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhuangtsx"><![CDATA[a.zhuangtsx = #zhuangtsx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkbh"><![CDATA[a.cangkbh = #cangkbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="zhizlx"><![CDATA[b.gonghlx = #zhizlx#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="startrukrq"><![CDATA[to_char(a.rukrq,'yyyy-MM-dd') >= #startrukrq#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="endrukrq"><![CDATA[to_char(a.rukrq,'yyyy-MM-dd') < #endrukrq#]]></isNotEmpty>
+		</dynamic>
+	</select>
+	
+</sqlMap>

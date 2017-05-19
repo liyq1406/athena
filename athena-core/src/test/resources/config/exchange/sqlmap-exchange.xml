@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="exchange">
+	
+ 	<insert id="insertRecord" 
+ 		parameterClass="com.athena.component.exchange.db.TableRecord">
+			insert into $_tableName$
+			
+	</insert>
+	
+	<update id="updateRecord" 
+ 		parameterClass="com.athena.component.exchange.Record">
+		update PD_DATA set
+			F003=#f003#,
+			F004=#f004#,
+			F005=#f005#,
+			F006=#f006#,
+			F007=#f007#,
+			F008=#f008#
+		where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="f001">F001 = #f001#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="f002">F002 = #f002#</isNotEmpty>
+			<isNotEmpty prepend="  and " property="f009">F009 = #f009#</isNotEmpty>
+		</dynamic>
+	</update>
+</sqlMap>

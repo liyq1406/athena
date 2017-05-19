@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	
+	<resultMap class="com.athena.authority.entity.Dic" id="Dic">
+		<result column="DIC_CODE" property="dicCode" />
+		<result column="DIC_NAME" property="dicName" />
+		<result column="DIC_MEMO" property="dicMemo" />
+		<result column="MENDER" property="mender" />
+		<result column="MODIFY_TIME" property="modifyTime" />
+		<result column="CREATOR" property="creator" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="POST_GROUP_ID" property="postGroupId"/>
+	</resultMap>
+	
+	<select id="queryDic" resultMap="Dic">select 
+		DIC_CODE,
+		DIC_NAME,
+		DIC_MEMO,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		POST_GROUP_ID
+		FROM ${dbSchemal0}SYS_DIC WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="dicCode"> DIC_CODE LIKE '%'||#dicCode#||'%'</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getDicByDicCode" resultClass="java.util.HashMap">select 
+		DIC_CODE,
+		DIC_NAME,
+		DIC_MEMO,
+		a.MENDER,
+		a.MODIFY_TIME,
+		a.CREATOR,
+		a.CREATE_TIME,
+		a.POST_GROUP_ID,
+		'('||a.POST_GROUP_ID||')'||POST_GROUP_NAME as POST_GROUP_NAME
+		FROM ${dbSchemal0}SYS_DIC  a LEFT OUTER JOIN ${dbSchemal0}SYS_POST_GROUP  b ON a.POST_GROUP_ID = b.POST_GROUP_ID WHERE 1=1
+		and a.DIC_CODE = #dicCode#
+	</select>
+	
+	<select id="queryDicCache" resultClass="com.athena.util.cache.CacheValue">
+		select 
+		DIC_CODE as key ,
+		DIC_NAME as value,0 as USERCENTER FROM ${dbSchemal0}SYS_DIC WHERE 1=1
+	</select>
+	<select id="getDic" resultMap="Dic">select 
+		DIC_CODE,
+		DIC_NAME,
+		DIC_MEMO,
+		MENDER,
+		MODIFY_TIME,
+		CREATOR,
+		CREATE_TIME,
+		POST_GROUP_ID
+		FROM ${dbSchemal0}SYS_DIC WHERE 1=1
+		AND DIC_CODE = #dicCode#
+	</select>
+	
+	<insert id="insertDic" parameterClass="com.athena.authority.entity.Dic">
+		insert into
+		${dbSchemal0}SYS_DIC(DIC_CODE,DIC_NAME,DIC_MEMO,CREATOR,CREATE_TIME,POST_GROUP_ID)
+		values(
+			#dicCode#,
+			#dicName#,
+			#dicMemo#,
+			#creator#,
+			to_date(#createTime#,'YYYY-MM-DD HH24:MI:SS'),#postGroupId#)
+	</insert>
+	
+	<update id="updateDic" parameterClass="com.athena.authority.entity.Dic">
+		update ${dbSchemal0}SYS_DIC set 
+		DIC_NAME = #dicName#,
+		DIC_MEMO = #dicMemo#,
+		MENDER = #mender#,
+		MODIFY_TIME	= to_date(#modifyTime#,'YYYY-MM-DD HH24:MI:SS'),
+		POST_GROUP_ID = #postGroupId# where
+		DIC_CODE = #dicCode#
+	</update>
+	
+	<delete id="deleteDic" parameterClass="com.athena.authority.entity.Dic">
+		delete from ${dbSchemal0}SYS_DIC where 
+		DIC_CODE = #dicCode#
+	</delete>
+	
+	<select id="validateOnlyDic" parameterClass="java.util.HashMap" resultClass="int">
+		SELECT COUNT(DIC_CODE) FROM ${dbSchemal0}SYS_DIC WHERE DIC_CODE = #dicCode#
+	</select>
+	
+	
+	<select id="countPostByDic" parameterClass="com.athena.authority.entity.Dic"  resultClass="java.lang.Integer">
+		SELECT COUNT(POST_CODE) FROM ${dbSchemal0}SYS_POST WHERE DIC_CODE = #dicCode#
+	</select>
+</sqlMap>

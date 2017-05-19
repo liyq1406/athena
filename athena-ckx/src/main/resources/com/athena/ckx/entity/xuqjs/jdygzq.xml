@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 既定-预告-周期  qizhongtao 2012-4-16 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryJdygzq" resultClass="com.athena.ckx.entity.xuqjs.Jdygzq">
+			select dinghlx,suozgyzq,jidzqs,yugzqs,dingdnr,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_jdygzq
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="dinghlx"><![CDATA[dinghlx=#dinghlx#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="suozgyzq"><![CDATA[suozgyzq=#suozgyzq#]]></isNotEmpty>
+			</dynamic>
+			order by dinghlx,suozgyzq
+		</select>
+		
+		<!--单数据查询	 -->
+		<select id="getJdygzq" resultClass="com.athena.ckx.entity.xuqjs.Jdygzq">
+			select dinghlx,suozgyzq,jidzqs,yugzqs,dingdnr
+			from ${dbSchemal3}ckx_jdygzq
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="dinghlx"><![CDATA[dinghlx=#dinghlx#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="suozgyzq"><![CDATA[suozgyzq=#suozgyzq#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertJdygzq" parameterClass="com.athena.ckx.entity.xuqjs.Jdygzq" >
+			insert into ${dbSchemal3}ckx_jdygzq(dinghlx,suozgyzq,jidzqs,yugzqs,dingdnr,creator,create_time,editor,edit_time)
+			values(<![CDATA[#dinghlx#,#suozgyzq#,#jidzqs#,#yugzqs#,#dingdnr#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="updateJdygzq" parameterClass="com.athena.ckx.entity.xuqjs.Jdygzq">
+			update ${dbSchemal3}ckx_jdygzq
+			set jidzqs = #jidzqs#,
+				yugzqs = #yugzqs#,
+				dingdnr = #dingdnr#,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[dinghlx = #dinghlx# and suozgyzq = #suozgyzq#]]>
+		</update>
+		
+		<!-- 删除数据 -->
+		<delete id="deleteJdygzq" parameterClass="com.athena.ckx.entity.xuqjs.Jdygzq">
+			delete from ${dbSchemal3}ckx_jdygzq where
+			<dynamic prepend=" ">
+				<isNotEmpty property="dinghlx" prepend=" and ">
+					<![CDATA[dinghlx = #dinghlx#]]>
+				</isNotEmpty>
+				<isNotEmpty property="suozgyzq" prepend=" and ">
+					<![CDATA[suozgyzq = #suozgyzq#]]>
+				</isNotEmpty>
+			</dynamic>
+		</delete>
+	
+</sqlMap>

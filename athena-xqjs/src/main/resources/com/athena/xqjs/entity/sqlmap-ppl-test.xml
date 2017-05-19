@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="pplTest">
+
+	<!-- 查询需求明细表 -->
+	<select id="queryXqmx" resultClass="com.athena.xqjs.entity.ppl.Xqmx">
+		select
+		lingjbh,
+		usercenter,
+		active
+		from
+		${dbSchemal1}xqjs_xqmx
+		order by
+		lingjbh
+	</select>
+	<!-- 比较两个ppl版次 -->
+	<select id="queryBijiaobc" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ppl.ComparePpl">
+		select
+		a.usercenter usercenter ,
+		a.lingjbh lingjbh,
+		a.lingjmc lingjmc,
+		a.gongysdm gongys,
+		a.zhizlx zhizlx ,
+		a.lingjdw lingjdw,
+		a.p0sl p1sl1,
+		null p1sl2,
+		null p1,
+		a.p1sl p2sl1,
+		null p2sl2,
+		null p2,
+		a.p2sl p3sl1,
+		null p3sl2,
+		null p3,
+		a.p3sl p4sl1,
+		null p4sl2,
+		null p4,
+		a.p4sl p5sl1,
+		null p5sl2,
+		null p5,
+		a.p5sl p6sl1,
+		null p6sl2,
+		null p6,
+		a.p6sl p7sl1,
+		null p7sl2,
+		null p7,
+		a.p7sl p8sl1,
+		null p8sl2,
+		null p8,
+		a.p8sl p9sl1,
+		null p9sl2,
+		null p9,
+		a.p9sl p10sl1,
+		null p10sl2,
+		null p10,
+		a.p10sl p11sl1,
+		null p11sl2,
+		null p11,
+		a.p11sl p12sl1,
+		null p12sl2,
+		null p12
+		from (select nm.usercenter usercenter,
+		nm.lingjbh lingjbh,
+		nm.lingjmc lingjmc,
+		nm.gongysdm gongysdm,
+		nm.zhizlx zhizlx,
+		nm.lingjdw lingjdw,
+		nm.p0sl p0sl,
+		nm.p1sl p1sl,
+		nm.p2sl p2sl,
+		nm.p3sl p3sl,
+		nm.p4sl p4sl,
+		nm.p5sl p5sl,
+		nm.p6sl p6sl,
+		nm.p7sl p7sl,
+		nm.p8sl p8sl,
+		nm.p9sl p9sl,
+		nm.p10sl p10sl,
+		nm.p11sl p11sl
+		from ${dbSchemal1}xqjs_niandygmx nm
+		where nm.pplbc =#pplbc1#) a
+		where not exists (select b.lingjbh lingjbh,
+		b.usercenter usercenter,
+		b.lingjmc lingjmc,
+		b.gongysdm gongysdm,
+		b.zhizlx zhizlx,
+		b.lingjdw lingjdw,
+		b.p1sl p1sl ,
+		b.p2sl p2sl,
+		b.p3sl p3sl,
+		b.p4sl p4sl,
+		b.p5sl p5sl,
+		b.p6sl p6sl,
+		b.p7sl p7sl,
+		b.p8sl p8sl,
+		b.p9sl p9sl,
+		b.p10sl p10sl,
+		b.p11sl p11sl
+		from (select nm.usercenter usercenter,
+		nm.lingjbh lingjbh,
+		nm.lingjmc lingjmc,
+		nm.gongysdm gongysdm,
+		nm.zhizlx zhizlx,
+		nm.lingjdw lingjdw,
+		nm.p0sl p0sl,
+		nm.p1sl p1sl,
+		nm.p2sl p2sl,
+		nm.p3sl p3sl,
+		nm.p4sl p4sl,
+		nm.p5sl p5sl,
+		nm.p6sl p6sl,
+		nm.p7sl p7sl,
+		nm.p8sl p8sl,
+		nm.p9sl p9sl,
+		nm.p10sl p10sl,
+		nm.p11sl p11sl
+		from ${dbSchemal1}xqjs_niandygmx nm
+		where nm.pplbc =#pplbc2#) b
+		where a.lingjbh = b.lingjbh
+		and a.gongysdm = b.gongysdm
+		and a.usercenter = b.usercenter)
+		union
+		select B.usercenter usercenter,
+		B.lingjbh lingjbh,
+		B.lingjmc lingjmc,
+		B.gongysdm gongys,
+		B.zhizlx zhizlx,
+		B.lingjdw lingjdw,
+		B.p0sl p1sl1,
+		C.p0sl p1sl2,
+		decode(B.p0sl, 0, null, ceil((B.p0sl - C.p0sl) / B.p0sl * 100)) p1,
+		B.p1sl p2sl1,
+		C.p1sl p2sl2,
+		decode(B.p1sl, 0, null, ceil((B.p1sl - C.p1sl) / B.p1sl * 100)) p2,
+		B.p2sl p3sl1,
+		C.p2sl p3sl2,
+		decode(B.p2sl, 0, null, ceil((B.p2sl - C.p2sl) / B.p2sl * 100)) p3,
+		B.p3sl p4sl1,
+		C.p3sl p4sl2,
+		decode(B.p3sl, 0, null, ceil((B.p3sl - C.p3sl) / B.p3sl * 100)) p4,
+		B.p4sl p5sl1,
+		C.p4sl p5sl2,
+		decode(B.p4sl, 0, null, ceil((B.p4sl - C.p4sl) / B.p4sl * 100)) p5,
+		B.p5sl p6sl1,
+		C.p5sl p6sl2,
+		decode(B.p5sl, 0, null, ceil((B.p5sl - C.p5sl) / B.p5sl * 100)) p6,
+		B.p6sl p7sl1,
+		C.p6sl p7sl2,
+		decode(B.p6sl, 0, null, ceil((B.p6sl - C.p6sl) / B.p6sl * 100)) p7,
+		B.p7sl p8sl1,
+		C.p7sl p8sl2,
+		decode(B.p7sl, 0, null,ceil((B.p7sl - C.p7sl) / B.p7sl * 100)) p8,
+		B.p8sl p9sl1,
+		C.p8sl p9sl2,
+		decode(B.p8sl, 0, null, ceil((B.p8sl - C.p8sl) / B.p8sl * 100)) p9,
+		B.p9sl p10sl1,
+		C.p9sl p10sl2,
+		decode(B.p9sl, 0, null, ceil((B.p9sl - C.p9sl) / B.p9sl * 100)) p10,
+		B.p10sl p11sl1,
+		C.p10sl p11sl2,
+		decode(B.p10sl, 0, null, ceil((B.p10sl - C.p10sl) / B.p10sl * 100)) p11,
+		B.p11sl p12sl1,
+		C.p11sl p12sl2,
+		decode(B.p11sl, 0, null, ceil((B.p11sl - C.p11sl) / B.p11sl * 100)) p12
+		from (select nm.usercenter usercenter,
+		nm.lingjbh lingjbh,
+		nm.lingjmc lingjmc,
+		nm.gongysdm gongysdm,
+		nm.zhizlx zhizlx,
+		nm.lingjdw lingjdw,
+		nm.p0sl p0sl,
+		nm.p1sl p1sl,
+		nm.p2sl p2sl,
+		nm.p3sl p3sl,
+		nm.p4sl p4sl,
+		nm.p5sl p5sl,
+		nm.p6sl p6sl,
+		nm.p7sl p7sl,
+		nm.p8sl p8sl,
+		nm.p9sl p9sl,
+		nm.p10sl p10sl,
+		nm.p11sl p11sl
+		from ${dbSchemal1}xqjs_niandygmx nm
+		where nm.pplbc =#pplbc1#) B,
+		(select nm.usercenter usercenter,
+		nm.lingjbh lingjbh,
+		nm.lingjmc lingjmc,
+		nm.gongysdm gongysdm,
+		nm.zhizlx zhizlx,
+		nm.lingjdw lingjdw,
+		nm.p0sl p0sl,
+		nm.p1sl p1sl,
+		nm.p2sl p2sl,
+		nm.p3sl p3sl,
+		nm.p4sl p4sl,
+		nm.p5sl p5sl,
+		nm.p6sl p6sl,
+		nm.p7sl p7sl,
+		nm.p8sl p8sl,
+		nm.p9sl p9sl,
+		nm.p10sl p10sl,
+		nm.p11sl p11sl
+		from ${dbSchemal1}xqjs_niandygmx nm
+		where nm.pplbc =#pplbc2#) C
+		where B.lingjbh = C.lingjbh
+		and B.usercenter = C.usercenter
+		and B.gongysdm = C.gongysdm
+		union
+		select a.usercenter usercenter,
+		a.lingjbh lingjbh,
+		a.lingjmc lingjmc,
+		a.gongysdm gongs,
+		a.zhizlx zhizlx,
+		a.lingjdw lingjdw,
+		a.p0sl p1sl1,
+		null p1sl2,
+		null p1,
+		a.p1sl p2sl1,
+		null p2sl2,
+		null p2,
+		a.p2sl p3sl1,
+		null p3sl2,
+		null p3,
+		a.p3sl p4sl1,
+		null p4sl2,
+		null p4,
+		a.p4sl p5sl1,
+		null p5sl2,
+		null p5,
+		a.p5sl p6sl1,
+		null p6sl2,
+		null p6,
+		a.p6sl p7sl1,
+		null p7sl2,
+		null p7,
+		a.p7sl p8sl1,
+		null p8sl2,
+		null p8,
+		a.p8sl p9sl1,
+		null p9sl2,
+		null p9,
+		a.p9sl p10sl1,
+		null p10sl2,
+		null p10,
+		a.p10sl p11sl1,
+		null p11sl2,
+		null p11,
+		a.p11sl p12sl1,
+		null p12sl2,
+		null p12
+		from (select nm.usercenter usercenter,
+		nm.lingjbh lingjbh,
+		nm.lingjmc lingjmc,
+		nm.gongysdm gongysdm,
+		nm.zhizlx zhizlx,
+		nm.lingjdw lingjdw,
+		nm.p0sl p0sl,
+		nm.p1sl p1sl,
+		nm.p2sl p2sl,
+		nm.p3sl p3sl,
+		nm.p4sl p4sl,
+		nm.p5sl p5sl,
+		nm.p6sl p6sl,
+		nm.p7sl p7sl,
+		nm.p8sl p8sl,
+		nm.p9sl p9sl,
+		nm.p10sl p10sl,
+		nm.p11sl p11sl
+		from ${dbSchemal1}xqjs_niandygmx nm
+		where nm.pplbc =#pplbc2#) a
+		where not exists (select b.lingjbh lingjbh,
+		b.usercenter usercenter,
+		b.lingjmc lingjmc,
+		b.gongysdm gongysdm,
+		b.zhizlx zhizlx,
+		b.lingjdw lingjdw,
+		b.p1sl p1sl,
+		b.p2sl p2sl,
+		b.p3sl p3sl,
+		b.p4sl p4sl,
+		b.p5sl p5sl,
+		b.p6sl p6sl,
+		b.p7sl p7sl,
+		b.p8sl p8sl,
+		b.p9sl p9sl,
+		b.p10sl p10sl,
+		b.p11sl p11sl
+		from (select nm.usercenter usercenter,
+		nm.lingjbh lingjbh,
+		nm.lingjmc lingjmc,
+		nm.gongysdm gongysdm,
+		nm.zhizlx zhizlx,
+		nm.lingjdw lingjdw,
+		nm.p0sl p0sl,
+		nm.p1sl p1sl,
+		nm.p2sl p2sl,
+		nm.p3sl p3sl,
+		nm.p4sl p4sl,
+		nm.p5sl p5sl,
+		nm.p6sl p6sl,
+		nm.p7sl p7sl,
+		nm.p8sl p8sl,
+		nm.p9sl p9sl,
+		nm.p10sl p10sl,
+		nm.p11sl p11sl
+		from ${dbSchemal1}xqjs_niandygmx nm
+		where nm.pplbc =#pplbc1#) b
+		where a.lingjbh = b.lingjbh
+		and a.gongysdm = b.gongysdm
+		and a.usercenter = b.usercenter)   
+    </select>
+
+
+	<!-- 查询年度预告明细中某一种零件的 的数量 -->
+	<select id="selectNiandygmxLingj" parameterClass="java.util.Map"
+		resultClass="com.athena.xqjs.entity.ppl.Niandygmx">
+		select
+		nm.pplbc,
+		nm.lingjbh,
+		nm.p0sl,
+		nm.p1sl,
+		nm.p4sl
+		from
+		${dbSchemal1}xqjs_niandygmx nm
+		where nm.lingjbh=#lingjbh#
+    
+    
+    </select>
+	<!--查询年度预告明细 -->
+	<select id="selectNiandygmx" parameterClass="com.athena.xqjs.entity.ppl.Niandygmx"
+		resultClass="com.athena.xqjs.entity.ppl.Niandygmx">
+		select usercenter,lingjbh,id,pplbc , active , p0sl,p8sl from
+		${dbSchemal1}xqjs_niandygmx
+		where usercenter=#usercenter# and lingjbh=#lingjbh# and pplbc=#pplbc# and
+		gongysdm=#gongysdm#    
+    
+    </select>
+</sqlMap>

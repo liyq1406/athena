@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 供货模式-毛需求  qizhongtao 2012-4-09 -->
+	
+	    <!--分页查询	 -->
+		<select id="queryGonghmsMxq" resultClass="com.athena.ckx.entity.xuqjs.GonghmsMxq">
+			select  gonghms,xuqly,dinghlx,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_gonghms_maoxq
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="gonghms"><![CDATA[gonghms=#gonghms#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xuqly"><![CDATA[xuqly=#xuqly#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="dinghlx"><![CDATA[dinghlx=#dinghlx#]]></isNotEmpty>
+			</dynamic>
+			order by gonghms
+		</select>
+		
+		<!--单数据查询	 -->
+		<select id="getGonghmsMxq" resultClass="com.athena.ckx.entity.xuqjs.GonghmsMxq">
+			select  gonghms,xuqly,dinghlx
+			from ${dbSchemal3}ckx_gonghms_maoxq
+			where 1=1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="gonghms"><![CDATA[gonghms=#gonghms#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xuqly"><![CDATA[xuqly=#xuqly#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="dinghlx"><![CDATA[dinghlx=#dinghlx#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+		<!--插入数据 -->
+		<insert id="insertGonghmsMxq" parameterClass="com.athena.ckx.entity.xuqjs.GonghmsMxq" >
+			insert into ${dbSchemal3}ckx_gonghms_maoxq(gonghms,xuqly,dinghlx,creator,create_time,editor,edit_time)
+			values(<![CDATA[#gonghms#,#xuqly#,#dinghlx#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="updateGonghmsMxq" parameterClass="com.athena.ckx.entity.xuqjs.GonghmsMxq">
+			update ${dbSchemal3}ckx_gonghms_maoxq
+			set gonghms = #gonghms#,
+				xuqly = #xuqly#,
+				dinghlx = #dinghlx#,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where  gonghms = #gonghms# and xuqly = #xuqly# and dinghlx = #dinghlx#
+		</update>
+		
+		<!-- 删除数据 -->
+		<delete id="deleteGonghmsMxq" parameterClass="com.athena.ckx.entity.xuqjs.GonghmsMxq">
+			delete from ${dbSchemal3}ckx_Gonghms_maoxq where
+			<dynamic prepend=" ">
+				<isNotEmpty property="gonghms" prepend=" and ">
+					<![CDATA[gonghms = #gonghms#]]>
+				</isNotEmpty>
+				<isNotEmpty property="xuqly" prepend=" and ">
+					<![CDATA[xuqly = #xuqly#]]>
+				</isNotEmpty>
+				<isNotEmpty property="dinghlx" prepend=" and ">
+					<![CDATA[dinghlx = #dinghlx#]]>
+				</isNotEmpty>
+			</dynamic>
+		</delete>
+	
+</sqlMap>

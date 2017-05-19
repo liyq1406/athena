@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_kac">
+
+	<!-- 陈鹏 chenp -->
+	
+	<!-- 要货令调整查询-->
+		<!-- 根据大站台查询 卸货站台-->
+	<select id="queryXiehzt"  parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select xiehztbh
+		from ${dbSchemal3}ckx_xiehzt
+		where 1=1 and biaos='1'
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="daztbh"><![CDATA[daztbh = #daztbh#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,daztbh
+	</select>
+	
+	<!-- 查询 -->
+	
+	<select id="queryYaohltzcx" parameterClass="com.athena.truck.entity.Yaohltzcx" resultClass="com.athena.truck.entity.Yaohltzcx">
+		select usercenter,xiehzt,xiehztbz,daztbh,chengysbh,tiaozkssj,tiaozjssj,yaohllx,yaohlzt,tiaozgs,tiaozsj,operator,operate_time
+		from ${dbSchemal3}kc_yaohltz
+		where 1=1 
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="daztbh"><![CDATA[daztbh = #daztbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiehzt"><![CDATA[xiehzt = #xiehzt#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="xiehztbz"><![CDATA[xiehztbz = #xiehztbz#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="tiaozkssj"><![CDATA[tiaozkssj >= to_date(#tiaozkssj#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="tiaozjssj"><![CDATA[tiaozjssj <= to_date(#tiaozjssj#,'yyyy-MM-dd hh24:mi:ss')]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="chengysbh"><![CDATA[chengysbh = #chengysbh#]]></isNotEmpty>
+			    <isNotEmpty prepend=" and " property="yaohllx"> yaohllx=#yaohllx# </isNotEmpty>
+			    <isNotEmpty property="yaohlzt" prepend="and"> yaohlzt=#yaohlzt# </isNotEmpty>
+			</dynamic>
+			order by operate_time desc
+	</select>
+	
+	
+</sqlMap>

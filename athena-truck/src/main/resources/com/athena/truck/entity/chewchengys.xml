@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_kac">
+
+	<select id="queryChewChengys" parameterClass="com.athena.truck.entity.ChewChengys" resultClass="com.athena.truck.entity.ChewChengys">
+		select cc.usercenter, cc.chewbh, cc.daztbh, cg.gongsmc, cc.chengysbh, cc.biaos, cc.creator ,cc.create_time, cc.editor, cc.edit_time
+		from ${dbSchemal3}ckx_chew_chengys cc INNER JOIN ${dbSchemal3}CKX_DAZT Z ON cc.USERCENTER = Z.USERCENTER AND cc.DAZTBH=Z.DAZTBH,${dbSchemal3}ckx_gongys cg
+		where 1=1 and cg.usercenter= cc.usercenter and cg.gcbh= cc.chengysbh 
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[cc.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chewbh"><![CDATA[cc.chewbh = #chewbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysbh"><![CDATA[cc.chengysbh = #chengysbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="daztbh"><![CDATA[cc.daztbh = #daztbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[cc.biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="quybh"><![CDATA[z.quybh = #quybh#]]></isNotEmpty>
+		</dynamic>
+		order by cc.usercenter,cc.chewbh,cc.chengysbh
+	</select>
+
+		<select id="queryChengys" parameterClass="com.athena.truck.entity.ChewChengys"  resultClass="com.athena.truck.entity.ChewChengys">
+	   	select usercenter,gcbh as chengysbh,leix,gonghlx,gongsmc
+		from ${dbSchemal3}ckx_gongys
+	   	where 1=1   and  biaos = 1
+	    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="chengysbh"><![CDATA[gcbh = #chengysbh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+
+	
+	<insert id="insertChewChengys" parameterClass="com.athena.truck.entity.ChewChengys">
+		insert into ${dbSchemal3}ckx_chew_chengys(usercenter,chewbh,daztbh,chengysbh,biaos,creator,create_time,editor,edit_time)
+		values(<![CDATA[#usercenter# , #chewbh# , #daztbh# , #chengysbh# , '1' , #creator# ,sysdate,#editor#,sysdate  ]]> )
+	</insert>
+		
+	<statement id="AorEbYChewChengys" parameterClass="com.athena.truck.entity.ChewChengys">
+                  <![CDATA[    merge into ${dbSchemal3}ckx_chew_chengys a
+                         using (select count(*) co from ${dbSchemal3}ckx_chew_chengys a  where  usercenter = #usercenter#  and chewbh = #chewbh# and biaos='0') b
+                         on(b.co<>0)
+                         when matched then 
+                              update set 
+                              			chewbh = #chewbh#,
+                                     	daztbh = #daztbh#,
+								    	biaos = #biaos#,
+								    	editor = #editor#,
+								    	edit_time = sysdate
+                                     where usercenter = #usercenter# 
+                                         and chengysbh = #chengysbh#
+                         when  not matched then 
+                         insert into ${dbSchemal3}ckx_chew_chengys(usercenter,chewbh,daztbh,chengysbh,biaos,creator,create_time,editor,edit_time)
+						 values(<![CDATA[#usercenter# , #chewbh# , #daztbh# , #chengysbh# , '1' , #creator# ,sysdate,#editor#,sysdate  ]]> )
+	</statement>
+	
+	<update id="updateChewChengys" parameterClass="com.athena.truck.entity.ChewChengys">
+		update ${dbSchemal3}ckx_chew_chengys 
+		set 
+	    	daztbh = #daztbh#,
+	    	chengysbh = #chengysbh#,
+	    	biaos = #biaos#,
+	    	editor = #editor#,
+	    	edit_time = sysdate
+        where  <![CDATA[usercenter = #usercenter# and  chewbh = #chewbh# and chengysbh = #chengysbh#]]> 
+	</update>
+	
+	
+	<select id="getChewChengys"  resultClass="com.athena.truck.entity.ChewChengys">
+	select usercenter,chewbh,daztbh,chengysbh,biaos as yuanbiaos,creator,create_time,editor,edit_time
+	from ${dbSchemal3}ckx_chew_chengys
+	where 1=1
+	<dynamic>
+			<isNotEmpty prepend="  and " property="chengysbh">chengysbh =#chengysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter=#usercenter#
+			</isNotEmpty>
+	</dynamic>	
+	</select>
+	
+		
+		<!-- 删除车位承运商信息 -->
+	<delete id="deleteChewcys" parameterClass="com.athena.truck.entity.ChewChengys">
+		delete from ${dbSchemal3}ckx_chew_chengys 
+		where 1=1
+		<dynamic >
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chewbh" prepend=" and ">
+	    		<![CDATA[chewbh = #chewbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chengysbh" prepend=" and ">
+	    		<![CDATA[chengysbh = #chengysbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="daztbh" prepend=" and ">
+	    		<![CDATA[daztbh = #daztbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+	
+	
+		<!-- 删除数据叉车车位关系表 -->
+	<delete id="deleteChacChew" parameterClass="com.athena.truck.entity.ChacChew">
+		delete from ${dbSchemal3}ckx_chac_chew
+		where
+		<dynamic prepend=" ">
+			<isNotEmpty property="usercenter" prepend="and">
+	    		<![CDATA[usercenter = #usercenter#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="chewbh" prepend="and">
+	    		<![CDATA[chewbh = #chewbh#]]> 
+	    	</isNotEmpty>
+	    	<isNotEmpty property="daztbh" prepend="and">
+	    		<![CDATA[daztbh = #daztbh#]]> 
+	    	</isNotEmpty>
+	    </dynamic>
+	</delete>
+</sqlMap>

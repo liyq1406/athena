@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CKX">
+
+	<resultMap class="com.athena.xqjs.entity.common.LingjGongys"
+		id="LingjGongys">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="GONGYSBH" property="gongysbh" />
+		<result column="LINGJBH" property="lingjbh" />
+		<result column="GONGYHTH" property="gongyhth" />
+		<result column="GONGYFE" property="gongyfe" />
+		<result column="YOUXQ" property="youxq" />
+		<result column="FAYD" property="fayd" />
+		<result column="SHENGXSJ" property="shengxsj" />
+		<result column="SHIXSJ" property="shixsj" />
+		<result column="ZUIXQDL" property="zuixqdl" />
+		<result column="CANKFZ" property="cankfz" />
+		<result column="ZHIJCJBL" property="zhijcjbl" />
+		<result column="SHIFYZPCH" property="shifyzpch" />
+		<result column="UCBZLX" property="ucbzlx" />
+		<result column="UCRL" property="ucrl" />
+		<result column="UABZLX" property="uabzlx" />
+		<result column="UAUCGS" property="uaucgs" />
+		<result column="GAIB" property="gaib" />
+		<result column="NEIC" property="neic" />
+		<result column="SHIFCZLSBZ" property="shifczlsbz" />
+
+	</resultMap>
+
+	<select id="queryLingjGongys" resultMap="LingjGongys" parameterClass="java.util.Map">
+	select
+		USERCENTER,
+		GONGYSBH,
+		LINGJBH,
+		GONGYHTH,
+		GONGYFE,
+		YOUXQ,
+		FAYD,
+		SHENGXSJ,
+		SHIXSJ,
+		ZUIXQDL,
+		CANKFZ,
+		ZHIJCJBL,
+		SHIFYZPCH,
+		UCBZLX,
+		UCRL,
+		UABZLX,
+		UAUCGS,
+		GAIB,
+		NEIC,
+		SHIFCZLSBZ
+	from 
+		${dbSchemal3}ckx_lingjgys 
+	where 
+		1=1
+	<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysbh">
+				gongysbh = #gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+ <select id="queryLjgysObj" resultClass="com.athena.xqjs.entity.common.LingjGongys" parameterClass="java.util.Map">
+	select
+	    DISTINCT
+		USERCENTER,
+		LINGJBH,
+		UCBZLX,
+		UCRL,
+		UABZLX,
+		UAUCGS
+	from 
+		${dbSchemal3}ckx_lingjgys 
+	where 
+		1=1
+	<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysbh">
+				gongysbh = #gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">
+				biaos = #biaos#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+<select id="queryLjgysLike" resultClass="com.athena.xqjs.entity.common.LingjGongys" parameterClass="java.util.Map">
+	select
+	    DISTINCT
+		USERCENTER,
+		GONGYSBH
+	from 
+		${dbSchemal3}ckx_lingjgys 
+	where 
+		1=1
+	<dynamic>
+			<isNotEmpty prepend="  and " property="gongysbh">
+				gongysbh LIKE  '$gongysbh$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="queryOneLingjGongys" resultMap="LingjGongys">
+		select
+		USERCENTER,
+		GONGYSBH,
+		LINGJBH,
+		GONGYHTH,
+		GONGYFE,
+		YOUXQ,
+		FAYD,
+		SHENGXSJ,
+		SHIXSJ,
+		ZUIXQDL,
+		CANKFZ,
+		ZHIJCJBL,
+		SHIFYZPCH,
+
+		UCBZLX,
+		UCRL,
+		UABZLX,
+		UAUCGS,
+		GAIB,
+		NEIC,
+		SHIFCZLSBZ
+		from
+			${dbSchemal3}ckx_lingjgys
+		where
+			1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysbh">
+				gongysbh like '$gongysbh$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">
+				biaos = #biaos#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<insert id="insertLingjGongys" parameterClass="com.athena.xqjs.entity.common.LingjGongys">insert into
+		${dbSchemal3}ckx_lingjgys (USERCENTER,
+		GONGYSBH,
+		LINGJBH,
+		GONGYHTH,
+		GONGYFE,
+		YOUXQ,
+		FAYD,
+		SHENGXSJ,
+		SHIXSJ,
+		ZUIXQDL,
+		CANKFZ,
+		ZHIJCJBL,
+		SHIFYZPCH,
+
+		UCBZLX,
+		UCRL,
+		UABZLX,
+		UAUCGS,
+		GAIB,
+		NEIC,
+		SHIFCZLSBZ)
+		values(
+		#usercenter#,
+		#gongysbh#,
+		#lingjbh#,
+		#gongyhth#,
+		#gongyfe#,
+		#youxq#,
+		#fayd#,
+		#shengxsj#,
+		#shixsj#,
+		#zuixqdl#,
+		#cankfz#,
+		#zhijcjbl#,
+		#shifyzpch#,
+
+		#ucbzlx#,
+		#ucrl#,
+		#uabzlx#,
+		#uaucgs#,
+		#gaib#,
+		#neic#,
+		#shifczlsbz#)
+	</insert>
+
+	<update id="updateLingjGongys" parameterClass="com.athena.xqjs.entity.common.LingjGongys">
+		update 
+		${dbSchemal3}ckx_lingjgys  
+		<!--  
+		<dynamic prepend="set">
+			<isNotEmpty property="dingdnr" prepend=",">
+    		   <![CDATA[dingdnr = #dingdnr#]]>
+			</isNotEmpty>
+		</dynamic>
+		-->
+		<dynamic prepend="where">
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysbh">
+				gongysbh = #gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	<!-- 
+	<update id="updateGys" parameterClass="com.athena.xqjs.entity.common.LingjGongys">
+		update 
+		${dbSchemal3}ckx_lingjgys  
+		<dynamic prepend="set">
+			<isNotEmpty property="dingdnr" prepend=",">
+    		   <![CDATA[dingdnr = #dingdnr#]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic prepend="where">
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysbh">
+				<![CDATA[ gongysbh like '$gongysbh$%' ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter =#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+ -->
+	<delete id="deleteLingjGongys" parameterClass="com.athena.xqjs.entity.common.LingjGongys">
+		delete from ${dbSchemal3}ckx_lingjgys where 1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="lingjh">lingjh = #lingjh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysbh">gongysbh =
+				#gongysbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">usercenter =
+				#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+	
+	<!-- xss0013156 -->
+	<select id="queryLingjgysForMulu" resultClass="com.athena.xqjs.entity.common.LingjGongys">
+		select distinct t.USERCENTER,
+                t.GONGYSBH,
+                t.LINGJBH,
+                t.GONGYHTH,
+           
+                  nvl(t.GONGYFE,0) as GONGYFE,
+                 nvl(t.YOUXQ,0) as YOUXQ,
+              
+                t.FAYD,
+                t.SHENGXSJ,
+                t.SHIXSJ,
+                nvl(t.ZUIXQDL,0) as ZUIXQDL,
+                  nvl(t.CANKFZ,0) as CANKFZ,
+                    nvl(t.ZHIJCJBL,0) as ZHIJCJBL,
+             
+                t.SHIFYZPCH,
+                t.UCBZLX,
+                  nvl(t.UCRL,0) as UCRL,
+               
+                t.UABZLX,
+                
+                nvl(t.UAUCGS,0) as UAUCGS,
+                t.GAIB,
+                t.NEIC,
+                t.SHIFCZLSBZ
+  from ${dbSchemal3}ckx_lingjgys t,${dbSchemal3}Ckx_Gongys g
+ where 1 = 1
+   and t.gongysbh = g.gcbh
+   and g.gonghlx in ('97X','97D') 
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				t.usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				t.lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">
+				g.biaos = #biaos#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="biaos">
+				t.biaos = #biaos#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>

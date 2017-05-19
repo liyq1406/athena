@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ilorder">
+
+	<select id="queryOrderNums" resultClass="com.athena.xqjs.entity.ilorder.Dingd" parameterClass="java.util.Map">
+		select
+		    distinct 
+		    dingdh,
+		    usercenter
+		from
+		    ${dbSchemal1}XQJS_DINGD
+		where
+		    1 = 1
+		    <dynamic>
+		      <isNotEmpty prepend="  and " property="usercenter">
+		          usercenter = #usercenter#
+		      </isNotEmpty>
+		      <isNotEmpty prepend="  and " property="dingdh">
+		          <![CDATA[dingdh like '$dingdh$%']]>
+		      </isNotEmpty>
+		    </dynamic>
+		order by
+		      dingdh desc
+	</select>
+
+
+	<select id="queryDingd" resultClass="com.athena.xqjs.entity.ilorder.Dingd">
+		select
+			GONGYSDM,
+			CHULLX,
+			DINGDFSSJ,
+			DINGDZT,
+			ZIYHQRQ,
+			DINGDSXCZR,
+			DINGDH,
+			BEIZ,
+			shifzfsyhl,
+			DINGDNR,
+			TO_CHAR(DINGDJSSJ,'yyyy-mm-dd HH24:MI') as DINGDJSSJ,
+			SHIFFSGYS,
+			DINGDLX,
+			DINGDSXSJ,
+			FAHZQ,
+			GONGYSLX,
+			JISLX,
+			MAOXQBC,
+			HETH,
+			SHIFYJSYHL,
+			editor
+		from
+			${dbSchemal1}XQJS_DINGD
+		where
+			1=1 
+		order by
+			DINGDH desc
+	</select>
+	
+	<select id="queryDingdNum" resultClass="com.athena.xqjs.entity.ilorder.Dingd" parameterClass="java.util.Map">
+		select
+			GONGYSDM,
+			CHULLX,
+			DINGDFSSJ,
+			DINGDZT,
+			ZIYHQRQ,
+			DINGDSXCZR,
+			DINGDH,
+			BEIZ,
+			shifzfsyhl,
+			DINGDNR,
+			TO_CHAR(DINGDJSSJ,'yyyy-mm-dd HH24:MI') as DINGDJSSJ,
+			SHIFFSGYS,
+			DINGDLX,
+			DINGDSXSJ,
+			FAHZQ,
+			GONGYSLX,
+			JISLX,
+			MAOXQBC,
+			HETH,
+			SHIFYJSYHL,
+			editor
+		from
+			${dbSchemal1}XQJS_DINGD
+		where
+			active='1' 
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdlx">
+				dingdlx = #dingdlx#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdh">
+				 <![CDATA[dingdh like '$dingdh$%']]>
+			</isNotEmpty>
+		</dynamic>
+		order by
+			DINGDH desc
+	</select>
+
+	<!-- 根据订单号查询处理类型 -->
+	<select id="queryChullxByDingdh" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		select
+			distinct 
+			CHULLX
+		from
+			${dbSchemal1}XQJS_DINGD
+		where
+			active='1'
+		<dynamic>
+			<isNotEmpty prepend="  and ">
+				<![CDATA[ dingdh in ($dingdh$) ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="queryDingdByDingdh" resultClass="com.athena.xqjs.entity.ilorder.Dingd">
+		select
+			GONGYSDM,
+			USERCENTER ,
+			CHULLX,
+			DINGDFSSJ,
+			DINGDZT,
+			ZIYHQRQ,
+			DINGDSXCZR,
+			DINGDH,
+			BEIZ,
+			shifzfsyhl,
+			DINGDNR,
+			TO_CHAR(DINGDJSSJ,'yyyy-mm-dd HH24:MI') as DINGDJSSJ,
+			SHIFFSGYS,
+			DINGDLX,
+			DINGDSXSJ,
+			FAHZQ,
+			GONGYSLX,
+			JISLX,
+			MAOXQBC,
+			HETH,
+			JISZQ,
+			SHIFYJSYHL,
+			editor
+		from
+			${dbSchemal1}XQJS_DINGD
+		where
+			1 = 1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdh">
+				dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="fahzq">
+				fahzq = #fahzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdlx">
+				dingdlx = #dingdlx#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdzt">
+				dingdzt = #dingdzt#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdlxin">
+				dingdlx in ($dingdlxin$)
+			</isNotEmpty>
+		</dynamic>
+		order by dingdh
+	</select>
+
+<!-- wuyichao -->
+<select id="queryDingdByDingdhNew" resultClass="com.athena.xqjs.entity.ilorder.Dingd">
+	select dingdh
+	  from (select dingdh, rownum as row_
+	          from (select *
+	                  from ${dbSchemal1}XQJS_DINGD
+	                 where dingdh != #dingdh#
+	                   and dingdlx = #dingdlx#
+	                   <![CDATA[
+	                   and dingdzt > '1'
+	                   and jiszq < #jiszq#
+	                   ]]>
+	                 order by dingdjssj desc))
+	 where row_ = 1
+
+	</select>
+
+<!-- wuyichao -->
+
+	<insert id="insertDingd" parameterClass="com.athena.xqjs.entity.ilorder.Dingd">
+		insert into
+		${dbSchemal1}XQJS_DINGD
+		(
+		GONGYSDM,
+		CHULLX,
+		DINGDFSSJ,
+		DINGDZT,
+		ZIYHQRQ,
+		DINGDSXCZR,
+		DINGDH,
+		BEIZ,
+		shifzfsyhl,
+		DINGDNR,
+		DINGDJSSJ,
+		SHIFFSGYS,
+		DINGDLX,
+		DINGDSXSJ,
+		FAHZQ,
+		GONGYSLX,
+		JISLX,
+		MAOXQBC,
+		HETH,
+		SHIFYJSYHL,
+		USERCENTER,
+		CREATOR,
+		CREATE_TIME ,
+		EDITOR ,
+		EDIT_TIME ,
+		ACTIVE,
+		JISZQ
+		)
+		values(
+		#gongysdm#,
+		#chullx#,
+		#dingdfssj#,
+		#dingdzt#,
+		to_timestamp(#ziyhqrq#,'yyyy-mm-dd HH24:MI:SS:FF3'),
+		#dingdsxczr#,
+		#dingdh#,
+		#beiz#,
+		#shifzfsyhl#,
+		#dingdnr#,
+		to_timestamp(#dingdjssj#,'yyyy-mm-dd HH24:MI:SS:FF3'),
+		#shiffsgys#,
+		#dingdlx#,
+		to_date(#dingdsxsj#,'yyyy-mm-dd HH24:MI:SS'),
+		#fahzq#,
+		#gongyslx#,
+		#jislx#,
+		#maoxqbc#,
+		#heth#,
+		#shifyjsyhl# ,
+		#usercenter#,
+		#creator# ,
+		to_timestamp(#create_time#,'yyyy-mm-dd HH24:MI:SS:FF3'),
+		#creator# ,
+		to_timestamp(#create_time#,'yyyy-mm-dd HH24:MI:SS:FF3'),
+		#active# ,
+		#jiszq#
+		)
+	</insert>
+	<update id="updateDingd" parameterClass="com.athena.xqjs.entity.ilorder.Dingd">
+		update
+		${dbSchemal1}XQJS_DINGD 
+		<dynamic prepend="set">
+			<isNotEmpty property="dingdzt" prepend=",">
+    		   <![CDATA[DINGDZT=#dingdzt#]]>
+			</isNotEmpty>
+			<isNotEmpty property="maoxqbc" prepend=",">
+    		   <![CDATA[MAOXQBC=#maoxqbc#]]>
+			</isNotEmpty>
+			<isNotEmpty property="chullx" prepend=",">
+    		   <![CDATA[CHULLX=#chullx#]]>
+			</isNotEmpty>
+			<isNotEmpty property="shifyjsyhl" prepend=",">
+    		   <![CDATA[shifyjsyhl=#shifyjsyhl#]]>
+			</isNotEmpty>
+			<isNotEmpty property="dingdnr" prepend=",">
+    		   <![CDATA[DINGDNR=#dingdnr#]]>
+			</isNotEmpty>
+			<isNotEmpty property="gongysdm" prepend=",">
+    		   <![CDATA[GONGYSDM=#gongysdm#]]>
+			</isNotEmpty>
+			<isNotEmpty property="gongyslx" prepend=",">
+    		   <![CDATA[GONGYSLX=#gongyslx#]]>
+			</isNotEmpty>
+			<isNotEmpty property="dingdjssj" prepend=",">
+    		   <![CDATA[DINGDJSSJ=to_date(substr(#dingdjssj#,1,18),'yyyy-mm-dd HH24:MI:SS')]]>
+			</isNotEmpty>
+			<isNotEmpty property="dingdlx" prepend=",">
+    		   <![CDATA[DINGDLX=#dingdlx#]]>
+			</isNotEmpty>
+			<isNotEmpty property="fahzq" prepend=",">
+    		   <![CDATA[FAHZQ=#fahzq#]]>
+			</isNotEmpty>
+			<isNotEmpty property="editor" prepend=",">
+    		   <![CDATA[EDITOR=#editor#]]>
+			</isNotEmpty>
+			<isNotEmpty property="heth" prepend=",">
+    		   <![CDATA[HETH=#heth#]]>
+			</isNotEmpty>
+			<isNotEmpty property="ziyhqrq" prepend=",">
+    		   <![CDATA[ZIYHQRQ=to_date(substr(#ziyhqrq#,1,10),'yyyy-mm-dd')]]>
+			</isNotEmpty>
+			<isNotEmpty property="jislx" prepend=",">
+    		   <![CDATA[JISLX=#jislx#]]>
+			</isNotEmpty>
+			<isNotEmpty property="jiszq" prepend=",">
+    		   <![CDATA[JISZQ=#jiszq#]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic prepend="where">
+			<isNotEmpty prepend="  and " property="dingdh">
+				DINGDH = #dingdh#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+
+	<delete id="deleteDingd" parameterClass="com.athena.xqjs.entity.ilorder.Dingd">
+		delete
+		from
+		${dbSchemal1}XQJS_DINGD
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdh">DINGDH = #dingdh#
+			</isNotEmpty>
+		</dynamic>
+	</delete>
+
+
+	<!-- KD订单定义 -->
+	<select id="kdQueryDingd" resultClass="com.athena.xqjs.entity.ilorder.Dingd">
+		select
+			GONGYSDM,
+			CHULLX,
+			TO_CHAR(DINGDFSSJ,'yyyy-mm-dd HH24:MI') as DINGDFSSJ,
+			DINGDZT,
+			ZIYHQRQ,
+			DINGDSXCZR,
+			DINGDH,
+			BEIZ,
+			shifzfsyhl,
+			DINGDNR,
+			TO_CHAR(create_time,'yyyy-mm-dd HH24:MI') as DINGDJSSJ,
+			SHIFFSGYS,
+			DINGDLX,
+			TO_CHAR(DINGDSXSJ,'yyyy-mm-dd HH24:MI') as DINGDSXSJ,
+			FAHZQ,
+			GONGYSLX,
+			JISLX,
+			MAOXQBC,
+			HETH,
+			SHIFYJSYHL,
+			USERCENTER,
+			jiszq,
+			editor
+		from
+			${dbSchemal1}XQJS_DINGD
+		where
+			1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdh">
+				DINGDH = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="usercenter">
+				 <![CDATA[usercenter like '%$usercenter$%']]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="fahzq">
+				FAHZQ = #fahzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysdm">
+				gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdlx">
+				DINGDLX = #dingdlx#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="editor">
+				EDITOR = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdzt">
+				 <isEqual prepend="" property="_isJL" compareValue="Y"> 
+					<![CDATA[ (DINGDZT = #dingdzt#  or DINGDZT = 'A') ]]>
+				 </isEqual>
+				 <isEqual prepend="" property="_isJL" compareValue="N"> 
+					 DINGDZT = #dingdzt#
+				 </isEqual>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="heth">
+				<![CDATA[ to_date(#heth#,'yyyy-mm-dd HH24:MI:SS') <= dingdjssj ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jislx">
+				<![CDATA[ dingdjssj <= to_date(#jislx#,'yyyy-mm-dd HH24:MI:SS') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdnr">
+				<![CDATA[ to_date(#dingdnr#,'yyyy-mm-dd HH24:MI:SS') <= dingdsxsj ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="beiz">
+				<![CDATA[ dingdsxsj <= to_date(#beiz#,'yyyy-mm-dd HH24:MI:SS') ]]>
+			</isNotEmpty>
+		</dynamic>
+		<!-- 0007033 -->
+		order by 
+				dingdh desc,create_time desc
+	</select>
+
+
+
+	<!-- KD订单修改及生效 -->
+	<select id="kdQueryDingdForShengx" resultClass="com.athena.xqjs.entity.ilorder.Dingd">
+		select
+		temp.usercenter as usercenter,
+		temp.GONGYSDM as GONGYSDM,
+		temp.CHULLX as CHULLX,
+		TO_CHAR(temp.DINGDFSSJ,'yyyy-mm-dd HH24:MI') as DINGDFSSJ,
+		temp.dingdzt as dingdzt,
+		
+		TO_CHAR(temp.ZIYHQRQ,'yyyy-mm-dd') as ZIYHQRQ ,
+		temp.DINGDSXCZR as DINGDSXCZR,
+		temp.DINGDH as DINGDH,
+		temp.BEIZ as BEIZ,
+		temp.shifzfsyhl as shifzfsyhl,
+		temp.DINGDNR as DINGDNR,
+		TO_CHAR(temp.DINGDJSSJ,'yyyy-mm-dd HH24:MI') as DINGDJSSJ,
+		temp.SHIFFSGYS as SHIFFSGYS,
+		temp.DINGDLX as DINGDLX,
+		TO_CHAR(temp.DINGDSXSJ,'yyyy-mm-dd HH24:MI') as DINGDSXSJ,
+		temp.FAHZQ as FAHZQ,
+		temp.GONGYSLX as GONGYSLX,
+		temp.JISLX as JISLX,
+		temp.MAOXQBC as MAOXQBC,
+		temp.HETH as heth,
+		temp.SHIFYJSYHL as shifyjsyhl,
+		temp.editor as editor
+		from
+			${dbSchemal1}XQJS_DINGD temp 
+		where
+			1=1
+		and temp.dingdzt &lt;&gt; '0'
+		<dynamic>
+			<isNotEmpty prepend="  and " property="editor">
+				temp.editor  = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdh">
+				temp.dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdlx">
+				temp.dingdlx = #dingdlx#
+			</isNotEmpty>
+			<isEmpty prepend="  and " property="dingdlx">
+				<![CDATA[ temp.dingdlx in ('1', '2', '4')]]>
+			</isEmpty>
+			<isNotEmpty prepend="  and " property="fahzq">
+				temp.FAHZQ = #fahzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysdm">
+				temp.gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdzt">
+				temp.dingdzt = #dingdzt#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="heth">
+				<![CDATA[ to_date(#heth#,'yyyy-mm-dd HH24:MI:SS') <= dingdjssj ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jislx">
+				<![CDATA[ temp.dingdjssj <= to_date(#jislx#,'yyyy-mm-dd HH24:MI:SS') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdnr">
+				<![CDATA[ to_date(#dingdnr#,'yyyy-mm-dd HH24:MI:SS') <= temp.dingdsxsj ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="beiz">
+				<![CDATA[ temp.dingdsxsj <= to_date(#beiz#,'yyyy-mm-dd HH24:MI:SS') ]]>
+			</isNotEmpty>
+		</dynamic>
+			order by DINGDJSSJ desc,dingdh desc
+	</select>
+	<select id="kdQueryDingdForEXP" resultClass="com.athena.xqjs.entity.ilorder.Dingd">
+		select
+		temp.usercenter as usercenter,
+		temp.GONGYSDM as GONGYSDM,
+		temp.CHULLX as CHULLX,
+		TO_CHAR(temp.DINGDFSSJ,'yyyy-mm-dd HH24:MI') as DINGDFSSJ,
+		(select cx.zidmc from ${dbSchemal1}XQJS_dingd d,${dbSchemal3}CKX_XITCSDY cx
+		where d.dingdh = temp.dingdh and d.dingdzt=cx.zidbm and
+		cx.zidlx='DINGDZT')
+		as dingdzt,
+		
+		TO_CHAR(temp.ZIYHQRQ,'yyyy-mm-dd') as ZIYHQRQ ,
+		temp.DINGDSXCZR as DINGDSXCZR,
+		temp.DINGDH as DINGDH,
+		temp.BEIZ as BEIZ,
+		temp.shifzfsyhl as shifzfsyhl,
+		temp.DINGDNR as DINGDNR,
+		TO_CHAR(temp.DINGDJSSJ,'yyyy-mm-dd HH24:MI') as DINGDJSSJ,
+		temp.SHIFFSGYS as SHIFFSGYS,
+		temp.DINGDLX as DINGDLX,
+		TO_CHAR(temp.DINGDSXSJ,'yyyy-mm-dd HH24:MI') as DINGDSXSJ,
+		temp.FAHZQ as FAHZQ,
+		temp.GONGYSLX as GONGYSLX,
+		temp.JISLX as JISLX,
+		temp.MAOXQBC as MAOXQBC,
+		temp.HETH as heth,
+		temp.SHIFYJSYHL as shifyjsyhl,
+		temp.editor as editor
+		from
+			${dbSchemal1}XQJS_DINGD temp 
+		where
+			1=1
+			and temp.dingdzt &lt;&gt; '0'
+		<dynamic>
+			<isNotEmpty prepend="  and " property="editor">
+				temp.editor  = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdh">
+				temp.dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdlx">
+				temp.dingdlx = #dingdlx#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="fahzq">
+				temp.FAHZQ = #fahzq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysdm">
+				temp.gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdzt">
+				temp.dingdzt = #dingdzt#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="heth">
+				<![CDATA[ to_date(#heth#,'yyyy-mm-dd HH24:MI:SS') <= dingdjssj ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jislx">
+				<![CDATA[ temp.dingdjssj <= to_date(#jislx#,'yyyy-mm-dd HH24:MI:SS') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdnr">
+				<![CDATA[ to_date(#dingdnr#,'yyyy-mm-dd HH24:MI:SS') <= temp.dingdsxsj ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="beiz">
+				<![CDATA[ temp.dingdsxsj <= to_date(#beiz#,'yyyy-mm-dd HH24:MI:SS') ]]>
+			</isNotEmpty>
+		</dynamic>
+		order by 
+			
+			dingdh desc
+	</select>
+	<!-- 李智 -->
+	<select id="queryDingdByZt" resultClass="com.athena.xqjs.entity.ilorder.Dingd">
+		select
+		DINGDH
+		from
+		${dbSchemal1}XQJS_DINGD
+		where
+		(DINGDZT = #dingdzt# or DINGDZT = 'A')
+		and (DINGDLX = #dingdlx1# or DINGDLX = #dingdlx2# or DINGDLX = #dingdlx3#)
+		order by
+		DINGDH desc
+	</select>
+
+	<!-- 查询订单根据订单类型 李智 -->
+	<select id="queryDingdBylx" resultClass="com.athena.xqjs.entity.ilorder.Dingd">
+		select
+		GONGYSDM,
+		CHULLX,
+		DINGDFSSJ,
+		DINGDZT,
+		ZIYHQRQ,
+		DINGDSXCZR,
+		DINGDH,
+		BEIZ,
+		shifzfsyhl,
+		DINGDNR,
+		TO_CHAR(DINGDJSSJ,'yyyy-MM-dd hh24:mi') as DINGDJSSJ,
+		SHIFFSGYS,
+		DINGDLX,
+		DINGDSXSJ,
+		FAHZQ,
+		GONGYSLX,
+		JISLX,
+		MAOXQBC,
+		HETH
+		from
+		${dbSchemal1}XQJS_DINGD
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdlx">DINGDLX = #dingdlx#
+			</isNotEmpty>
+		</dynamic>
+		order by
+		DINGDH 
+	</select>
+	<select id="querySumDingd" resultClass="com.athena.xqjs.entity.ilorder.Dingd">
+		select
+		JISZQ,
+		TO_CHAR(DINGDJSSJ,'yyyy-mm-dd HH24:MI') as DINGDJSSJ,
+		MAOXQBC
+		from
+		${dbSchemal1}XQJS_DINGD
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend="  and " property="dingdlx">
+				(DINGDLX = #dingdlx#
+			</isNotEmpty>
+			<isNotEmpty prepend="  or " property="dingdlx1">
+				DINGDLX = #dingdlx1#
+			</isNotEmpty>
+			<isNotEmpty prepend=" " property="dingdlx">
+				)
+			</isNotEmpty>
+		</dynamic>
+		group by
+		JISZQ, TO_CHAR(DINGDJSSJ,'yyyy-mm-dd HH24:MI'),MAOXQBC
+		order by DINGDJSSJ desc
+	</select>
+	
+	
+	<select id="queryLastDingdByFayzq" resultClass="com.athena.xqjs.entity.ilorder.Dingd">
+		select
+			GONGYSDM,
+			USERCENTER ,
+			CHULLX,
+			DINGDFSSJ,
+			DINGDZT,
+			ZIYHQRQ,
+			DINGDSXCZR,
+			DINGDH,
+			BEIZ,
+			shifzfsyhl,
+			DINGDNR,
+			TO_CHAR(DINGDJSSJ,'yyyy-mm-dd HH24:MI') as DINGDJSSJ,
+			SHIFFSGYS,
+			DINGDLX,
+			DINGDSXSJ,
+			FAHZQ,
+			GONGYSLX,
+			JISLX,
+			MAOXQBC,
+			HETH,
+			JISZQ,
+			SHIFYJSYHL,
+			editor
+		from
+			${dbSchemal1}XQJS_DINGD
+		where
+			length(fahzq)=6 and dingdzt <![CDATA[ >= ]]> 4 and fahzq  <![CDATA[ < ]]>#fahzq#
+			order by fahzq desc
+	</select>
+		<select id="queryDingdzt" resultClass="java.lang.String">
+		select  dingdzt from ${dbSchemal1}XQJS_DINGD where dingdh=#dingdh#
+	    </select>
+</sqlMap>

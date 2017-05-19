@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="hlorder" >
+  <resultMap id="Dax" class="com.athena.xqjs.entity.hlorder.Dax">
+    <result column="DAXXH"  property="daxxh" />
+    <result column="USERCENTER"  property="usercenter" />
+    <result column="PAICFBQ"  property="paicfbq" />
+    <result column="CHAIFTS"  property="chaifts" />
+    <result column="BEIZ"  property="beiz" />
+    <result column="BIAOS" property="biaos" />
+    <result column="CREATOR"  property="creator" />
+    <result column="CREATE_TIME" property="createTime" />
+    <result column="EDITOR"  property="editor" />
+    <result column="EDIT_TIME" property="editTime" />
+  </resultMap>
+  
+  <!-- 查询当前线号下最大的计算天数 -->
+  <select id="queryCxJiesrqBYusercenterAndscxh" resultClass="java.math.BigDecimal"  parameterClass="java.util.Map">
+  		select max(CHAIFTS) as TIANS 
+  		from ${dbSchemal5}ckx_dax 
+  		where
+  		USERCENTER=#usercenter# and substr(DAXXH,4)=#scxh# and biaos=1
+  </select>
+  
+ 
+   
+</sqlMap>

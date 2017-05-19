@@ -1,0 +1,1274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ilorder">
+
+	<!-- 毛需求(李智) -->
+	<resultMap class="com.athena.xqjs.entity.ilorder.Maoxq" id="Maoxq">
+		<result column="BEIZ" property="beiz" />
+		<result column="XUQCFSJ" property="xuqcfsj" />
+		<result column="SHENGXBZ" property="shengxbz" />
+		<result column="XUQBC" property="xuqbc" />
+		<result column="XUQLY" property="xuqly" />
+		<result column="ZIDMC" property="xuqlymc" />
+	</resultMap>
+
+	<!-- 资源快照表(李智) -->
+	<resultMap class="com.athena.xqjs.entity.ilorder.Ziykzb" id="Ziykzb">
+		<result column="ZIYHQRQ" property="ziyhqrq" />
+	</resultMap>
+
+	<!-- 系统参数定义(李智) -->
+	<resultMap class="com.athena.xqjs.entity.common.Xitcsdy" id="ckxXitcsdy">
+		<result column="USERCENTER" property="usercenter" />
+		<result column="ZIDLX" property="zidlx" />
+		<result column="ZIDBM" property="zidbm" />
+		<result column="ZIDLXMC" property="zidlxmc" />
+		<result column="ZIDMC" property="zidmc" />
+		<result column="BEIZ" property="beiz" />
+	</resultMap>
+
+	<!-- 根据需求类型查询毛需求(李智) -->
+	<select id="queryMaoxqByXqlx" resultMap="Maoxq">
+		select
+		distinct
+		t.XUQBC,
+		t.BEIZ,
+		to_char(t.XUQCFSJ,'yyyy-MM-dd') XUQCFSJ,
+		t.SHENGXBZ,
+		t.XUQLY,
+		t1.ZIDMC
+		from
+		${dbSchemal1}XQJS_MAOXQ t
+		left join ${dbSchemal3}CKX_XITCSDY t1 on (t.XUQLY = t1.ZIDBM and t1.ZIDLX=#zidlx#)
+		left join ${dbSchemal3}CKX_GONGHMS_MAOXQ t2 on t.XUQLY = t2.XUQLY
+		where
+		t.active = '1'
+		<dynamic>
+			<isNotEmpty prepend=" and " property="xuqly">
+				(t.xuqly = #xuqly#
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="xuqly2">
+				t.xuqly = #xuqly2#
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="xuqly3">
+				t.xuqly = #xuqly3#
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="xuqly4">
+				t.xuqly = #xuqly4#
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="xuqly5">
+				t.xuqly = #xuqly5#
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="xuqly6">
+				t.xuqly = #xuqly6#
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="xuqly7">
+				t.xuqly = #xuqly7#
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="xuqly8">
+				t.xuqly = #xuqly8#
+			</isNotEmpty>
+			<isNotEmpty prepend="  " property="xuqly">
+				)
+			</isNotEmpty>
+				<isNotEmpty prepend=" and " property="noxuqly">
+				t.xuqly != #noxuqly#
+			</isNotEmpty>
+		</dynamic>
+		order by XUQCFSJ desc, t.xuqbc desc
+	</select>
+
+	<!-- 在资源快照表中查询资源获取日期(李智) -->
+	<select id="queryZiykzb" resultMap="Ziykzb" parameterClass="java.util.Map">
+		select
+		distinct
+		to_char(ZIYHQRQ,'yyyy-mm-dd') as ZIYHQRQ
+		from
+		${dbSchemal1}XQJS_ZIYKZB
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">USERCENTER =
+				#usercenter#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY ZIYHQRQ DESC
+	</select>
+
+	<!-- 查询数据字典(李智) -->
+	<select id="queryZid" resultMap="ckxXitcsdy">
+		select
+		USERCENTER,
+		ZIDLX,
+		ZIDBM,
+		ZIDLXMC,
+		ZIDMC,
+		BEIZ
+		from
+		${dbSchemal3}CKX_XITCSDY
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="zidlx">ZIDLX = #zidlx#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="zidmc">ZIDMC = #zidmc#
+			</isNotEmpty>
+		</dynamic>
+		order by PAIX
+	</select>
+	
+	
+	<!--******************************IL周期订单修改及生效***************************************  -->
+	<!-- IL订单修改及生效  查询NIESY -->
+	<select id="queryDd"  parameterClass="java.util.Map"  resultClass="java.util.HashMap" remapResults="true">
+	        select 
+               t.dingdh   as dingdh,
+               t.heth     as heth,
+               t.dingdlx  as dingdlx,
+               t.gongysdm as gongysdm,
+               t.chullx   as chullx,
+               t.dingdnr  as dingdnr,
+               t.fahzq    as fahzq,
+               to_char(t.dingdjssj,'yyyy-mm-dd HH24:mi:ss') as dingdjssj,
+               to_char(t.dingdsxsj,'yyyy-mm-dd') as dingdsxsj,
+               t.dingdzt   as dingdzt,
+               (select x.zidmc from ${dbSchemal3}ckx_xitcsdy x where x.zidlx='DINGDZT' and x.zidbm=t.dingdzt) as ZHUANGT,
+               t.beiz      as beiz,
+               t.shiffsgys as shiffsgys,
+               t.usercenter as usercenter,
+               t.editor     as editor,
+               to_char(t.edit_time,'yyyy-mm-dd HH24:mi:ss:ff3') as edit_time,
+               m.jihyz      as jihyz
+           from
+               ${dbSchemal1}XQJS_DINGD t
+         left join
+	         (select distinct d.dingdh, 
+	               d.usercenter,
+	               d.jihyz 
+	          from ${dbSchemal1}XQJS_DINGDMX d
+	               where  d.jihyz is not null) m
+         on(t.dingdh = m.dingdh)      
+          where  
+               t.active = '1' 
+         <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            t.usercenter like '%$usercenter$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jiszq">
+				t.jiszq = #jiszq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+			            t.gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isLessThan prepend=" and " property="dingdlx" compareValue="5" >
+			            t.dingdlx = #dingdlx#
+			</isLessThan>
+			<isGreaterEqual prepend=" and " property="dingdlx" compareValue="5">
+			             t.dingdlx &gt;= #dingdlx#
+			</isGreaterEqual>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            t.dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chullx" >
+			            $chullx$
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdzt">
+			            t.dingdzt = #dingdzt#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdjssj">
+			            $dingdjssj$
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdsxsj">
+			            $dingdsxsj$
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahzq">
+			            fahzq = #fahzq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor">
+			            editor = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jihyz">
+			            m.jihyz = #jihyz#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY DINGDJSSJ DESC,DINGDH DESC 
+	</select>
+	<select id="queryDdNojihyz"  parameterClass="java.util.Map"  resultClass="java.util.HashMap" remapResults="true">
+	        select 
+               t.dingdh   as dingdh,
+               t.heth     as heth,
+               t.dingdlx  as dingdlx,
+               t.gongysdm as gongysdm,
+               t.chullx   as chullx,
+               t.dingdnr  as dingdnr,
+               t.fahzq    as fahzq,
+               to_char(t.dingdjssj,'yyyy-mm-dd HH24:mi:ss') as dingdjssj,
+               to_char(t.dingdsxsj,'yyyy-mm-dd') as dingdsxsj,
+               t.dingdzt   as dingdzt,
+               (select x.zidmc from ${dbSchemal3}ckx_xitcsdy x where x.zidlx='DINGDZT' and x.zidbm=t.dingdzt) as ZHUANGT,
+               t.beiz      as beiz,
+               t.shiffsgys as shiffsgys,
+               t.usercenter as usercenter,
+               t.editor     as editor,
+               to_char(t.edit_time,'yyyy-mm-dd HH24:mi:ss:ff3') as edit_time
+           from
+               ${dbSchemal1}XQJS_DINGD t
+        <dynamic>
+        	<isEmpty property="jihyz">
+        		left
+        	</isEmpty>
+        	<isNotEmpty property="jihyz">
+        		inner
+        	</isNotEmpty>
+        </dynamic>
+         join
+	         (select distinct d.dingdh, 
+	               d.usercenter
+	          from ${dbSchemal1}XQJS_DINGDMX d
+	               where  d.jihyz is not null
+	          <dynamic>
+	          	<isNotEmpty prepend=" and " property="jihyz">
+			            d.jihyz = #jihyz#
+				</isNotEmpty>
+			  </dynamic>     
+	               ) m
+         on(t.dingdh = m.dingdh)      
+          where  
+               t.active = '1' 
+         <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            t.usercenter like '%$usercenter$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jiszq">
+				t.jiszq = #jiszq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+			            t.gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isLessThan prepend=" and " property="dingdlx" compareValue="5" >
+			            t.dingdlx = #dingdlx#
+			</isLessThan>
+			<isGreaterEqual prepend=" and " property="dingdlx" compareValue="5">
+			             t.dingdlx &gt;= #dingdlx#
+			</isGreaterEqual>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            t.dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chullx" >
+			            $chullx$
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdzt">
+			            t.dingdzt = #dingdzt#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdjssjFrom">
+			            dingdjssj&gt;=to_date(#dingdjssjFrom#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdjssjTo">
+			             dingdjssj&lt;=to_date(#dingdjssjTo#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdsxsjFrom">
+			            dingdsxsj&gt;=to_date(#dingdsxsjFrom#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdsxsjTo">
+			            dingdsxsj&lt;=to_date(#dingdsxsjTo#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahzq">
+			            fahzq = #fahzq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor">
+			            editor = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shiffsgys">
+			            shiffsgys = #shiffsgys#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY DINGDJSSJ DESC,DINGDH DESC 
+	</select> 
+	
+	<select id="queryDdBean"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.ilorder.Dingd" remapResults="true">
+	        select 
+               t.dingdh   as dingdh,
+               t.heth     as heth,
+               t.dingdlx  as dingdlx,
+               t.gongysdm as gongysdm,
+               t.chullx   as chullx,
+               t.dingdnr  as dingdnr,
+               t.fahzq    as fahzq,
+               to_char(t.dingdjssj,'yyyy-mm-dd HH24:mi:ss') as dingdjssj,
+               to_char(t.dingdsxsj,'yyyy-mm-dd') as dingdsxsj,
+               t.dingdzt   as dingdzt,
+               t.beiz      as beiz,
+               t.shiffsgys as shiffsgys,
+               t.usercenter as usercenter,
+               t.editor     as editor,
+               to_char(t.edit_time,'yyyy-mm-dd HH24:mi:ss:ff3') as edit_time
+           from
+               ${dbSchemal1}XQJS_DINGD t
+        <dynamic>
+        	<isEmpty property="jihyz">
+        		left
+        	</isEmpty>
+        	<isNotEmpty property="jihyz">
+        		inner
+        	</isNotEmpty>
+        </dynamic>
+         join
+	         (select distinct d.dingdh, 
+	               d.usercenter
+	          from ${dbSchemal1}XQJS_DINGDMX d
+	               where  d.jihyz is not null
+	          <dynamic>
+	          	<isNotEmpty prepend=" and " property="jihyz">
+			            d.jihyz = #jihyz#
+				</isNotEmpty>
+			  </dynamic>     
+	               ) m
+         on(t.dingdh = m.dingdh)      
+          where  
+               t.active = '1' 
+         <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            t.usercenter like '%$usercenter$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="jiszq">
+				t.jiszq = #jiszq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+			            t.gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isLessThan prepend=" and " property="dingdlx" compareValue="5" >
+			            t.dingdlx = #dingdlx#
+			</isLessThan>
+			<isGreaterEqual prepend=" and " property="dingdlx" compareValue="5">
+			             t.dingdlx &gt;= #dingdlx#
+			</isGreaterEqual>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            t.dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chullx" >
+			            $chullx$
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdzt">
+			            t.dingdzt = #dingdzt#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdjssjFrom">
+			            dingdjssj&gt;=to_date(#dingdjssjFrom#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdjssjTo">
+			             dingdjssj&lt;=to_date(#dingdjssjTo#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdsxsjFrom">
+			            dingdsxsj&gt;=to_date(#dingdsxsjFrom#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdsxsjTo">
+			            dingdsxsj&lt;=to_date(#dingdsxsjTo#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahzq">
+			            fahzq = #fahzq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor">
+			            editor = #editor#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY DINGDJSSJ DESC,DINGDH DESC 
+	</select> 
+	
+	<!-- 按需订单导出数量查询  by hzg 2015.7.14 -->
+	<select id="queryAnxDdCount"  parameterClass="java.util.Map"  resultClass="java.lang.String" >
+	        select 
+             	count(1) dingdmxCount
+           from
+               ${dbSchemal1}XQJS_DINGD t inner join  ${dbSchemal1}XQJS_DINGDMX d on 
+               t.dingdh = d.dingdh 
+          and  t.active = '1' 
+         <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            t.usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+			            t.gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isGreaterEqual prepend=" and " property="dingdlx" compareValue="5">
+			             t.dingdlx in('5','6')
+			</isGreaterEqual>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            t.dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chullx" >
+			           t.chullx in $chullx$
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdzt">
+			            t.dingdzt = #dingdzt#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor">
+			            t.editor = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdjssjFrom">
+			            t.dingdjssj&gt;=to_date(#dingdjssjFrom#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdjssjTo">
+			             t.dingdjssj&lt;=to_date(#dingdjssjTo#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isEmpty prepend=" and " property="dingdjssjFrom">
+					trunc(t.dingdjssj)=trunc(sysdate)
+			</isEmpty>
+		</dynamic>
+	</select> 
+	
+	
+	<!-- 按需订单导出查询 ,默认只能查询当天的按需订单 0011506 by hzg 2015.7.14 add  -->
+	<select id="queryExpAnxOrder"  parameterClass="java.util.Map"  resultClass="com.athena.xqjs.entity.ilorder.Dingdmx" remapResults="true">
+	        select 
+             	d.ID,
+				d.DINGDH,
+				d.LINGJBH,
+				d.USERCENTER,
+				d.GONGYSDM,
+				d.GONGYSLX,
+				d.YAOHQSRQ,
+				d.YAOHJSRQ,
+				d.CANGKDM,
+				d.XIEHZT,
+				d.FAHD,
+				d.DINGHCJ,
+				d.SHUL,
+				d.DANW,
+				d.UABZLX,
+				d.UABZUCLX,
+				d.UABZUCSL,
+				d.UABZUCRL,
+				d.FAYRQ,
+				d.JIAOFRQ,
+				d.ZHUANGT,
+				d.YUGSFQZ,
+				d.LEIX,
+				d.LUJDM,
+				d.JIHYZ,
+				d.ZUIHWHR,
+				d.ZUIHWHSJ,
+				d.JISSL,
+				d.GONGHLX,
+				d.YIJFL,
+				d.YIZZL,
+				d.YAOHLGSZL,
+				d.YAOHLGSYJF,
+				d.YAOHLGSYZZ,
+				d.YIJFLDDMX,
+				d.YIZZLDDMX,
+				d.SHID,
+				d.ZUIZDHSJ,
+				d.ZUIWDHSJ,
+				d.XIAOHSJ,
+				d.XIAOHCBHSJ,
+				d.XIAOHCSXSJ,
+				d.XIEHD,
+				d.XIANBYHLX,
+				d.USBAOZLX,
+				d.USBAOZRL,
+				d.XIAOHCH,
+				d.XIAOHCCXH,
+				d.CHANX,
+				d.XIAOHD,
+				d.FENPXH,
+				d.EDITOR,
+				d.EDIT_TIME,
+				d.CREATOR,
+				d.CREATE_TIME,
+				d.ACTIVE,
+				d.KANBXHBM,
+				d.TANGC,
+				d.PAICZT,
+				d.GCBH,
+				d.BEIHSJ2,
+				d.LINGJMC,
+				d.GONGSMC,
+				d.NEIBYHZX,
+				d.PCKAISSJ,
+				d.PCJIESSJ,
+				d.PCEDITOR,
+				d.PCEDIT_TIME,
+				d.PCFLAG
+           from
+               ${dbSchemal1}XQJS_DINGD t inner join  ${dbSchemal1}XQJS_DINGDMX d on 
+               t.dingdh = d.dingdh 
+          and  t.active = '1' 
+         <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            t.usercenter =#usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+			            t.gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isGreaterEqual prepend=" and " property="dingdlx" compareValue="5">
+			             t.dingdlx in('5','6')
+			</isGreaterEqual>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            t.dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="chullx" >
+			            t.chullx in $chullx$
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdzt">
+			            t.dingdzt = #dingdzt#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor">
+			            t.editor = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdjssjFrom">
+			            t.dingdjssj&gt;=to_date(#dingdjssjFrom#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdjssjTo">
+			             t.dingdjssj&lt;=to_date(#dingdjssjTo#,'yyyy-mm-dd HH24:mi:ss')
+			</isNotEmpty>
+			<isEmpty prepend=" and " property="dingdjssjFrom">
+					trunc(t.dingdjssj)=trunc(sysdate)
+			</isEmpty>
+		</dynamic>
+		ORDER BY t.DINGDJSSJ DESC,t.DINGDH DESC 
+	</select> 
+	
+	
+	
+	<select id="queryDdmxJihyz" resultClass="java.util.HashMap" >
+		select distinct d.dingdh, 
+	               d.usercenter,
+	               d.jihyz 
+	          from ${dbSchemal1}XQJS_DINGDMX d
+	               where  d.jihyz is not null
+	</select>
+	
+	<!-- 看板临时订单创建  订单号 -->
+	<select id="queryMaxKlddh"  resultClass="java.lang.String">
+	       <![CDATA[ select max(t.dingdh) from ${dbSchemal1}XQJS_DINGD t where t.dingdh like '$dingdh$%']]>
+	</select>
+	
+	<!--删除订单  -->
+	<update id="deleteDd"  parameterClass="com.athena.xqjs.entity.ilorder.Dingd" >
+	      update  ${dbSchemal1}XQJS_DINGD
+	      set active = #active#,
+	      editor = #newEditor#,
+	      edit_time = to_timestamp(#newEditTime#,'yyyy-mm-dd HH24:mi:ss:ff3')
+	      where 1=1
+	   <dynamic>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor">
+			            editor = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="edit_time">
+			            edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+			</isNotEmpty>
+			
+		</dynamic>
+	</update>
+	
+	<!--删除订单  -->
+	<update id="deleteEeDd"  parameterClass="com.athena.xqjs.entity.ilorder.Dingd" >
+	      delete  from ${dbSchemal1}XQJS_DINGD
+	      where 1=1
+	   <dynamic>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor">
+			            editor = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="edit_time">
+			            edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+			</isNotEmpty>
+			
+		</dynamic>
+	</update>
+	
+	<!--删除订单零件  -->
+	<update id="deleteDdlj"  parameterClass="com.athena.xqjs.entity.ilorder.Dingdlj" >
+	      update  ${dbSchemal1}XQJS_DINGDLJ
+	      set active = #active#,
+	          editor = #newEditor#,
+	          edit_time = to_timestamp(#newEditTime#,'yyyy-mm-dd HH24:mi:ss:ff3')
+	      where 1=1
+	   <dynamic>
+	        <isNotEmpty prepend=" and " property="id">
+			            id = #id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+			            lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor">
+			            editor = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="edit_time">
+			            edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!--删除订单零件  -->
+	<update id="deleteEeDdlj"  parameterClass="com.athena.xqjs.entity.ilorder.Dingdlj" >
+	     delete from ${dbSchemal1}XQJS_DINGDLJ
+	     where 1=1
+	   <dynamic>
+	        <isNotEmpty prepend=" and " property="id">
+			            id = #id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+			            lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+			            gongysdm = #gongysdm#
+			</isNotEmpty>
+		    <isNotEmpty prepend=" and " property="cangkdm">
+			            cangkdm = #cangkdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor">
+			            editor = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="edit_time">
+			            edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+		<!--删除订单零件  -->
+	<update id="deleteEeDdmx"  parameterClass="com.athena.xqjs.entity.ilorder.Dingdmx" >
+	     delete from ${dbSchemal1}XQJS_DINGDMX
+	     where 1=1
+	   <dynamic>
+	        <isNotEmpty prepend=" and " property="id">
+			            id = #id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+			            lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+			            gongysdm = #gongysdm#
+			</isNotEmpty>
+		    <isNotEmpty prepend=" and " property="cangkdm">
+			            cangkdm = #cangkdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahd">
+			            fahd = #fahd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghlx">
+			            gonghlx = #gonghlx#
+			</isNotEmpty>
+		    <isNotEmpty prepend=" and " property="xiehzt">
+			            xiehzt = #xiehzt#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="jiaofrq">
+			            to_char(jiaofrq,'yyyy-mm-dd') = #jiaofrq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor">
+			            editor = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="edit_time">
+			            edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	
+	
+	<!--修改、删除订单明细  -->
+	<update id="editDdmx"  parameterClass="java.util.Map" >
+	      update  ${dbSchemal1}XQJS_DINGDMX
+		      <dynamic prepend="set">
+		              <isNotEmpty  prepend=","  property="active">
+                              <![CDATA[ active = #active#]]>
+                      </isNotEmpty>
+                       <isNotEmpty  prepend=","  property="zhuangt">
+                              <![CDATA[ zhuangt = #zhuangt#]]>
+                      </isNotEmpty>
+                      <isNotEmpty  prepend=","  property="zuiwdhsj">
+                              <![CDATA[ zuiwdhsj = to_date(#zuiwdhsj#,'yyyy-MM-dd HH24:mi')]]>
+                      </isNotEmpty>
+                      <isNotEmpty  prepend=","  property="zuizdhsj">
+                              <![CDATA[ zuizdhsj = to_date(#zuizdhsj#,'yyyy-MM-dd HH24:mi')]]>
+                      </isNotEmpty>
+                      <isNotEmpty  prepend=","  property="fayrq">
+                              <![CDATA[ fayrq = to_date(#fayrq#,'yyyy-MM-dd HH24:mi')]]>
+                      </isNotEmpty>
+                      <isNotEmpty  prepend=","  property="xiaohcsxsj">
+                              <![CDATA[ xiaohcsxsj = #xiaohcsxsj#]]>
+                      </isNotEmpty>
+                      <isNotEmpty  prepend=","  property="newEditor">
+                              <![CDATA[ editor = #newEditor#]]>
+                      </isNotEmpty>
+                       <isNotEmpty  prepend="," property="newEditTime">
+                               <![CDATA[edit_time = to_timestamp(#newEditTime#,'yyyy-mm-dd HH24:mi:ss:ff3')]]>
+                      </isNotEmpty>
+                      <isNotEmpty  prepend="," property="shul">
+                              <![CDATA[ shul = #shul#]]>
+                      </isNotEmpty>
+                       <isNotEmpty  prepend="," property="leix">
+                              <![CDATA[ leix = #leix#]]>
+                      </isNotEmpty>
+                      <isNotEmpty  prepend="," property="jiaofrq">
+                              <![CDATA[ jiaofrq = (case when length(#jiaofrq#) = 16 then
+                            to_date(#jiaofrq#, 'yyyy-mm-dd HH24:mi') else
+                             to_date(#jiaofrq#,'yyyy-mm-dd') end ) ]]>
+                      </isNotEmpty>
+              </dynamic>
+	      where 1=1
+	   <dynamic>
+	         <isNotEmpty prepend=" and " property="id">
+			            id = #id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+			            gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+			            lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor">
+			            editor = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="edit_time">
+			            edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 修改IL订单的状态   待生效、生效  -->
+	<update id="updateUnEe"  parameterClass="com.athena.xqjs.entity.ilorder.Dingd" >
+	      update  ${dbSchemal1}XQJS_DINGD
+	      set 
+	          dingdzt = #dingdzt#,
+	          editor = #newEditor#,
+	          <dynamic >
+	                 <isNotEmpty property="dingdsxsj">dingdsxsj=to_timestamp(#dingdsxsj#,'yyyy-mm-dd HH24:mi:ss:ff3'),</isNotEmpty>
+	          </dynamic>
+	           <dynamic >
+	                 <isNotEmpty property="nUsercenter"> usercenter = #nUsercenter#,</isNotEmpty>
+	          </dynamic>
+	          edit_time = to_timestamp(#newEditTime#,'yyyy-mm-dd HH24:mi:ss:ff3')
+	      where 1=1
+	   <dynamic>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="editor">
+			            editor = #editor#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="edit_time">
+			            edit_time = to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3')
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 添加订单 -->
+	<insert id="addDingd"  parameterClass="com.athena.xqjs.entity.ilorder.Dingd">
+	       insert into ${dbSchemal1}xqjs_dingd
+	            (
+	              dingdh,
+	              usercenter,
+	              heth,
+	              chullx,
+	              dingdlx,
+	              gongysdm,
+	              fahzq,
+	              beiz,
+	              shiffsgys,
+	              dingdjssj,
+	              dingdnr,
+	              dingdzt,
+	              creator,
+	              create_time,
+	              editor,
+	              edit_time,
+	              active
+	            )
+	            values(
+	              #dingdh#,
+	              #usercenter#,
+	              #heth#,
+	              #chullx#,
+	              #dingdlx#,
+	              #gongysdm#,
+	              #fahzq#,
+	              #beiz#,
+	              #shiffsgys#,
+	              to_date(#dingdjssj#,'yyyy-mm-dd HH24:mi:ss'),
+	              #dingdnr#,
+	              #dingdzt#,
+	              #creator#,
+	              to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+	              #editor#,
+	              to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+	              #active#
+	            ) 
+	</insert>
+	
+	<!-- 添加订单零件-->
+	<insert id="addDingdLj"  parameterClass="com.athena.xqjs.entity.ilorder.Dingdlj">
+	       insert into ${dbSchemal1}xqjs_dingdlj
+	            (
+	              id,
+	              usercenter,
+	              dingdh,
+	              gongysdm,
+	              heth,
+	              gonghms,
+	              lingjbh,
+	              dingdnr,
+	              cangkdm,
+	              gongyslx,
+	              dinghcj,
+	              p0fyzqxh,
+	              uabzlx,
+	              gongysfe,
+	              uabzucsl,
+	              uabzuclx,
+	              uabzucrl,
+	              usbaozrl,
+	              usbaozlx,
+	              p0sl,
+	              p1sl,
+	              p2sl,
+	              p3sl,
+	              p4sl,
+	              danw,
+	              jihyz,
+	              creator,
+	              create_time,
+	              editor,
+	              edit_time,
+	              active
+	            )
+	            values(
+	             ${dbSchemal1}DINGDLJ_SEQ.nextval,
+	              #usercenter#,
+	              #dingdh#,
+	              #gongysdm#,
+	              #heth#,
+	              #gonghms#,
+	              #lingjbh#,
+	              #dingdnr#,
+	              decode(#cangkdm#,null,'',#cangkdm#),
+	              #gongyslx#,
+	              #dinghcj#,
+	              #p0fyzqxh#,
+	              #uabzlx#,
+	              #gongysfe#,
+	              #uabzucsl#,
+	              #uabzuclx#,
+	              #uabzucrl#,
+	              #usbaozrl#,
+	              #usbaozlx#,
+	              #p0sl#,
+	              #p1sl#,
+	              #p2sl#,
+	              #p3sl#,
+	              #p4sl#,
+	              #danw#,
+	              #jihyz#,
+	              #creator#,
+	              to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+	              #editor#,
+	              to_timestamp( #edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+	              #active#
+	            ) 
+	</insert>
+	
+	
+	
+	<!-- 添加订单行 -->
+	<insert id="addDingdh"  parameterClass="com.athena.xqjs.entity.ilorder.Dingdmx">
+	       insert into ${dbSchemal1}xqjs_dingdmx
+	            (
+	              id,
+	              usercenter,
+	              dingdh,
+	              gongysdm,
+	              lingjbh,
+	              cangkdm,
+	              uabzlx,
+	              uabzucsl,
+	              uabzucrl,
+	              shul,
+	              danw,
+	              jiaofrq,
+	              yugsfqz,
+	              jihyz,
+	              leix,
+	              creator,
+	              create_time,
+	              editor,
+	              edit_time,
+	              kanbxhbm,
+	              <dynamic>
+		              <isNotEmpty property="gonghlx">
+			              gonghlx,
+		              </isNotEmpty>
+	              </dynamic>
+	               <dynamic>
+		              <isNotEmpty property="fahd">
+			              fahd,
+		              </isNotEmpty>
+	              </dynamic>
+	              xiaohd,
+	              active
+	            )
+	            values(
+	             ${dbSchemal1}XQJS_DINGDMX_SEQ.nextval,
+	              #usercenter#,
+	              #dingdh#,
+	              #gongysdm#,
+	              #lingjbh#,
+	              #cangkdm#,
+	              #uabzlx#,
+	              #uabzucsl#,
+	              #uabzucrl#,
+	              #shul#,
+	              #danw#,
+	              #jiaofrq#,
+	              #yugsfqz#,
+	              #jihyz#,
+	              #leix#,
+	              #creator#,
+	              to_timestamp(#create_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+	              #editor#,
+	              to_timestamp(#edit_time#,'yyyy-mm-dd HH24:mi:ss:ff3'),
+	              #kanbxhbm#,
+	              <dynamic>
+	                       <isNotEmpty>#gonghlx#,</isNotEmpty>
+	              </dynamic>
+	              <dynamic>
+		              <isNotEmpty property="fahd">
+			              #fahd#,
+		              </isNotEmpty>
+	              </dynamic>
+	              #xiaohd#,
+	              #active#
+	            ) 
+	</insert>
+	
+	<!--汇总订单行到订单零件 -->
+	<select id="hzdingdh" parameterClass="java.util.Map"  resultClass="java.util.HashMap">
+			select 
+				dingdh,
+				lingjbh,
+				usercenter,
+				sum(shul) as shul
+			from  ${dbSchemal1}xqjs_dingdmx m
+			where active = '1'
+		<dynamic>
+		    <isNotEmpty prepend=" and " property="RQ">
+			            $RQ$
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+			            lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+			            gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkdm">
+			            cangkdm = #cangkdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gonghlx">
+			            gonghlx = #gonghlx#
+			</isNotEmpty>
+		</dynamic>
+		group by dingdh,lingjbh,usercenter
+	</select>
+	
+   <!--临时订单的修改、删除，更新订单零件  -->
+   <statement id="doinsertOrupdateDdlj" parameterClass="java.util.Map">
+	         <![CDATA[ merge  into ${dbSchemal1}xqjs_dingdlj  a
+	          using (select count(*) co from ${dbSchemal1}xqjs_dingdlj where active='1' and usercenter = #usercenter# and dingdh = #dingdh# and  gongysdm = #gongysdm# and lingjbh = #lingjbh# and cangkdm = #cangkdm# ) b
+	               on(b.co<>0)
+	          when matched then
+	               update  set
+	                       a.p0sl = #shul#,
+	                       editor = #newEditor#,
+	                       edit_time = to_timestamp(#newEditTime#,'yyyy-mm-dd HH24:mi:ss:ff3')
+	                 where usercenter = #usercenter# and dingdh = #dingdh# and  gongysdm = #gongysdm# and lingjbh = #lingjbh# and cangkdm = #cangkdm#
+	           when not matched then
+	                insert (id,usercenter,cangkdm,lingjbh,p0sl,gongysmd,dingdh,editor,edit_time) 
+	                       values(${dbSchemal1}DINGDLJ_SEQ.nextval,#usercenter#,#cangkdm#,#lingjbh#,#p0sl#,#gongysmd#,#dingdh#,#newEditor#,to_timestamp(#newEditTime#,'yyyy-mm-dd HH24:mi:ss:ff3'))]]>
+	</statement>
+	
+	<!--修改、删除订单明细后更新订单零件的数量 -->
+	<update id="upDdljsl"  parameterClass="java.util.Map" >
+	    update  ${dbSchemal1}XQJS_DINGDLJ
+	          <dynamic prepend="set">
+	                   <isNotEmpty prepend="," property="p0sl">p0sl = #p0sl#</isNotEmpty>
+	                   <isNotEmpty prepend="," property="p1sl">p1sl = #p1sl#</isNotEmpty>
+	                   <isNotEmpty prepend="," property="p2sl">p2sl = #p2sl#</isNotEmpty>
+	                   <isNotEmpty prepend="," property="p3sl">p3sl = #p3sl#</isNotEmpty>
+	                   <isNotEmpty prepend="," property="newEditor">editor = #newEditor#</isNotEmpty>
+	                   <isNotEmpty prepend="," property="newEditTime">edit_time = to_timestamp(#newEditTime#,'yyyy-mm-dd HH24:mi:ss:ff3')</isNotEmpty>
+	          </dynamic>
+	      where active='1'
+	    <dynamic>
+	        <isNotEmpty prepend=" and " property="id">
+			            id = #id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dingdh">
+			            dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+			            usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+			            lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="gongysdm">
+			            gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cangkdm">
+			            cangkdm = #cangkdm#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+   <!-- 查询生效的订单明细  导出 -->
+   <select id="queryDdmxEffect" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select 
+		XIAOHCH,
+		SHID,
+		YUGSFQZ,
+		FAHD,
+		LUJDM,
+		SHUL,
+		UABZUCLX,
+		XIEHD,
+		LINGJBH,
+		to_char(YAOHQSRQ,'yyyy-mm-dd') as YAOHQSRQ,
+		USBAOZLX,
+		to_char(ZUIHWHSJ,'yyyy-mm-dd') as ZUIHWHSJ,
+		DINGHCJ,
+		UABZUCRL,
+		to_char(YAOHJSRQ,'yyyy-mm-dd') as YAOHJSRQ,
+		YIJFL,
+		XIEHZT,
+		XIAOHCCXH,
+		USBAOZRL,
+		to_char(ZUIWDHSJ,'yyyy-mm-dd') as ZUIWDHSJ,
+		UABZUCSL,
+		XIAOHCSXSJ,
+		(select x.zidmc from ${dbSchemal3}ckx_xitcsdy x where x.zidlx='GSLX' and x.zidbm=m.gongyslx) as gongyslx,
+		to_char(XIAOHSJ,'yyyy-mm-dd') as XIAOHSJ,
+		ZUIHWHR,
+		to_char(JIAOFRQ,'yyyy-mm-dd') as JIAOFRQ,
+		LEIX,
+		USERCENTER,
+		to_char(ZUIZDHSJ,'yyyy-mm-dd') as ZUIZDHSJ,
+		(select x.zidmc from ${dbSchemal3}ckx_xitcsdy x where x.zidlx='DINGDZT' and x.zidbm=m.ZHUANGT) as ZHUANGT,
+		XIANBYHLX,
+		DANW,
+		to_char(FAYRQ,'yyyy-mm-dd') as FAYRQ,
+		GONGHLX,
+		XIAOHCBHSJ,
+		UABZLX,
+		JISSL,
+		DINGDH,
+		GONGYSDM,
+		JIHYZ,
+		CANGKDM,
+		ID 
+		from 
+			${dbSchemal1}XQJS_DINGDMX  m 
+	  where exists(
+          select * 
+            from ${dbSchemal1}XQJS_DINGD d 
+              where m.dingdh = d.dingdh and d.dingdzt = #dingdzt# and m.active = '1'
+         )
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gongysdm">
+				gongysdm = #gongysdm#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdh">
+				dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="id">
+				id = #id#
+			</isNotEmpty>
+		</dynamic>
+		order by 
+			USERCENTER,DINGDH,LINGJBH
+	</select>	
+	
+	<delete id="deleteDingdmxByDingdh" parameterClass="com.athena.xqjs.entity.ilorder.Dingdlj">
+		delete from ${dbSchemal1}xqjs_dingdmx
+		where dingdh = #dingdh#
+	</delete>
+	
+	<!-- 查询生效的看板循环编码 -->
+   <select id="querykanbxhbm" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select  k.xunhbm  as kanbxhbm 
+	     from  ${dbSchemal1}xqjs_kanbxhgm k
+	  where  k.shengxzt = '1'
+		<dynamic>
+			<isNotEmpty prepend="  and " property="usercenter">
+				usercenter = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="lingjbh">
+				lingjbh = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="cangkdm">
+				cangkdm = #cangkdm#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="xiaohd">
+				xiaohd = #xiaohd#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="gonghms">
+				gonghms = #gonghms#
+			</isNotEmpty>
+		</dynamic>
+	</select>	
+	
+	<!-- 查询生效的看板循环编码 -->
+   <select id="queryExpAllOrder" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	select 
+		dd.usercenter as usercenter,
+		(select x.zidmc from ${dbSchemal3}ckx_xitcsdy x where x.zidlx='DINGDZT' and x.zidbm=dd.dingdzt) as dingdzt,
+		dd.jiszq      as jiszq,
+		ddlj.jihyz    as jihyz,
+		dd.gongysdm as gongysdm,
+		dd.dingdh     as dingdh,
+		ddlj.lingjbh  as lingjbh,
+		ddlj.p0fyzqxh as p0fyzqxh,
+		sum(ddlj.p0sl)     as p0sl,
+		sum(ddlj.p1sl)     as p1sl,
+		sum(ddlj.p2sl)     as p2sl,
+		sum(ddlj.p3sl)     as p3sl,
+		dd.chullx     as chullx
+		from ${dbSchemal1}xqjs_dingd dd
+		left join ${dbSchemal1}xqjs_dingdlj ddlj
+		on(dd.dingdh=ddlj.dingdh)
+		where  1=1 and  dd.dingdh in $dingdh$
+	    group by dingdzt,dd.jiszq ,ddlj.jihyz,dd.gongysdm,dd.dingdh,ddlj.lingjbh,ddlj.p0fyzqxh,	dd.chullx , dd.usercenter
+	</select>
+	<!-- 查询生效的看板循环编码 -->
+   <select id="queryExpDindh" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+       select    distinct
+                 d.dingdh,
+                 d.chullx,
+                 d.jiszq,
+                 to_char(d.dingdjssj,'yyyy-mm-dd HH24:mi:ss') as dingdjssj
+	    from   ${dbSchemal1}xqjs_dingd   d
+	    where 1=1
+	     <dynamic>
+			<isEqual prepend="  and " property="dinghlx" compareValue="97W">
+				D.DINGDLX  = '0'
+			</isEqual>
+			<isEqual prepend="  and " property="dinghlx" compareValue="UGB">
+				D.DINGDLX  = '9'
+			</isEqual>
+			<isNotEmpty prepend="  and " property="jiszq">
+				d.jiszq = #jiszq#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdjssj">
+				<![CDATA[to_char(d.dingdjssj,'yyyy-mm-dd HH24:mi') >= #dingdjssj#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="dingdjssjEnd">
+				<![CDATA[to_char(d.dingdjssj,'yyyy-mm-dd HH24:mi') <= #dingdjssjEnd#]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="chullx">
+				d.chullx = #chullx#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY D.DINGDH
+   </select>
+   
+   	<!-- 查询生效的看板循环编码 -->
+   <select id="queryLsdingdmx" resultClass="java.lang.Integer">
+       select    count(*)
+	    from   ${dbSchemal1}xqjs_dingd   d
+	    where active='1'
+	     <dynamic>
+			<isNotEmpty prepend="  and " property="dingdh">
+				dingdh = #dingdh#
+			</isNotEmpty>
+			<isNotEmpty prepend="  and " property="zhuangt">
+				zhuangt &lt; #zhuangt#
+			</isNotEmpty>
+		</dynamic>
+   </select>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <!-- wuyichao 添加查询全部资源快照数据   选取关键key为xianbck -->
+   <select id="queryAllKucByXianbck" resultClass="com.athena.xqjs.entity.ilorder.Ziykzb">
+		select distinct x.kucsl, lingjbh, usercenter, cangkdm
+		  from ${dbSchemal1}XQJS_ziykzb x
+		 where x.ziyhqrq = to_date(substr(#ziyhqrq#,1,10) ,'yyyy-MM-dd')
+   </select>
+	
+   
+   
+    <!-- wuyichao 添加查询全部资源快照数据   选取关键key为dinghck -->
+   <select id="queryAllKucByDinghck" resultClass="com.athena.xqjs.entity.ilorder.Ziykzb">
+		select SUM(KUCSL) AS KUCSL, USERCENTER, LINGJBH, DINGHCK as cangkdm
+		  from (select distinct x.kucsl,
+		                        x.cangkdm,
+		                        x.usercenter,
+		                        x.lingjbh,
+		                        CW.DINGHCK
+		          from ${dbSchemal1}XQJS_ziykzb x, ${dbSchemal1}ckx_wullj cw
+		         WHERE x.usercenter = CW.USERCENTER
+		           and x.lingjbh = cw.lingjbh
+		           AND X.CANGKDM IN (CW.XIANBCK, CW.DINGHCK)
+		           and  x.ziyhqrq = to_date(substr(#ziyhqrq#,1,10) ,'yyyy-MM-dd'))
+		 GROUP BY USERCENTER,
+		          LINGJBH,
+		          DINGHCK
+   </select>
+    
+    
+    
+</sqlMap>

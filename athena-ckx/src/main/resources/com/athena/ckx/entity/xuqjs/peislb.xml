@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+		<!-- 配送类别  qizhongtao 2012-4-10 -->
+		
+		<select id="queryPeislbWsl" resultClass="com.athena.ckx.entity.xuqjs.Peislb"  parameterClass="com.athena.ckx.entity.xuqjs.Peislb"  >
+			select  usercenter,peislx,peislxmc,baozlx,baozsl,zuicddcws,tongbjpbs,shangxd,peitsxbs,beihtqq,xiaohccxc,shifgj,beiz,shifbhd,cangkbh,zickbh,wlgyy,biaos,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_peislb
+			where biaos='1'
+			order by usercenter,peislx
+		</select>
+		
+		<!-- 判断pds拆分标记为同步时配送类型是否存在 -->
+		<select id="querypeislxTBZX" parameterClass="com.athena.ckx.entity.xuqjs.CkxLingjxhd" resultClass="java.lang.Integer">
+			select count(*)
+			from ${dbSchemal1}ckx_peislb t
+			where t.tongbjpbs = 1
+			<dynamic>
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="peislxbh"><![CDATA[peislx=#peislxbh#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		
+	    <!--分页查询	 -->
+		<select id="queryPeislb" resultClass="com.athena.ckx.entity.xuqjs.Peislb">
+			select  usercenter,peislx,peislxmc,baozlx,baozsl,zuicddcws,tongbjpbs,shangxd,peitsxbs,beihtqq,xiaohccxc,shifgj,beiz,shifbhd,cangkbh,zickbh,wlgyy,biaos,creator,create_time,editor,edit_time
+			from ${dbSchemal3}ckx_peislb
+			where 1=1
+			<dynamic>
+				<isNotEmpty property="usercenter" prepend=" and " ><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty property="peislx" prepend=" and " ><![CDATA[peislx=#peislx#]]></isNotEmpty>
+				<isNotEmpty property="peislxmc" prepend=" and "><![CDATA[peislxmc = #peislxmc#]]></isNotEmpty>
+				<isNotEmpty property="baozlx" prepend=" and "><![CDATA[baozlx = #baozlx#]]></isNotEmpty>
+				<isNotEmpty property="shangxd" prepend=" and "><![CDATA[shangxd like '$shangxd$%']]></isNotEmpty>
+				<isNotEmpty property="wlgyy" prepend=" and "><![CDATA[wlgyy = #wlgyy#]]></isNotEmpty>
+				<isNotEmpty property="biaos" prepend=" and "><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,peislx
+		</select>
+		
+		<!-- 验证 仓库编号 -->
+		<select id="yzckbh"  parameterClass="java.util.Map"   resultClass="java.lang.Integer">
+			 select count(*) from  ${dbSchemal3}ckx_tongbjplj p   where p.peislx=#peislx# and p.usercenter=#usercenter#
+  			 and not exists(select * from ${dbSchemal3}ckx_lingjck c where c.usercenter=p.usercenter and c.lingjbh=p.lingjbh and c.cangkbh=#cangkbh#)
+		</select>
+		
+		<!-- 验证 子仓库编号 -->
+		<select id="yzzckbh"  parameterClass="java.util.Map"   resultClass="java.lang.Integer">
+			 select count(*) from  ${dbSchemal3}ckx_tongbjplj p   where p.peislx=#peislx# and p.usercenter=#usercenter#
+  			 and not exists(select * from ${dbSchemal3}ckx_lingjck c where c.usercenter=p.usercenter and c.lingjbh=p.lingjbh and c.cangkbh=#cangkbh# and c.zickbh=#zickbh#)
+		</select>
+		
+		 <!--单数据查询	 -->
+		<select id="getPeislb" resultClass="com.athena.ckx.entity.xuqjs.Peislb">
+			select  usercenter,peislx,peislxmc,baozlx,baozsl,zuicddcws,tongbjpbs,shangxd,peitsxbs,beihtqq,xiaohccxc,shifgj,beiz,shifbhd,cangkbh,wlgyy,biaos,zickbh
+			from ${dbSchemal3}ckx_peislb
+			where 1=1
+			<dynamic>
+				<isNotEmpty property="usercenter" prepend=" and " ><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty property="peislx" prepend=" and "><![CDATA[peislx=#peislx#]]></isNotEmpty>
+				<isNotEmpty property="biaos" prepend=" and "><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		 <!--单数据查询	 -->
+		<select id="getCountPeislb" resultClass="java.lang.String">
+			select  count(usercenter)
+			from ${dbSchemal3}ckx_peislb
+			where 1=1
+			<dynamic>
+				<isNotEmpty property="usercenter" prepend=" and " ><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty property="peislx" prepend=" and "><![CDATA[peislx=#peislx#]]></isNotEmpty>
+				<isNotEmpty property="biaos" prepend=" and "><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+		</select>
+		<!--插入数据 -->
+		<insert id="insertPeislb" parameterClass="com.athena.ckx.entity.xuqjs.Peislb" >
+			insert into ${dbSchemal3}ckx_peislb(usercenter,peislx,peislxmc,baozlx,baozsl,zuicddcws,tongbjpbs,shangxd,peitsxbs,beihtqq,xiaohccxc,shifgj,beiz,shifbhd,cangkbh,zickbh,wlgyy,biaos,creator,create_time,editor,edit_time)
+			values(<![CDATA[#usercenter#,#peislx#,#peislxmc#,#baozlx#,#baozsl#,#zuicddcws#,#tongbjpbs#,#shangxd#,#peitsxbs#,#beihtqq#,#xiaohccxc#,#shifgj#,#beiz#,#shifbhd#,#cangkbh#,#zickbh#,#wlgyy#,'1',#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+		</insert>
+		
+		<!-- 一般修改数据 -->
+		<update id="updatePeislb" parameterClass="com.athena.ckx.entity.xuqjs.Peislb">
+			update ${dbSchemal3}ckx_peislb
+			set peislxmc = #peislxmc#,
+				baozlx = #baozlx#,
+				baozsl = #baozsl#,
+				zuicddcws = #zuicddcws#,
+				tongbjpbs = #tongbjpbs#,
+				shangxd = #shangxd#,
+				peitsxbs = #peitsxbs#,
+				beihtqq = #beihtqq#,
+				xiaohccxc = #xiaohccxc#,
+				shifgj = #shifgj#,
+				beiz = #beiz#,
+				shifbhd = #shifbhd#,
+				cangkbh = #cangkbh#,
+				zickbh = #zickbh#,
+				biaos = #biaos#,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[peislx = #peislx#]]>  and <![CDATA[usercenter = #usercenter#]]>
+		</update>
+		
+		<!-- 执行层POA修改数据 -->
+		<update id="updatePeislbZxcpoa" parameterClass="com.athena.ckx.entity.xuqjs.Peislb">
+			update ${dbSchemal3}ckx_peislb
+			set peislxmc = #peislxmc#,
+				baozlx = #baozlx#,
+				baozsl = #baozsl#,
+				zuicddcws = #zuicddcws#,
+				tongbjpbs = #tongbjpbs#,
+				shangxd = #shangxd#,
+				peitsxbs = #peitsxbs#,
+				beihtqq = #beihtqq#,
+				xiaohccxc = #xiaohccxc#,
+				shifgj = #shifgj#,
+				beiz = #beiz#,
+				shifbhd = #shifbhd#,
+				cangkbh = #cangkbh#,
+				zickbh = #zickbh#,
+				wlgyy = #wlgyy#,
+				biaos = #biaos#,
+				editor = #editor#,
+				edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')
+			where <![CDATA[peislx = #peislx#]]>  and <![CDATA[usercenter = #usercenter#]]>
+		</update>
+		
+		<!-- 删除数据 -->
+		<delete id="deletePeislb" parameterClass="com.athena.ckx.entity.xuqjs.Peislb">
+			update ${dbSchemal3}ckx_peislb
+			set <![CDATA[biaos = '0' , editor = #editor# , edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+			<dynamic prepend="where">
+				<isNotEmpty property="peislx" prepend=" and ">
+					<![CDATA[peislx = #peislx#]]>
+				</isNotEmpty>
+				<isNotEmpty property="usercenter" prepend=" and " ><![CDATA[usercenter=#usercenter#]]></isNotEmpty>
+			</dynamic>
+		</delete>
+		
+		<!--关联项校验查询 hanwu 20150706 0011487	 -->
+		<select id="getGuanlx" resultClass="java.util.HashMap"
+			parameterClass="java.util.HashMap">
+			select a.usercenter,a.peislx,a.peislxmc,a.baozlx,a.baozsl,a.zuicddcws,a.shangxd,a.cangkbh,a.zickbh,b.lingjbh,
+			b.shengcxbh, b.nclass,b.nvalue,c.xiaohdbh ljxhd,c.biaos xiaohdbs, d.cangkbh ljck,d.zickbh ljzck,
+			e.mos,e.mos2,e.waibms,e.jianglms,e.jianglms2,e.wjianglms,e.xianbck,e.dinghck
+			from ${dbSchemal3}ckx_peislb a inner join ${dbSchemal3}ckx_tongbjplj b on a.usercenter=b.usercenter and a.peislx=b.peislx
+			left join ${dbSchemal3}ckx_lingjxhd c on a.usercenter=c.usercenter and b.lingjbh=c.lingjbh and substr(a.shangxd,1,9)=c.xiaohdbh
+			left join ${dbSchemal3}ckx_lingjck d on a.usercenter=d.usercenter and b.lingjbh=d.lingjbh and a.cangkbh=d.cangkbh
+			left join ${dbSchemal3}ckx_wullj e on a.usercenter=e.usercenter and substr(a.shangxd,1,5)=e.fenpqh and b.lingjbh=e.lingjbh
+			where 1=1
+				<dynamic>
+				<isNotEmpty property="condition" prepend=" and " ><![CDATA[a.usercenter||'_'||a.peislx in $condition$]]></isNotEmpty>
+				<isNotEmpty property="usercenter" prepend=" and " ><![CDATA[a.usercenter=#usercenter#]]></isNotEmpty>
+				<isNotEmpty property="peislx" prepend=" and " ><![CDATA[a.peislx=#peislx#]]></isNotEmpty>
+				<isNotEmpty property="peislxmc" prepend=" and "><![CDATA[a.peislxmc = #peislxmc#]]></isNotEmpty>
+				<isNotEmpty property="baozlx" prepend=" and "><![CDATA[a.baozlx = #baozlx#]]></isNotEmpty>
+				<isNotEmpty property="shangxd" prepend=" and "><![CDATA[a.shangxd like '$shangxd$%']]></isNotEmpty>
+				<isNotEmpty property="biaos" prepend=" and "><![CDATA[a.biaos = #biaos#]]></isNotEmpty>
+				</dynamic>
+			order by a.usercenter asc,a.peislx asc,b.shengcxbh asc,b.lingjbh asc
+		</select>
+	
+</sqlMap>

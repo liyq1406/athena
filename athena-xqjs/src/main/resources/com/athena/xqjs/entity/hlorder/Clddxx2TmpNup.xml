@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="hlorder" >
+  <resultMap id="Clddxx2TmpNup" class="com.athena.xqjs.entity.hlorder.Clddxx2TmpNup" >
+   	<result column="USERCENTER" property="usercenter" />
+    <result column="SCXH" property="scxh" />
+    <result column="LINGJBH" property="lingjbh"/>
+    <result column="SHUL" property="shul" jdbcType="DECIMAL" />
+    <result column="ZHIZLX" property="zhizlx" jdbcType="VARCHAR" />
+    <result column="CHEJ" property="chej" jdbcType="VARCHAR" />
+    <result column="DANW" property="danw" jdbcType="VARCHAR" />
+     <result column="ZIJSYCJ" property="zijsycj" jdbcType="VARCHAR" />
+     <result column="YJSXSJ" property="yjsxsj" jdbcType="DATE" />
+     
+   </resultMap>
+  
+  
+    <!-- 根据nup单量份拆分出毛需求 -->
+  <select id="querynupclddxx2temmaoxqmx" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2TmpNup" parameterClass="java.util.Map" >   
+    select t.USERCENTER USERCENTER,
+           t.SCXH SCXH,
+           n.LINGJBH LINGJBH,
+           n.SHUL * t.SHUL SHUL,
+           n.ZHIZLX ZHIZLX,
+           n.CHEJ CHEJ,
+           n.DANW DANW,
+           to_date(t.YJSXSJ, 'yyyy-MM-dd') YJSXSJ
+      from IN_NUP n, IN_CLDDXX2_TMP t
+     where n.USERCENTER = t.USERCENTER
+       and n.LCDV24 = t.LCDV24
+       and n.ZHANKRQ = t.YJSYHSJ
+       and n.CHEJ = substr(t.SCXH, 0, 3)
+       and nvl(n.LCDVBZK, 0) = nvl(t.LCDVBZK, 0)
+       and (substr(t.SCXH, 3, 1) = '3' or substr(t.SCXH, 3, 1) = '5')
+  </select>
+  <!-- 备件外销计划与总成单量份关联得到备件外销毛需求 -->
+  <select id="querynupzongcdlfbeijwxjhmxq"  resultClass="com.athena.xqjs.entity.hlorder.NupZongcdlf" parameterClass="java.util.Map">
+  		select z.USERCENTER USERCENTER,b.DAXXH SCXH,z.LINGJBH LINGJBH,z.SHUL*b.SHUL SHUL,z.ZHIZLX ZHIZLX,z.CHEJ CHEJ,z.ZIJSYCJ ZIJSYCJ,z.DANW DANW, b.YUJJHZSJ YJSXSJ from ${dbSchemal5}ckx_zongcdlf z,${dbSchemal5}IN_BEIJWXJH b
+		where z.USERCENTER=b.USERCENTER and z.ZONGCLJ=b.ZONGCH and z.ECOM=b.ZHANKRQ and z.ZIJSYCJ = substr( b.DAXXH,1,3) and  b.YUJJHZSJ <![CDATA[ >= ]]> to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')
+  		
+  </select>
+  
+  <select id="queryDDBH_MAOXQMX_TMPData"  resultClass="com.athena.xqjs.entity.hlorder.DdbhMaoxqmx" parameterClass="java.util.Map">
+  		select USERCENTER,SHIYCJ,CHANX,XUQRQ,LINGJBH,sum(LINGJSL) LINGJSL,DANW,ZHIZLX,XUQKSRQ,XUQJSRQ,FLAG 
+		from DDBH_MAOXQMX_TMP group by  USERCENTER,SHIYCJ,CHANX,XUQRQ,LINGJBH,DANW,ZHIZLX,XUQKSRQ,XUQJSRQ,FLAG
+  </select>
+  
+  
+    <select id="queryCkx_yonghmqxcfsz"  resultClass="com.athena.xqjs.entity.hlorder.Yonghmqxcfsz" parameterClass="java.util.Map">
+  		select * from ckx_yonghmqxcfsz
+  </select>
+  
+      <!-- 根据nup单量份拆分出毛需求 -->
+  <select id="querynupclddxx2temmaoxqmxHanz" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2TmpNup" parameterClass="java.util.Map" >   
+    select t.USERCENTER USERCENTER,
+           t.SCXH SCXH,
+           n.LINGJBH LINGJBH,
+           n.SHUL * t.SHUL SHUL,
+           n.ZHIZLX ZHIZLX,
+           n.CHEJ CHEJ,
+           n.DANW DANW,
+           to_date(t.YJSXSJ, 'yyyy-MM-dd') YJSXSJ
+      from IN_NUP n, IN_CLDDXX2_TMP t
+     where n.USERCENTER = t.USERCENTER
+       and n.LCDV24 = t.LCDV24
+       and n.ZHANKRQ = t.YJSYHSJ
+       and n.CHEJ = substr(t.SCXH, 0, 3)
+       and nvl(n.LCDVBZK, 0) = nvl(t.LCDVBZK, 0)
+       and (substr(t.SCXH, 3, 1) = '2') and t.USERCENTER=#USERCENTER#
+  </select>
+  
+  
+    <select id="queryZhupcjhZongcdlfmaoxqmxHanz" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2TmpNup" parameterClass="java.util.Map" >   
+ select z.USERCENTER USERCENTER,
+           b.DAXXH      SCXH,
+           z.LINGJBH    LINGJBH,
+           z.SHUL       SHUL,
+           z.ZHIZLX     ZHIZLX,
+           z.ZIJSYCJ       CHEJ,
+           z.DANW       DANW,
+           b.YUJJHZSJ   YJSXSJ
+      from ckx_zongcdlf z, in_zhuxpcjh b
+     where z.USERCENTER = b.USERCENTER
+       and z.ZONGCLJ = b.ZONGCH
+       and z.ECOM = b.ZHANKRQ
+       and z.ZIJSYCJ = substr(b.DAXXH, 1, 3)
+       and b.YUJJHZSJ >=
+           to_date(to_char(sysdate, 'yyyy-mm-dd'), 'yyyy-mm-dd')
+           and  <![CDATA[b.YUJJHZSJ < to_date('2099-12-31','yyyy-MM-dd')]]>
+       and substr(b.DAXXH, 3, 1) = '2'   and b.USERCENTER=#USERCENTER#
+  </select>
+  
+  
+  
+        <!-- 根据nup单量份拆分出毛需求 -->
+  <select id="querynupclddxx2temmaoxqmxHanzChan" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2TmpNup" parameterClass="java.util.Map" >   
+    select t.USERCENTER USERCENTER,
+           t.SCXH SCXH,
+           n.LINGJBH LINGJBH,
+           n.SHUL * t.SHUL SHUL,
+           n.ZHIZLX ZHIZLX,
+           n.CHEJ CHEJ,
+           n.DANW DANW,
+           to_date(t.YJSXSJ, 'yyyy-MM-dd') YJSXSJ
+      from IN_NUP n, IN_CLDDXX2_TMP t
+     where n.USERCENTER = t.USERCENTER
+       and n.LCDV24 = t.LCDV24
+       and n.ZHANKRQ = t.YJSYHSJ
+       and n.CHEJ = substr(t.SCXH, 0, 3)
+       and nvl(n.LCDVBZK, 0) = nvl(t.LCDVBZK, 0)
+       and (substr(t.SCXH, 3, 1) = '2') and t.USERCENTER=#USERCENTER#  and  t.SCXH in($CHANX1$)
+  </select>
+  
+  
+    <select id="queryZhupcjhZongcdlfmaoxqmxHanzChan" resultClass="com.athena.xqjs.entity.hlorder.Clddxx2TmpNup" parameterClass="java.util.Map" >   
+ select z.USERCENTER USERCENTER,
+           b.DAXXH      SCXH,
+           z.LINGJBH    LINGJBH,
+           z.SHUL       SHUL,
+           z.ZHIZLX     ZHIZLX,
+           z.ZIJSYCJ       CHEJ,
+           z.DANW       DANW,
+           b.YUJJHZSJ   YJSXSJ
+      from ckx_zongcdlf z, in_zhuxpcjh b
+     where z.USERCENTER = b.USERCENTER
+       and z.ZONGCLJ = b.ZONGCH
+       and z.ECOM = b.ZHANKRQ
+       and z.ZIJSYCJ = substr(b.DAXXH, 1, 3)
+       and b.YUJJHZSJ >=
+           to_date(to_char(sysdate, 'yyyy-mm-dd'), 'yyyy-mm-dd')
+          and  <![CDATA[b.YUJJHZSJ < to_date('2099-12-31','yyyy-MM-dd')]]>
+       and substr(b.DAXXH, 3, 1) = '2'   and b.USERCENTER=#USERCENTER#  and  b.DAXXH in($CHANX2$)
+  </select>
+</sqlMap>

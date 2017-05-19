@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_tuopbzdygx">
+
+	<!-- 托盘包装对应关系 -->
+	
+	<!-- 多数据查询 -->
+	<select id="queryTuopbzdygx" parameterClass="com.athena.ckx.entity.xuqjs.Tuopbzdygx" resultClass="com.athena.ckx.entity.xuqjs.Tuopbzdygx">
+		select * from ${dbSchemal3}CKX_TUOPBZDYGX
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="tuopxh"><![CDATA[tuopxh = #tuopxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			<isNotEmpty prepend="  and " property="uclist">usercenter in( $uclist$)</isNotEmpty>
+		</dynamic>
+		order by EDIT_TIME desc,usercenter,tuopxh,baozxh
+	</select>
+	
+		<!-- 更新数据 -->
+	<update id="updateTuopbzdygx" parameterClass="com.athena.ckx.entity.xuqjs.Tuopbzdygx">
+		update ${dbSchemal3}CKX_TUOPBZDYGX 
+		set  tuopxh=#tuopxh# ,
+		baozxh=#baozxh# ,
+			baozgs=#baozgs# ,
+	    	biaos = #biaos#,
+	    	editor = #editor# ,
+		    edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') 
+	    where  1=1 
+	    		<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+	</update>
+	
+	
+			<!-- 插入数据 -->
+	<insert id="insertTuopbzdygx" parameterClass="com.athena.ckx.entity.xuqjs.Tuopbzdygx">
+		insert into ${dbSchemal3}CKX_TUOPBZDYGX (USERCENTER,tuopxh,baozxh,baozgs,BIAOS,CREATOR,CREATE_TIME,EDITOR,EDIT_TIME)
+		values(<![CDATA[#usercenter#,#tuopxh#,#baozxh#,#baozgs#,#biaos#,#creator#,to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>)
+	</insert>
+
+	<delete id="delTuopbzdygx"  parameterClass="com.athena.ckx.entity.xuqjs.Tuopbzdygx">
+		delete from ${dbSchemal3}CKX_TUOPBZDYGX
+		where  1=1
+					<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="tuopxh"><![CDATA[tuopxh = #tuopxh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+	
+	</delete>
+	
+	
+		<select id="countBaozxh" parameterClass="com.athena.ckx.entity.xuqjs.Tuopbzdygx" resultClass="java.lang.String">
+		select count(baozxh) from ${dbSchemal3}CKX_TUOPBZDYGX
+		where 1=1
+		<dynamic> 
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="baozxh"><![CDATA[baozxh = #baozxh#]]></isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>

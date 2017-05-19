@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+<select id="queryCkx_lingjkh" resultClass="com.athena.ckx.entity.paicfj.Ckx_lingjkh">
+   select usercenter , lingjbh, kehbh , kehljh , kehljmc , fahzt , uabaoz , ualjsl , 
+          ucbaoz , ucljsl ,to_char(shengxrq,'yyyy-MM-dd') as shengxrq , to_char(shixrq,'yyyy-MM-dd') as shixrq
+   from ${dbSchemal3}ckx_lingjkh
+   where 1=1
+    <dynamic>
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="kehbh"><![CDATA[kehbh = #kehbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="kehljh"><![CDATA[kehljh = #kehljh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahzt"><![CDATA[fahzt = #fahzt#]]></isNotEmpty>
+		</dynamic>
+		order by usercenter,lingjbh,kehbh,kehljh,fahzt
+</select>
+<select id="ListALLLingjkh" resultClass="com.athena.ckx.entity.paicfj.Ckx_lingjkh">
+SELECT T.USERCENTER,
+       T.LINGJBH,
+       T.KEHBH,
+       L.ZHONGWMC,
+       L.FAWMC,
+       T.KEHLJH,
+       T.KEHLJMC,
+       L.DANW,
+       T.FAHZT,
+       T.UABAOZ,
+       T.UALJSL,
+       T.UCBAOZ,
+       T.UCLJSL,
+       to_char(   T.SHENGXRQ,'YYYY-MM-DD') SHENGXRQ,
+       to_char(   T.SHIXRQ,'YYYY-MM-DD') SHIXRQ
+  FROM ${dbSchemal3}CKX_LINGJKH T
+  LEFT JOIN ${dbSchemal3}CKX_LINGJ L
+  ON L.USERCENTER = T.USERCENTER AND L.LINGJBH = T.LINGJBH
+   <dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="usercenter"><![CDATA[T.usercenter = #usercenter#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh"><![CDATA[T.lingjbh = #lingjbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="kehbh"><![CDATA[T.kehbh = #kehbh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="kehljh"><![CDATA[T.kehljh = #kehljh#]]></isNotEmpty>
+			<isNotEmpty prepend=" and " property="fahzt"><![CDATA[T.fahzt = #fahzt#]]></isNotEmpty>
+		</dynamic>
+ ORDER BY T.USERCENTER,T.LINGJBH,T.KEHBH,T.kehljh,T.fahzt
+</select>
+<insert id="insertCkx_lingjkh" parameterClass="com.athena.ckx.entity.paicfj.Ckx_lingjkh">
+insert into ${dbSchemal3}ckx_lingjkh
+(usercenter , lingjbh, kehbh , kehljh , kehljmc , fahzt , uabaoz , ualjsl , 
+          ucbaoz , ucljsl , shengxrq , shixrq , creator , create_time , editor , edit_time)
+values(#usercenter# , #lingjbh# , #kehbh# , #kehljh# , #kehljmc# , #fahzt# , #uabaoz# , #ualjsl# , 
+          #ucbaoz# , #ucljsl# , to_date(#shengxrq#,'yyyy-MM-dd') , to_date(#shixrq#,'yyyy-MM-dd') , #creator# , #create_time# , #editor# , #edit_time# )
+</insert>
+
+<update id="updateCkx_lingjkh" parameterClass="com.athena.ckx.entity.paicfj.Ckx_lingjkh">
+update ${dbSchemal3}ckx_lingjkh
+set        
+    		   <![CDATA[kehljh = #kehljh#]]> ,       	
+    		   <![CDATA[kehljmc = #kehljmc#]]> ,    
+    		   <![CDATA[fahzt = #fahzt#]]>,    	
+    		   <![CDATA[uabaoz = #uabaoz#]]> ,    	
+    		   <![CDATA[ualjsl = #ualjsl#]]> ,    	
+    		   <![CDATA[ucbaoz = #ucbaoz#]]> ,    	
+    		   <![CDATA[ucljsl = #ucljsl#]]> ,    	
+    		   <![CDATA[shengxrq = to_date(#shengxrq#,'yyyy-MM-dd hh24:mi:ss')]]> ,    	
+    		   <![CDATA[shixrq = to_date(#shixrq#,'yyyy-MM-dd hh24:mi:ss')]]> ,    	
+    		   <![CDATA[editor = #editor#]]> ,    	
+    		   <![CDATA[edit_time = #edit_time#]]>     
+       where  <![CDATA[ usercenter = #usercenter# and lingjbh = #lingjbh# and kehbh = #kehbh# ]]> 
+</update>
+<delete id="deleteCkx_lingjkh" parameterClass="com.athena.ckx.entity.paicfj.Ckx_lingjkh">
+delete ${dbSchemal3}ckx_lingjkh
+where <![CDATA[ usercenter = #usercenter# and lingjbh = #lingjbh# and kehbh = #kehbh# ]]>
+</delete>
+</sqlMap>

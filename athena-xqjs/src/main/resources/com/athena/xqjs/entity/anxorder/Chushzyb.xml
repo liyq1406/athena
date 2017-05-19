@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="anx">
+	<!-- 初始化资源表 -->
+	<insert id="insertChushzyb" parameterClass="com.athena.xqjs.entity.anxorder.Chushzyb">
+		<![CDATA[
+		insert into ${dbSchemal1}XQJS_CHUSHZYB(
+			USERCENTER,
+			LINGJBH,
+			SHENGCXBH,
+			XIAOHDBH,
+			JICDWJFL,
+			XIANBKC,
+			LIUSH,
+			BEIZ,
+			FLAG,
+			CREATOR,
+			CREATE_TIME,
+			EDITOR,
+			EDIT_TIME,
+			CHUKL,
+			YICXHL)
+		values(
+		    #usercenter#,
+		    #lingjbh#,
+		    #shengcxbh#,
+			#xiaohdbh#,
+			$jicdwjfl$,
+			$xianbkc$,
+			#liush#,
+			#beiz#,
+			#flag#,
+			#creator#,
+			to_timestamp(#create_time#,'yyyy-mm-dd hh24:mi:ss ff'),
+			#editor#,
+			to_timestamp(#edit_time#,'yyyy-mm-dd hh24:mi:ss ff'),
+			#chukl#,
+			#yicxhl#
+		)]]>
+	</insert>
+
+   <!-- modify mantis:0011510 by hzg 增加chukl,yicxhl 2015.7.17 -->
+	<update id="updateChushzyb" parameterClass="com.athena.xqjs.entity.anxorder.Chushzyb">
+		update
+		${dbSchemal1}XQJS_CHUSHZYB
+		set
+		XIANBKC=#xianbkc#,
+		LIUSH=#liush#,
+		BEIZ=#beiz#,
+		EDITOR = #editor#,
+		EDIT_TIME = to_timestamp(#edit_time#,'yyyy-mm-dd hh24:mi:ss ff'),
+		chukl=#chukl#,
+		yicxhl=#yicxhl#
+		where
+			1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				LINGJBH =
+				#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				SHENGCXBH =
+				#shengcxbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohdbh">
+				XIAOHDBH =
+				#xiaohdbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<!-- add by zbb -->
+	<update id="updateSppvxhl" >
+		update
+		${dbSchemal1}XQJS_CHUSHZYB
+		set		
+		sppvxhl=#sppvxhl#
+		where
+			1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				LINGJBH =
+				#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				SHENGCXBH =
+				#shengcxbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohd">
+				XIAOHDBH =
+				#xiaohd#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	<delete id="deleteChushzyb" parameterClass="com.athena.xqjs.entity.anxorder.Chushzyb">
+		delete
+		from
+		${dbSchemal1}XQJS_CHUSHZYB
+		where
+		1 = 1
+			<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				LINGJBH =
+				#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				SHENGCXBH =
+				#shengcxbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohdbh">
+				XIAOHDBH =
+				#xiaohdbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			</dynamic>
+	</delete>
+
+	<select id="queryChushzybByParam" resultClass="com.athena.xqjs.entity.anxorder.Chushzyb">
+
+		select
+		USERCENTER,
+		LINGJBH,
+		SHENGCXBH,
+		XIAOHDBH,
+		JICDWJFL,
+		XIANBKC,
+		LIUSH,
+		BEIZ,
+		FLAG,
+		EDITOR,
+		EDIT_TIME,
+		CHUKL,
+		YICXHL
+		from
+		${dbSchemal1}XQJS_CHUSHZYB
+		where
+		1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				LINGJBH =
+				#lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				SHENGCXBH =
+				#shengcxbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohdbh">
+				XIAOHDBH =
+				#xiaohdbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="usercenter">
+				usercenter =
+				#usercenter#
+			</isNotEmpty>
+			<isNotNull prepend=" and " property="startTime">
+				edit_time <![CDATA[>=]]> to_date(#startTime#,'yyyy-MM-dd')
+			</isNotNull>
+			<isNotNull prepend=" and " property="endTime">
+				edit_time <![CDATA[<=]]> to_date(#endTime#,'yyyy-MM-dd')
+			</isNotNull>
+			order by edit_time desc,lingjbh,xiaohdbh  asc 
+		</dynamic>
+
+	</select>
+	
+	<!-- 增加CHUKL,YICXHL by hzg 2015.7.16 -->
+	<select id="queryOneChushzyb" resultClass="com.athena.xqjs.entity.anxorder.Chushzyb" parameterClass="java.util.Map">
+		select 
+			USERCENTER,
+			LINGJBH,
+			SHENGCXBH,
+			XIAOHDBH,
+			JICDWJFL,
+			XIANBKC,
+			LIUSH,
+			BEIZ,
+			FLAG,
+			CHUKL,
+			YICXHL,
+			SPPVXHL
+		from 
+			${dbSchemal1}XQJS_CHUSHZYB 
+		where 
+				1=1
+		<dynamic>
+			<isNotEmpty prepend=" and " property="usercenter">
+				USERCENTER = #usercenter#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="lingjbh">
+				LINGJBH = #lingjbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shengcxbh">
+				SHENGCXBH = #shengcxbh#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="xiaohdbh">
+				XIAOHDBH = #xiaohdbh#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<update id="updateById" parameterClass="com.athena.xqjs.entity.anxorder.Chushzyb">
+		update ${dbSchemal1}XQJS_CHUSHZYB 
+		set 
+			flag = #flag# 
+		where 
+			id = #id# 
+	</update>
+	
+	<!-- 校验流水号是否存在 -->
+	<select id="selLsh" resultClass="java.lang.String">
+		select 
+			zhongzlxh
+		from 
+			${dbSchemal1}xqjs_anxmaoxq 
+		where 
+			usercenter = #usercenter# and lingjbh = #lingjbh# and xiaohd = #xiaohdbh# and zhongzlxh = #liush# 
+			and rownum <![CDATA[<]]> 2
+	</select>
+	
+	<!-- 校验流水号是否存在 chenpeng -->
+	<select id="checkLsh" resultClass="java.lang.String">
+		select 
+			zhongzlxh
+		from 
+			${dbSchemal1}xqjs_anxmaoxq 
+		where 
+			usercenter = #usercenter# and chanx = #shengcxbh#  and zhongzlxh = #liush# 
+			and rownum <![CDATA[<]]> 2
+	</select>
+	
+	<!-- 校验选中的数据在零件消耗点表中是否存在 chenpeng -->
+	<select id="checkULX" resultClass="java.lang.String">
+		select 
+			xiaohdbh
+		from 
+			${dbSchemal3}ckx_lingjxhd 
+		where 
+			usercenter = #usercenter# and lingjbh = #lingjbh#  and xiaohdbh = #xiaohdbh# and shengcxbh = #shengcxbh# and biaos = '1'
+	</select>
+	
+	
+	
+	<!-- 查询执行层零件消耗表出库量  mantis:0011510 by hzg 2015.7.16 -->
+	<select id="queryChuklOfLingjxhb" parameterClass="com.athena.xqjs.entity.anxorder.Chushzyb" resultClass="java.lang.Integer">
+	<![CDATA[
+	select sum(a.daohl) chukl from ${dbSchemal3}ck_lingjxhb a 
+	where a.usercenter = #usercenter# 
+		and a.lingjbh = #lingjbh# 
+		and substr(a.xiaohd,0,9) = #xiaohdbh#
+		and  a.jilrq >= to_date(#dingdjssj#,'yyyy-mm-dd hh24:mi:ss') and a.jilrq < sysdate
+	]]>
+	</select>
+	<!-- 查询执行层异常申报操作量  mantis:0011510 by hzg 2015.7.16 -->
+	<select id="queryYicxhlOfYicsbcz" parameterClass="com.athena.xqjs.entity.anxorder.Chushzyb" resultClass="java.lang.Integer">
+		<![CDATA[
+		select sum(b.caozsl) yicxhl from ${dbSchemal3}ck_yicsbcz b 
+		where b.usercenter =  #usercenter#  
+			and b.lingjbh = #lingjbh# 
+		 	and trim(b.shengbd) = trim(#xiaohdbh#)
+		 	and b.caozsj >= to_date(#dingdjssj#,'yyyy-mm-dd hh24:mi:ss') and b.caozsj < sysdate
+		]]>
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="equilib">
+
+	<!-- 
+	配载发交:${dbSchemal2}
+	参考系:${dbSchemal3}
+	仓库:${dbSchemal4}
+	BY : WANGCHONG  DATE: 2012-06-19
+	 -->
+	<!-- 查询生产线工时 (月模拟)  2012-06-13 -->
+	<select id="selectScxGsByY" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.EquilibScx">
+		<![CDATA[
+			SELECT MX.GONGZBH, MX.CHANXH,MX.CHANXZBH , TO_CHAR(MX.HOUR) AS GS,TO_CHAR(SCX.CPSHENGCJP) SCXJP
+			  FROM ${dbSchemal2}PC_YUEDMNJHMX MX
+			  JOIN ${dbSchemal3}CKX_SHENGCX SCX ON SCX.SHENGCXBH=MX.CHANXH AND  SCX.USERCENTER=#UC# 
+			 WHERE MX.USERCENTER = #UC#
+			   AND MX.SHIJ = TO_DATE(#DATE#, 'YYYY-MM-DD')
+			   AND MX.CHANXH IN ($SCX$)
+			   AND MX.HOUR IS NOT  NULL
+			 ORDER BY MX.HOUR
+		 ]]>
+	</select>
+	<!-- 查询生产线下的零件(月模拟) -->
+	<select id="selectLJSLByY" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.EquilibLJ">
+		<![CDATA[
+		
+			SELECT T4.CHANXH,
+			       T4.LINGJBH,
+			       LINGJSL,
+			       TO_CHAR(T4.SHIFQYJJPL) AS SFQYJJPL,
+			       TO_CHAR(T4.JINGJPL) AS JJPL
+			  FROM (SELECT T.CHANXH, T.LINGJBH, T.LINGJSL, SCX.SHIFQYJJPL, SCX.JINGJPL
+			          FROM (SELECT TMP.CHANXH,
+			                       LB.LINGJBH,
+			                       TO_CHAR(LB.LINGJSL || '.00') LINGJSL
+			                  FROM ${dbSchemal2}PC_MONRGDLJCLB LB
+			                  JOIN (SELECT MX.GONGZBH, MX.CHANXH
+			                         FROM ${dbSchemal2}PC_YUEDMNJHMX MX
+			                        WHERE MX.USERCENTER = #UC#
+			                          AND MX.SHIJ = TO_DATE(#DATE#, 'YYYY-MM-DD')
+			                          AND MX.CHANXH IN ($SCX$)
+			                        GROUP BY GONGZBH, MX.CHANXH) TMP
+			                    ON TMP.GONGZBH = LB.GONGZBH) T
+			          JOIN ${dbSchemal3}CKX_SHENGCX_LINGJ SCX
+			            ON SCX.LINGJBH = T.LINGJBH
+			           AND SCX.USERCENTER = #UC#
+			           AND T.CHANXH = SCX.SHENGCXBH
+			        UNION ALL
+			        SELECT LJ.SHENGCXBH CHANXH,
+			               LJ.LINGJBH LINGJBH,
+			               '0.00' LINGJSL,
+			               LJ.SHIFQYJJPL SHIFQYJJPL,
+			               LJ.JINGJPL JINGJPL
+			          FROM ${dbSchemal3}CKX_SHENGCX_LINGJ LJ
+			          JOIN (SELECT SCX.LINGJBH, COUNT(SCX.SHENGCXBH) SCXSL
+			                  FROM ${dbSchemal3}CKX_SHENGCX_LINGJ SCX
+			                 WHERE SCX.USERCENTER = #UC#
+			                   AND SCX.SHENGCXBH IN
+			                       ($SCX$)
+			                 GROUP BY SCX.LINGJBH
+			                HAVING COUNT(SCX.SHENGCXBH) >= 2
+			                 ORDER BY SCXSL ASC) TMP
+			            ON TMP.LINGJBH = LJ.LINGJBH
+			         WHERE LJ.USERCENTER = #UC#
+			           AND NOT EXISTS
+			         (SELECT 1
+			                  FROM (SELECT TMP.CHANXH, LB.LINGJBH
+			                          FROM ${dbSchemal2}PC_MONRGDLJCLB LB
+			                          JOIN (SELECT MX.GONGZBH, MX.CHANXH
+			                                 FROM ${dbSchemal2}PC_YUEDMNJHMX MX
+			                                WHERE MX.USERCENTER = #UC#
+			                                  AND MX.SHIJ =
+			                                      TO_DATE(#DATE#, 'YYYY-MM-DD')
+			                                  AND MX.CHANXH IN ($SCX$)
+			                                GROUP BY GONGZBH, MX.CHANXH) TMP
+			                            ON TMP.GONGZBH = LB.GONGZBH) T3
+			                 WHERE T3.CHANXH = LJ.SHENGCXBH
+			                   AND T3.LINGJBH = LJ.LINGJBH)) T4
+			
+		 ]]>
+	</select>
+	<!-- 查询生产线工时 (滚动周期)  2012-06-13 -->
+	<select id="selectScxGsByG" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.EquilibScx">
+		<![CDATA[
+			SELECT MX.GONGZBH, MX.CHANXH,MX.CHANXZBH , TO_CHAR(MX.GUNDMNGS) AS GS,TO_CHAR(SCX.CPSHENGCJP) SCXJP
+			  FROM ${dbSchemal2}PC_YUEDMNJHMX MX
+			  JOIN ${dbSchemal3}CKX_SHENGCX SCX ON SCX.SHENGCXBH=MX.CHANXH AND  SCX.USERCENTER=#UC# 
+			 WHERE MX.USERCENTER = #UC#
+			   AND MX.SHIJ = TO_DATE(#DATE#, 'YYYY-MM-DD')
+			   AND MX.CHANXH IN ($SCX$)
+			   AND MX.GUNDMNGS IS NOT  NULL
+			 ORDER BY MX.GUNDMNGS
+		 ]]>
+	</select>
+	<!-- 查询生产线下的零件(滚动周期) -->
+	<select id="selectLJSLByG" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.EquilibLJ">
+		<![CDATA[
+		
+				SELECT T4.CHANXH,
+			       T4.LINGJBH,
+			       LINGJSL,
+			       TO_CHAR(T4.SHIFQYJJPL) AS SFQYJJPL,
+			       TO_CHAR(T4.JINGJPL) AS JJPL
+			  FROM (SELECT T.CHANXH, T.LINGJBH, T.LINGJSL, SCX.SHIFQYJJPL, SCX.JINGJPL
+			          FROM (SELECT TMP.CHANXH,
+			                       LB.LINGJBH,
+			                       TO_CHAR(LB.LINGJSL || '.00') LINGJSL
+			                  FROM ${dbSchemal2}PC_GUNDYMNRGDLJCLB LB
+			                  JOIN (SELECT MX.GONGZBH, MX.CHANXH
+			                         FROM ${dbSchemal2}PC_YUEDMNJHMX MX
+			                        WHERE MX.USERCENTER = #UC#
+			                          AND MX.SHIJ = TO_DATE(#DATE#, 'YYYY-MM-DD')
+			                          AND MX.CHANXH IN ($SCX$)
+			                        GROUP BY GONGZBH, MX.CHANXH) TMP
+			                    ON TMP.GONGZBH = LB.GONGZBH) T
+			          JOIN ${dbSchemal3}CKX_SHENGCX_LINGJ SCX
+			            ON SCX.LINGJBH = T.LINGJBH
+			           AND SCX.USERCENTER = #UC#
+			           AND T.CHANXH = SCX.SHENGCXBH
+			        UNION ALL
+			        SELECT LJ.SHENGCXBH CHANXH,
+			               LJ.LINGJBH LINGJBH,
+			               '0.00' LINGJSL,
+			               LJ.SHIFQYJJPL SHIFQYJJPL,
+			               LJ.JINGJPL JINGJPL
+			          FROM ${dbSchemal3}CKX_SHENGCX_LINGJ LJ
+			          JOIN (SELECT SCX.LINGJBH, COUNT(SCX.SHENGCXBH) SCXSL
+			                  FROM ${dbSchemal3}CKX_SHENGCX_LINGJ SCX
+			                 WHERE SCX.USERCENTER = #UC#
+			                   AND SCX.SHENGCXBH IN
+			                       ($SCX$)
+			                 GROUP BY SCX.LINGJBH
+			                HAVING COUNT(SCX.SHENGCXBH) >= 2
+			                 ORDER BY SCXSL ASC) TMP
+			            ON TMP.LINGJBH = LJ.LINGJBH
+			         WHERE LJ.USERCENTER = #UC#
+			           AND NOT EXISTS
+			         (SELECT 1
+			                  FROM (SELECT TMP.CHANXH, LB.LINGJBH
+			                          FROM ${dbSchemal2}PC_GUNDYMNRGDLJCLB LB
+			                          JOIN (SELECT MX.GONGZBH, MX.CHANXH
+			                                 FROM ${dbSchemal2}PC_YUEDMNJHMX MX
+			                                WHERE MX.USERCENTER = #UC#
+			                                  AND MX.SHIJ =
+			                                      TO_DATE(#DATE#, 'YYYY-MM-DD')
+			                                  AND MX.CHANXH IN ($SCX$)
+			                                GROUP BY GONGZBH, MX.CHANXH) TMP
+			                            ON TMP.GONGZBH = LB.GONGZBH) T3
+			                 WHERE T3.CHANXH = LJ.SHENGCXBH
+			                   AND T3.LINGJBH = LJ.LINGJBH)) T4
+		 ]]>
+	</select>
+	
+	
+	<!-- 查询生产线工时 (日滚动)  2012-06-13 -->
+	<select id="selectScxGsByR" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.EquilibScx">
+		<![CDATA[
+			SELECT T.SHENGCXBH CHANXH,
+			       T.CHANXZBH CHANXZBH ,
+			       TO_CHAR(T.CPSHENGCJP) SCXJP,
+			       TO_CHAR(SUM(NVL(T1.HOUR, 0))) AS GS
+			  FROM ${dbSchemal3}CKX_SHENGCX T
+			  LEFT JOIN ${dbSchemal2}PC_RIGDPCJHMX T1
+			    ON T1.CHANXH = T.SHENGCXBH
+			   AND T1.USERCENTER = T.USERCENTER
+			   AND T1.SHIJ = TO_DATE(#DATE#, 'YYYY-MM-DD')
+			 WHERE T.SHENGCXBH IN ($SCX$)
+			   AND T.USERCENTER = #UC#
+			 GROUP BY T.SHENGCXBH, T.CHANXZBH, T.CPSHENGCJP
+			 ORDER BY GS
+		 ]]>
+	</select>
+	<!-- 查询生产线下的零件(日滚动) -->
+	<select id="selectLJSLByR" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.EquilibLJ">
+		<![CDATA[
+		  SELECT T4.CHANXH,
+		         T4.LINGJBH,
+		         LINGJSL,
+		         TO_CHAR(T4.SHIFQYJJPL) AS SFQYJJPL,
+		         TO_CHAR(T4.JINGJPL) AS JJPL
+		    FROM (SELECT T.CHANXH, T.LINGJBH, T.LINGJSL, SCX.SHIFQYJJPL, SCX.JINGJPL
+		            FROM (SELECT LB.CHANXH,
+		                         LB.LINGJBH,
+		                         TO_CHAR(LB.YUJPCL || '.00') LINGJSL
+		                    FROM ${dbSchemal2}PC_RIGDPCJHMX LB
+		                   WHERE LB.USERCENTER = #UC#
+		                     AND LB.SHIJ = TO_DATE(#DATE#, 'YYYY-MM-DD')
+		                     AND LB.CHANXH IN ($SCX$)) T
+		            JOIN ${dbSchemal3}CKX_SHENGCX_LINGJ SCX
+		              ON SCX.LINGJBH = T.LINGJBH
+		             AND SCX.USERCENTER = #UC#
+		             AND T.CHANXH = SCX.SHENGCXBH
+		          UNION ALL
+		          SELECT LJ.SHENGCXBH CHANXH,
+		                 LJ.LINGJBH LINGJBH,
+		                 '0.00' LINGJSL,
+		                 LJ.SHIFQYJJPL SHIFQYJJPL,
+		                 LJ.JINGJPL JINGJPL
+		            FROM ${dbSchemal3}CKX_SHENGCX_LINGJ LJ
+		            JOIN (SELECT SCX.LINGJBH, COUNT(SCX.SHENGCXBH) SCXSL
+		                    FROM ${dbSchemal3}CKX_SHENGCX_LINGJ SCX
+		                   WHERE SCX.USERCENTER = #UC#
+		                     AND SCX.SHENGCXBH IN
+		                         ($SCX$)
+		                   GROUP BY SCX.LINGJBH
+		                  HAVING COUNT(SCX.SHENGCXBH) >= 2
+		                   ORDER BY SCXSL ASC) TMP
+		              ON TMP.LINGJBH = LJ.LINGJBH
+		           WHERE LJ.USERCENTER = #UC#
+		             AND NOT EXISTS
+		           (SELECT 1
+		                    FROM (SELECT LB1.CHANXH,
+		                                 LB1.LINGJBH,
+		                                 TO_CHAR(LB1.YUJPCL || '.00') LINGJSL
+		                            FROM ${dbSchemal2}PC_RIGDPCJHMX LB1
+		                           WHERE LB1.USERCENTER = #UC#
+		                             AND LB1.SHIJ =
+		                                 TO_DATE(#DATE#, 'YYYY-MM-DD')
+		                             AND LB1.CHANXH IN ($SCX$)) T3
+		                   WHERE T3.CHANXH = LJ.SHENGCXBH
+		                     AND T3.LINGJBH = LJ.LINGJBH)) T4
+		]]>
+	</select>
+	
+	<!-- 查询生产线下的所有共线零件 -->
+	<select id="selectGXLJ" parameterClass="java.util.Map" resultClass="com.athena.pc.entity.EquilibLJ">
+		<![CDATA[
+			SELECT LJ.LINGJBH, LJ.SHENGCXBH CHANXH
+			  FROM ${dbSchemal3}CKX_SHENGCX_LINGJ LJ
+			  JOIN (SELECT SCX.LINGJBH, COUNT(SCX.SHENGCXBH) SCXSL
+			          FROM ${dbSchemal3}CKX_SHENGCX_LINGJ SCX
+			         WHERE SCX.USERCENTER = #UC#
+			           AND SCX.SHENGCXBH IN
+			               ($SCX$)
+			         GROUP BY SCX.LINGJBH
+			        HAVING COUNT(SCX.SHENGCXBH) >= 2
+			         ORDER BY SCXSL ASC) TMP
+			    ON TMP.LINGJBH = LJ.LINGJBH
+			 WHERE LJ.USERCENTER = #UC#
+			 ORDER BY LJ.LINGJBH
+		 ]]>
+	</select>
+	
+	<!-- 查询零件的毛需求  -->
+	<select id="selectMaoXQ" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			SELECT TO_CHAR(LJ.SHIJ,'yyyy-mm-dd') SHIJ, LJ.LINGJBH, TO_CHAR(LJ.LINGJSL)  LINGJSL
+			  FROM ${dbSchemal2}PC_LINGJRXQHZB LJ
+			 WHERE LJ.USERCENTER = #UC#
+			   AND LJ.SHIJ BETWEEN TO_DATE(#KSSJ#, 'YYYY-MM-DD') AND
+			       TO_DATE(#NEXTKSSJ#, 'YYYY-MM-DD')
+			   AND LJ.BIAOS = #BS#
+			 ORDER BY LJ.SHIJ
+ 		 ]]>
+	</select>
+	
+	
+	<!-- 查询这周零件所对应的工作编号  -->
+	<select id="selectGZBH" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		<![CDATA[
+			SELECT PC.USERCENTER || PC.CHANXH || TO_CHAR(PC.SHIJ, 'YYYY-MM-DD') KEY,
+			       PC.GONGZBH GZBH
+			  FROM ${dbSchemal2}PC_YUEDMNJHMX PC
+			 WHERE PC.SHIJ BETWEEN TO_DATE(#KSSJ#, 'YYYY-MM-DD') AND
+			       TO_DATE(#JSSJ#, 'YYYY-MM-DD')
+			   AND PC.USERCENTER = #UC#
+ 		 ]]>
+	</select>
+	
+	
+	<!-- 更新月度模拟计划的工时 (月模拟)  -->
+	<update id="updateCXGSByY" parameterClass="java.util.Map">
+		<![CDATA[ 
+			UPDATE ${dbSchemal2}PC_YUEDMNJHMX PC
+			   SET PC.HOUR = #GS#,PC.MEIRQBCN=#LJSL#,PC.EDITOR=#EDITOR#,PC.EDIT_TIME=TO_DATE(#EDIT_TIME#,'YYYY-MM-DD HH24:MI:SS') 
+			 WHERE PC.CHANXH = #SCX#
+			   AND PC.SHIJ = TO_DATE(#DATE#, 'YYYY-MM-DD')
+			   AND PC.USERCENTER = #UC#
+		  ]]>
+	</update>
+	
+	<!-- 更新月度模拟计划的工时 (滚动周期)  -->
+	<update id="updateCXGSByG" parameterClass="java.util.Map">
+		<![CDATA[ 
+			UPDATE ${dbSchemal2}PC_YUEDMNJHMX PC
+				   SET PC.GUNDMNGS = #GS#,PC.GUNDQBCN=#LJSL#,PC.EDITOR=#EDITOR#,PC.EDIT_TIME=TO_DATE(#EDIT_TIME#,'YYYY-MM-DD HH24:MI:SS')
+				 WHERE PC.CHANXH = #SCX#
+				   AND PC.SHIJ = TO_DATE(#DATE#, 'YYYY-MM-DD')
+				   AND PC.USERCENTER = #UC#
+		  ]]>
+	</update>
+	
+	
+	<!-- 更新月模拟的零件数量 -->
+	<update id="updateCXLJSLByY" parameterClass="java.util.Map">
+		<![CDATA[ 
+			UPDATE ${dbSchemal2}PC_MONRGDLJCLB PC 
+			  SET PC.LINGJSL = #SL#,PC.HOUR=#GS#,PC.EDITOR=#EDITOR#,PC.EDIT_TIME=TO_DATE(#EDIT_TIME#,'YYYY-MM-DD HH24:MI:SS')
+			  WHERE PC.GONGZBH = #GZBH# AND PC.LINGJBH=#LJBH#
+		  ]]>
+	</update>
+	<!-- 新增月模拟的零件数量 -->
+	<insert id="insertCXLJSLByY" parameterClass="java.util.Map">
+		<![CDATA[
+			insert into ${dbSchemal2}PC_MONRGDLJCLB
+				  (CHANXZBH, GONGZBH, LINGJSL, LINGJBH, HOUR,EDITOR,EDIT_TIME,CREATOR,CREATE_TIME,ID)
+				values
+				  (#SCXZBH#, #GZBH#, #SL#, #LJBH#, #GS#,#EDITOR#,TO_DATE(#EDIT_TIME#,'YYYY-MM-DD HH24:MI:SS'),#CREATOR#,TO_DATE(#CREATE_TIME#,'YYYY-MM-DD HH24:MI:SS'),#ID#)
+		]]>
+	</insert>
+	
+	<!-- 删除月模拟数量为0的的零件 -->
+	<delete id="deleteCXLJSLByY"  parameterClass="java.util.Map">
+		<![CDATA[
+		 DELETE ${dbSchemal2}PC_MONRGDLJCLB LB WHERE  LB.GONGZBH=#GZBH# AND LB.LINGJBH=#LJBH#
+		]]>
+	</delete>
+	
+	
+	
+	
+	<!-- 更新滚动周期的零件数量 -->
+	<update id="updateCXLJSLByG" parameterClass="java.util.Map">
+		<![CDATA[ 
+			UPDATE ${dbSchemal2}PC_GUNDYMNRGDLJCLB PC 
+			   SET PC.LINGJSL = #SL#,PC.HOUR=#GS# ,PC.EDITOR=#EDITOR#,PC.EDIT_TIME=TO_DATE(#EDIT_TIME#,'YYYY-MM-DD HH24:MI:SS')
+			   WHERE PC.GONGZBH = #GZBH# AND PC.LINGJBH=#LJBH#
+		  ]]>
+	</update>
+	
+	<!-- 新增滚动周期的零件数量 -->
+	<insert id="insertCXLJSLByG" parameterClass="java.util.Map">
+		<![CDATA[
+			insert into ${dbSchemal2}PC_GUNDYMNRGDLJCLB
+				  (CHANXZBH, GONGZBH, LINGJSL, LINGJBH, HOUR,EDITOR,EDIT_TIME,CREATOR,CREATE_TIME,ID)
+				values
+				  (#SCXZBH#,   #GZBH#, #SL#, #LJBH#, #GS#,#EDITOR#,TO_DATE(#EDIT_TIME#,'YYYY-MM-DD HH24:MI:SS'),#CREATOR#,TO_DATE(#CREATE_TIME#,'YYYY-MM-DD HH24:MI:SS'),#ID#)
+		]]>
+	</insert>
+	
+	<!-- 删除滚动周期模拟数量为0的的零件 -->
+	<delete id="deleteCXLJSLByG"  parameterClass="java.util.Map">
+		<![CDATA[
+		 DELETE ${dbSchemal2}PC_GUNDYMNRGDLJCLB LB WHERE  LB.GONGZBH=#GZBH# AND LB.LINGJBH=#LJBH#
+		]]>
+	</delete>
+	
+	<!-- 更新日滚动的排产量和工时 (日滚动)  -->
+	<update id="updateCXLJSLByR" parameterClass="java.util.Map">
+		<![CDATA[ 
+			  UPDATE ${dbSchemal2}PC_RIGDPCJHMX PC
+			     SET PC.YUJPCL = #SL#, PC.HOUR = #GS#,PC.EDITOR=#EDITOR#,PC.EDIT_TIME=TO_DATE(#EDIT_TIME#,'YYYY-MM-DD HH24:MI:SS')
+			   WHERE PC.CHANXH = #SCX#
+			     AND PC.USERCENTER = #UC#
+			     AND PC.LINGJBH = #LJBH#
+			     AND PC.SHIJ = TO_DATE(#DATE#, 'YYYY-MM-DD')
+			
+		  ]]>
+	</update>
+	<!-- 删除日滚动数量为0的的零件(日滚动) -->
+	<delete id="deleteCXLJSLByR"  parameterClass="java.util.Map">
+		<![CDATA[
+		   DELETE ${dbSchemal2}PC_RIGDPCJHMX PC
+		   WHERE PC.CHANXH = #SCX#
+		     AND PC.USERCENTER = #UC#
+		     AND PC.LINGJBH = #LJBH#
+		     AND PC.SHIJ = TO_DATE(#DATE#, 'YYYY-MM-DD')
+
+		]]>
+	</delete>
+	
+	<!-- 新增日滚动零件数量 (日滚动)-->
+	<insert id="insertCXLJSLByR" parameterClass="java.util.Map">
+		<![CDATA[
+			  INSERT INTO ${dbSchemal2}PC_RIGDPCJHMX
+				    (CHANXH,
+				     LINGJBH,
+				     SHIJ,
+				     USERCENTER,
+				     RIGDJHH,
+				     YUJPCL,
+				     HOUR,
+				     CHANXZBH,
+				     EDITOR,
+				     EDIT_TIME,
+				     CREATOR,
+				     CREATE_TIME)
+				  VALUES
+				    (#SCX#,
+				     #LJBH#,
+				     TO_DATE(#DATE#, 'YYYY-MM-DD'),
+				     #UC#,
+				     #GZBH#,
+				     #SL#,
+				     #GS#,
+				     #SCXZBH#,
+				     #EDITOR#,
+				     TO_DATE(#EDIT_TIME#,'YYYY-MM-DD HH24:MI:SS'),
+				     #CREATOR#,
+				     TO_DATE(#CREATE_TIME#,'YYYY-MM-DD HH24:MI:SS')
+				     )
+		]]>
+	</insert>
+	<!-- 新增消息报警 -->
+	<insert id="insertCxMessage" parameterClass="com.athena.pc.entity.EquilibMessage">
+		<![CDATA[
+			INSERT INTO ${dbSchemal2}PC_MESSAGE
+					  (CHANXZBH, JIHH, USERCENTER, CHANXH, SHIJ, XIAOX, LEIX,BIAOS,EDITOR,EDIT_TIME,CREATOR,CREATE_TIME)
+					VALUES
+					  (#CHANXZBH#, #JIHH#, #USERCENTER#, #CHANXH#, TO_DATE(#SHIJ#,'YYYY-MM-DD'), #XIAOX#, #LEIX#,#BIAOS#,#EDITOR#,TO_DATE(#EDIT_TIME#,'YYYY-MM-DD HH24:MI:SS'),#CREATOR#,TO_DATE(#CREATE_TIME#,'YYYY-MM-DD HH24:MI:SS'))
+		]]>
+	</insert>
+	
+	
+	<!-- 更新零件日需求汇总 -->
+	<update id="updateLjQckc" parameterClass="java.util.Map">
+		<![CDATA[ 
+			UPDATE ${dbSchemal2}PC_LINGJRXQHZB ZB
+			   SET ZB.QICKC = #QCKC#,ZB.ANQKC=#ANQKC# 
+			 WHERE ZB.LINGJBH = #LINGJBH#
+			   AND ZB.USERCENTER = #USERCENTER#
+			   AND ZB.BIAOS = #BIAOS#
+			   AND ZB.SHIJ = TO_DATE(#SHIJ#, 'YYYY-MM-DD')
+		  ]]>
+	</update>
+	
+	<!-- 新增零件日需求 -->
+	<insert id="insertLjQckc" parameterClass="java.util.Map">
+		<![CDATA[
+			INSERT INTO ${dbSchemal2}PC_LINGJRXQHZB ZB
+			  (LINGJBH, SHIJ, USERCENTER, LINGJSL, JINXQ, QICKC, ANQKC,BIAOS)
+			VALUES
+			  (#LINGJBH#,
+			   TO_DATE(#SHIJ#, 'YYYY-MM-DD'),
+			   #USERCENTER#,
+			   0,
+			   0,
+			   #QCKC#,
+			   #ANQKC#,
+			   #BIAOS#
+			   )
+		]]>
+	</insert>
+	 
+</sqlMap>

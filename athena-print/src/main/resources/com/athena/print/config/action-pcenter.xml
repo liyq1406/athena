@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toft>
+	<package name="pcenter" extend="toft-default" namespace="/pcenter">
+		<!-- 主队列表 -->
+		<action name="printQtasks" class="printQtaskmainAction" method="execute">
+			<result name="select">/WEB-INF/pages/print/pcenter/printQtask/printQtasks.jsp</result>
+		</action>
+		<action name="queryPrintQtaskmain" class="printQtaskmainAction" method="query"/>
+		<action name="removePrintQtaskmain" class="printQtaskmainAction" method="remove"/>
+		<action name="resetPrintQtaskmain" class="printQtaskmainAction" method="reset"/>
+		<action name="queryPrintQtaskinfo" class="printQtaskinfoAction" method="query"/>
+		<action name="removePrintQtaskinfo" class="printQtaskinfoAction" method="remove"/>
+		<action name="printQtaskmain" class="printQtaskmainAction" method="printQtask"/>
+		<action name="printDeviceFresh" class="printQtaskmainAction" method="refersh"/>
+		<action name="printDevice" class="printQtaskmainAction" method="seedevice"/>
+	</package>
+</toft>

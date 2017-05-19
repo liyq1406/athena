@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!--
+2015-04-27		gswang			0011283: 看板在做失效和消耗点替换时，准备层发给变更记录表2次
+
+ -->
+<sqlMap namespace="common">
+
+	<!--查询异常类型 -->
+	<select id="queryYclx" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='YCLX'
+   </select>
+	<!-- 查询计算模块 -->
+	<select id="queryJsmk" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='JSMK'
+	</select>
+	<!-- 查询要货令时间 -->
+	<select id="queryYhlsj" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='YHLSJ'
+	</select>
+
+	<!-- 查询要货令到达状态 -->
+	<select id="queryYhlddzt" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='DDZT'
+	</select>
+
+	<!-- 查询订单状态 -->
+	<select id="queryDingdzt" resultClass="com.athena.util.cache.CacheValue">
+		select
+		zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from
+		${dbSchemal3}ckx_xitcsdy
+		where
+		zidlx='DINGDZT'
+	</select>
+
+	<!-- 查询订单类型 -->
+	<select id="queryDingdlx" resultClass="com.athena.util.cache.CacheValue">
+		select
+		zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from
+		${dbSchemal3}ckx_xitcsdy
+		where
+		zidlx='DINGDLX'
+
+	</select>
+	<!-- 要货令外部供货模式 -->
+	<select id="queryWghms" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='WBMS'
+	</select>
+	<!-- 要货令内部供货模式 -->
+	<select id="queryNghms" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='NBMS'
+	</select>
+	<!-- 要货令状态 -->
+	<select id="queryYhlzt" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='YHLZT'
+	</select>
+	<!-- 看板循环规模变化 -->
+	<select id="queryGuimbh" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='KBGMBH'
+	
+	</select>
+	
+	<!-- 资源跟踪计算类型 -->
+	<select id="queryJslx" resultClass="com.athena.util.cache.CacheValue">
+		select 
+			max(jislxbh) as key,
+			max(jslxmc) as value,
+			0 as usercenter
+		from 
+			${dbSchemal3}ckx_ziygzlx
+		group by jislxbh
+		order by jislxbh
+	</select>
+
+	<!-- 资源获取日期 -->
+	<select id="queryZiyhqrl" resultClass="com.athena.util.cache.CacheValue">
+		select
+		distinct(to_char(kucsj,'yyyy-MM-dd')) as key,
+		to_char(kucsj,'yyyy-MM-dd') as value,
+		0 as usercenter
+		from
+		${dbSchemal1}ck_kuckz 
+	</select>
+
+	<!-- 调拨令状态 -->
+	<select id="queryDblzt" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='DBLZT'
+	</select>
+	<!-- 调拨令审核状态 -->
+	<select id="queryDblShzt" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='DBLZT'	and (zidbm='00' or  zidbm='20')
+	</select>
+		<!-- 调拨令终止状态 -->
+	<select id="queryDblZZzt" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='DBLZT'	and (zidbm='30' or  zidbm='40' or  zidbm='50' or  zidbm='60')
+	</select>
+	<!-- 制造路线 -->
+	<select id="queryZhizlx" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='ZZLX'
+	</select>
+<!-- 是否计算要货令(0未计算,1已计算,2可发送)-->
+	<select id="queryShifyjsyhl" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='SHIFYJSYHL'
+	</select>
+<!-- 毛需求：需求来源-中文 -->
+	<select id="convertXqlyForChn" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='XQLY'
+	</select>
+<!-- 事务提醒类型 -->
+	<select id="shiwtxLx" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='SWTXLX'
+	</select>
+<!-- 毛需求：需求来源-英字 -->
+	<select id="convertXqlyForEng" resultClass="com.athena.util.cache.CacheValue">
+		select zidbm as key,
+		zidmc as value,
+		0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy
+		where zidlx='XUQLY'
+	</select>
+
+
+
+
+
+  <!-- 毛需求：需求来源-英字 -->
+	<select id="queryBgjlForck" resultClass="java.lang.String">
+		select USERCENTER||LINGJBH||YUANBH 
+		     from ${dbSchemal3}ckx_biangjlb b 
+	</select>
+
+
+
+  <!-- 毛需求：需求来源-英字 -->
+	<select id="queryBgjlForckSX" resultClass="java.util.HashMap">
+		select d.USERCENTER||d.LINGJBH||d.xianbh AS ULX ,nvl(K.XIAFXHGM ,0)  XIAFXHGM 
+		from  ${dbSchemal3}ckx_biangjlb d,${dbSchemal3}xqjs_kanbxhgm k 
+		where d.USERCENTER||d.LINGJBH||d.Yuanbh =K.USERCENTER||K.LINGJBH||K.KEHD
+	</select>
+ <!-- 获取替换的原编号的下发循环规模    hj  13-9-18   0008446    -->
+	<select id="queryBgjlSyForckNo" resultClass="java.lang.String">
+		select USERCENTER||LINGJBH||YUANBH 
+		     from ${dbSchemal3}ckx_biangjlb d  
+		     where d.shifsy='0' 
+		     and d.usercenter=#usercenter#
+		     order by d.LINGJBH asc,d.create_time asc	
+		     
+	</select>
+ <!-- 获取替换的原编号的下发循环规模    hj  13-11-28   0008446    -->
+	<select id="queryBgjlSyForckSX" resultClass="java.util.HashMap">
+		select d.USERCENTER||d.LINGJBH||d.xianbh||k1.gonghms AS ULX ,
+		nvl(K.XIAFXHGM ,0)  XIAFXHGM 
+		   ,d.USERCENTER||d.LINGJBH||d.Yuanbh||k.gonghms  as YUANBH,
+		   k.dongjjdzt DONGJJDZT
+		   ,k1.shengxzt as XSHENGXZT,k.shengxzt as YSHENGXZT 
+		from  ${dbSchemal3}ckx_biangjlb d,${dbSchemal3}xqjs_kanbxhgm k 
+		,${dbSchemal3}xqjs_kanbxhgm k1 
+		where d.USERCENTER||d.LINGJBH||d.Yuanbh =K.USERCENTER||K.LINGJBH||K.KEHD
+		 and d.USERCENTER||d.LINGJBH||d.xianbh =K1.USERCENTER||K1.LINGJBH||K1.KEHD 
+        and k1.gonghms = k.gonghms
+		and d.shifsy='0' 	and d.usercenter=#usercenter#
+        order by d.LINGJBH asc,d.create_time asc
+	</select>
+ <!-- 失效已经替换过的变更记录    hj  13-9-18   0008446    -->
+	<update id="updateShifsy"  parameterClass="java.util.Map">
+		update ${dbSchemal3}ckx_biangjlb d 
+		set d.shifsy='1' ,d.editor=#CREATOR#,d.edit_time=sysdate
+		where 
+		d.USERCENTER||d.LINGJBH||d.xianbh =  substr(#ULX#,1,length(#ULX#)-2)
+		and d.shifsy = '0' 
+		and d.USERCENTER||d.LINGJBH||d.Yuanbh = substr(#YUANBH#,1,length(#YUANBH#)-2)
+        
+	</update>
+	<!-- 查询仓库循环时间 -->
+	<select id="queryCangkxhsj" resultClass="com.athena.xqjs.entity.common.Cangkxhsj">
+		select 
+			cangkshsj,cangkfhsj,beihsj 
+		from 
+			${dbSchemal3}ckx_cangkxhsj
+		where
+			shengxbs = '1'
+			<dynamic>
+				<isNotNull prepend=" and " property="cangkbh">cangkbh = #cangkbh#</isNotNull>
+				<isNotNull prepend=" and " property="fenpqhck">fenpqhck = #fenpqhck#</isNotNull>
+				<isNotNull prepend=" and " property="usercenter">usercenter = #usercenter#</isNotNull>
+				<isNotNull prepend=" and " property="mos">mos = #mos#</isNotNull>
+			</dynamic>
+	</select>
+	
+	<!-- 供货模式1（参考系 | 物流路径 | 卸货站台循环时间）  csy 2016-06-13-->
+  	<select id="queryGHMS1" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,'' as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='GHMS1'
+  	</select>
+  	
+  	<!-- 供货模式2 （看板及要货令 | 要货令管理 | 要货令查询/终止(内部)）  csy 2016-06-13-->
+  	<select id="queryGHMS2" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,0 as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='GHMS2'
+  	</select>
+  	
+  	<!-- 供货模式3 （收货待处理 | 收货待处理）  csy 2016-06-13-->
+  	<select id="queryGHMS3" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,0 as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='GHMS3'
+  	</select>
+  	
+  	<!-- 供货模式 （看板及要货令 | 看板循环 | 看板循环管理(内部)）  csy 2016-06-13-->
+  	<select id="queryKBNBMS" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,0 as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='KBNBMS'
+  	</select>
+  	
+  	<!-- 供货模式 （看板及要货令 | 看板循环 | 看板循环管理(外部)）  csy 2016-06-13-->
+  	<select id="queryKBWBMS" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,0 as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='KBWBMS'
+  	</select>
+  	
+  	<!-- 供货模式4（按需管理 | C0CS盘点流水）  csy 2016-06-13-->
+  	<select id="queryGHMS4" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,0 as usercenter
+		from ${dbSchemal3}ckx_xitcsdy 
+		where zidlx='GHMS4'
+  	</select>
+  	
+  	<!-- 供货模式5 （报表查询|实时延误要货令）  csy 2016-06-13-->
+  	<select id="queryGHMS5" resultClass="com.athena.util.cache.CacheValue">
+  		select zidbm as key,zidmc as value,0 as usercenter
+  		from ${dbSchemal3}ckx_xitcsdy
+  		where zidlx='GHMS5'
+  	</select>
+	
+</sqlMap>

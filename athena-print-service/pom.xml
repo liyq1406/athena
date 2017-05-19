@@ -1,0 +1,786 @@
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.athena</groupId>
+	<artifactId>athena-print-service</artifactId>
+	<packaging>war</packaging>
+	<version>1.0.15-SNAPSHOT</version>
+
+	<name>athena-print-service</name>
+	<url>http://maven.apache.org</url>
+
+	<repositories>
+		<repository>
+			<id>releases</id>
+			<url>http://10.26.218.194:8081/nexus/content/repositories/releases</url>
+		</repository>
+
+		<repository>
+			<id>snapshots</id>
+			<url>http://10.26.218.194:8081/nexus/content/repositories/snapshots</url>
+		</repository>
+
+		<repository>
+			<id>maven.central</id>
+			<url>http://10.26.218.194:8081/nexus/content/repositories/central</url>
+		</repository>
+
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>local-plugin-repositories</id>
+			<url>http://10.26.218.194:8081/nexus/content/repositories/releases</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<junit.version>4.8.2</junit.version>
+		<aspectj.version>1.6.9</aspectj.version>
+		<antlr.version>2.7.6</antlr.version>
+		<weblogic.targets>AdminServer</weblogic.targets>
+		<weblogic.ip>10.26.218.79:7001</weblogic.ip>
+		<weblogic.provided>provided</weblogic.provided>
+		<commons.logging.version>1.1.1</commons.logging.version>
+		<commons.beanutils.version>1.7.0</commons.beanutils.version>
+		<commons.collections.version>3.2.1</commons.collections.version>
+		<commons.dbcp.version>1.3</commons.dbcp.version>
+		<commons.digester.version>1.8</commons.digester.version>
+		<commons.discovery.version>0.4</commons.discovery.version>
+		<commons.email.version>1.2</commons.email.version>
+		<commons.fileupload.version>1.2.2</commons.fileupload.version>
+		<commons.io.version>1.3.2</commons.io.version>
+		<commons.lang.version>2.4</commons.lang.version>
+		<commons.pool.version>1.5.4</commons.pool.version>
+		<commons.chain.version>1.2</commons.chain.version>
+		<commons.codec.version>1.3</commons.codec.version>
+		<commons.el.version>1.0</commons.el.version>
+
+		<standard.version>1.1.2</standard.version>
+		<dom4j.version>1.6.1</dom4j.version>
+		<quartz.version>1.6.5</quartz.version>
+		<log4j.version>1.2.14</log4j.version>
+		<slf4j.version>1.6.0</slf4j.version>
+
+		<chardet.version>1.0</chardet.version>
+		<aopalliance.version>1.0</aopalliance.version>
+		<cpdetector.version>1.0.8</cpdetector.version>
+		<kaptcha.version>2.3</kaptcha.version>
+		<json-lib.version>2.3</json-lib.version>
+		<ehcache.version>2.0.3</ehcache.version>
+		<mysql-connector-java.version>5.0.8</mysql-connector-java.version>
+		<javassist.version>3.14.0-GA</javassist.version>
+		<cglib.version>2.2</cglib.version>
+		<jaxen.version>1.1.1</jaxen.version>
+
+		<tomcat.version>7.0.12</tomcat.version>
+		<toft.version>3.5.2.RELEASE</toft.version>
+		<toft.ui.version>1.0.9</toft.ui.version>
+
+		<cxf.version>2.5.2</cxf.version>
+
+		<athena.version>${project.version}</athena.version>
+
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>${commons.logging.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>${commons.beanutils.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>${commons.collections.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${commons.lang.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-chain</groupId>
+			<artifactId>commons-chain</artifactId>
+			<version>${commons.chain.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${commons.codec.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-el</groupId>
+			<artifactId>commons-el</artifactId>
+			<version>${commons.el.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>${commons.dbcp.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>${commons.digester.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.0.1</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- sdc -->
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-core</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-biz</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-context</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-container</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-cache</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-ibatis</artifactId>
+			<version>3.5.3.RELEASE</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-jdbc</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-legacy</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-mvc</artifactId>
+			<version>3.5.3</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-remoting</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-transaction</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-ui</artifactId>
+			<version>${toft.ui.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-web</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- 序列相关依赖 -->
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-sequence</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- web打印相关依赖 -->
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-print-platform</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-print-designer</artifactId>
+			<version>${toft.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>flex.messaging</groupId>
+			<artifactId>flex-messaging-common</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>flex.messaging</groupId>
+			<artifactId>flex-messaging-remoting</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>flex.messaging</groupId>
+			<artifactId>flex-messaging-core</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>flex.messaging</groupId>
+			<artifactId>flex-messaging-opt</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>flex.messaging</groupId>
+			<artifactId>flex-messaging-proxy</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.toft</groupId>
+			<artifactId>toft-utils</artifactId>
+			<version>3.5</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>bea.weblogic</groupId>
+			<artifactId>weblogic-jatmi</artifactId>
+			<version>10.3.5</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.3.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.5.11</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>1.5.11</version>
+			<scope>compile</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>aopalliance</groupId>
+			<artifactId>aopalliance</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>backport-util-concurrent</groupId>
+			<artifactId>backport-util-concurrent-java12</artifactId>
+			<version>3.1</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- <dependency> <groupId>cglib</groupId> <artifactId>cglib-nodep</artifactId> 
+			<version>2.2.2</version> <scope>compile</scope> </dependency> -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sourceforge.jexcelapi</groupId>
+			<artifactId>jxl</artifactId>
+			<version>2.6.12</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.18</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>${json-lib.version}</version>
+			<classifier>jdk13</classifier>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- 项目包 -->
+		<dependency>
+			<groupId>com.athena</groupId>
+			<artifactId>athena-core</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.snmp4j</groupId>
+			<artifactId>snmp4j</artifactId>
+			<version>1.8.1</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- 权限管理和系统日记 -->
+		<!-- <dependency>
+			<groupId>com.athena</groupId>
+			<artifactId>athena-authority</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency> -->
+
+		<dependency>
+			<groupId>com.oreilly</groupId>
+			<artifactId>cos-servlet</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<!-- web 容器相关包 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ibatis</groupId>
+			<artifactId>ibatis</artifactId>
+			<version>2.3.0.677</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- webservice相关包 -->
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<!-- 新增jar包 -->
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-bindings-xml</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-databinding-jaxb</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-common</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-ws-addr</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-tools-common</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>xml-resolver</groupId>
+			<artifactId>xml-resolver</artifactId>
+			<version>1.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.ws.xmlschema</groupId>
+			<artifactId>xmlschema-core</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.1.13</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>geronimo-javamail_1.4_spec</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>woodstox-core-asl</artifactId>
+			<version>4.1.1</version>
+		</dependency>
+		<!-- 新增jar止 -->
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-simple</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-api</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-core</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-bindings-soap</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-common-utilities</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.neethi</groupId>
+			<artifactId>neethi</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>stax2-api</artifactId>
+			<version>3.0.2</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- hzg 2012-9-6 add 发布远程依赖包   本地启动或打包时注释掉 -->
+		<!-- <dependency>
+			<groupId>com.oracle.weblogic</groupId>
+			<artifactId>weblogic-maven-plugin</artifactId>
+			<version>10.3.4</version>
+			<scope>${weblogic.provided}</scope>
+		</dependency> -->
+	</dependencies>
+
+	<build>
+		<finalName>athena-print-service</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<encoding>utf-8</encoding>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<version>1.1</version>
+				<configuration>
+					<uriEncoding>UTF-8</uriEncoding>
+					<port>8085</port>
+					<path>/athena-print-service</path>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.oracle.weblogic</groupId>
+				<artifactId>weblogic-maven-plugin</artifactId>
+				<version>10.3.4</version>
+				<configuration>
+
+					<adminurl>${weblogic.ip}</adminurl>
+					<user>weblogic</user>
+					<password>weblogic1</password>
+					<targets>${weblogic.targets}</targets>
+					<upload>true</upload>
+					<action>deploy</action>
+					<remote>true</remote>
+					<verbose>true</verbose>
+					<source>${project.build.directory}/${project.build.finalName}.${project.packaging}</source>
+					<name>${project.build.finalName}</name>
+				</configuration>
+				<!-- <executions> <execution> <phase>install</phase> <goals> <goal>deploy</goal> 
+					</goals> </execution> </executions> -->
+			</plugin>
+		</plugins>
+
+
+		<!-- 目标资源 hzg 2012-9-6 -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
+	<!-- 替换配置文件 hzg 2012-8-29 -->
+	<profiles>
+		<!-- 发tomcat测试配置 -->
+		<profile>
+			<id>T_ZXC_1</id>
+			<properties>
+				<dbSchemal0>ZXC_TEST.</dbSchemal0>
+				<dbSchemal1>ZXC_TEST.</dbSchemal1>
+				<dbSchemal2>ZXC_TEST.</dbSchemal2>
+				<dbSchemal3>ZXC_TEST.</dbSchemal3>
+				<dbSchemal4>ZXC_TEST.</dbSchemal4>
+
+				<user-name>ZXC_TEST</user-name>
+				<password>athenayhjccs</password>
+				<server-name>10.26.202.40</server-name>
+				<db-name>azxdb</db-name>
+
+				<jdbcstart.label></jdbcstart.label>
+				<jdbcend.label></jdbcend.label>
+				<jndistart.label><![CDATA[<!--]]></jndistart.label>
+				<jndiend.label>--></jndiend.label>
+			</properties>
+		</profile>
+		<profile>
+			<id>T_ZXC_2</id>
+			<properties>
+				<dbSchemal0>ZXC_TEST.</dbSchemal0>
+				<dbSchemal1>ZXC_TEST.</dbSchemal1>
+				<dbSchemal2>ZXC_TEST.</dbSchemal2>
+				<dbSchemal3>ZXC_TEST.</dbSchemal3>
+				<dbSchemal4>ZXC_TEST.</dbSchemal4>
+
+				<user-name>ZXC_TEST</user-name>
+				<password><![CDATA[!2#ATHENA&lt;&gt;?]]></password>
+				<server-name>10.26.218.180</server-name>
+				<db-name>dev1db</db-name>
+
+				<jdbcstart.label></jdbcstart.label>
+				<jdbcend.label></jdbcend.label>
+				<jndistart.label><![CDATA[<!--]]></jndistart.label>
+				<jndiend.label>--></jndiend.label>
+			</properties>
+		</profile>
+		<profile>
+			<id>T_ZXC_3</id>
+			<properties>
+				<dbSchemal0>ZXC_TEST.</dbSchemal0>
+				<dbSchemal1>ZXC_TEST.</dbSchemal1>
+				<dbSchemal2>ZXC_TEST.</dbSchemal2>
+				<dbSchemal3>ZXC_TEST.</dbSchemal3>
+				<dbSchemal4>ZXC_TEST.</dbSchemal4>
+
+				<user-name>ZXC_TEST</user-name>
+				<password><![CDATA[!2#ATHENA&lt;&gt;?]]></password>
+				<server-name>10.26.218.231</server-name>
+				<db-name>testdb</db-name>
+
+				<jdbcstart.label></jdbcstart.label>
+				<jdbcend.label></jdbcend.label>
+				<jndistart.label><![CDATA[<!--]]></jndistart.label>
+				<jndiend.label>--></jndiend.label>
+			</properties>
+		</profile>
+		<!-- 开发配置 -->
+		<profile>
+			<id>D_ZXC</id>
+			<properties>
+				<dbSchemal0>ZXC_TEST.</dbSchemal0>
+				<dbSchemal1>ZXC_TEST.</dbSchemal1>
+				<dbSchemal2>ZXC_TEST.</dbSchemal2>
+				<dbSchemal3>ZXC_TEST.</dbSchemal3>
+				<dbSchemal4>ZXC_TEST.</dbSchemal4>
+
+				<user-name>ZXC_TEST</user-name>
+				<password>ZXC_TEST</password>
+				<server-name>10.26.218.52</server-name>
+				<db-name>functdb</db-name>
+
+				<jdbcstart.label></jdbcstart.label>
+				<jdbcend.label></jdbcend.label>
+				<jndistart.label><![CDATA[<!--]]></jndistart.label>
+				<jndiend.label>--></jndiend.label>
+			</properties>
+		</profile>
+	
+	<!-- weblogic测试配置 add hzg -->
+	<profile>
+			<id>T_ZXC</id>
+			<properties>
+				<dbSchemal0>ZXC_TEST.</dbSchemal0>
+				<dbSchemal1>ZXC_TEST.</dbSchemal1>
+				<dbSchemal2>ZXC_TEST.</dbSchemal2>
+				<dbSchemal3>ZXC_TEST.</dbSchemal3>
+				<dbSchemal4>ZXC_TEST.</dbSchemal4>
+
+				<jndi.name>jdbc/zxc</jndi.name>
+
+				<jdbcstart.label><![CDATA[<!--]]></jdbcstart.label>
+				<jdbcend.label>--></jdbcend.label>
+
+				<jndistart.label></jndistart.label>
+				<jndiend.label></jndiend.label>
+			</properties>
+		</profile>
+
+
+		<!-- 生产配置 -->
+		<profile>
+			<id>S_ZXC</id>
+			<properties>
+				<dbSchemal0>athzx.</dbSchemal0>
+				<dbSchemal1>athzx.</dbSchemal1>
+				<dbSchemal2>athzx.</dbSchemal2>
+				<dbSchemal3>athzx.</dbSchemal3>
+				<dbSchemal4>athzx.</dbSchemal4>
+
+				<jndi.name>jdbc/zxc</jndi.name>
+
+				<jdbcstart.label><![CDATA[<!--]]></jdbcstart.label>
+				<jdbcend.label>--></jdbcend.label>
+
+				<jndistart.label></jndistart.label>
+				<jndiend.label></jndiend.label>
+			</properties>
+		</profile>
+
+
+	</profiles>
+</project>

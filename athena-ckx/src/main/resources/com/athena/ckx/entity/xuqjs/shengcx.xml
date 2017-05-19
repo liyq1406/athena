@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ts_ckx">
+
+	<select id="queryShengcx" parameterClass="com.athena.ckx.entity.xuqjs.Shengcx" resultClass="com.athena.ckx.entity.xuqjs.Shengcx">
+		select scx.usercenter,scx.shengcxbh,scx.shengcjp,scx.weilscjp,scx.qiehsj,scx.chults,scx.anqkctsmrz,scx.biaos,scx.creator,scx.create_time,scx.editor,scx.edit_time,scx.chews,scx.kongcss,scx.chanxlx,scx.duiydx
+		from (select s.usercenter,s.shengcxbh,s.shengcjp,s.weilscjp,to_char(s.qiehsj,'yyyy-MM-dd') as qiehsj,s.chults,s.anqkctsmrz,s.biaos,s.creator,s.create_time,s.editor,s.edit_time,s.chews,s.kongcss,s.flag,
+		decode(s.shengcxbh, d.daxxh, '1', f.fenzxh, '2', '3') as chanxlx,
+		decode(s.shengcxbh, d.daxxh, d.daxxh, f.fenzxh, f.daxxh, '') as duiydx
+		from ${dbSchemal3}ckx_shengcx s
+		left join ${dbSchemal3}ckx_dax d on s.usercenter = d.usercenter and s.shengcxbh = d.daxxh and d.biaos = '1'
+		left join ${dbSchemal3}ckx_fenzx f on s.usercenter = f.usercenter and s.shengcxbh = f.fenzxh and f.biaos = '1') scx
+		where 1=1 and scx.flag = '1'
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[scx.usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[scx.shengcxbh = #shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[scx.biaos = #biaos#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="chanxlx"><![CDATA[scx.chanxlx = #chanxlx#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="duiydx"><![CDATA[scx.duiydx = #duiydx#]]></isNotEmpty>
+			</dynamic>
+			order by scx.usercenter,scx.shengcxbh
+	</select>
+	
+	<select id="queryShengcxs" parameterClass="com.athena.ckx.entity.xuqjs.Shengcx" resultClass="com.athena.ckx.entity.xuqjs.Shengcx">
+		select usercenter,shengcxbh,shengcjp,weilscjp,to_char(qiehsj,'yyyy-MM-dd') as qiehsj,chults,anqkctsmrz,biaos,creator,create_time,editor,edit_time,chews,kongcss
+		from ${dbSchemal3}ckx_shengcx
+		where 1=1 and biaos='1'
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,shengcxbh
+	</select>
+	
+	<select id="queryShengcxsByParam" resultClass="com.athena.ckx.entity.xuqjs.Shengcx">
+		select usercenter,shengcxbh,shengcjp,weilscjp,to_char(qiehsj,'yyyy-MM-dd') as qiehsj,chults,anqkctsmrz,biaos,creator,create_time,editor,edit_time,chews,kongcss
+		from ${dbSchemal3}ckx_shengcx
+		where 1=1 and biaos='1'
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+			</dynamic>
+			order by usercenter,shengcxbh
+	</select>
+	
+	<select id="getShengcx" parameterClass="com.athena.ckx.entity.xuqjs.Shengcx" resultClass="com.athena.ckx.entity.xuqjs.Shengcx">
+		select usercenter,shengcxbh,shengcjp,weilscjp,to_char(qiehsj,'yyyy-MM-dd') as qiehsj,chults,anqkctsmrz,biaos,chews,kongcss
+		from ${dbSchemal3}ckx_shengcx
+		where 1=1
+			<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<insert id="insertShengcx" parameterClass="com.athena.ckx.entity.xuqjs.Shengcx">
+		insert into ${dbSchemal3}ckx_shengcx(usercenter,shengcxbh,shengcjp,weilscjp,qiehsj,chults,anqkctsmrz,biaos,flag,creator,create_time,editor,edit_time,cpshengcjp,chews,kongcss)
+		values(<![CDATA[#usercenter# , #shengcxbh# , #shengcjp# , #weilscjp# , to_date(#qiehsj#,'yyyy-MM-dd'),#chults#,#anqkctsmrz#,'1' ,'1', #creator# , to_date(#create_time#,'yyyy-MM-dd hh24:mi:ss'),#editor#,to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss') ]]> ,#cpshengcjp#,#chews#,#kongcss#)
+	</insert>
+	
+	<update id="updateShengcx" parameterClass="com.athena.ckx.entity.xuqjs.Shengcx">
+		update ${dbSchemal3}ckx_shengcx 
+		set shengcjp = #shengcjp# ,
+		cpshengcjp = #cpshengcjp#,
+		weilscjp = #weilscjp# ,
+		qiehsj = to_date(#qiehsj#,'yyyy-MM-dd') ,
+		chults = #chults# ,
+		anqkctsmrz = #anqkctsmrz#,
+		biaos = #biaos# ,
+		editor = #editor# ,
+		edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss'),
+		chews = #chews#,
+		kongcss = #kongcss#
+        where  usercenter = #usercenter# and  shengcxbh = #shengcxbh#
+	</update>
+	
+	<update id="deleteShengcx" parameterClass="com.athena.ckx.entity.xuqjs.Shengcx">
+		update ${dbSchemal3}ckx_shengcx
+		set <![CDATA[biaos = #biaos#,editor=#editor#,edit_time = to_date(#edit_time#,'yyyy-MM-dd hh24:mi:ss')]]>
+		where <![CDATA[usercenter = #usercenter# and  shengcxbh = #shengcxbh#]]>
+	</update>
+	
+	<select id="getCountShengcx"  resultClass="java.lang.String">
+		select count(usercenter) from ${dbSchemal3}ckx_shengcx where 1=1
+		<dynamic> 
+				<isNotEmpty prepend=" and " property="usercenter"><![CDATA[usercenter = #usercenter#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="shengcxbh"><![CDATA[shengcxbh = #shengcxbh#]]></isNotEmpty>
+				<isNotEmpty prepend=" and " property="biaos"><![CDATA[biaos = #biaos#]]></isNotEmpty>
+			</dynamic>
+	</select>
+</sqlMap>
