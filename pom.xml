@@ -62,17 +62,17 @@
 	<repositories>
 		<repository>
 			<id>releases</id>
-			<url>http://10.26.223.54:8081/nexus/content/repositories/releases</url>
+			<url>http://127.0.0.1:8081/nexus/content/repositories/releases</url>
 		</repository>
 
 		<repository>
 			<id>snapshots</id>
-			<url>http://10.26.223.54:8081/nexus/content/repositories/snapshots</url>
+			<url>http://127.0.0.1:8081/nexus/content/repositories/snapshots</url>
 		</repository>
 
 		<repository>
-			<id>maven.central</id>
-			<url>http://10.26.223.54:8081/nexus/content/repositories/central</url>
+			<id>central</id>
+			<url>http://127.0.0.1:8081/nexus/content/repositories/central</url>
 		</repository>
 
 	</repositories>
@@ -81,7 +81,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>local-plugin-repositories</id>
-			<url>http://10.26.223.54:8081/nexus/content/repositories/releases</url>
+			<url>http://127.0.0.1:8081/nexus/content/repositories/releases</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<!-- <pluginRepositories> <pluginRepository> <id>athena-repo</id> <name>athena-repo</name> 
@@ -92,9 +92,9 @@
 
 
 	<scm>
-		<connection>scm:svn:https://10.26.223.54:8443/svn/code/athena/trunk</connection>
-		<developerConnection>scm:svn:https://10.26.223.54:8443/svn/code/athena/trunk</developerConnection>
-		<url>https://10.26.223.54:8443/svn/code/athena/trunk</url>
+		<connection>scm:svn:https://127.0.0.1:8443/svn/code/athena/trunk</connection>
+		<developerConnection>scm:svn:https://127.0.0.1:8443/svn/code/athena/trunk</developerConnection>
+		<url>https://127.0.0.1:8443/svn/code/athena/trunk</url>
 	</scm>
 
 
@@ -103,14 +103,14 @@
 		<repository>
 			<id>local-releases</id>
 			<url>
-                http://10.26.223.54:8081/nexus/content/repositories/releases
+                http://127.0.0.1:8081/nexus/content/repositories/releases
             </url>
 		</repository>
 
 		<snapshotRepository>
 			<id>local-snapshot</id>
 			<url>
-                http://10.26.223.54:8081/nexus/content/repositories/snapshots
+                http://127.0.0.1:8081/nexus/content/repositories/snapshots
             </url>
 		</snapshotRepository>
 	</distributionManagement>
@@ -553,7 +553,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.0-beta-7</version>
 				<configuration>
-					<tagBase>https://10.26.223.54:8443/svn/code/athena/tags/</tagBase>
+					<tagBase>https://127.0.0.1:8443/svn/code/athena/tags/</tagBase>
 				</configuration>
 			</plugin>
 			
