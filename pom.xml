@@ -62,17 +62,17 @@
 	<repositories>
 		<repository>
 			<id>releases</id>
-			<url>http://127.0.0.1:8081/nexus/content/repositories/releases</url>
+			<url>http://10.26.193.13:8080/nexus/content/repositories/releases</url>
 		</repository>
 
 		<repository>
 			<id>snapshots</id>
-			<url>http://127.0.0.1:8081/nexus/content/repositories/snapshots</url>
+			<url>http://10.26.193.13:8080/nexus/content/repositories/snapshots</url>
 		</repository>
 
 		<repository>
 			<id>central</id>
-			<url>http://127.0.0.1:8081/nexus/content/repositories/central</url>
+			<url>http://10.26.193.13:8080/nexus/content/repositories/central</url>
 		</repository>
 
 	</repositories>
@@ -81,7 +81,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>local-plugin-repositories</id>
-			<url>http://127.0.0.1:8081/nexus/content/repositories/releases</url>
+			<url>http://10.26.193.13:8080/nexus/content/repositories/releases</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<!-- <pluginRepositories> <pluginRepository> <id>athena-repo</id> <name>athena-repo</name> 
@@ -103,14 +103,14 @@
 		<repository>
 			<id>local-releases</id>
 			<url>
-                http://127.0.0.1:8081/nexus/content/repositories/releases
+                http://10.26.193.13:8080/nexus/content/repositories/releases
             </url>
 		</repository>
 
 		<snapshotRepository>
 			<id>local-snapshot</id>
 			<url>
-                http://127.0.0.1:8081/nexus/content/repositories/snapshots
+                http://10.26.193.13:8080/nexus/content/repositories/snapshots
             </url>
 		</snapshotRepository>
 	</distributionManagement>
